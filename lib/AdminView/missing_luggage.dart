@@ -140,9 +140,9 @@ class MisingLaggage extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.only(left: 20),
-              child: Container(
+              child: SizedBox(
                 height: 40,
-                width: width / 1.4,
+                width: width / 1.3,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -173,7 +173,7 @@ class MisingLaggage extends StatelessWidget {
                     ),
                     Container(
                       height: 35,
-                      width: width / 6,
+                      width: width / 4.8,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                           color: Colors.white),
@@ -212,7 +212,7 @@ class MisingLaggage extends StatelessWidget {
                         padding:
                         const EdgeInsets.only(left: 8, right: 8, bottom: 7),
                         child: Container(
-                            height: height / 5.5,
+                            height: height / 4.5,
                             decoration: BoxDecoration(
                               color: Colors.white,
                               boxShadow: [
