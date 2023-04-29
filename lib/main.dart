@@ -1,7 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:luggage_tracking_app/UserView/splash_screen.dart';
 import 'package:provider/provider.dart';
 
+import 'Providers/admin_provider.dart';
 import 'Providers/loginProvider.dart';
 import 'Users/login_Screen.dart';
 import 'Users/userRegistration_Screen.dart';
@@ -21,16 +23,17 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => LoginProvider(),),
+        ChangeNotifierProvider(create: (context) => AdminProvider(),),
 
       ],
-      child: const MaterialApp(
+      child:  MaterialApp(
         // title: 'Flutter Demo',
         // theme: ThemeData(
         //   colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         //   useMaterial3: true,
         // ),
         debugShowCheckedModeBanner: false,
-        home: LoginScreen(),
+        home: SplashScreen(),
         // home: AddProducts(),
         // home: CustomerRegistration(adminName: "adminName", adminPhone: "9048001001", adminId: "adminId"),
       ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../Constants/my_colors.dart';
+import '../constant/colors.dart';
 
 class UserRegistrationScreen extends StatelessWidget {
   const UserRegistrationScreen({Key? key}) : super(key: key);

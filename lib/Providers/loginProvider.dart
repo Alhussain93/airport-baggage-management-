@@ -3,6 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
+import '../AdminView/home_screen.dart';
+import '../constant/my_functions.dart';
+
 
 
 class LoginProvider extends ChangeNotifier {
@@ -17,23 +20,54 @@ class LoginProvider extends ChangeNotifier {
   bool loader=false;
 
   Future<void> userAuthorized(String? phoneNumber, BuildContext context) async {
-    const snackBar = SnackBar(
-        backgroundColor: Colors.white,
-        duration: Duration(milliseconds: 3000),
-        content: Text("Sorry , You don't have any access",
-          textAlign: TextAlign.center,
-          softWrap: true,
-          style: TextStyle(
-              fontSize: 18,
-              color: Colors.black,
-              fontWeight: FontWeight.bold),
-        ));
+
 
     String loginUsername = '';
     String loginUsertype = '';
     String loginUserid = '';
-    String phone = phoneNumber!.substring(3, 13);
+    try {
+      var phone = phoneNumber!;
+      print("ahhhhhhhhhhhhh"+phone);
 
+      // final ref= db.collection('USERS').doc(phone).get();
+      db.collection("USERS").where("PHONE",isEqualTo:phone ).get().then((value) {
+        if(value.docs.isNotEmpty){
+          for(var element in value.docs){
+            Map<dynamic,dynamic> map = element.data();
+            loginUsername=map['NAME'].toString();
+            loginUserid=element.id;
+
+          }
+
+          callNextReplacement( HomeScreen(), context);
+        }
+        else {
+          const snackBar = SnackBar(
+              backgroundColor: Colors.white,
+              duration: Duration(milliseconds: 2000),
+              content: Text("Sorry , You don't have any access",
+                textAlign: TextAlign.center,
+                softWrap: true,
+                style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold),
+              ));
+
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+
+
+      });
+
+
+    } catch (e) {
+      const snackBar = SnackBar(
+        content: Text('Sorry , Some Error Occurred'),
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
 
     Future<void> getPackageName() async {
       // PackageInfo packageInfo = await PackageInfo.fromPlatform();

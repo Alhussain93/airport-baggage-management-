@@ -86,6 +86,23 @@ android {
             signingConfig signingConfigs.release
         }
     }
+
+    flavorDimensions "app"
+    productFlavors {
+        luggageTracking{
+            dimension "app"
+            resValue "string","app_name","Luggage TrackingApp"
+            applicationId "com.spine.luggage_tracking_app"
+        }
+        luggageAdmin{
+            dimension "app"
+            resValue "string","app_name","Luggage TrackingApp Admin"
+            applicationId "com.spine.luggage_tracking_app_admin"
+        }
+
+    }
+
+
 }
 
 flutter {

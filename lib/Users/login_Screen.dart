@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
-import '../Constants/my_colors.dart';
 import '../Providers/loginProvider.dart';
+import '../constant/colors.dart';
 
 enum MobileVarificationState {
   SHOW_MOBILE_FORM_STATE,
@@ -107,62 +107,41 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   Padding(
                     padding: const EdgeInsets.only(left: 20,right: 20,top: 20),
-                    child: Card(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                    child: TextFormField(
 
-                      elevation: 1,
-                      child: TextFormField(
-                        // controller: value.productPointCT,
-                        style: TextStyle(
-                            color: cntinercolr,
-                            fontSize: 18,
-                            fontFamily: "PoppinsMedium"),
-                        autofocus: false,
-                        keyboardType: TextInputType.text,
-                        textAlign: TextAlign.start,
-                        // inputFormatters: [
-                        //   LengthLimitingTextInputFormatter(10)
-                        // ],
-                        decoration: InputDecoration(
-                          counterStyle: const TextStyle(color: Colors.grey),
-                          hintStyle: TextStyle(
+                      controller: phoneController,
+                      onChanged: (value) {
+                        if (value.length == 10) {
+                          showTick = true;
+                          SystemChannels.textInput.invokeMethod('TextInput.hide');
+                        } else {
+                          showTick = false;
+                        }
 
-                              color: Colors.black54,
-                              fontSize: 17,
-                              fontFamily: "PoppinsMedium"),
-                          contentPadding: const EdgeInsets.all(11),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(
-                              color: Colors.grey.shade200,
-                            ),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(
-                              color: Colors.grey.shade300,
-                            ),
-                          ),
-                          hintText: 'Mobile number',
-                          errorBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10)),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: const BorderSide(
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ),
-                        validator: (value) {
-                          if (value!.trim().isEmpty) {
-                            return "Enter Point";
-                          } else if (!RegExp(r'^[0-9.]+$')
-                              .hasMatch(value)) {
-                            return "Enter Correct Data";
-                          } else {
-                            return null;
-                          }
-                        },
+                        setState(() {});
+                      },
+                      style: const TextStyle(color: Colors.grey, fontSize: 20),
+                      autofocus: false,
+                      keyboardType: TextInputType.number,
+                      maxLength: 10,
+
+                      decoration:  InputDecoration(
+
+                        counterStyle: TextStyle(color: Colors.grey),
+                        hintStyle: TextStyle(color: Colors.grey, fontSize: 15),
+                        // labelText: 'MOBILE NUMBER',
+                        hintText: 'MOBILE NUMBER',
+                        // focusedBorder: UnderlineInputBorder(
+                        //   borderSide: BorderSide(color: Colors.grey),
+                        // ),
+                        // enabledBorder:UnderlineInputBorder(
+                        //   borderSide: BorderSide(color: Colors.grey),
+                        // ),
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        filled: true,
+                        fillColor: Colors.white,
+
                       ),
                     ),
                   ),
@@ -170,7 +149,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
               SizedBox(height: height*.1,),
-              Padding(
+             showLoading?
+                Center(
+                  child: CircularProgressIndicator(color: grapeColor,),
+                ): Padding(
                 padding: const EdgeInsets.only(left: 23,right: 23,top: 35),
                 child: SizedBox(
                   height:50,
@@ -185,10 +167,60 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         backgroundColor:
                         MaterialStateProperty.all(Color(0xff432244))),
-                    onPressed: () {
-                      // Navigator.pushNamed(context, newLoginScreen ,arguments: {'type': type});
+                      onPressed: ()async{
+                        setState(() {
+                          if (phoneController.text.length == 10) {
+                            showLoading = true;
+                          }
+                        });
+                        await auth.verifyPhoneNumber(
+                            phoneNumber: "+91${phoneController.text}",
+                            verificationCompleted: (phoneAuthCredential) async {
+                              setState(() {
+                                showLoading = false;
+                              });
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                content: Text("Verification Completed"),
+                                duration: Duration(milliseconds: 3000),
+                              ));
+                              if (kDebugMode) {
+                              }
+                            },
+                            verificationFailed: (verificationFailed) async {
 
-                    },
+                              setState(() {
+                                showLoading = false;
+                              });
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                content: Text("Sorry, Verification Failed"),
+                                duration: Duration(milliseconds: 3000),
+                              ));
+                              if (kDebugMode) {
+                                print(verificationFailed.message.toString());
+                              }
+                            },
+                            codeSent: (verificationId, resendingToken) async {
+                              setState(() {
+                                showLoading = false;
+                                currentSate =
+                                    MobileVarificationState.SHOW_OTP_FORM_STATE;
+                                this.verificationId = verificationId;
+
+                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                  content: Text("OTP sent to phone successfully"),
+                                  duration: Duration(milliseconds: 3000),
+                                ));
+
+                                if (kDebugMode) {
+                                  print("");
+                                }
+                              });
+                            },
+                            codeAutoRetrievalTimeout: (verificationId) async {
+
+                            });
+
+                      },
                     child:  Text(
                       "Log in",
                       style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600),
