@@ -267,7 +267,7 @@ class MisingLaggage extends StatelessWidget {
                                         fontWeight: FontWeight.w400,
                                         color: txtred),
                                   ),
-                                  const Row(
+                                   Row(
                                     mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                     children: [
