@@ -3,6 +3,7 @@ import 'package:luggage_tracking_app/provider/admin_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'AdminView/missing_luggage.dart';
+import 'UserView/pnrsearching_screen.dart';
 import 'UserView/splash_screen.dart';
 import 'UserView/tracking_screen.dart';
 
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'Luggage Handling',
           theme: ThemeData(),
-          home:  SplashScreen(),
+          home:  PnrSearching(),
         ));
   }
 }
