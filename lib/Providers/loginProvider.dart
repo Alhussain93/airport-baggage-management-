@@ -35,11 +35,14 @@ class LoginProvider extends ChangeNotifier {
           for(var element in value.docs){
             Map<dynamic,dynamic> map = element.data();
             loginUsername=map['NAME'].toString();
+            loginUsertype= map['TYPE'].toString();
             loginUserid=element.id;
 
           }
+if(loginUsertype=="USER"){
+  callNextReplacement( HomeScreen(), context);
 
-          callNextReplacement( HomeScreen(), context);
+}
         }
         else {
           const snackBar = SnackBar(
