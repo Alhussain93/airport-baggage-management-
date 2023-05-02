@@ -155,30 +155,35 @@ class AddStaff extends StatelessWidget {
                              border: Border.all(width: 1,color: Colors.grey.shade500),
                               borderRadius: BorderRadius.circular(15.0),
                             ),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownSearch<String>(
-                                popupProps: PopupProps.menu(
-                                  showSelectedItems: true,
-                                  disabledItemFn: (String s) => s.startsWith('I'),
-                                ),
-                                items: [
-                                  "Salalah International Airport",
-                                  "Duqm International Airport",
-                                  "Sohar International Airport",
-                                  'Khasab Airport'
-                                ],
-                                dropdownDecoratorProps: DropDownDecoratorProps(
-                                  dropdownSearchDecoration: InputDecoration(
-                                  enabledBorder: InputBorder.none,
-                                    // labelText: "Select Airpote",
-                                    hintText: "Select Airport",
+                            child: SizedBox(
+                              height: 40,
+                              width: width / 2,
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownSearch<String>(
+                                  popupProps: PopupProps.menu(
+                                    showSelectedItems: true,
+                                    disabledItemFn: (String s) => s.startsWith('I'),
                                   ),
+                                  items: [
+                                    "Salalah International Airport",
+                                    'Muscat International Airport'
+                                    "Duqm International Airport",
+                                    "Sohar International Airport",
+                                    'Khasab Airport'
+                                  ],
+                                  dropdownDecoratorProps: DropDownDecoratorProps(
+                                    dropdownSearchDecoration: InputDecoration(
+                                    enabledBorder: InputBorder.none,
+                                      // labelText: "Select Airpote",
+                                      hintText: "Select Airport",contentPadding: EdgeInsets.only(left: 18)
+                                    ),
+                                  ),
+                                  onChanged: (value){
+                                    value1.airportName=value.toString();
+                                    print("rftgyhjuio"+value.toString());
+                                  },
+                                  // selectedItem: "Brazil",
                                 ),
-                                onChanged: (value){
-                                  value1.airportName=value.toString();
-                                  print("rftgyhjuio"+value.toString());
-                                },
-                                // selectedItem: "Brazil",
                               ),
                             ),
                           );
@@ -207,8 +212,8 @@ class AddStaff extends StatelessWidget {
                             onTap: () {
                               // val.getdataa();
 
-                              value.addData();
-                                 finish(context);
+                              value.addData(context);
+
                             },
                             child: Container(
                               height: 48,

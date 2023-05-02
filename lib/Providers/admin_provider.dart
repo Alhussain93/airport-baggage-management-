@@ -75,7 +75,7 @@ class AdminProvider with ChangeNotifier {
     });
   }
 
-  void addData() {
+  void addData(BuildContext context) {
     String id = DateTime.now()
         .microsecondsSinceEpoch
         .toString(); //this code is genarate auto id;
@@ -87,6 +87,10 @@ class AdminProvider with ChangeNotifier {
 
     db.collection("STAFF").doc(id).set(dataMap);
     notifyListeners();
+    getdataa();
+    finish(context);
+    notifyListeners();
+
   }
 
   void getdataa() {
@@ -120,6 +124,7 @@ class AdminProvider with ChangeNotifier {
   }
   void deleteData(BuildContext context ,String id) {
     db.collection("STAFF").doc(id).delete();
+    getdataa();
     finish(context);
     notifyListeners();
   }
