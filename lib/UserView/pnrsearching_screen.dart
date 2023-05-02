@@ -28,7 +28,7 @@ class PnrSearching extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(top: 40),
-                  child: Container(
+                  child: SizedBox(
                     height: 250,
                     width: 250,
                     child: Image.asset("assets/LOGO.png"),
@@ -37,8 +37,8 @@ class PnrSearching extends StatelessWidget {
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20,top: 80),
+          const Padding(
+            padding: EdgeInsets.only(left: 20,top: 80),
             child: Text("Enter Your PNR",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 22,color: Colors.white),),
           ),
           Padding(
@@ -64,7 +64,7 @@ class PnrSearching extends StatelessWidget {
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
                       hintText: 'Enter PNR',
-                      contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                      contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5.0)),
                     )),
@@ -81,7 +81,7 @@ class PnrSearching extends StatelessWidget {
                   borderRadius: BorderRadius.circular(5),
                   color: Textclr
                 ),
-                child: Center(child: Text("SUBMIT",style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,color: Colors.black),))
+                child: const Center(child: Text("SUBMIT",style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,color: Colors.black),))
                 ),
             ),
             ),

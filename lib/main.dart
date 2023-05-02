@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'Luggage Handling',
           theme: ThemeData(),
-          home:  PnrSearching(),
+          home:  SplashScreen(),
         ));
   }
 }

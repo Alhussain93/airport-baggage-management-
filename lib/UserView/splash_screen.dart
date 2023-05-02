@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:luggage_tracking_app/UserView/pnrsearching_screen.dart';
 import 'package:luggage_tracking_app/UserView/tracking_screen.dart';
 
 import '../constant/colors.dart';
@@ -24,7 +25,7 @@ class Initstate extends State<SplashScreen> {
 
   loginRoute() {
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => TrackingScreen()));
+        context, MaterialPageRoute(builder: (context) => PnrSearching()));
   }
 
   @override
