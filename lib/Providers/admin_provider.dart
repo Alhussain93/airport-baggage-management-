@@ -6,13 +6,16 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:luggage_tracking_app/constant/my_functions.dart';
 import 'package:luggage_tracking_app/model/customer_model.dart';
+import 'package:luggage_tracking_app/constant/my_functions.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
+import '../AdminView/add_staff.dart';
+import '../admin_model/add_staff_model.dart';
 import '../strings.dart';
 import '../update.dart';
 
-class AdminProvider with ChangeNotifier{
+class AdminProvider with ChangeNotifier {
   final DatabaseReference mRootReference = FirebaseDatabase.instance.ref();
   final FirebaseFirestore db = FirebaseFirestore.instance;
 
@@ -104,6 +107,13 @@ class AdminProvider with ChangeNotifier{
 
 
 
+  TextEditingController NameController = TextEditingController();
+  TextEditingController StaffidController = TextEditingController();
+  TextEditingController EmailController = TextEditingController();
+  List modellist = [];
+
+  String airportName ='';
+
   Future<void> lockAdminApp() async {
     mRootReference.child("0").onValue.listen((event) {
       if (event.snapshot.value != null) {
@@ -190,4 +200,57 @@ void fetchCustomersForEdit(String userId){
 }
 
 
+  void addData(BuildContext context) {
+    String id = DateTime.now()
+        .microsecondsSinceEpoch
+        .toString(); //this code is genarate auto id;
+    Map<String, Object> dataMap = HashMap();
+    dataMap["NAME"] = NameController.text;
+    dataMap["STAFF_ID"] = StaffidController.text;
+    dataMap["EMAIL"] = EmailController.text;
+    dataMap["AIRPORT"] = airportName.toString();
+
+    db.collection("STAFF").doc(id).set(dataMap);
+    notifyListeners();
+    getdataa();
+    finish(context);
+    notifyListeners();
+
+  }
+
+  void getdataa() {
+    modellist.clear();
+    db.collection("STAFF").get().then((value) {
+      for (var element in value.docs) {
+        Map<dynamic, dynamic> map = element.data();
+        modellist.add(
+            AddStaffModel(
+              element.id.toString(),
+              map["NAME"].toString(),
+              map["STAFF_ID"].toString(),
+              map["EMAIL"].toString(),
+              // element.id,
+          ),
+        );
+        // searchlist = modellist;
+        notifyListeners();
+
+        // print(modellist.length.toString() + "ASas");
+        //  print(map);
+      }
+      notifyListeners();
+    });
+  }
+  void clearStaff(){
+     NameController.clear();
+     StaffidController.clear();
+     EmailController.clear();
+     notifyListeners();
+  }
+  void deleteData(BuildContext context ,String id) {
+    db.collection("STAFF").doc(id).delete();
+    getdataa();
+    finish(context);
+    notifyListeners();
+  }
 }
