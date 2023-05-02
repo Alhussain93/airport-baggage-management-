@@ -41,6 +41,8 @@ if(packageName=='com.spine.luggage_tracking_app'){
   Navigator.pushReplacement(
       context, MaterialPageRoute(builder: (context) => LoginScreen()));
 }else if(packageName=='com.spine.luggage_tracking_app_admin'){
+  adminProvider.fetchCustomers();
+
   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
 
 }else if(user==null){

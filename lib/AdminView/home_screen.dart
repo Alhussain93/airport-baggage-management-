@@ -4,7 +4,7 @@ import 'package:luggage_tracking_app/AdminView/staff_screen.dart';
 import '../constant/colors.dart';
 import '../constant/my_functions.dart';
 import 'add_staff.dart';
-import 'admin_add_customerScreen.dart';
+import 'customersList_Screen.dart';
 import 'missing_luggage.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -15,7 +15,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
 
     List screens = [
-      const AddCustomerScreen(),
+      const CustomersListScreen(),
       const ScanPage(),
       const StaffScreen(),
       const MisingLaggage(),

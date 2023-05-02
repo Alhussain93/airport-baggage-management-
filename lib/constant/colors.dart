@@ -46,4 +46,5 @@ Color clc076585 =const Color(0xFF076585);
 
 Color clcc10204 =const Color(0xffc10204);
 Color clc00a617 =const Color(0xff00a617);
+Color fontColor =const Color(0xff737373);
 

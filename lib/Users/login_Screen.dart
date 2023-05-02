@@ -1,11 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:luggage_tracking_app/Users/userRegistration_Screen.dart';
+import 'package:provider/provider.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
+import '../Providers/admin_provider.dart';
 import '../Providers/loginProvider.dart';
 import '../constant/colors.dart';
+import '../constant/my_functions.dart';
 
 enum MobileVarificationState {
   SHOW_MOBILE_FORM_STATE,
@@ -33,6 +38,8 @@ class _LoginScreenState extends State<LoginScreen> {
   bool showLoading = false;
   FirebaseAuth auth = FirebaseAuth.instance;
   bool otpPage = false;
+  FirebaseFirestore db = FirebaseFirestore.instance;
+
 
   Future<void> signInWithPhoneAuthCredential(
       BuildContext context, PhoneAuthCredential phoneAuthCredential) async {
@@ -85,6 +92,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final FocusNode _pinPutFocusNode = FocusNode();
 
   Widget getMobileFormWidget(context) {
+    AdminProvider adminProvider = Provider.of<AdminProvider>(context, listen: false);
+
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -107,45 +116,89 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   Padding(
                     padding: const EdgeInsets.only(left: 20,right: 20,top: 20),
-                    child: TextFormField(
+                    child: Container(
+                      height: 70,
+                      child: TextFormField(
 
-                      controller: phoneController,
-                      onChanged: (value) {
-                        if (value.length == 10) {
-                          showTick = true;
-                          SystemChannels.textInput.invokeMethod('TextInput.hide');
-                        } else {
-                          showTick = false;
-                        }
+                        controller: phoneController,
+                        onChanged: (value) {
+                          if (value.length == 10) {
+                            showTick = true;
+                            SystemChannels.textInput.invokeMethod('TextInput.hide');
+                          } else {
+                            showTick = false;
+                          }
 
-                        setState(() {});
-                      },
-                      style: const TextStyle(color: Colors.grey, fontSize: 20),
-                      autofocus: false,
-                      keyboardType: TextInputType.number,
-                      maxLength: 10,
+                          setState(() {});
+                        },
+                        style:  TextStyle(color:fontColor, fontSize: 20),
+                        autofocus: false,
+                        keyboardType: TextInputType.number,
+                        maxLength: 10,
 
-                      decoration:  InputDecoration(
+                        decoration:  InputDecoration(
 
-                        counterStyle: TextStyle(color: Colors.grey),
-                        hintStyle: TextStyle(color: Colors.grey, fontSize: 15),
-                        // labelText: 'MOBILE NUMBER',
-                        hintText: 'MOBILE NUMBER',
-                        // focusedBorder: UnderlineInputBorder(
-                        //   borderSide: BorderSide(color: Colors.grey),
-                        // ),
-                        // enabledBorder:UnderlineInputBorder(
-                        //   borderSide: BorderSide(color: Colors.grey),
-                        // ),
-                        enabledBorder: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        filled: true,
-                        fillColor: Colors.white,
+                          counterStyle: TextStyle(color: Colors.grey),
+                          hintStyle: TextStyle(color: Colors.grey, fontSize: 15),
+                          // labelText: 'MOBILE NUMBER',
+                          hintText: 'MOBILE NUMBER',
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(
+                              color: Colors.grey.shade200,
+                            ),
+                          ),
+                          // enabledBorder: InputBorder.none,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide:  BorderSide(
+                              color: Colors.grey.shade200,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(
+                              color: Colors.grey.shade200,
+                            ),
+                          ),
+                          filled: true,
+                          fillColor: Colors.white,
 
+                        ),
                       ),
                     ),
                   ),
 
+                  SizedBox(height: 10,),
+                  InkWell(
+                    onTap: (){
+                      // OnlineClassProvider onlineClassProvider =
+                      // Provider.of<OnlineClassProvider>(context, listen: false);
+                      // onlineClassProvider.clearOnlineUsers();
+                      adminProvider.clearUserContollers();
+
+                      callNext( UserRegistrationScreen(), context);
+
+                    }, child: Padding(
+                      padding: const EdgeInsets.only(left: 55,right: 55),
+                      child: Container(
+                      height: 43,
+                      width: 260,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+border: Border.all(color:Colors.grey.shade200),
+                          borderRadius: BorderRadius.all(Radius.circular(10))
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("new user? ",style: TextStyle(color: Colors.grey.shade500),),
+                          Text(" REGISTER",style: TextStyle(color: Colors.blue,fontSize: 15),)
+                        ],
+                      ),
+                  ),
+                    ),
+                  ),
                 ],
               ),
               SizedBox(height: height*.1,),
@@ -168,57 +221,76 @@ class _LoginScreenState extends State<LoginScreen> {
                         backgroundColor:
                         MaterialStateProperty.all(Color(0xff432244))),
                       onPressed: ()async{
-                        setState(() {
-                          if (phoneController.text.length == 10) {
-                            showLoading = true;
-                          }
-                        });
-                        await auth.verifyPhoneNumber(
-                            phoneNumber: "+91${phoneController.text}",
-                            verificationCompleted: (phoneAuthCredential) async {
-                              setState(() {
-                                showLoading = false;
-                              });
-                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                content: Text("Verification Completed"),
-                                duration: Duration(milliseconds: 3000),
-                              ));
-                              if (kDebugMode) {
-                              }
-                            },
-                            verificationFailed: (verificationFailed) async {
 
-                              setState(() {
-                                showLoading = false;
-                              });
-                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                content: Text("Sorry, Verification Failed"),
-                                duration: Duration(milliseconds: 3000),
-                              ));
-                              if (kDebugMode) {
-                                print(verificationFailed.message.toString());
-                              }
-                            },
-                            codeSent: (verificationId, resendingToken) async {
-                              setState(() {
-                                showLoading = false;
-                                currentSate =
-                                    MobileVarificationState.SHOW_OTP_FORM_STATE;
-                                this.verificationId = verificationId;
+    db
+        .collection("USERS")
+        .where("PHONE_NUMBER",
+    isEqualTo: "+91${phoneController.text}")
+        .get()
+        .then((userValue) async {
+      if (userValue.docs.isNotEmpty) {
+        setState(() {
+          if (phoneController.text.length == 10) {
+            showLoading = true;
+          }
+        });
+        await auth.verifyPhoneNumber(
+            phoneNumber: "+91${phoneController.text}",
+            verificationCompleted: (phoneAuthCredential) async {
+              setState(() {
+                showLoading = false;
+              });
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text("Verification Completed"),
+                duration: Duration(milliseconds: 3000),
+              ));
+              if (kDebugMode) {
+              }
+            },
+            verificationFailed: (verificationFailed) async {
 
-                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                  content: Text("OTP sent to phone successfully"),
-                                  duration: Duration(milliseconds: 3000),
-                                ));
+              setState(() {
+                showLoading = false;
+              });
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text("Sorry, Verification Failed"),
+                duration: Duration(milliseconds: 3000),
+              ));
+              if (kDebugMode) {
+                print(verificationFailed.message.toString());
+              }
+            },
+            codeSent: (verificationId, resendingToken) async {
+              setState(() {
+                showLoading = false;
+                currentSate =
+                    MobileVarificationState.SHOW_OTP_FORM_STATE;
+                this.verificationId = verificationId;
 
-                                if (kDebugMode) {
-                                  print("");
-                                }
-                              });
-                            },
-                            codeAutoRetrievalTimeout: (verificationId) async {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text("OTP sent to phone successfully"),
+                  duration: Duration(milliseconds: 3000),
+                ));
 
-                            });
+                if (kDebugMode) {
+                  print("");
+                }
+              });
+            },
+            codeAutoRetrievalTimeout: (verificationId) async {
+
+            });
+
+      }else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(
+          content: Text("Sorry, No user found..."),
+          duration: Duration(milliseconds: 3000),
+        ));
+      }
+    });
+
+
 
                       },
                     child:  Text(
