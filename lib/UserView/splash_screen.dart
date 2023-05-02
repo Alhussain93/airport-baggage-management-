@@ -1,32 +1,60 @@
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:luggage_tracking_app/UserView/pnrsearching_screen.dart';
+import 'package:luggage_tracking_app/Providers/admin_provider.dart';
 import 'package:luggage_tracking_app/UserView/tracking_screen.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:provider/provider.dart';
 
+import '../AdminView/home_screen.dart';
+import '../Users/login_Screen.dart';
 import '../constant/colors.dart';
 
 
 class SplashScreen extends StatefulWidget {
+  const SplashScreen({Key? key}) : super(key: key);
   @override
-  State<StatefulWidget> createState() => Initstate();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class Initstate extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen> {
+  String? packageName;
+
   @override
   void initState() {
+    getPackageName();
     super.initState();
-     startTimer();
+    AdminProvider adminProvider = Provider.of<AdminProvider>(context, listen: false);
+
+    Timer(const Duration(seconds: 3), () {
+
+
+
+      if(packageName=='com.spine.luggage_tracking_app_admin'){
+        adminProvider.lockAdminApp();
+      }else {
+        adminProvider.lockApp();
+      }
+      FirebaseAuth auth = FirebaseAuth.instance;
+      var user = auth.currentUser;
+if(packageName=='com.spine.luggage_tracking_app'){
+  Navigator.pushReplacement(
+      context, MaterialPageRoute(builder: (context) => LoginScreen()));
+}else if(packageName=='com.spine.luggage_tracking_app_admin'){
+  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+
+}else if(user==null){
+  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+
+
+}
+
+
+
+    });
   }
 
-  startTimer() async {
-    var duration = const Duration(seconds: 3);
-    return Timer(duration, loginRoute);
-  }
 
-  loginRoute() {
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => PnrSearching()));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,16 +69,18 @@ class Initstate extends State<SplashScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Center(
-            child: Container(
-              height: 150,
-              width: 150,
-              decoration: const BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage('assets/LOGO.png'))),
-            ),
+            child: Text("LOGO",style: TextStyle(color: clc00a618,fontSize: 36,fontWeight: FontWeight.bold),),
           ),
         ],
       ),
     );
+  }
+
+  Future<void> getPackageName() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    setState(() {
+      packageName = packageInfo.packageName;
+
+    });
   }
 }
