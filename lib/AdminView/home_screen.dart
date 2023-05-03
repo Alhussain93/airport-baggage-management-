@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:luggage_tracking_app/AdminView/qr_Scanner_Screen.dart';
 import 'package:luggage_tracking_app/AdminView/scan_page.dart';
 import 'package:luggage_tracking_app/AdminView/staff_screen.dart';
+import 'package:provider/provider.dart';
+import '../Providers/admin_provider.dart';
 import '../constant/colors.dart';
 import '../constant/my_functions.dart';
 import 'add_staff.dart';
-import 'admin_add_customerScreen.dart';
+import 'customersList_Screen.dart';
+import 'generateQr_Screen.dart';
+import 'makeQrcode_Screen.dart';
 import 'missing_luggage.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -14,15 +19,15 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AdminProvider adminProvider = Provider.of<AdminProvider>(context, listen: false);
+
     List screens = [
-      const AddCustomerScreen(),
-      const ScanPage(),
+      const CustomersListScreen(),
+       QrScanner(),
       const StaffScreen(),
       const MisingLaggage(),
-      AddStaff(
-        from: '',
-        userId: '',
-      ),
+      const MakeQrScreen(),
+      AddStaff(from: '',userId: '',),
     ];
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
@@ -35,7 +40,7 @@ class HomeScreen extends StatelessWidget {
                 backgroundColor: themecolor,
                 child: Column(
                   children: [
-                    const SizedBox(
+                    SizedBox(
                       height: 40,
                     ),
                     InkWell(
@@ -47,7 +52,7 @@ class HomeScreen extends StatelessWidget {
                         height: 40,
                         width: width * .77,
                         color: darkThemeColor,
-                        child: const Row(
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             SizedBox(
@@ -80,7 +85,7 @@ class HomeScreen extends StatelessWidget {
                           height: 40,
                           width: width * .77,
                           color: darkThemeColor,
-                          child: const Row(
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               SizedBox(
@@ -115,7 +120,7 @@ class HomeScreen extends StatelessWidget {
                           height: 40,
                           width: width * .77,
                           color: darkThemeColor,
-                          child: const Row(
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               SizedBox(
@@ -149,7 +154,7 @@ class HomeScreen extends StatelessWidget {
                           height: 40,
                           width: width * .77,
                           color: darkThemeColor,
-                          child: const Row(
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               SizedBox(
@@ -164,6 +169,41 @@ class HomeScreen extends StatelessWidget {
                               ),
                               Text(
                                 "Missing Luggage Details ",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 15),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: InkWell(
+                        onTap: () {
+                          isSelected.value = 5;
+                         adminProvider. clearQrControllers();
+                          finish(context);
+                        },
+                        child: Container(
+                          height: 40,
+                          width: width * .77,
+                          color: darkThemeColor,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Icon(
+                                Icons.qr_code_outlined,
+                                color: Colors.white,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                "Generate Qr  ",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 15),
                               )
@@ -212,7 +252,7 @@ class HomeScreen extends StatelessWidget {
                                 keyboardType: TextInputType.text,
                                 decoration: InputDecoration(
                                   hintText: 'Search',
-                                  contentPadding: const EdgeInsets.fromLTRB(
+                                  contentPadding: EdgeInsets.fromLTRB(
                                       20.0, 10.0, 20.0, 10.0),
                                   border: OutlineInputBorder(
                                       borderRadius:
@@ -309,9 +349,10 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              body: SizedBox(
+              body: Container(
                 height: height,
                 width: width,
+                // color: my_white,
                 child: screens[dIsSelected],
               ),
             ),

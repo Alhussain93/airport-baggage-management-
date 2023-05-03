@@ -49,6 +49,9 @@ dependencies:
   firebase_crashlytics: ^3.0.17
   device_info_plus: ^8.1.0
   dropdown_search: ^5.0.6
+  qr_flutter: ^4.0.0
+  encrypt: ^5.0.1
+  qr_code_scanner: ^1.0.0
 
 
 

@@ -2,8 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:luggage_tracking_app/Providers/admin_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../AdminView/home_screen.dart';
+import '../UserView/pnrsearching_screen.dart';
+import '../Users/login_Screen.dart';
 import '../constant/my_functions.dart';
 
 
@@ -21,6 +25,7 @@ class LoginProvider extends ChangeNotifier {
 
   Future<void> userAuthorized(String? phoneNumber, BuildContext context) async {
 
+    AdminProvider adminProvider = Provider.of<AdminProvider>(context, listen: false);
 
     String loginUsername = '';
     String loginUsertype = '';
@@ -30,7 +35,7 @@ class LoginProvider extends ChangeNotifier {
       print("ahhhhhhhhhhhhh"+phone);
 
       // final ref= db.collection('USERS').doc(phone).get();
-      db.collection("USERS").where("PHONE",isEqualTo:phone ).get().then((value) {
+      db.collection("USERS").where("PHONE_NUMBER",isEqualTo:phone ).get().then((value) {
         if(value.docs.isNotEmpty){
           for(var element in value.docs){
             Map<dynamic,dynamic> map = element.data();
@@ -39,8 +44,8 @@ class LoginProvider extends ChangeNotifier {
             loginUserid=element.id;
 
           }
-if(loginUsertype=="USER"){
-  callNextReplacement( HomeScreen(), context);
+if(loginUsertype=="CUSTOMER"){
+  callNextReplacement(PnrSearching(), context);
 
 }
         }
