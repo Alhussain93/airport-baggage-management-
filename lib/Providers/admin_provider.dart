@@ -403,6 +403,13 @@ void fetchCustomersForEdit(String userId){
 }
 
 
+
+  void deleteCustomer(BuildContext context, String id) {
+    db.collection("USERS").doc(id).delete();
+    finish(context);
+    notifyListeners();
+  }
+
   void getdataa() {
     modellist.clear();
     filtersStaffList.clear();

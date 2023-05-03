@@ -205,11 +205,11 @@ class StaffScreen extends StatelessWidget {
     Provider.of<AdminProvider>(context, listen: false);
 
     AlertDialog alert = AlertDialog(
-      backgroundColor: Colors.white,
+      backgroundColor:themecolor,
       scrollable: true,
       title: const Text(
         "Do you want to delete this staff",
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16,color: Colors.white),
       ),
       content: SizedBox(
         height: 50,
@@ -220,18 +220,32 @@ class StaffScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  TextButton(
-                      child: const Text('NO'),
-                      onPressed: () {
-                        finish(context);
-                      }),
+                  Container(
+                    height: 37,width: 100,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white
+                    ),
+                    child: TextButton(
+                        child: const Text('NO',style: TextStyle(color: Colors.black),),
+                        onPressed: () {
+                          finish(context);
+                        }),
+                  ),
                   Consumer<AdminProvider>(
                       builder: (context, value, child) {
-                        return TextButton(
-                            child: const Text('YES'),
-                            onPressed: () {
-                              adminProvider.deleteData(context,id);
-                            });
+                        return Container(
+                          height: 37,width: 100,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color:Textclr
+                          ),
+                          child: TextButton(
+                              child: const Text('YES',style: TextStyle(color: Colors.black)),
+                              onPressed: () {
+                                adminProvider.deleteData(context,id);
+                              }),
+                        );
                       }),
                 ],
               ),
