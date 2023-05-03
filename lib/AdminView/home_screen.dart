@@ -26,9 +26,8 @@ class HomeScreen extends StatelessWidget {
        QrScanner(),
       const StaffScreen(),
       const MisingLaggage(),
-      const AddStaff(),
       const MakeQrScreen(),
-
+      AddStaff(from: '',userId: '',),
     ];
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
