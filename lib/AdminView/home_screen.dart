@@ -26,8 +26,7 @@ class HomeScreen extends StatelessWidget {
        QrScanner(),
       const StaffScreen(),
       const MisingLaggage(),
-      const MakeQrScreen(),
-      AddStaff(from: '',userId: '',),
+       MakeQrScreen(),
     ];
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
@@ -181,7 +180,7 @@ class HomeScreen extends StatelessWidget {
                       padding: const EdgeInsets.only(top: 10),
                       child: InkWell(
                         onTap: () {
-                          isSelected.value = 5;
+                          isSelected.value = 4;
                          adminProvider. clearQrControllers();
                           finish(context);
                         },
@@ -238,7 +237,8 @@ class HomeScreen extends StatelessWidget {
                         const SizedBox(
                           height: 50,
                         ),
-                        Padding(
+                        isSelected.value==1||isSelected.value==4 ?Padding(padding: EdgeInsets.only(top: 50)):SizedBox(),
+                        isSelected.value!=1&&isSelected.value!=4 ?Padding(
                           padding: const EdgeInsets.only(top: 15),
                           child: Container(
                             height: 40,
@@ -257,9 +257,21 @@ class HomeScreen extends StatelessWidget {
                                   border: OutlineInputBorder(
                                       borderRadius:
                                           BorderRadius.circular(32.0)),
-                                )),
+                                ),
+                              onChanged: (text){
+                                  if(isSelected.value==0){
+                                    adminProvider.notifyListeners();
+                                    adminProvider.filterCustomerList(text);
+                                  }else if( isSelected.value ==2){
+                                    adminProvider.notifyListeners();
+                                    adminProvider. filterStaffList(text);
+                                  }
+
+                              },
+
+                            ),
                           ),
-                        ),
+                        ):SizedBox(),
                         Padding(
                           padding: const EdgeInsets.only(top: 19),
                           child: Row(
