@@ -19,7 +19,10 @@ class HomeScreen extends StatelessWidget {
       const ScanPage(),
       const StaffScreen(),
       const MisingLaggage(),
-       AddStaff(from: '',userId: '',),
+      AddStaff(
+        from: '',
+        userId: '',
+      ),
     ];
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
@@ -32,7 +35,7 @@ class HomeScreen extends StatelessWidget {
                 backgroundColor: themecolor,
                 child: Column(
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 40,
                     ),
                     InkWell(
@@ -44,7 +47,7 @@ class HomeScreen extends StatelessWidget {
                         height: 40,
                         width: width * .77,
                         color: darkThemeColor,
-                        child: Row(
+                        child: const Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             SizedBox(
@@ -77,7 +80,7 @@ class HomeScreen extends StatelessWidget {
                           height: 40,
                           width: width * .77,
                           color: darkThemeColor,
-                          child: Row(
+                          child: const Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               SizedBox(
@@ -112,7 +115,7 @@ class HomeScreen extends StatelessWidget {
                           height: 40,
                           width: width * .77,
                           color: darkThemeColor,
-                          child: Row(
+                          child: const Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               SizedBox(
@@ -146,7 +149,7 @@ class HomeScreen extends StatelessWidget {
                           height: 40,
                           width: width * .77,
                           color: darkThemeColor,
-                          child: Row(
+                          child: const Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               SizedBox(
@@ -209,7 +212,7 @@ class HomeScreen extends StatelessWidget {
                                 keyboardType: TextInputType.text,
                                 decoration: InputDecoration(
                                   hintText: 'Search',
-                                  contentPadding: EdgeInsets.fromLTRB(
+                                  contentPadding: const EdgeInsets.fromLTRB(
                                       20.0, 10.0, 20.0, 10.0),
                                   border: OutlineInputBorder(
                                       borderRadius:
@@ -306,10 +309,9 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              body: Container(
+              body: SizedBox(
                 height: height,
                 width: width,
-                // color: my_white,
                 child: screens[dIsSelected],
               ),
             ),
