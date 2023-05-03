@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:luggage_tracking_app/UserView/tracking_screen.dart';
 import 'package:luggage_tracking_app/constant/colors.dart';
+import 'package:luggage_tracking_app/constant/my_functions.dart';
+import 'package:provider/provider.dart';
+
+import '../Providers/pnr_provider.dart';
 
 class PnrSearching extends StatelessWidget {
   const PnrSearching({Key? key}) : super(key: key);
@@ -8,6 +13,9 @@ class PnrSearching extends StatelessWidget {
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
+    PnrProvider pnrProvider =
+    Provider.of<PnrProvider>(context, listen: false);
+
     return Scaffold(
       backgroundColor: themecolor,
       body: Column(
@@ -60,6 +68,7 @@ class PnrSearching extends StatelessWidget {
                 ),
                 child: TextFormField(
                     autofocus: false,
+                    controller:pnrProvider.pnrController,
                     // obscureText: _obscureText,
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
@@ -71,20 +80,31 @@ class PnrSearching extends StatelessWidget {
               ),
             ),
           ),
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 37),
-              child: Container(
-                height: 40,
-                width: width / 1.2,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  color: Textclr
+          Consumer<PnrProvider>(
+            builder: (context,val,child) {
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 37),
+                  child: InkWell(
+                    onTap: (){
+                     pnrProvider.checkingPnr(pnrProvider.pnrController.text,context);
+                   //  if(pnrProvider.pnrController==val.checkList.pnrid)
+
+                    },
+                    child: Container(
+                      height: 40,
+                      width: width / 1.2,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: Textclr
+                      ),
+                      child: Center(child: Text("SUBMIT",style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,color: Colors.black),))
+                      ),
+                  ),
                 ),
-                child: Center(child: Text("SUBMIT",style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,color: Colors.black),))
-                ),
-            ),
-            ),
+                );
+            }
+          ),
            ],
       ),
     );
