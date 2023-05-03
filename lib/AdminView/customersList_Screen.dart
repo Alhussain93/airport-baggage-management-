@@ -42,12 +42,12 @@ class CustomersListScreen extends StatelessWidget {
             Consumer<AdminProvider>(
               builder: (context,value2,child) {
                 return ListView.builder(
-                    itemCount:value2.customersList.length,
+                    itemCount:value2.filterCustomersList.length,
                     shrinkWrap: true,
                     scrollDirection: Axis.vertical,
                     physics: ScrollPhysics(),
                     itemBuilder: (BuildContext context, int index) {
-                      var item=value2.customersList[index];
+                      var item=value2.filterCustomersList[index];
                       return Padding(
                         padding: const EdgeInsets.only(left: 8,right: 8,bottom: 2),
                         child: InkWell(

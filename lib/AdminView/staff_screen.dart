@@ -96,12 +96,12 @@ class StaffScreen extends StatelessWidget {
             ),
             Consumer<AdminProvider>(builder: (context, value, child) {
               return ListView.builder(
-                  itemCount: value.modellist.length,
+                  itemCount: value.filtersStaffList.length,
                   shrinkWrap: true,
                   scrollDirection: Axis.vertical,
                   physics: ScrollPhysics(),
                   itemBuilder: (BuildContext context, int index) {
-                    var item = value.modellist[index];
+                    var item = value.filtersStaffList[index];
                     return InkWell(
                       onTap: (){
                         deleteExam(context,item.id);
