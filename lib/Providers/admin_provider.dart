@@ -16,13 +16,12 @@ class AdminProvider with ChangeNotifier {
   final DatabaseReference mRootReference = FirebaseDatabase.instance.ref();
   final FirebaseFirestore db = FirebaseFirestore.instance;
 
-
   TextEditingController NameController = TextEditingController();
   TextEditingController StaffidController = TextEditingController();
   TextEditingController EmailController = TextEditingController();
   List modellist = [];
 
-  String airportName ='';
+  String staffAirportName = 'Select';
 
   Future<void> lockAdminApp() async {
     mRootReference.child("0").onValue.listen((event) {
@@ -75,7 +74,7 @@ class AdminProvider with ChangeNotifier {
     });
   }
 
-  void addData(BuildContext context) {
+  void addData(BuildContext context, String from, String userId) {
     String id = DateTime.now()
         .microsecondsSinceEpoch
         .toString(); //this code is genarate auto id;
@@ -83,14 +82,16 @@ class AdminProvider with ChangeNotifier {
     dataMap["NAME"] = NameController.text;
     dataMap["STAFF_ID"] = StaffidController.text;
     dataMap["EMAIL"] = EmailController.text;
-    dataMap["AIRPORT"] = airportName.toString();
-
-    db.collection("STAFF").doc(id).set(dataMap);
+    dataMap["AIRPORT"] = staffAirportName.toString();
+    if (from == '') {
+      db.collection("STAFF").doc(id).set(dataMap);
+    } else {
+      db.collection("STAFF").doc(userId).update(dataMap);
+    }
     notifyListeners();
     getdataa();
     finish(context);
     notifyListeners();
-
   }
 
   void getdataa() {
@@ -99,12 +100,12 @@ class AdminProvider with ChangeNotifier {
       for (var element in value.docs) {
         Map<dynamic, dynamic> map = element.data();
         modellist.add(
-            AddStaffModel(
-              element.id.toString(),
-              map["NAME"].toString(),
-              map["STAFF_ID"].toString(),
-              map["EMAIL"].toString(),
-              // element.id,
+          AddStaffModel(
+            element.id.toString(),
+            map["NAME"].toString(),
+            map["STAFF_ID"].toString(),
+            map["EMAIL"].toString(),
+            // element.id,
           ),
         );
         // searchlist = modellist;
@@ -116,16 +117,32 @@ class AdminProvider with ChangeNotifier {
       notifyListeners();
     });
   }
-  void clearStaff(){
-     NameController.clear();
-     StaffidController.clear();
-     EmailController.clear();
-     notifyListeners();
+
+  void clearStaff() {
+    NameController.clear();
+    StaffidController.clear();
+    EmailController.clear();
+    notifyListeners();
   }
-  void deleteData(BuildContext context ,String id) {
+
+  void deleteData(BuildContext context, String id) {
     db.collection("STAFF").doc(id).delete();
     getdataa();
     finish(context);
+    notifyListeners();
+  }
+
+  void editStaff(String id) {
+    db.collection("STAFF").doc(id).get().then((value) {
+      if (value.exists) {
+        Map<dynamic, dynamic> map = value.data() as Map;
+        print(map.toString() + "ijuygtfr");
+        NameController.text = map['NAME'].toString();
+        StaffidController.text = map['STAFF_ID'].toString();
+        staffAirportName = map['AIRPORT'].toString();
+        EmailController.text = map['EMAIL'].toString();
+      }
+    });
     notifyListeners();
   }
 }

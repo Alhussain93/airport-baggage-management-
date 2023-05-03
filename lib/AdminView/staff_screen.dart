@@ -178,7 +178,7 @@ class StaffScreen extends StatelessWidget {
                               return InkWell(
                                 onTap: () {
                                   value.clearStaff();
-                                  callNext(AddStaff(), context);
+                                  callNext(AddStaff(from:'', userId: '',), context);
                                 },
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -280,14 +280,20 @@ class StaffScreen extends StatelessWidget {
                                                   fontWeight: FontWeight.w400),
                                             ),
                                           ],
-                                        )
+                                        ),
                                       ],
                                     ),
                                     IconButton(
                                         onPressed: () {
-
+                                          // value. storing(item.Name,item.StaffId,item.Email);
+                                         value. editStaff(item.id);
+                                         Navigator.push(
+                                             context,
+                                             MaterialPageRoute(
+                                                 builder: (context) =>
+                                                     AddStaff(from:"edit", userId: item.id,)));
                                         },
-                                        icon: Icon(
+                                        icon: const Icon(
                                           Icons.edit_calendar_outlined,
                                           size: 15,
                                         ))

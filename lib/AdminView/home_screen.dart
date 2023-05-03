@@ -19,7 +19,7 @@ class HomeScreen extends StatelessWidget {
       const ScanPage(),
       const StaffScreen(),
       const MisingLaggage(),
-      const AddStaff(),
+       AddStaff(from: '',userId: '',),
     ];
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
