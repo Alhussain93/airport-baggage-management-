@@ -28,6 +28,7 @@ class AdminProvider with ChangeNotifier {
   DateTime birthDate = DateTime.now();
   var outputDayNode = DateFormat('d/MM/yyy');
   List<CustomerModel> customersList = [];
+  List<CustomerModel> filterCustomersList = [];
   String qrData='';
 
   TextEditingController userPhoneCT = TextEditingController();
@@ -185,6 +186,20 @@ db.collection("LUGGAGE").doc(luggageId).get().then((value) {
       },
     );
   }
+
+
+  void filterCustomerList(String item){
+    filterCustomersList = customersList.where((a) =>
+    a.name.toLowerCase().contains(item.toLowerCase()) ||
+        a.phone.toLowerCase().contains(item.toLowerCase())).toList();
+    notifyListeners();
+  }
+  void filterStaffList(String item){
+    filtersStaffList = modellist.where((a) =>
+    a.Name.toLowerCase().contains(item.toLowerCase()) ||
+        a.StaffId.toLowerCase().contains(item.toLowerCase())).toList();
+    notifyListeners();
+  }
   void dateSetting(DateTime birthDate) {
 
     userDobCT.text = outputDayNode.format(birthDate).toString();
@@ -273,7 +288,8 @@ void clearQrControllers(){
   TextEditingController NameController = TextEditingController();
   TextEditingController StaffidController = TextEditingController();
   TextEditingController EmailController = TextEditingController();
-  List modellist = [];
+  List <AddStaffModel>modellist = [];
+  List <AddStaffModel>filtersStaffList = [];
 
   String staffAirportName = 'Select';
 bool qrScreen=false;
@@ -355,11 +371,13 @@ bool qrScreen=false;
     db.collection("USERS").where("TYPE",isEqualTo:"CUSTOMER").get().then((value) {
      if(value.docs.isNotEmpty){
        customersList.clear();
+       filterCustomersList.clear();
        for (var element in value.docs) {
          Map<dynamic, dynamic> map = element.data();
 
          customersList.add(CustomerModel(element.id, map["NAME"].toString(), map["PHONE_NUMBER"].toString(), map["DOB STRING"].toString(),));
        }
+       filterCustomersList=customersList;
        notifyListeners();
 
   }
@@ -385,6 +403,33 @@ void fetchCustomersForEdit(String userId){
 }
 
 
+  void getdataa() {
+    modellist.clear();
+    filtersStaffList.clear();
+
+    db.collection("STAFF").get().then((value) {
+      for (var element in value.docs) {
+        Map<dynamic, dynamic> map = element.data();
+        modellist.add(AddStaffModel(
+            element.id.toString(),
+            map["NAME"].toString(),
+            map["STAFF_ID"].toString(),
+            map["EMAIL"].toString(),
+            // element.id,
+          ),
+        );
+        filtersStaffList=modellist;
+        // searchlist = modellist;
+        notifyListeners();
+
+        // print(modellist.length.toString() + "ASas");
+        //  print(map);
+      }
+      notifyListeners();
+    });
+  }
+
+
 
   void addData(BuildContext context, String from, String userId) {
     String id = DateTime.now()
@@ -406,29 +451,6 @@ void fetchCustomersForEdit(String userId){
     notifyListeners();
   }
 
-  void getdataa() {
-    modellist.clear();
-    db.collection("STAFF").get().then((value) {
-      for (var element in value.docs) {
-        Map<dynamic, dynamic> map = element.data();
-        modellist.add(
-          AddStaffModel(
-            element.id.toString(),
-            map["NAME"].toString(),
-            map["STAFF_ID"].toString(),
-            map["EMAIL"].toString(),
-            // element.id,
-          ),
-        );
-        // searchlist = modellist;
-        notifyListeners();
-
-        // print(modellist.length.toString() + "ASas");
-        //  print(map);
-      }
-      notifyListeners();
-    });
-  }
 
   void clearStaff() {
     NameController.clear();
