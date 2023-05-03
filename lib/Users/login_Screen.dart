@@ -175,7 +175,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       // OnlineClassProvider onlineClassProvider =
                       // Provider.of<OnlineClassProvider>(context, listen: false);
                       // onlineClassProvider.clearOnlineUsers();
-                      adminProvider.clearUserContollers();
+                      adminProvider.clearUserControllers();
 
                       callNext( UserRegistrationScreen(), context);
 

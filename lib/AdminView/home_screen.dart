@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:luggage_tracking_app/AdminView/qr_Scanner_Screen.dart';
 import 'package:luggage_tracking_app/AdminView/scan_page.dart';
 import 'package:luggage_tracking_app/AdminView/staff_screen.dart';
+import 'package:provider/provider.dart';
+import '../Providers/admin_provider.dart';
 import '../constant/colors.dart';
 import '../constant/my_functions.dart';
 import 'add_staff.dart';
 import 'customersList_Screen.dart';
+import 'generateQr_Screen.dart';
+import 'makeQrcode_Screen.dart';
 import 'missing_luggage.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -14,12 +19,16 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AdminProvider adminProvider = Provider.of<AdminProvider>(context, listen: false);
+
     List screens = [
       const CustomersListScreen(),
-      const ScanPage(),
+       QrScanner(),
       const StaffScreen(),
       const MisingLaggage(),
       const AddStaff(),
+      const MakeQrScreen(),
+
     ];
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
@@ -161,6 +170,41 @@ class HomeScreen extends StatelessWidget {
                               ),
                               Text(
                                 "Missing Luggage Details ",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 15),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: InkWell(
+                        onTap: () {
+                          isSelected.value = 5;
+                         adminProvider. clearQrControllers();
+                          finish(context);
+                        },
+                        child: Container(
+                          height: 40,
+                          width: width * .77,
+                          color: darkThemeColor,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Icon(
+                                Icons.qr_code_outlined,
+                                color: Colors.white,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                "Generate Qr  ",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 15),
                               )

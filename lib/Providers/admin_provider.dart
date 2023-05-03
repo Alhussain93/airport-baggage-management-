@@ -1,17 +1,22 @@
 import 'dart:collection';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:luggage_tracking_app/AdminView/home_screen.dart';
 import 'package:luggage_tracking_app/constant/my_functions.dart';
 import 'package:luggage_tracking_app/model/customer_model.dart';
 import 'package:luggage_tracking_app/constant/my_functions.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:encrypt/encrypt.dart' as enc;
 
 import '../AdminView/add_staff.dart';
+import '../AdminView/generateQr_Screen.dart';
 import '../admin_model/add_staff_model.dart';
+import '../constant/colors.dart';
 import '../strings.dart';
 import '../update.dart';
 
@@ -23,14 +28,163 @@ class AdminProvider with ChangeNotifier {
   DateTime birthDate = DateTime.now();
   var outputDayNode = DateFormat('d/MM/yyy');
   List<CustomerModel> customersList = [];
-
+  String qrData='';
 
   TextEditingController userPhoneCT = TextEditingController();
   TextEditingController userNameCT = TextEditingController();
   TextEditingController userEmailCT = TextEditingController();
   TextEditingController userDobCT = TextEditingController();
 
+  String getRandomString(int length) {
+    const _chars =
+        'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+    Random _rnd = Random();
+    return String.fromCharCodes(Iterable.generate(
+        length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
+  }
 
+  String encrypt(String plainText) {
+    final key = enc.Key.fromUtf8('XedfNNHdfgCCCCvsdFRT34567nbhHHHn');
+    final iv = enc.IV.fromLength(16);
+
+    final encrypter = enc.Encrypter(enc.AES(key));
+
+    final encrypted = encrypter.encrypt(plainText, iv: iv);
+
+    final decrypted = encrypter.decrypt(encrypted, iv: iv);
+
+    return (encrypted.base64.toString());
+  }
+
+  String decrypt(String cipher) {
+    final key = enc.Key.fromUtf8('XedfNNHdfgCCCCvsdFRT34567nbhHHHn');
+
+    final iv = enc.IV.fromLength(16);
+
+    final encrypter = enc.Encrypter(enc.AES(key));
+
+    final decrypted2 = encrypter.decrypt64(cipher, iv: iv);
+
+    return decrypted2;
+  }
+
+  enterQrData( String luggageId,BuildContext context) {
+String userName='';
+String pnrId='';
+
+    print('how many times happend 2');
+
+
+    DateTime now = DateTime.now();
+    String milli = now.millisecondsSinceEpoch.toString();
+db.collection("LUGGAGE").doc(luggageId).get().then((value) {
+  if(value.exists){
+    Map<dynamic, dynamic> map = value.data() as Map;
+    userName=map["NAME"].toString();
+    pnrId=map["PNR_ID"].toString();
+
+    db.collection("QR_VALUES").doc(luggageId).get().then((value) {
+      if(value.exists){
+        Map<dynamic, dynamic> qrMap = value.data() as Map;
+
+        if( qrMap["STATUS"].toString()=="SECURITY CHECKING"){
+
+          db.collection("QR_VALUES").doc(luggageId).set({
+            "LUGGAGE_ID": luggageId,
+            "PNR_ID": pnrId,
+            "USER_NAME": userName,
+            "TIME": now,
+            "TIME MILLI": milli,
+            "STATUS": 'SCREENING',
+          });
+          String text='Screening  completed';
+          showAlertDialog(context,text);
+
+
+
+
+
+        }
+
+        else if(qrMap["STATUS"].toString()=="SCREENING"){
+
+          db.collection("QR_VALUES").doc(luggageId).set({
+            "LUGGAGE_ID": luggageId,
+            "PNR_ID": pnrId,
+            "USER_NAME": userName,
+            "TIME": now,
+            "TIME MILLI": milli,
+            "STATUS": 'CHECK OUT',
+          });
+          String text='Check out  completed';
+          showAlertDialog(context,text);
+
+        }
+
+        else if(qrMap["STATUS"].toString()=="CHECK OUT"){
+          String text='Already check out';
+          showAlertDialog(context,text);
+
+        }
+
+      }else{
+        db.collection("QR_VALUES").doc(luggageId).set({
+          "LUGGAGE_ID": luggageId,
+          "PNR_ID": pnrId,
+          "USER_NAME": userName,
+          "TIME": now,
+          "TIME MILLI": milli,
+          "STATUS": 'SECURITY CHECKING',
+        });
+
+        String text='Security checking completed';
+        showAlertDialog(context,text);
+
+      }
+
+    });
+
+
+  }
+
+});
+    
+
+  }
+
+  showAlertDialog(BuildContext context,String text) {
+
+    // set up the button
+    Widget okButton = Container(
+      height: 38,
+      width: 90,
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),
+        color: Textclr,
+
+      ),
+      child: TextButton(
+        child: Text("OK",style: TextStyle(color: Colors.black,fontWeight: FontWeight.w600),),
+        onPressed: () { callNextReplacement(HomeScreen(), context);},
+      ),
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      // title: Text("My title"),
+      content: Text(text,style:TextStyle(color: Colors.black,fontWeight: FontWeight.w500) ,),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
   void dateSetting(DateTime birthDate) {
 
     userDobCT.text = outputDayNode.format(birthDate).toString();
@@ -54,7 +208,7 @@ class AdminProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void clearUserContollers(){
+  void clearUserControllers(){
     userPhoneCT.clear();
     userNameCT.clear();
     userEmailCT.clear();
@@ -105,13 +259,22 @@ class AdminProvider with ChangeNotifier {
     notifyListeners();
   }
 
+/// generate qr controllers
+  TextEditingController qrPnrCT = TextEditingController();
+  TextEditingController qrUserNameCT = TextEditingController();
+
+void clearQrControllers(){
+  qrPnrCT.clear();
+  qrUserNameCT.clear();
+
+}
 
 
   TextEditingController NameController = TextEditingController();
   TextEditingController StaffidController = TextEditingController();
   TextEditingController EmailController = TextEditingController();
   List modellist = [];
-
+bool qrScreen=false;
   String airportName ='';
 
   Future<void> lockAdminApp() async {
@@ -165,6 +328,26 @@ class AdminProvider with ChangeNotifier {
     });
   }
 
+  
+  void generateQrCode(BuildContext context){
+
+    HashMap<String, Object> qrMap = HashMap();
+      qrData = DateTime.now().millisecondsSinceEpoch.toString() + getRandomString(4);
+    String key = DateTime
+        .now()
+        .millisecondsSinceEpoch
+        .toString();
+
+    qrMap['NAME'] = qrUserNameCT.text;
+    qrMap['PNR_ID'] = qrPnrCT.text;
+    qrMap['LUGGAGE_ID'] = qrData;
+    db.collection("LUGGAGE").doc(qrData).set(qrMap);
+    qrScreen=true;
+    notifyListeners();
+
+    callNext( GenerateQrScreen(qrData: qrData,), context);
+
+  }
   void fetchCustomers(){
     print("dshjskmdcfgf");
     db.collection("USERS").where("TYPE",isEqualTo:"CUSTOMER").get().then((value) {

@@ -131,7 +131,7 @@ class CustomersListScreen extends StatelessWidget {
                       tooltip: "df",
                       backgroundColor: themecolor,
                       onPressed: () {
-                        value3.clearUserContollers();
+                        value3.clearUserControllers();
 callNext(AddCustomerScreen(userId: '', from: '',), context);
                       },
                       child: const Icon(Icons.add),
