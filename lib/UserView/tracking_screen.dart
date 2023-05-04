@@ -13,33 +13,13 @@ class TrackingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     PnrProvider pnrProvider = Provider.of<PnrProvider>(context, listen: false);
-    //int current_step = 0;
 
-    // List<Step> steps = [
-    //   Step(
-    //     title: Text('Step 1'),
-    //     content: Text('Hello!'),
-    //     isActive: true,
-    //   ),
-    //   Step(
-    //     title: Text('Step 2'),
-    //     content: Text('World!'),
-    //     isActive: true,
-    //   ),
-    //   Step(
-    //     title: Text('Step 3'),
-    //     content: Text('Hello World!'),
-    //     state: StepState.complete,
-    //     isActive: true,
-    //   ),
-    // ];
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
           child: Consumer<PnrProvider>(builder: (context, value, child) {
             return Column(
               children: [
@@ -59,9 +39,6 @@ class TrackingScreen extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          // const SizedBox(
-                          //   width: 5,
-                          // ),
                           IconButton(
                               onPressed: () {},
                               icon: const Icon(
@@ -78,7 +55,6 @@ class TrackingScreen extends StatelessWidget {
                                 color: Textclr),
                           ),
                           const Spacer(),
-
                           const SizedBox(
                             width: 35,
                           ),
@@ -228,186 +204,238 @@ class TrackingScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                const Text(
-                  "Departure",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-                ),
-                const Text(
-                  "dfdgfwerfdg",
-                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
-                ),
-                Divider(
-                  color: Colors.black,
-                  thickness: 2,
-                  endIndent: width / 2.2,
-                  indent: width / 2.2,
-                ),
-                const SizedBox(
-                  height: 3,
-                ),
-                Row(
-                  children: [
-                    const Spacer(),
-                    Consumer<PnrProvider>(builder: (context, value2, child) {
-                      return CircleAvatar(
-                          radius: 13,
-                          backgroundColor:
-                              value2.luggageList == "Security_customer"
-                                  ? Colors.black
-                                  : cl00962A);
-                    }),
-                    const Expanded(
-                        child: Padding(
-                      padding: EdgeInsets.only(left: 8.0),
-                      child: Text(
-                        "Security Checking",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w600, fontSize: 16),
-                      ),
-                    ))
-                  ],
-                ),
-                const SizedBox(
-                  height: 3,
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Spacer(),
-                    Container(
-                      height: 100,
-                      width: 10,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: cl00962A),
-                    ),
-                    Expanded(
-                        child: Padding(
-                      padding: const EdgeInsets.only(left: 15.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Badhusha",
-                            style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w500,
-                                color: cl252525),
-                          ),
-                          Text("16/08/2023",
-                              style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w400,
-                                  color: cl252525)),
-                          Text("15:45",
-                              style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w400,
-                                  color: cl252525)),
-                        ],
-                      ),
-                    ))
-                  ],
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                Row(
-                  children: [
-                    const Spacer(),
-                    const Padding(
-                      padding: EdgeInsets.only(right: 8.0),
-                      child: Text(
-                        "Screening",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w600, fontSize: 16),
-                      ),
-                    ),
-                    CircleAvatar(radius: 13, backgroundColor: cl00962A),
-                    const SizedBox(
-                      width: 80,
-                    ),
-                    const Spacer()
-                  ],
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Spacer(),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 30.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Najeeb",
-                            style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w500,
-                                color: cl252525),
-                          ),
-                          Text("16/08/2023",
-                              style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w400,
-                                  color: cl252525)),
-                          Text("15:45",
-                              style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w400,
-                                  color: cl252525)),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      height: 100,
-                      width: 10,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: cl00962A),
-                    ),
-                    const SizedBox(
-                      width: 87,
-                    ),
-                    const Spacer()
-                  ],
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                Row(
-                  children: [
-                    const Spacer(),
-                    CircleAvatar(radius: 13, backgroundColor: cl938492),
-                    const Expanded(
-                        child: Padding(
-                      padding: EdgeInsets.only(left: 8.0),
-                      child: Text(
-                        "Loading",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w600, fontSize: 16),
-                      ),
-                    ))
-                  ],
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                Container(
-                  height: 100,
-                  width: 10,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20), color: cl938492),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                CircleAvatar(radius: 13, backgroundColor: cl938492),
+                Consumer<PnrProvider>(builder: (context, value, child) {
+                  return SizedBox(
+                    child: ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: 1,
+                        itemBuilder: (BuildContext context, int index) {
+                          var item = value.luggageList[index];
+                          return Column(
+                            children: [
+                              const Text(
+                                "Departure",
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.w700),
+                              ),
+                              const Text(
+                                "dfdgfwerfdg",
+                                style: TextStyle(
+                                    fontSize: 11, fontWeight: FontWeight.w500),
+                              ),
+                              Divider(
+                                color: Colors.black,
+                                thickness: 2,
+                                endIndent: width / 2.2,
+                                indent: width / 2.2,
+                              ),
+                              const SizedBox(
+                                height: 3,
+                              ),
+                              Row(
+                                children: [
+                                  const Spacer(),
+                                  CircleAvatar(
+                                      radius: 13,
+                                      backgroundColor:
+                                          value.luggageList.contains('Loading')
+                                              ? cl00962A
+                                              : value.luggageList
+                                                      .contains('Screening')
+                                                  ? cl00962A
+                                                  : value.luggageList.contains(
+                                                          'Security_customer')
+                                                      ? cl00962A
+                                                      : cl938492),
+                                  const Expanded(
+                                      child: Padding(
+                                    padding: EdgeInsets.only(left: 8.0),
+                                    child: Text(
+                                      "Security Checking",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 16),
+                                    ),
+                                  ))
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 3,
+                              ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Spacer(),
+                                  Container(
+                                    height: 100,
+                                    width: 10,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        color: value.luggageList
+                                                .contains('Loading')
+                                            ? cl00962A
+                                            : value.luggageList
+                                                    .contains('Screening')
+                                                ? cl00962A
+                                                : cl938492),
+                                  ),
+                                  Expanded(
+                                      child: Padding(
+                                    padding: const EdgeInsets.only(left: 15.0),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Badhusha",
+                                          style: TextStyle(
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.w500,
+                                              color: cl252525),
+                                        ),
+                                        Text("16/08/2023",
+                                            style: TextStyle(
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.w400,
+                                                color: cl252525)),
+                                        Text("15:45",
+                                            style: TextStyle(
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.w400,
+                                                color: cl252525)),
+                                      ],
+                                    ),
+                                  ))
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Row(
+                                children: [
+                                  const Spacer(),
+                                  const Padding(
+                                    padding: EdgeInsets.only(right: 8.0),
+                                    child: Text(
+                                      "Screening",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 16),
+                                    ),
+                                  ),
+                                  CircleAvatar(
+                                      radius: 13,
+                                      backgroundColor:
+                                          value.luggageList.contains('Loading')
+                                              ? cl00962A
+                                              : value.luggageList
+                                                      .contains('Screening')
+                                                  ? cl00962A
+                                                  : cl938492),
+                                  const SizedBox(
+                                    width: 80,
+                                  ),
+                                  const Spacer()
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Spacer(),
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 30.0),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Najeeb",
+                                          style: TextStyle(
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.w500,
+                                              color: cl252525),
+                                        ),
+                                        Text("16/08/2023",
+                                            style: TextStyle(
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.w400,
+                                                color: cl252525)),
+                                        Text("15:45",
+                                            style: TextStyle(
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.w400,
+                                                color: cl252525)),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    height: 100,
+                                    width: 10,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        color: value.luggageList
+                                                .contains('Loading')
+                                            ? cl00962A
+                                            : cl938492),
+                                  ),
+                                  const SizedBox(
+                                    width: 87,
+                                  ),
+                                  const Spacer()
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Row(
+                                children: [
+                                  const Spacer(),
+                                  CircleAvatar(
+                                      radius: 13,
+                                      backgroundColor:
+                                          value.luggageList.contains('Loading')
+                                              ? cl00962A
+                                              : cl938492),
+                                  const Expanded(
+                                      child: Padding(
+                                    padding: EdgeInsets.only(left: 8.0),
+                                    child: Text(
+                                      "Loading",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 16),
+                                    ),
+                                  ))
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Container(
+                                height: 100,
+                                width: 10,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    color: cl938492),
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              CircleAvatar(
+                                  radius: 13, backgroundColor: cl938492),
+                            ],
+                          );
+                        }),
+                  );
+                }),
               ],
             );
           }),

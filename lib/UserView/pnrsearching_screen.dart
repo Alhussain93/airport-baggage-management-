@@ -88,7 +88,7 @@ class PnrSearching extends StatelessWidget {
                   child: InkWell(
                     onTap: (){
                      pnrProvider.checkingPnr(pnrProvider.pnrController.text,context);
-                   //  if(pnrProvider.pnrController==val.checkList.pnrid)
+
 
                     },
                     child: Container(

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:luggage_tracking_app/pnr_model_class.dart';
 
 import '../UserView/tracking_screen.dart';
+import '../constant/colors.dart';
 import '../constant/my_functions.dart';
 
 class PnrProvider extends ChangeNotifier {
@@ -11,7 +12,7 @@ class PnrProvider extends ChangeNotifier {
   TextEditingController pnrController = TextEditingController();
 
   List<PnrModel> checkList = [];
-  List luggageList = [];
+  List<String> luggageList = [];
 
   // db.collection("USERS").where("PHONE",isEqualTo:phoneNumber ).get().
   checkingPnr(String pnrControllerText, BuildContext context) {
@@ -24,38 +25,48 @@ class PnrProvider extends ChangeNotifier {
         for (var element in value.docs) {
           Map<dynamic, dynamic> map = element.data();
           checkList.add(PnrModel(
-            element.id,
-          ));
+              element.id,
+              map["LUGGEGE_NUMBER"].toString(),
+              map["NAME"].toString(),
+              map["PNR_ID"].toString(),
+              map["STATUS"].toString()));
         }
-        callNext(TrackingScreen(pnrid: pnrControllerText), context);
+        checkList.sort(
+          (b, a) => b.lagagenumber.compareTo(a.lagagenumber),
+        );
+        if (checkList.length != 0) {
+          luggageTracking(checkList[0].id);
+          callNext(TrackingScreen(pnrid: pnrControllerText), context);
+        }
+      } else {
+        final snackBar = SnackBar(
+          elevation: 6.0,
+          backgroundColor: cWhite,
+          behavior: SnackBarBehavior.floating,
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20))),
+          content: const Text(
+            "No Luggage !!!",
+            style: TextStyle(color: Colors.red),
+          ),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
     });
   }
 
-
-
-  luggageTracking(String lid,) {
+  luggageTracking(
+    String lid,
+  ) {
     luggageList.clear();
     print(lid.toString() + "gvhb");
     db.collection("PNRTRAIL").doc(lid).get().then((value) {
       Map<dynamic, dynamic> map = value.data() as Map;
-      luggageList.add(map["STATUS"].toString(),);
-      print("fgjgkj"+luggageList.toString());
+      luggageList.add(
+        map["STATUS"].toString(),
+      );
+      print("fgjgkj" + luggageList.toString());
       notifyListeners();
     });
-
   }
 }
-
-// for (var element in value.docs) {
-// Map<dynamic, dynamic> map = element.data();
-// print(checkList.toString()+"JKL");
-// checkList.add(PnrModel(
-// map["LUGGEGE_NUMBER".toString()],
-// map["NAME"],
-// map["PNR_ID"].toString(),
-// map["STATUS".toString()],
-// ));
-// notifyListeners();
-//
-// }
