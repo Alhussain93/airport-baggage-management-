@@ -41,27 +41,27 @@ class MakeQrScreen extends StatelessWidget {
                       decoration:  InputDecoration(
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide(
                               color: Colors.grey
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide(
                             color: Colors.grey,
                           ),
                         ),
                         errorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),borderSide: BorderSide(color: Colors.red)),
+                            borderRadius: BorderRadius.circular(15),borderSide: const BorderSide(color: Colors.red)),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
-                          borderSide:  BorderSide(
+                          borderSide:  const BorderSide(
                             color: Colors.grey,
                           ),
                         ),
                         isCollapsed: true,
                         helperText: '',
-                        contentPadding: EdgeInsets.all(11),
+                        contentPadding: const EdgeInsets.all(11),
                         // filled: true,
                         // fillColor: Colors.white,
                       ),

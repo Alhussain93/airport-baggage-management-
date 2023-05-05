@@ -10,9 +10,9 @@ import '../constant/colors.dart';
 import 'home_screen.dart';
 
 class AddStaff extends StatelessWidget {
-  String from, userId;
+  String from, userId,status;
 
-  AddStaff({Key? key, required this.from, required this.userId})
+  AddStaff({Key? key, required this.from, required this.userId,required this.status})
       : super(key: key);
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -102,13 +102,24 @@ class AddStaff extends StatelessWidget {
                               SizedBox(
                                 width: 5,
                               ),
-                              Container(
-                                height: 30,
-                                width: 80,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    color: cnttColor),
-                                child: Center(child: Text("Block")),
+                              Consumer<AdminProvider>(
+                                builder: (context,value1,child) {
+                                  return InkWell(
+                                    onTap: (){
+
+                                        blockStaff(context, value1.staffEditId,status);
+
+                                    },
+                                    child: Container(
+                                      height: 30,
+                                      width: 80,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(20),
+                                          color: cnttColor),
+                                      child: Center(child:status=='UNBLOCK'? const Text("Block"):const Text("Unblock")),
+                                    ),
+                                  );
+                                }
                               ),
                             ],
                           );
@@ -300,7 +311,7 @@ class AddStaff extends StatelessWidget {
                             // val.getdataa();
                             final FormState? forme = _formKey.currentState;
                             if (forme!.validate()) {
-                              value.addData(context, from, userId);
+                              value.addData(context, from, userId,status);
                             }
                           },
                           child: Container(
@@ -379,6 +390,80 @@ class AddStaff extends StatelessWidget {
                               style: TextStyle(color: Colors.black)),
                           onPressed: () {
                             adminProvider.deleteData(context, id);
+                          }),
+                    );
+                  }),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+  blockStaff(BuildContext context, String id,String userStatus) {
+    AdminProvider adminProvider =
+    Provider.of<AdminProvider>(context, listen: false);
+
+    AlertDialog alert = AlertDialog(
+      backgroundColor: themecolor,
+      scrollable: true,
+      title:  userStatus=='UNBLOCK'? const Text(
+        "Do you want to block this staff",
+        style: TextStyle(
+            fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
+      ):const Text(
+        "Do you want to unblock this staff",
+        style: TextStyle(
+            fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
+      ),
+      content: SizedBox(
+        height: 50,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    height: 37,
+                    width: 100,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white),
+                    child: TextButton(
+                        child: const Text(
+                          'NO',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        onPressed: () {
+                          finish(context);
+                        }),
+                  ),
+                  Consumer<AdminProvider>(builder: (context, value, child) {
+                    return Container(
+                      height: 37,
+                      width: 100,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Textclr),
+                      child: TextButton(
+                          child: const Text('YES',
+                              style: TextStyle(color: Colors.black)),
+                          onPressed: () {
+                            if(userStatus=='UNBLOCK'){
+                              adminProvider.blockStaff(context, id);
+                            }else{
+                              adminProvider.unBlockStaff(context, id);
+                            }
+
                           }),
                     );
                   }),

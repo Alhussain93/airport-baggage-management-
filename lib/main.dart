@@ -1,18 +1,21 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:luggage_tracking_app/UserView/splash_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'AdminView/makeQrcodeScreen.dart';
 import 'Providers/admin_provider.dart';
 import 'Providers/loginProvider.dart';
+import 'Providers/pnr_provider.dart';
 import 'Users/login_Screen.dart';
 import 'Users/userRegistration_Screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(const MyApp());
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((value) => runApp(MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -25,6 +28,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => LoginProvider(),),
         ChangeNotifierProvider(create: (context) => AdminProvider(),),
+        ChangeNotifierProvider(create: (context) => PnrProvider(),),
 
       ],
       child:  const MaterialApp(
