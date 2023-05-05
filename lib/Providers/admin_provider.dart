@@ -40,7 +40,7 @@ class AdminProvider with ChangeNotifier {
   bool imgCheck = false;
   Reference ref = FirebaseStorage.instance.ref("PROFILE_IMAGE");
   String editImage = "";
-  bool waitRegister=true;
+  bool waitRegister = true;
 
   TextEditingController userPhoneCT = TextEditingController();
   TextEditingController userNameCT = TextEditingController();
@@ -167,7 +167,8 @@ class AdminProvider with ChangeNotifier {
       // title: Text("My title"),
       content: Text(
         text,
-        style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
+        style:
+            const TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
       ),
       actions: [
         okButton,
@@ -228,7 +229,7 @@ class AdminProvider with ChangeNotifier {
     userNameCT.clear();
     userEmailCT.clear();
     userDobCT.clear();
-    editImage="";
+    editImage = "";
     notifyListeners();
   }
 
@@ -237,66 +238,75 @@ class AdminProvider with ChangeNotifier {
     showDialog(
         context: context1,
         builder: (context) {
-          return  Center(
+          return Center(
             child: CircularProgressIndicator(color: themecolor),
           );
         });
     print("jjdsmcdckdscdfegrrfe");
     HashMap<String, Object> userMap = HashMap();
+    HashMap<String, Object> passengerMap = HashMap();
+    HashMap<String, Object> passengerEditMap = HashMap();
     HashMap<String, Object> editMap = HashMap();
 
     String key = DateTime.now().millisecondsSinceEpoch.toString();
     userMap['ADDED_BY'] = addedBy;
     userMap['NAME'] = userNameCT.text;
+    passengerMap['NAME'] = userNameCT.text;
     userMap['PHONE_NUMBER'] = "+91${userPhoneCT.text}";
-    userMap['EMAIL'] = userEmailCT.text;
-    userMap['TYPE'] = 'CUSTOMER';
+    passengerMap['PHONE_NUMBER'] = "+91${userPhoneCT.text}";
+    passengerMap['EMAIL'] = userEmailCT.text;
     userMap['USER_ID'] = key;
-    userMap["DOB"] = birthDate;
-    userMap["DOB STRING"] = userDobCT.text;
+    userMap['DESIGNATION'] = "PASSENGER";
+    passengerMap['DESIGNATION'] = "PASSENGER";
+    passengerMap['PASSENGER_ID'] = key;
+    passengerMap["DOB"] = birthDate;
+    passengerMap["DOB STRING"] = userDobCT.text;
+    passengerMap["REGISTRATION_TIME"] = DateTime.now();
     if (fileImage != null) {
       String time = DateTime.now().millisecondsSinceEpoch.toString();
       ref = FirebaseStorage.instance.ref().child(time);
       await ref.putFile(fileImage!).whenComplete(() async {
         await ref.getDownloadURL().then((value) {
-          userMap['USER_IMAGE'] = value;
+          passengerMap['PASSENGER_IMAGE'] = value;
           notifyListeners();
         });
         notifyListeners();
       });
       notifyListeners();
     } else {
-      userMap['USER_IMAGE'] = '';
+      passengerMap['PASSENGER_IMAGE'] = '';
     }
 
-    editMap["DOB STRING"] = userDobCT.text;
-    editMap["DOB"] = birthDate;
-    editMap['EMAIL'] = userEmailCT.text;
+    passengerEditMap["DOB STRING"] = userDobCT.text;
+    passengerEditMap["DOB"] = birthDate;
+    passengerEditMap['EMAIL'] = userEmailCT.text;
     editMap['PHONE_NUMBER'] = "+91${userPhoneCT.text}";
+    passengerEditMap['PHONE_NUMBER'] = "+91${userPhoneCT.text}";
     editMap['NAME'] = userNameCT.text;
+    passengerEditMap['NAME'] = userNameCT.text;
     if (fileImage != null) {
       String time = DateTime.now().millisecondsSinceEpoch.toString();
       ref = FirebaseStorage.instance.ref().child(time);
       await ref.putFile(fileImage!).whenComplete(() async {
         await ref.getDownloadURL().then((value) {
-          editMap['USER_IMAGE'] = value;
+          passengerEditMap['PASSENGER_IMAGE'] = value;
           notifyListeners();
         });
         notifyListeners();
       });
       notifyListeners();
-    } else if(editImage!="") {
-
-      editMap['USER_IMAGE'] = editImage;
-    }else{
-      editMap['USER_IMAGE'] = "";
-
+    } else if (editImage != "") {
+      passengerEditMap['PASSENGER_IMAGE'] = editImage;
+    } else {
+      passengerEditMap['PASSENGER_IMAGE'] = "";
     }
 
     if (from == "EDIT") {
       db.collection('USERS').doc(userId).update(editMap);
+      db.collection('PASSENGERS').doc(userId).update(passengerEditMap);
     } else {
       db.collection('USERS').doc(key).set(userMap);
+      db.collection('PASSENGERS').doc(key).set(passengerMap);
       ScaffoldMessenger.of(context1).showSnackBar(const SnackBar(
         backgroundColor: Colors.green,
         content: Text("Registration successful..."),
@@ -410,8 +420,8 @@ class AdminProvider with ChangeNotifier {
   void fetchCustomers() {
     print("dshjskmdcfgf");
     db
-        .collection("USERS")
-        .where("TYPE", isEqualTo: "CUSTOMER")
+        .collection("PASSENGERS")
+        .where("DESIGNATION", isEqualTo: "PASSENGER")
         .snapshots()
         .listen((value) {
       if (value.docs.isNotEmpty) {
@@ -425,7 +435,7 @@ class AdminProvider with ChangeNotifier {
             map["NAME"].toString(),
             map["PHONE_NUMBER"].toString(),
             map["DOB STRING"].toString(),
-            map["USER_IMAGE"].toString(),
+            map["PASSENGER_IMAGE"].toString(),
           ));
         }
         filterCustomersList = customersList;
@@ -435,10 +445,10 @@ class AdminProvider with ChangeNotifier {
   }
 
   void fetchCustomersForEdit(String userId) {
-    db.collection("USERS").doc(userId).get().then((value) async {
+    db.collection("PASSENGERS").doc(userId).get().then((value) async {
       if (value.exists) {
         Map<dynamic, dynamic> map = value.data() as Map;
-        editImage = map["USER_IMAGE"].toString();
+        editImage = map["PASSENGER_IMAGE"].toString();
         userNameCT.text = map["NAME"].toString();
         userEmailCT.text = map["EMAIL"].toString();
         userDobCT.text = map["DOB STRING"].toString();
@@ -453,7 +463,6 @@ class AdminProvider with ChangeNotifier {
     finish(context);
     notifyListeners();
   }
-
 
   void getdataa() {
     modellist.clear();
@@ -482,8 +491,6 @@ class AdminProvider with ChangeNotifier {
       notifyListeners();
     });
   }
-
-
 
 //String ref='';
 
