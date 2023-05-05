@@ -7,6 +7,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
 import '../AdminView/home_screen.dart';
+import '../Providers/loginProvider.dart';
 import '../Users/login_Screen.dart';
 import '../constant/colors.dart';
 
@@ -28,28 +29,20 @@ class _SplashScreenState extends State<SplashScreen> {
 
     Timer(const Duration(seconds: 3), () {
 
-
-
-      if(packageName=='com.spine.luggage_tracking_app_admin'){
-        adminProvider.lockAdminApp();
-      }else {
         adminProvider.lockApp();
-      }
+        adminProvider.fetchCustomers();
+
       FirebaseAuth auth = FirebaseAuth.instance;
       var user = auth.currentUser;
-if(packageName=='com.spine.luggage_tracking_app'){
-  Navigator.pushReplacement(
-      context, MaterialPageRoute(builder: (context) => LoginScreen()));
-}else if(packageName=='com.spine.luggage_tracking_app_admin'){
-  adminProvider.fetchCustomers();
 
-  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
-
-}else if(user==null){
-  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
-
-
-}
+        if (user == null) {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => const LoginScreen()));
+        } else {
+          print("jrnfjrnfjrnfr"+user.phoneNumber!);
+          LoginProvider loginProvider = LoginProvider();
+          loginProvider.userAuthorized(user.phoneNumber, context);
+        }
 
 
 

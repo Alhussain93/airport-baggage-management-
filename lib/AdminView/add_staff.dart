@@ -102,13 +102,22 @@ class AddStaff extends StatelessWidget {
                               SizedBox(
                                 width: 5,
                               ),
-                              Container(
-                                height: 30,
-                                width: 80,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    color: cnttColor),
-                                child: Center(child: Text("Block")),
+                              Consumer<AdminProvider>(
+                                builder: (context,value1,child) {
+                                  return InkWell(
+                                    onTap: (){
+                                      blockStaff(context,value1.staffEditId);
+                                    },
+                                    child: Container(
+                                      height: 30,
+                                      width: 80,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(20),
+                                          color: cnttColor),
+                                      child: Center(child: Text("Block")),
+                                    ),
+                                  );
+                                }
                               ),
                             ],
                           );
@@ -379,6 +388,71 @@ class AddStaff extends StatelessWidget {
                               style: TextStyle(color: Colors.black)),
                           onPressed: () {
                             adminProvider.deleteData(context, id);
+                          }),
+                    );
+                  }),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+  blockStaff(BuildContext context, String id) {
+    AdminProvider adminProvider =
+    Provider.of<AdminProvider>(context, listen: false);
+
+    AlertDialog alert = AlertDialog(
+      backgroundColor: themecolor,
+      scrollable: true,
+      title: const Text(
+        "Do you want to Block this staff",
+        style: TextStyle(
+            fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
+      ),
+      content: SizedBox(
+        height: 50,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    height: 37,
+                    width: 100,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white),
+                    child: TextButton(
+                        child: const Text(
+                          'NO',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        onPressed: () {
+                          finish(context);
+                        }),
+                  ),
+                  Consumer<AdminProvider>(builder: (context, value, child) {
+                    return Container(
+                      height: 37,
+                      width: 100,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Textclr),
+                      child: TextButton(
+                          child: const Text('YES',
+                              style: TextStyle(color: Colors.black)),
+                          onPressed: () {
+                            adminProvider.blockStaff(context, id);
                           }),
                     );
                   }),
