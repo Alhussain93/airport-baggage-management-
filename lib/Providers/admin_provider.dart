@@ -18,6 +18,7 @@ import 'package:encrypt/encrypt.dart' as enc;
 
 import '../AdminView/add_staff.dart';
 import '../AdminView/generateQr_Screen.dart';
+import '../AdminView/staff_screen.dart';
 import '../admin_model/add_staff_model.dart';
 import '../constant/colors.dart';
 import '../strings.dart';
@@ -36,6 +37,7 @@ class AdminProvider with ChangeNotifier {
 
   final ImagePicker picker = ImagePicker();
   String imageUrl = "";
+  String staffEditId = "";
   File? fileImage;
   bool imgCheck = false;
   Reference ref = FirebaseStorage.instance.ref("PROFILE_IMAGE");
@@ -348,7 +350,7 @@ class AdminProvider with ChangeNotifier {
   List<AddStaffModel> modellist = [];
   List<AddStaffModel> filtersStaffList = [];
 
-  String staffAirportName = 'Select';
+  String staffAirportName = 'Select Airport';
   String flightName = 'Select Flight Name';
   String ticketFlightName = 'Select Flight Name';
   bool qrScreen = false;
@@ -493,8 +495,9 @@ class AdminProvider with ChangeNotifier {
               map["NAME"].toString(),
               map["STAFF_ID"].toString(),
               map["EMAIL"].toString(),
-              map["PROFILE_IMAGE"].toString()
-              // element.id,
+              map["PROFILE_IMAGE"].toString(),
+              map["STATUS"].toString()
+
               ),
         );
         filtersStaffList = modellist;
@@ -519,6 +522,8 @@ class AdminProvider with ChangeNotifier {
     dataMap["STAFF_ID"] = StaffidController.text;
     dataMap["EMAIL"] = EmailController.text;
     dataMap["AIRPORT"] = staffAirportName.toString();
+    dataMap["ID"] = id.toString();
+    dataMap["STATUS"] = 'UNBLOCK';
     if (fileImage != null) {
       String time = DateTime.now().millisecondsSinceEpoch.toString();
       ref = FirebaseStorage.instance.ref().child(time);
@@ -555,7 +560,7 @@ class AdminProvider with ChangeNotifier {
   void deleteData(BuildContext context, String id) {
     db.collection("STAFF").doc(id).delete();
     getdataa();
-    finish(context);
+    callNextReplacement( HomeScreen(), context);
     notifyListeners();
   }
 
@@ -563,7 +568,7 @@ class AdminProvider with ChangeNotifier {
     db.collection("STAFF").doc(id).get().then((value) {
       if (value.exists) {
         Map<dynamic, dynamic> map = value.data() as Map;
-        print(map.toString() + "ijuygtfr");
+        staffEditId=map['ID'].toString();
         NameController.text = map['NAME'].toString();
         StaffidController.text = map['STAFF_ID'].toString();
         staffAirportName = map['AIRPORT'].toString();
@@ -707,4 +712,10 @@ class AdminProvider with ChangeNotifier {
 
   }
 
+  void blockStaff(BuildContext context,String id){
+    db.collection("STAFF").doc(id).update({'STATUS':'BLOCK'});
+    getdataa();
+    callNextReplacement( HomeScreen(), context);
+    notifyListeners();
+  }
 }
