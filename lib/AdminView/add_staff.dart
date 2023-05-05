@@ -17,7 +17,7 @@ class AddStaff extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   List<String> airportNameList = [
-    "Select",
+    'Select Airport',
     "Salalah International Airport",
     "Duqm International Airport",
     "Sohar International Airport",
@@ -28,8 +28,8 @@ class AddStaff extends StatelessWidget {
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-
     return Scaffold(
+      backgroundColor: bgColor,
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -53,34 +53,90 @@ class AddStaff extends StatelessWidget {
               Consumer<AdminProvider>(builder: (context, value, child) {
                 return Column(
                   children: [
-                    const SizedBox(height: 20,),
-                    InkWell(
-                      onTap: (){value.showBottomSheet(context);},
-                      child: Container(
-                        height: 90,
-                        decoration:BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: const DecorationImage(image: AssetImage("assets/add-photo.png",),scale: 10),
-
-                          border: Border.all(
-                            width: 1.5,
-                            color: Colors.grey.shade500,
-                          ),
-                        )
-                      ),
+                    const SizedBox(
+                      height: 20,
                     ),
+                    InkWell(
+                        onTap: () {
+                          value.showBottomSheet(context);
+                        },
+                        child: Container(
+                          height: 80,
+                          width: 80,
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border:
+                                  Border.all(width: 1.5, color: Colors.grey)),
+                          child: Icon(
+                            Icons.add_a_photo_outlined,
+                            size: 30,
+                            color: Colors.grey,
+                          ),
+                        )),
+                    from=='edit'?
                     Padding(
-                      padding: const EdgeInsets.only(top: 30,left: 20,right: 20),
+                      padding: const EdgeInsets.only(right: 30, top: 20),
+                      child: Consumer<AdminProvider>(
+                        builder: (context,value,child) {
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              StreamBuilder<Object>(
+                                stream: null,
+                                builder: (context, snapshot) {
+                                  return InkWell(
+                                    onTap: (){
+                                      deleteStaff(context, value.staffEditId);
+                                    },
+                                    child: Container(
+                                      height: 30,
+                                      width: 80,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(20),
+                                          color: cnttColor),
+                                      child: Center(child: Text("Remove")),
+                                    ),
+                                  );
+                                }
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Consumer<AdminProvider>(
+                                builder: (context,value1,child) {
+                                  return InkWell(
+                                    onTap: (){
+                                      blockStaff(context,value1.staffEditId);
+                                    },
+                                    child: Container(
+                                      height: 30,
+                                      width: 80,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(20),
+                                          color: cnttColor),
+                                      child: Center(child: Text("Block")),
+                                    ),
+                                  );
+                                }
+                              ),
+                            ],
+                          );
+                        }
+                      ),
+                    ):SizedBox(),
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(top: 30, left: 20, right: 20),
                       child: TextFormField(
                         autofocus: false,
                         // obscureText: _obscureText,
                         keyboardType: TextInputType.text,
                         controller: value.NameController,
-                        
-                        decoration: InputDecoration(helperText: '',
+
+                        decoration: InputDecoration(
+                          helperText: '',
                           hintText: 'Name',
-                          contentPadding:
-                              const EdgeInsets.all(11),
+                          contentPadding: const EdgeInsets.all(11),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15.0)),
                         ),
@@ -94,7 +150,7 @@ class AddStaff extends StatelessWidget {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 10,right: 20,left: 20),
+                      padding: const EdgeInsets.only(right: 20, left: 20),
                       child: TextFormField(
                           autofocus: false,
                           // obscureText: _obscureText,
@@ -102,11 +158,9 @@ class AddStaff extends StatelessWidget {
                           controller: value.StaffidController,
                           decoration: InputDecoration(
                             helperText: "",
-
-                            contentPadding:
-                            const EdgeInsets.all(11),
+                            fillColor: Colors.white,
+                            contentPadding: const EdgeInsets.all(11),
                             hintText: 'Staff ID',
-
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(15.0)),
                           ),
@@ -119,39 +173,48 @@ class AddStaff extends StatelessWidget {
                           }),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 10,left: 20,right: 20),
+                      padding: const EdgeInsets.symmetric(horizontal: 17.0),
                       child: TextFormField(
-                          autofocus: false,
-                          // obscureText: _obscureText,
-                          keyboardType: TextInputType.text,
-                          controller: value.EmailController,
-                          decoration: InputDecoration(
-                            helperText: "",
-                            hintText: 'Email',
-                            contentPadding:
-                            const EdgeInsets.all(11),
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15.0)),
-                          ),
-                          validator: (value) {
-                            if (value!.trim().isEmpty) {
-                              return "Enter Email";
-                            } else {
-                              return null;
-                            }
-                          }),
+                        validator: (value) {
+                          if (value!.trim().isEmpty) {
+                            return "Enter Email";
+                          } else {
+                            return null;
+                          }
+                        },
+                        keyboardType: TextInputType.text,
+                        controller: value.EmailController,
+                        decoration: InputDecoration(
+                          helperText: "",
+                          fillColor: Colors.white,
+                          contentPadding: const EdgeInsets.all(11),
+                          hintText: 'Email',
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.0)),
+                        ),
+                      ),
                     ),
-                    SizedBox(
-                      height: height * .02,
+                    const SizedBox(
+                      height: 10,
                     ),
                     Consumer<AdminProvider>(builder: (context, value1, child) {
                       return Container(
-                        height: 40,
+                        height: 45,
                         width: width / 1.1,
                         decoration: BoxDecoration(
-                          color: Colors.white,
-                          border:
-                              Border.all(width: 1, color: Colors.grey.shade500),
+                          color: Colors.transparent,
+                          border: Border.all(width: 1,color: Colors.grey),
+                          // boxShadow: [
+                          //   BoxShadow(
+                          //     color: Colors.grey.shade300,
+                          //     blurRadius: 1, // soften the shadow
+                          //     spreadRadius: 1.5, //extend the shadow
+                          //     offset: Offset(
+                          //       .2, // Move to right 5  horizontally
+                          //       .2, // Move to bottom 5 Vertically
+                          //     ),
+                          //   )
+                          // ],
                           borderRadius: BorderRadius.circular(15.0),
                         ),
                         child: Padding(
@@ -175,7 +238,7 @@ class AddStaff extends StatelessWidget {
                                 ),
                                 isCollapsed: true,
                                 filled: true,
-                                fillColor: Colors.white,
+                                fillColor: Colors.transparent,
                               ),
                               onChanged: (newValue) {
                                 value1.staffAirportName = newValue.toString();
@@ -245,9 +308,8 @@ class AddStaff extends StatelessWidget {
                           onTap: () {
                             // val.getdataa();
                             final FormState? forme = _formKey.currentState;
-                            if (forme!.validate()){
-                            value.addData(context, from, userId);
-
+                            if (forme!.validate()) {
+                              value.addData(context, from, userId);
                             }
                           },
                           child: Container(
@@ -275,6 +337,137 @@ class AddStaff extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  deleteStaff(BuildContext context, String id) {
+    AdminProvider adminProvider =
+    Provider.of<AdminProvider>(context, listen: false);
+
+    AlertDialog alert = AlertDialog(
+      backgroundColor: themecolor,
+      scrollable: true,
+      title: const Text(
+        "Do you want to delete this staff",
+        style: TextStyle(
+            fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
+      ),
+      content: SizedBox(
+        height: 50,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    height: 37,
+                    width: 100,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white),
+                    child: TextButton(
+                        child: const Text(
+                          'NO',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        onPressed: () {
+                          finish(context);
+                        }),
+                  ),
+                  Consumer<AdminProvider>(builder: (context, value, child) {
+                    return Container(
+                      height: 37,
+                      width: 100,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Textclr),
+                      child: TextButton(
+                          child: const Text('YES',
+                              style: TextStyle(color: Colors.black)),
+                          onPressed: () {
+                            adminProvider.deleteData(context, id);
+                          }),
+                    );
+                  }),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+  blockStaff(BuildContext context, String id) {
+    AdminProvider adminProvider =
+    Provider.of<AdminProvider>(context, listen: false);
+
+    AlertDialog alert = AlertDialog(
+      backgroundColor: themecolor,
+      scrollable: true,
+      title: const Text(
+        "Do you want to Block this staff",
+        style: TextStyle(
+            fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
+      ),
+      content: SizedBox(
+        height: 50,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    height: 37,
+                    width: 100,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white),
+                    child: TextButton(
+                        child: const Text(
+                          'NO',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        onPressed: () {
+                          finish(context);
+                        }),
+                  ),
+                  Consumer<AdminProvider>(builder: (context, value, child) {
+                    return Container(
+                      height: 37,
+                      width: 100,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Textclr),
+                      child: TextButton(
+                          child: const Text('YES',
+                              style: TextStyle(color: Colors.black)),
+                          onPressed: () {
+                            adminProvider.blockStaff(context, id);
+                          }),
+                    );
+                  }),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 }

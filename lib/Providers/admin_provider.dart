@@ -20,6 +20,7 @@ import 'package:encrypt/encrypt.dart' as enc;
 import '../AdminView/add_staff.dart';
 import '../AdminView/generateQr_Screen.dart';
 import '../UserView/splash_screen.dart';
+import '../AdminView/staff_screen.dart';
 import '../admin_model/add_staff_model.dart';
 import '../constant/colors.dart';
 import '../strings.dart';
@@ -38,6 +39,7 @@ class AdminProvider with ChangeNotifier {
 
   final ImagePicker picker = ImagePicker();
   String imageUrl = "";
+  String staffEditId = "";
   File? fileImage;
   bool imgCheck = false;
   Reference ref = FirebaseStorage.instance.ref("PROFILE_IMAGE");
@@ -334,12 +336,14 @@ class AdminProvider with ChangeNotifier {
   void clearQrControllers() {
     qrPnrCT.clear();
     qrUserNameCT.clear();
+     flightName = 'Select Flight Name';
   }
   void clearTicketControllers() {
     ticketFromController.clear();
     ticketToController.clear();
     passengerCountController.clear();
     ticketPnrController.clear();
+    ticketFlightName = 'Select Flight Name';
   }
 
   TextEditingController NameController = TextEditingController();
@@ -348,7 +352,7 @@ class AdminProvider with ChangeNotifier {
   List<AddStaffModel> modellist = [];
   List<AddStaffModel> filtersStaffList = [];
 
-  String staffAirportName = 'Select';
+  String staffAirportName = 'Select Airport';
   String flightName = 'Select Flight Name';
   String ticketFlightName = 'Select Flight Name';
   bool qrScreen = false;
@@ -493,8 +497,9 @@ class AdminProvider with ChangeNotifier {
               map["NAME"].toString(),
               map["STAFF_ID"].toString(),
               map["EMAIL"].toString(),
-              map["PROFILE_IMAGE"].toString()
-              // element.id,
+              map["PROFILE_IMAGE"].toString(),
+              map["STATUS"].toString()
+
               ),
         );
         filtersStaffList = modellist;
@@ -519,6 +524,8 @@ class AdminProvider with ChangeNotifier {
     dataMap["STAFF_ID"] = StaffidController.text;
     dataMap["EMAIL"] = EmailController.text;
     dataMap["AIRPORT"] = staffAirportName.toString();
+    dataMap["ID"] = id.toString();
+    dataMap["STATUS"] = 'UNBLOCK';
     if (fileImage != null) {
       String time = DateTime.now().millisecondsSinceEpoch.toString();
       ref = FirebaseStorage.instance.ref().child(time);
@@ -555,7 +562,7 @@ class AdminProvider with ChangeNotifier {
   void deleteData(BuildContext context, String id) {
     db.collection("STAFF").doc(id).delete();
     getdataa();
-    finish(context);
+    callNextReplacement( HomeScreen(), context);
     notifyListeners();
   }
 
@@ -563,7 +570,7 @@ class AdminProvider with ChangeNotifier {
     db.collection("STAFF").doc(id).get().then((value) {
       if (value.exists) {
         Map<dynamic, dynamic> map = value.data() as Map;
-        print(map.toString() + "ijuygtfr");
+        staffEditId=map['ID'].toString();
         NameController.text = map['NAME'].toString();
         StaffidController.text = map['STAFF_ID'].toString();
         staffAirportName = map['AIRPORT'].toString();
@@ -685,92 +692,32 @@ class AdminProvider with ChangeNotifier {
     }
     print("gggggggggggg666" + fileImage.toString());
   }
-  logOutAlert(BuildContext context) {
-    AlertDialog alert = AlertDialog(
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(32.0))),
-      backgroundColor: cWhite,
-      contentPadding: EdgeInsets.only(bottom:8),
-      scrollable: true,
-      title: Center(
-          child: Column(children: [
-            Icon(
-              Icons.logout,
-              size: 30,
-              color: themecolor,
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            const Text(
-              "LogOut",
-              style: TextStyle(
-                  fontFamily: 'PoppinsMedium',
-                  fontWeight: FontWeight.w500,
-                  fontSize: 14),
-            ),
 
-            SizedBox(height: 15,),
-          ])),
-      content: SizedBox(
-        height: 50,
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  InkWell(
-                    onTap: () {
-                      finish(context);
-                    },
-                    child: Container(
-                      alignment: Alignment.center,
-                      width: 100,
-                      height: 30,
-                      decoration: BoxDecoration(
-                          color: themecolor,
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Text('NOT NOW',
-                          style: TextStyle(color: cWhite, fontSize: 13)),
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () async {
-                      FirebaseAuth auth = FirebaseAuth.instance;
-                      auth.signOut();
-                      finish(context);
-                      callNextReplacement(const SplashScreen(), context);
-                    },
-                    child: Container(
-                      alignment: Alignment.center,
-                      width: 100,
-                      height: 30,
-                      decoration: BoxDecoration(
-                          border: Border.all(color: themecolor),
-                          color: cWhite,
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Text('LOGOUT',
-                          style: TextStyle(
-                              fontSize: 13,
-                              color: themecolor,
-                              fontFamily: "PoppinsMedium")),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
+  void addTickets(String addedBy,String addedName){
+
+    HashMap<String, Object> ticketMap = HashMap();
+    String ticketId = DateTime.now().millisecondsSinceEpoch.toString();
+
+    ticketMap["PNR_ID"] = ticketPnrController.text;
+    ticketMap["FLIGHT_NAME"] = ticketFlightName;
+    ticketMap["FROM"] = ticketFromController.text;
+    ticketMap["TO"] = ticketToController.text;
+    ticketMap["PASSENGERS_NUM"] = int.parse(passengerCountController.text);
+    ticketMap["ID"] = ticketId;
+    ticketMap["ADDED_BY"] = addedBy;
+    ticketMap["ADDED_BY_NAME"] = addedName;
+    ticketMap["ADDED_TIME"] = DateTime.now();
+
+    db.collection("TICKETS").doc(ticketId).set(ticketMap);
+
+
+
   }
 
+  void blockStaff(BuildContext context,String id){
+    db.collection("STAFF").doc(id).update({'STATUS':'BLOCK'});
+    getdataa();
+    callNextReplacement( HomeScreen(), context);
+    notifyListeners();
+  }
 }
