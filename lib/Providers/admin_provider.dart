@@ -303,11 +303,11 @@ void clearQrControllers(){
   List <AddStaffModel>filtersStaffList = [];
 
   String staffAirportName = 'Select';
-  String flightName = 'Select';
+  String flightName = 'Select Flight Name';
 bool qrScreen=false;
   String airportName ='';
   List<String> flightNameList = [
-    "Select",
+    "Select Flight Name",
     "Air Arabia Abu dhabi",
     "Vistara",
     "Air india Express",

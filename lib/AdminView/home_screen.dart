@@ -277,7 +277,7 @@ class HomeScreen extends StatelessWidget {
                                   height: 32,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(20),
-                                    color: dIsSelected == 1
+                                    color: dIsSelected == 3
                                         ? Colors.white.withOpacity(0.2)
                                         : Textclr,
                                   ),
@@ -287,7 +287,7 @@ class HomeScreen extends StatelessWidget {
                                     style: TextStyle(
                                         fontSize: 11,
                                         fontWeight: FontWeight.w600,
-                                        color: dIsSelected == 1
+                                        color: dIsSelected == 3
                                             ? Colors.white
                                             : Colors.black),
                                   )),
