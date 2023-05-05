@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,7 @@ import 'package:encrypt/encrypt.dart' as enc;
 
 import '../AdminView/add_staff.dart';
 import '../AdminView/generateQr_Screen.dart';
+import '../UserView/splash_screen.dart';
 import '../AdminView/staff_screen.dart';
 import '../admin_model/add_staff_model.dart';
 import '../constant/colors.dart';
@@ -347,10 +349,12 @@ class AdminProvider with ChangeNotifier {
   TextEditingController NameController = TextEditingController();
   TextEditingController StaffidController = TextEditingController();
   TextEditingController EmailController = TextEditingController();
+  TextEditingController PhoneNumberController = TextEditingController();
   List<AddStaffModel> modellist = [];
   List<AddStaffModel> filtersStaffList = [];
 
   String staffAirportName = 'Select Airport';
+  String designation = 'Select Designation';
   String flightName = 'Select Flight Name';
   String ticketFlightName = 'Select Flight Name';
   bool qrScreen = false;
@@ -494,7 +498,8 @@ class AdminProvider with ChangeNotifier {
               element.id.toString(),
               map["NAME"].toString(),
               map["STAFF_ID"].toString(),
-              map["EMAIL"].toString(),
+              // map["EMAIL"].toString(),
+              map["PHONE_NUMBER"].toString(),
               map["PROFILE_IMAGE"].toString(),
               map["STATUS"].toString()
 
@@ -516,13 +521,22 @@ class AdminProvider with ChangeNotifier {
   Future<void> addData(BuildContext context, String from, String userId,String status) async {
     String id = DateTime.now()
         .microsecondsSinceEpoch
-        .toString(); //this code is genarate auto id;
+        .toString();
+    //this code is genarate auto id;
     Map<String, Object> dataMap = HashMap();
+    Map<String, Object> userMap = HashMap();
     dataMap["NAME"] = NameController.text;
+    userMap["NAME"] = NameController.text;
     dataMap["STAFF_ID"] = StaffidController.text;
-    dataMap["EMAIL"] = EmailController.text;
+    userMap["STAFF_ID"] = StaffidController.text;
+    // dataMap["EMAIL"] = EmailController.text;
+    dataMap["MOBILE_NUMBER"] = PhoneNumberController.text;
+    userMap["MOBILE_NUMBER"] = PhoneNumberController.text;
     dataMap["AIRPORT"] = staffAirportName.toString();
+    dataMap["DESIGNATION"]=designation.toString();
+    userMap["DESIGNATION"]=designation.toString();
     dataMap["ID"] = id.toString();
+    userMap["ID"] = id.toString();
     dataMap["STATUS"] = status;
     if (fileImage != null) {
       String time = DateTime.now().millisecondsSinceEpoch.toString();
@@ -541,8 +555,10 @@ class AdminProvider with ChangeNotifier {
     //  dataMap["PROFILE_IMAGE"]=fileImage.toString();
     if (from == '') {
       db.collection("STAFF").doc(id).set(dataMap);
+      db.collection("USERS").doc(id).set(userMap);
     } else {
       db.collection("STAFF").doc(userId).update(dataMap);
+      db.collection("USERS").doc(userId).update(userMap);
     }
     notifyListeners();
     getdataa();
@@ -553,7 +569,9 @@ class AdminProvider with ChangeNotifier {
   void clearStaff() {
     NameController.clear();
     StaffidController.clear();
-    EmailController.clear();
+    PhoneNumberController.clear();
+    designation = 'Select Designation';
+    staffAirportName = 'Select Airport';
     notifyListeners();
   }
 
@@ -573,7 +591,9 @@ class AdminProvider with ChangeNotifier {
         NameController.text = map['NAME'].toString();
         StaffidController.text = map['STAFF_ID'].toString();
         staffAirportName = map['AIRPORT'].toString();
-        EmailController.text = map['EMAIL'].toString();
+        designation = map['DESIGNATION'].toString();
+        // EmailController.text = map['EMAIL'].toString();
+        PhoneNumberController.text = map['MOBILE_NUMBER'].toString();
         status = map['STATUS'].toString();
       }
       print("chucifhf"+status.toString());
@@ -704,7 +724,22 @@ class AdminProvider with ChangeNotifier {
     print("gggggggggggg666" + fileImage.toString());
   }
 
-  void addTickets(){
+  void addTickets(String addedBy,String addedName){
+
+    HashMap<String, Object> ticketMap = HashMap();
+    String ticketId = DateTime.now().millisecondsSinceEpoch.toString();
+
+    ticketMap["PNR_ID"] = ticketPnrController.text;
+    ticketMap["FLIGHT_NAME"] = ticketFlightName;
+    ticketMap["FROM"] = ticketFromController.text;
+    ticketMap["TO"] = ticketToController.text;
+    ticketMap["PASSENGERS_NUM"] = int.parse(passengerCountController.text);
+    ticketMap["ID"] = ticketId;
+    ticketMap["ADDED_BY"] = addedBy;
+    ticketMap["ADDED_BY_NAME"] = addedName;
+    ticketMap["ADDED_TIME"] = DateTime.now();
+
+    db.collection("TICKETS").doc(ticketId).set(ticketMap);
 
   }
 
@@ -715,9 +750,97 @@ class AdminProvider with ChangeNotifier {
     notifyListeners();
   }
   void unBlockStaff(BuildContext context,String id){
-    db.collection("STAFF").doc(id).update({'STATUS':'UNBLOCK'});
+    db.collection("STAFF").doc(id).update({'STATUS':'ACTIVE'});
     getdataa();
     callNextReplacement( HomeScreen(), context);
     notifyListeners();
   }
+  logOutAlert(BuildContext context) {
+    AlertDialog alert = AlertDialog(
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(32.0))),
+      backgroundColor: cWhite,
+      contentPadding: EdgeInsets.only(bottom:8),
+      scrollable: true,
+      title: Center(
+          child: Column(children: [
+            Icon(
+              Icons.logout,
+              size: 30,
+              color: themecolor,
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            const Text(
+              "LogOut",
+              style: TextStyle(
+                  fontFamily: 'PoppinsMedium',
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14),
+            ),
+
+            SizedBox(height: 15,),
+          ])),
+      content: SizedBox(
+        height: 50,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      finish(context);
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      width: 100,
+                      height: 30,
+                      decoration: BoxDecoration(
+                          color: themecolor,
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Text('NOT NOW',
+                          style: TextStyle(color: cWhite, fontSize: 13)),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () async {
+                      FirebaseAuth auth = FirebaseAuth.instance;
+                      auth.signOut();
+                      finish(context);
+                      callNextReplacement(const SplashScreen(), context);
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      width: 100,
+                      height: 30,
+                      decoration: BoxDecoration(
+                          border: Border.all(color: themecolor),
+                          color: cWhite,
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Text('LOGOUT',
+                          style: TextStyle(
+                              fontSize: 13,
+                              color: themecolor,
+                              fontFamily: "PoppinsMedium")),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
 }

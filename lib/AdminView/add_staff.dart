@@ -23,6 +23,13 @@ class AddStaff extends StatelessWidget {
     "Sohar International Airport",
     'Khasab Airport'
   ];
+  List<String> Designation = [
+    'Select Designation',
+    "Check_In",
+    "Loading",
+    "UnLoading",
+    'Check_Out'
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -41,12 +48,12 @@ class AddStaff extends StatelessWidget {
                 height: height * .1,
               ),
               const Padding(
-                padding: EdgeInsets.only(left: 20, top: 15),
+                padding: EdgeInsets.only(left: 20),
                 child: Text(
                   "Add New Staff",
                   style: TextStyle(
                       fontWeight: FontWeight.w600,
-                      fontSize: 18,
+                      fontSize: 20,
                       fontFamily: "Poppins-SemiBold"),
                 ),
               ),
@@ -116,7 +123,7 @@ class AddStaff extends StatelessWidget {
                                       decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(20),
                                           color: cnttColor),
-                                      child: Center(child:status=='UNBLOCK'? const Text("Block"):const Text("Unblock")),
+                                      child: Center(child:status=='ACTIVE'? const Text("Block"):const Text("Unblock")),
                                     ),
                                   );
                                 }
@@ -174,30 +181,50 @@ class AddStaff extends StatelessWidget {
                             }
                           }),
                     ),
-                    Padding(
+                    // Padding(
+                    //   padding: const EdgeInsets.symmetric(horizontal: 17.0),
+                    //   child: TextFormField(
+                    //     validator: (value) {
+                    //       if (value!.trim().isEmpty) {
+                    //         return "Enter Email";
+                    //       } else {
+                    //         return null;
+                    //       }
+                    //     },
+                    //     keyboardType: TextInputType.text,
+                    //     controller: value.EmailController,
+                    //     decoration: InputDecoration(
+                    //       helperText: "",
+                    //       fillColor: Colors.white,
+                    //       contentPadding: const EdgeInsets.all(11),
+                    //       hintText: 'Email',
+                    //       border: OutlineInputBorder(
+                    //           borderRadius: BorderRadius.circular(15.0)),
+                    //     ),
+                    //   ),
+                    // ),
+                   Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 17.0),
                       child: TextFormField(
                         validator: (value) {
                           if (value!.trim().isEmpty) {
-                            return "Enter Email";
+                            return "Enter Number";
                           } else {
                             return null;
                           }
                         },
-                        keyboardType: TextInputType.text,
-                        controller: value.EmailController,
+                        keyboardType: TextInputType.phone,
+                        maxLength: 10,
+                         controller: value.PhoneNumberController,
                         decoration: InputDecoration(
                           helperText: "",
                           fillColor: Colors.white,
                           contentPadding: const EdgeInsets.all(11),
-                          hintText: 'Email',
+                          hintText: 'Phone Number',
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15.0)),
                         ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 10,
                     ),
                     Consumer<AdminProvider>(builder: (context, value1, child) {
                       return Container(
@@ -284,6 +311,92 @@ class AddStaff extends StatelessWidget {
                           ),
                         ),
                       );
+                    }),SizedBox(height: 10,),
+                    Consumer<AdminProvider>(builder: (context, value1, child) {
+                      return Container(
+                        height: 45,
+                        width: width / 1.1,
+                        decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          border: Border.all(width: 1,color: Colors.grey),
+                          // boxShadow: [
+                          //   BoxShadow(
+                          //     color: Colors.grey.shade300,
+                          //     blurRadius: 1, // soften the shadow
+                          //     spreadRadius: 1.5, //extend the shadow
+                          //     offset: Offset(
+                          //       .2, // Move to right 5  horizontally
+                          //       .2, // Move to bottom 5 Vertically
+                          //     ),
+                          //   )
+                          // ],
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SizedBox(
+                            height: 40,
+                            width: width / 2,
+                            child: DropdownButtonFormField(
+                              hint: const Text(
+                                "",
+                                style: TextStyle(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              value: value.designation,
+                              iconSize: 30,
+                              isExpanded: true,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                ),
+                                isCollapsed: true,
+                                filled: true,
+                                fillColor: Colors.transparent,
+                              ),
+                              onChanged: (newValue) {
+                                value1.designation = newValue.toString();
+                              },
+                              items: Designation.map((item1) {
+                                return DropdownMenuItem(
+                                    value: item1,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 10),
+                                      child: Text(item1),
+                                    ));
+                              }).toList(),
+                            ),
+                            // DropdownButtonHideUnderline(
+                            //   child: DropdownSearch<String>(
+                            //     popupProps: PopupProps.menu(
+                            //       showSelectedItems: true,
+                            //       disabledItemFn: (String s) => s.startsWith('I'),
+                            //     ),
+                            //     items: const [
+                            //       "Salalah International Airport",
+                            //       'Muscat International Airport'
+                            //       "Duqm International Airport",
+                            //       "Sohar International Airport",
+                            //       'Khasab Airport'
+                            //     ],
+                            //     dropdownDecoratorProps: const DropDownDecoratorProps(
+                            //       dropdownSearchDecoration: InputDecoration(
+                            //       enabledBorder: InputBorder.none,
+                            //         // labelText: "Select Airpote",
+                            //         hintText: "Select Airport",contentPadding: EdgeInsets.only(left: 18)
+                            //       ),
+                            //     ),
+                            //     onChanged: (value){
+                            //       value1.airportName=value.toString();
+                            //       print("rftgyhjuio"+value.toString());
+                            //     },
+                            //     // selectedItem: "Brazil",
+                            //   ),
+                            // ),
+                          ),
+                        ),
+                      );
                     }),
 
                     // DropdownSearch<String>.multiSelection(
@@ -301,7 +414,7 @@ class AddStaff extends StatelessWidget {
                     //   // selectedItems: ["Brazil"],
                     // ),
                     SizedBox(
-                      height: height * .1,
+                      height: 20,
                     ),
                     Center(
                       child: Padding(
@@ -414,7 +527,7 @@ class AddStaff extends StatelessWidget {
     AlertDialog alert = AlertDialog(
       backgroundColor: themecolor,
       scrollable: true,
-      title:  userStatus=='UNBLOCK'? const Text(
+      title:  userStatus=='ACTIVE'? const Text(
         "Do you want to block this staff",
         style: TextStyle(
             fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
@@ -458,7 +571,7 @@ class AddStaff extends StatelessWidget {
                           child: const Text('YES',
                               style: TextStyle(color: Colors.black)),
                           onPressed: () {
-                            if(userStatus=='UNBLOCK'){
+                            if(userStatus=='ACTIVE'){
                               adminProvider.blockStaff(context, id);
                             }else{
                               adminProvider.unBlockStaff(context, id);

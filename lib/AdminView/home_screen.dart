@@ -20,13 +20,14 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AdminProvider adminProvider = Provider.of<AdminProvider>(context, listen: false);
+    AdminProvider adminProvider =
+        Provider.of<AdminProvider>(context, listen: false);
 
     List screens = [
       const CustomersListScreen(),
-       QrScanner(),
+      QrScanner(),
       const StaffScreen(),
-       MisingLaggage(),
+      MisingLaggage(),
       MakeQrScreen(),
       AddTickets(),
     ];
@@ -53,9 +54,9 @@ class HomeScreen extends StatelessWidget {
                         height: 40,
                         width: width * .77,
                         color: darkThemeColor,
-                        child: Row(
+                        child: const Row(
                           mainAxisAlignment: MainAxisAlignment.start,
-                          children: const [
+                          children: [
                             SizedBox(
                               width: 10,
                             ),
@@ -86,9 +87,9 @@ class HomeScreen extends StatelessWidget {
                           height: 40,
                           width: width * .77,
                           color: darkThemeColor,
-                          child: Row(
+                          child: const Row(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            children: const [
+                            children: [
                               SizedBox(
                                 width: 10,
                               ),
@@ -120,9 +121,9 @@ class HomeScreen extends StatelessWidget {
                           height: 40,
                           width: width * .77,
                           color: darkThemeColor,
-                          child: Row(
+                          child: const Row(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            children: const [
+                            children: [
                               SizedBox(
                                 width: 10,
                               ),
@@ -148,16 +149,16 @@ class HomeScreen extends StatelessWidget {
                       child: InkWell(
                         onTap: () {
                           isSelected.value = 4;
-                         adminProvider. clearQrControllers();
+                          adminProvider.clearQrControllers();
                           finish(context);
                         },
                         child: Container(
                           height: 40,
                           width: width * .77,
                           color: darkThemeColor,
-                          child: Row(
+                          child: const Row(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            children: const [
+                            children: [
                               SizedBox(
                                 width: 10,
                               ),
@@ -183,16 +184,16 @@ class HomeScreen extends StatelessWidget {
                       child: InkWell(
                         onTap: () {
                           isSelected.value = 5;
-                         adminProvider. clearQrControllers();
+                          adminProvider.clearQrControllers();
                           finish(context);
                         },
                         child: Container(
                           height: 40,
                           width: width * .77,
                           color: darkThemeColor,
-                          child: Row(
+                          child: const Row(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            children: const [
+                            children: [
                               SizedBox(
                                 width: 10,
                               ),
@@ -205,6 +206,41 @@ class HomeScreen extends StatelessWidget {
                               ),
                               Text(
                                 "Add Tickets",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 15),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Spacer(),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 20),
+                      child: InkWell(
+                        onTap: () {
+
+                          adminProvider.logOutAlert(context);
+                        },
+                        child: Container(
+                          height: 40,
+                          width: width * .77,
+                          color: darkThemeColor,
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Icon(
+                                Icons.logout,
+                                color: Colors.white,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                "Log Out",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 15),
                               )
@@ -239,42 +275,46 @@ class HomeScreen extends StatelessWidget {
                         const SizedBox(
                           height: 50,
                         ),
-                        isSelected.value==1||isSelected.value==4||isSelected.value==5
-                            ?const Padding(padding: EdgeInsets.only(top: 52)):const SizedBox(),
-                        isSelected.value!=1&&isSelected.value!=4 ?Padding(
-                          padding: const EdgeInsets.only(top: 15),
-                          child: Container(
-                            height: 40,
-                            width: width / 1.2,
-                            decoration: BoxDecoration(
-                                color: basewhite,
-                                borderRadius: BorderRadius.circular(32.0)),
-                            child: TextFormField(
-                                autofocus: false,
-                                // obscureText: _obscureText,
-                                keyboardType: TextInputType.text,
-                                decoration: InputDecoration(
-                                  hintText: 'Search',
-                                  contentPadding: const EdgeInsets.fromLTRB(
-                                      20.0, 10.0, 20.0, 10.0),
-                                  border: OutlineInputBorder(
+                        isSelected.value == 1 ||
+                                isSelected.value == 4 ||
+                                isSelected.value == 5
+                            ? const Padding(padding: EdgeInsets.only(top: 52))
+                            : const SizedBox(),
+                        isSelected.value != 1 && isSelected.value != 4
+                            ? Padding(
+                                padding: const EdgeInsets.only(top: 15),
+                                child: Container(
+                                  height: 40,
+                                  width: width / 1.2,
+                                  decoration: BoxDecoration(
+                                      color: basewhite,
                                       borderRadius:
                                           BorderRadius.circular(32.0)),
+                                  child: TextFormField(
+                                    autofocus: false,
+                                    // obscureText: _obscureText,
+                                    keyboardType: TextInputType.text,
+                                    decoration: InputDecoration(
+                                      hintText: 'Search',
+                                      contentPadding: const EdgeInsets.fromLTRB(
+                                          20.0, 10.0, 20.0, 10.0),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(32.0)),
+                                    ),
+                                    onChanged: (text) {
+                                      if (isSelected.value == 0) {
+                                        adminProvider.notifyListeners();
+                                        adminProvider.filterCustomerList(text);
+                                      } else if (isSelected.value == 2) {
+                                        adminProvider.notifyListeners();
+                                        adminProvider.filterStaffList(text);
+                                      }
+                                    },
+                                  ),
                                 ),
-                              onChanged: (text){
-                                  if(isSelected.value==0){
-                                    adminProvider.notifyListeners();
-                                    adminProvider.filterCustomerList(text);
-                                  }else if( isSelected.value ==2){
-                                    adminProvider.notifyListeners();
-                                    adminProvider. filterStaffList(text);
-                                  }
-
-                              },
-
-                            ),
-                          ),
-                        ):const SizedBox(),
+                              )
+                            : const SizedBox(),
                         Padding(
                           padding: const EdgeInsets.only(top: 19),
                           child: Row(
