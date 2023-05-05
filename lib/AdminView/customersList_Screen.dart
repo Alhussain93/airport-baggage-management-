@@ -24,9 +24,9 @@ class CustomersListScreen extends StatelessWidget {
               child: SizedBox(
                 height: 30,
                 width: width / 1,
-                child:  Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
+                  children: [
                     Text(
                       "Customers",
                       style: TextStyle(
@@ -34,118 +34,135 @@ class CustomersListScreen extends StatelessWidget {
                           fontSize: 18,
                           fontFamily: 'Poppins-SemiBold'),
                     ),
-
                   ],
                 ),
               ),
             ),
-            Consumer<AdminProvider>(
-              builder: (context,value2,child) {
-                return ListView.builder(
-                    itemCount:value2.filterCustomersList.length,
-                    shrinkWrap: true,
-                    scrollDirection: Axis.vertical,
-                    physics: const ScrollPhysics(),
-                    itemBuilder: (BuildContext context, int index) {
-                      var item=value2.filterCustomersList[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(left: 8,right: 8,bottom: 2),
-                        child: InkWell(
-                          onTap: (){
-                            value2. fetchCustomersForEdit(item.id);
-                            callNext(AddCustomerScreen(userId: item.id, from: 'EDIT',), context);
-
-
-                          },
-                          onLongPress: (){
-                            deleteCustomer(context,item.id);
-
-                          },
-                          child: Container(
-                            height: 85,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.shade300,
-                                  blurRadius: 1.0,
-                                  spreadRadius: 1.0,
-                                )
-                              ],
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                  Padding(
-                                  padding: const EdgeInsets.only(left: 10),
-                                  child:item.profileImage!=""? CircleAvatar(
-                                      backgroundColor: cWhite,
-                                      radius: 25,
-                                      backgroundImage:
-                                      NetworkImage(item.profileImage)): CircleAvatar(
-                                    backgroundColor: cWhite,
-                                      radius: 25,
-                                      backgroundImage:
-                                      const AssetImage("assets/user.png"),),
-                                ),
-                                SizedBox(
-                                  height: 60,
-                                  width: width / 1.3,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            item.name,
-                                            style: const TextStyle(
-                                                fontFamily: "Poppins-SemiBold",
-                                                fontSize: 17,
-                                                fontWeight: FontWeight.w600),
-                                          ),
-                                          Text(item.phone,style: const TextStyle( fontFamily: "Poppins-SemiBold",
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w400),)
-                                        ],
+            Consumer<AdminProvider>(builder: (context, value2, child) {
+              return ListView.builder(
+                  itemCount: value2.filterCustomersList.length,
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  physics: const ScrollPhysics(),
+                  itemBuilder: (BuildContext context, int index) {
+                    var item = value2.filterCustomersList[index];
+                    return Padding(
+                      padding:
+                          const EdgeInsets.only(left: 8, right: 8, bottom: 2),
+                      child: InkWell(
+                        onTap: () {
+                          value2.fetchCustomersForEdit(item.id);
+                          callNext(
+                              AddCustomerScreen(
+                                userId: item.id,
+                                from: 'EDIT',
+                              ),
+                              context);
+                        },
+                        onLongPress: () {
+                          deleteCustomer(context, item.id);
+                        },
+                        child: Container(
+                          height: 85,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.shade300,
+                                blurRadius: 1.0,
+                                spreadRadius: 1.0,
+                              )
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10),
+                                child: item.profileImage != ""
+                                    ? CircleAvatar(
+                                        backgroundColor: cWhite,
+                                        radius: 25,
+                                        backgroundImage:
+                                            NetworkImage(item.profileImage))
+                                    : CircleAvatar(
+                                        backgroundColor: cWhite,
+                                        radius: 25,
+                                        backgroundImage:
+                                            const AssetImage("assets/user.png"),
                                       ),
-                                      IconButton(onPressed: (){},icon: const Icon(Icons.edit_calendar_outlined,size: 10.5,))
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
+                              ),
+                              SizedBox(
+                                height: 60,
+                                width: width / 1.3,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          item.name,
+                                          style: const TextStyle(
+                                              fontFamily: "Poppins-SemiBold",
+                                              fontSize: 17,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                        Text(
+                                          item.phone,
+                                          style: const TextStyle(
+                                              fontFamily: "Poppins-SemiBold",
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w400),
+                                        )
+                                      ],
+                                    ),
+                                    IconButton(
+                                        onPressed: () {},
+                                        icon: const Icon(
+                                          Icons.edit_calendar_outlined,
+                                          size: 10.5,
+                                        ))
+                                  ],
+                                ),
+                              )
+                            ],
                           ),
                         ),
-                      );
-                    });
-              }
-            )
+                      ),
+                    );
+                  });
+            })
           ],
         ),
       ),
-      floatingActionButton:
-           Column(
+      floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Padding(
             padding: const EdgeInsets.only(right: 22, bottom: 8),
             child: Align(
               alignment: Alignment.bottomRight,
-              child: Consumer<AdminProvider>(
-                  builder: (context, value3, child) {
-                    return FloatingActionButton(
-                      tooltip: "df",
-                      backgroundColor: themecolor,
-                      onPressed: () {
-                        value3.clearUserControllers();
-callNext(AddCustomerScreen(userId: '', from: '',), context);
-                      },
-                      child: const Icon(Icons.add),
-                    );
-                  }),
+              child: Consumer<AdminProvider>(builder: (context, value3, child) {
+                return FloatingActionButton(
+                  tooltip: "df",
+                  backgroundColor: themecolor,
+                  onPressed: () {
+                    value3.clearUserControllers();
+                    callNext(
+                        AddCustomerScreen(
+                          userId: '',
+                          from: '',
+                        ),
+                        context);
+                  },
+                  child: const Icon(Icons.add),
+                );
+              }),
             ),
           ),
         ],
@@ -156,14 +173,15 @@ callNext(AddCustomerScreen(userId: '', from: '',), context);
 
   deleteCustomer(BuildContext context, String id) {
     AdminProvider adminProvider =
-    Provider.of<AdminProvider>(context, listen: false);
+        Provider.of<AdminProvider>(context, listen: false);
 
     AlertDialog alert = AlertDialog(
-      backgroundColor:themecolor,
+      backgroundColor: themecolor,
       scrollable: true,
       title: const Text(
         "Do you want to delete this Customer?",
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16,color: Colors.white),
+        style: TextStyle(
+            fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
       ),
       content: SizedBox(
         height: 50,
@@ -175,32 +193,35 @@ callNext(AddCustomerScreen(userId: '', from: '',), context);
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Container(
-                    height: 37,width: 100,
+                    height: 37,
+                    width: 100,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: Colors.white
-                    ),
+                        color: Colors.white),
                     child: TextButton(
-                        child: const Text('NO',style: TextStyle(color: Colors.black),),
+                        child: const Text(
+                          'NO',
+                          style: TextStyle(color: Colors.black),
+                        ),
                         onPressed: () {
                           finish(context);
                         }),
                   ),
-                  Consumer<AdminProvider>(
-                      builder: (context, value, child) {
-                        return Container(
-                          height: 37,width: 100,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color:Textclr
-                          ),
-                          child: TextButton(
-                              child: const Text('YES',style: TextStyle(color: Colors.black)),
-                              onPressed: () {
-                                adminProvider.deleteCustomer(context,id);
-                              }),
-                        );
-                      }),
+                  Consumer<AdminProvider>(builder: (context, value, child) {
+                    return Container(
+                      height: 37,
+                      width: 100,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Textclr),
+                      child: TextButton(
+                          child: const Text('YES',
+                              style: TextStyle(color: Colors.black)),
+                          onPressed: () {
+                            adminProvider.deleteCustomer(context, id);
+                          }),
+                    );
+                  }),
                 ],
               ),
             ],
@@ -215,5 +236,4 @@ callNext(AddCustomerScreen(userId: '', from: '',), context);
       },
     );
   }
-
 }
