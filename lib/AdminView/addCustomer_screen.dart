@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:luggage_tracking_app/Providers/admin_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -49,6 +50,9 @@ class AddCustomerScreen extends StatelessWidget {
                         helperText: "",
                         fillColor: Colors.white,
                         contentPadding: const EdgeInsets.all(11),
+
+                        hintText: 'Name',
+
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide(
@@ -61,10 +65,8 @@ class AddCustomerScreen extends StatelessWidget {
                             color: Colors.grey.shade200,
                           ),
                         ),
-                        hintText: 'Name',
-
                         errorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10)),
+                            borderRadius: BorderRadius.circular(10),borderSide: BorderSide(color: Colors.red)),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide:  BorderSide(
@@ -91,9 +93,11 @@ class AddCustomerScreen extends StatelessWidget {
                           fontSize: 18,
                           fontFamily: "PoppinsMedium"),
                       autofocus: false,
-                      keyboardType: TextInputType.text,
+                      keyboardType: TextInputType.phone,
                       textAlign: TextAlign.start,
-
+inputFormatters: [
+                        LengthLimitingTextInputFormatter(10)
+                      ],
                       decoration: InputDecoration(
                         counterStyle: const TextStyle(color: Colors.grey),
                         hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
@@ -114,7 +118,7 @@ class AddCustomerScreen extends StatelessWidget {
                           ),
                         ),
                         errorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10)),
+                            borderRadius: BorderRadius.circular(10),borderSide: BorderSide(color: Colors.red)),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide:  BorderSide(
@@ -166,7 +170,7 @@ class AddCustomerScreen extends StatelessWidget {
                           ),
                         ),
                         errorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10)),
+                            borderRadius: BorderRadius.circular(10),borderSide: BorderSide(color: Colors.red)),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide:  BorderSide(
@@ -211,7 +215,7 @@ helperText: '',
                           ),
                         ),
                         errorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10)),
+                            borderRadius: BorderRadius.circular(10),borderSide: BorderSide(color: Colors.red)),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide:  BorderSide(
@@ -219,14 +223,15 @@ helperText: '',
                           ),
                         ),
                       ),
-                      readOnly: true,
+                      // readOnly: true,
                       controller: values.userDobCT,
                       style: TextStyle(
                           color: fontColor,
                           fontSize: 18,
                           fontFamily: "PoppinsMedium"),
                       onTap: () {
-                        values.selectDOB(context);
+
+                        adminProvider.selectDOB(context);
                       },
 
                       validator: (value) {
