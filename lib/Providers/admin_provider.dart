@@ -167,7 +167,7 @@ class AdminProvider with ChangeNotifier {
       // title: Text("My title"),
       content: Text(
         text,
-        style: constTextStyle(color: Colors.black, fontWeight: FontWeight.w500),
+        style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
       ),
       actions: [
         okButton,
