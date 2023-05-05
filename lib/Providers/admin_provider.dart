@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:luggage_tracking_app/AdminView/home_screen.dart';
@@ -16,6 +17,9 @@ import 'package:luggage_tracking_app/constant/my_functions.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:encrypt/encrypt.dart' as enc;
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:intl/intl.dart';
+
 
 import '../AdminView/add_staff.dart';
 import '../AdminView/generateQr_Screen.dart';
@@ -807,5 +811,17 @@ class AdminProvider with ChangeNotifier {
       },
     );
   }
+  String selectedDateTime="";
+  datePicker(context){
+
+    DatePicker.showDateTimePicker(context,
+        showTitleActions: true,
+        minTime: DateTime(1980, 1, 1),
+    maxTime: DateTime(3000, 12, 31),
+    onConfirm: (dateTime) {
+      selectedDateTime = DateFormat("dd/MM/yyyy  HH:mm").format(dateTime);
+      notifyListeners();
+    },locale: LocaleType.en); }
+
 
 }
