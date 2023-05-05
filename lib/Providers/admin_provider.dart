@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,7 @@ import 'package:encrypt/encrypt.dart' as enc;
 
 import '../AdminView/add_staff.dart';
 import '../AdminView/generateQr_Screen.dart';
+import '../UserView/splash_screen.dart';
 import '../AdminView/staff_screen.dart';
 import '../admin_model/add_staff_model.dart';
 import '../constant/colors.dart';
@@ -704,7 +706,22 @@ class AdminProvider with ChangeNotifier {
     print("gggggggggggg666" + fileImage.toString());
   }
 
-  void addTickets(){
+  void addTickets(String addedBy,String addedName){
+
+    HashMap<String, Object> ticketMap = HashMap();
+    String ticketId = DateTime.now().millisecondsSinceEpoch.toString();
+
+    ticketMap["PNR_ID"] = ticketPnrController.text;
+    ticketMap["FLIGHT_NAME"] = ticketFlightName;
+    ticketMap["FROM"] = ticketFromController.text;
+    ticketMap["TO"] = ticketToController.text;
+    ticketMap["PASSENGERS_NUM"] = int.parse(passengerCountController.text);
+    ticketMap["ID"] = ticketId;
+    ticketMap["ADDED_BY"] = addedBy;
+    ticketMap["ADDED_BY_NAME"] = addedName;
+    ticketMap["ADDED_TIME"] = DateTime.now();
+
+    db.collection("TICKETS").doc(ticketId).set(ticketMap);
 
   }
 
@@ -720,4 +737,92 @@ class AdminProvider with ChangeNotifier {
     callNextReplacement( HomeScreen(), context);
     notifyListeners();
   }
+  logOutAlert(BuildContext context) {
+    AlertDialog alert = AlertDialog(
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(32.0))),
+      backgroundColor: cWhite,
+      contentPadding: EdgeInsets.only(bottom:8),
+      scrollable: true,
+      title: Center(
+          child: Column(children: [
+            Icon(
+              Icons.logout,
+              size: 30,
+              color: themecolor,
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            const Text(
+              "LogOut",
+              style: TextStyle(
+                  fontFamily: 'PoppinsMedium',
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14),
+            ),
+
+            SizedBox(height: 15,),
+          ])),
+      content: SizedBox(
+        height: 50,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      finish(context);
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      width: 100,
+                      height: 30,
+                      decoration: BoxDecoration(
+                          color: themecolor,
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Text('NOT NOW',
+                          style: TextStyle(color: cWhite, fontSize: 13)),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () async {
+                      FirebaseAuth auth = FirebaseAuth.instance;
+                      auth.signOut();
+                      finish(context);
+                      callNextReplacement(const SplashScreen(), context);
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      width: 100,
+                      height: 30,
+                      decoration: BoxDecoration(
+                          border: Border.all(color: themecolor),
+                          color: cWhite,
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Text('LOGOUT',
+                          style: TextStyle(
+                              fontSize: 13,
+                              color: themecolor,
+                              fontFamily: "PoppinsMedium")),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
 }
