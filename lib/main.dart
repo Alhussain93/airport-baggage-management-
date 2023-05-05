@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:luggage_tracking_app/UserView/splash_screen.dart';
 import 'package:provider/provider.dart';
 
+import 'AdminView/makeQrcodeScreen.dart';
 import 'Providers/admin_provider.dart';
 import 'Providers/loginProvider.dart';
 import 'Users/login_Screen.dart';
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
         //   useMaterial3: true,
         // ),
         debugShowCheckedModeBanner: false,
+        // home: MakeQrScreen(),
         home: SplashScreen(),
         // home: AddProducts(),
         // home: CustomerRegistration(adminName: "adminName", adminPhone: "9048001001", adminId: "adminId"),

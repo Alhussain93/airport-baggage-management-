@@ -57,6 +57,10 @@ class CustomersListScreen extends StatelessWidget {
 
 
                           },
+                          onLongPress: (){
+                            deleteCustomer(context,item.id);
+
+                          },
                           child: Container(
                             height: 85,
                             decoration: BoxDecoration(
@@ -144,4 +148,67 @@ callNext(AddCustomerScreen(userId: '', from: '',), context);
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
+
+  deleteCustomer(BuildContext context, String id) {
+    AdminProvider adminProvider =
+    Provider.of<AdminProvider>(context, listen: false);
+
+    AlertDialog alert = AlertDialog(
+      backgroundColor:themecolor,
+      scrollable: true,
+      title: const Text(
+        "Do you want to delete this Customer?",
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16,color: Colors.white),
+      ),
+      content: SizedBox(
+        height: 50,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    height: 37,width: 100,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white
+                    ),
+                    child: TextButton(
+                        child: const Text('NO',style: TextStyle(color: Colors.black),),
+                        onPressed: () {
+                          finish(context);
+                        }),
+                  ),
+                  Consumer<AdminProvider>(
+                      builder: (context, value, child) {
+                        return Container(
+                          height: 37,width: 100,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color:Textclr
+                          ),
+                          child: TextButton(
+                              child: const Text('YES',style: TextStyle(color: Colors.black)),
+                              onPressed: () {
+                                adminProvider.deleteCustomer(context,id);
+                              }),
+                        );
+                      }),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
 }
