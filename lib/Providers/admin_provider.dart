@@ -686,7 +686,24 @@ class AdminProvider with ChangeNotifier {
     print("gggggggggggg666" + fileImage.toString());
   }
 
-  void addTickets(){
+  void addTickets(String addedBy,String addedName){
+
+    HashMap<String, Object> ticketMap = HashMap();
+    String ticketId = DateTime.now().millisecondsSinceEpoch.toString();
+
+    ticketMap["PNR_ID"] = ticketPnrController.text;
+    ticketMap["FLIGHT_NAME"] = ticketFlightName;
+    ticketMap["FROM"] = ticketFromController.text;
+    ticketMap["TO"] = ticketToController.text;
+    ticketMap["PASSENGERS_NUM"] = int.parse(passengerCountController.text);
+    ticketMap["ID"] = ticketId;
+    ticketMap["ADDED_BY"] = addedBy;
+    ticketMap["ADDED_BY_NAME"] = addedName;
+    ticketMap["ADDED_TIME"] = DateTime.now();
+
+    db.collection("TICKETS").doc(ticketId).set(ticketMap);
+
+
 
   }
 
