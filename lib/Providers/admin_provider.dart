@@ -519,7 +519,7 @@ class AdminProvider with ChangeNotifier {
 
 //String ref='';
 
-  Future<void> addData(BuildContext context, String from, String userId) async {
+  Future<void> addData(BuildContext context, String from, String userId,String status) async {
     String id = DateTime.now()
         .microsecondsSinceEpoch
         .toString(); //this code is genarate auto id;
@@ -529,7 +529,7 @@ class AdminProvider with ChangeNotifier {
     dataMap["EMAIL"] = EmailController.text;
     dataMap["AIRPORT"] = staffAirportName.toString();
     dataMap["ID"] = id.toString();
-    dataMap["STATUS"] = 'UNBLOCK';
+    dataMap["STATUS"] = status;
     if (fileImage != null) {
       String time = DateTime.now().millisecondsSinceEpoch.toString();
       ref = FirebaseStorage.instance.ref().child(time);
@@ -570,7 +570,8 @@ class AdminProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void editStaff(String id) {
+  void editStaff(BuildContext context,String id) {
+    String status='';
     db.collection("STAFF").doc(id).get().then((value) {
       if (value.exists) {
         Map<dynamic, dynamic> map = value.data() as Map;
@@ -579,8 +580,20 @@ class AdminProvider with ChangeNotifier {
         StaffidController.text = map['STAFF_ID'].toString();
         staffAirportName = map['AIRPORT'].toString();
         EmailController.text = map['EMAIL'].toString();
+        status = map['STATUS'].toString();
       }
+      print("chucifhf"+status.toString());
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  AddStaff(
+                    from: "edit",
+                    userId:id,
+                    status:status,
+                  )));
     });
+
     notifyListeners();
   }
 
@@ -714,12 +727,16 @@ class AdminProvider with ChangeNotifier {
 
     db.collection("TICKETS").doc(ticketId).set(ticketMap);
 
-
-
   }
 
   void blockStaff(BuildContext context,String id){
     db.collection("STAFF").doc(id).update({'STATUS':'BLOCK'});
+    getdataa();
+    callNextReplacement( HomeScreen(), context);
+    notifyListeners();
+  }
+  void unBlockStaff(BuildContext context,String id){
+    db.collection("STAFF").doc(id).update({'STATUS':'UNBLOCK'});
     getdataa();
     callNextReplacement( HomeScreen(), context);
     notifyListeners();

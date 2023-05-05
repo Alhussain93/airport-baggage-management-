@@ -67,7 +67,7 @@ class StaffScreen extends StatelessWidget {
                                 callNext(
                                     AddStaff(
                                       from: '',
-                                      userId: '',
+                                      userId: '', status:'UNBLOCK',
                                     ),
                                     context);
                               },
@@ -190,15 +190,8 @@ class StaffScreen extends StatelessWidget {
                                       IconButton(
                                           onPressed: () {
                                             // value. storing(item.Name,item.StaffId,item.Email);
-                                            value.editStaff(item.id);
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        AddStaff(
-                                                          from: "edit",
-                                                          userId: item.id,
-                                                        )));
+                                            value.editStaff(context,item.id);
+
                                           },
                                           icon: const Icon(
                                             Icons.edit_calendar_outlined,
