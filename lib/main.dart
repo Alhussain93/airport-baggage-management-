@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
         //   useMaterial3: true,
         // ),
         debugShowCheckedModeBanner: false,
-        home: PnrSearching(),
+        home: SplashScreen(),
         // home: AddProducts(),
         // home: CustomerRegistration(adminName: "adminName", adminPhone: "9048001001", adminId: "adminId"),
       ),
