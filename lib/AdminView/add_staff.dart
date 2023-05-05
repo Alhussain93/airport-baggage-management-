@@ -58,17 +58,10 @@ class AddStaff extends StatelessWidget {
                       onTap: (){value.showBottomSheet(context);},
                       child: Container(
                         height: 90,
-                        decoration:value.fileImage==""?BoxDecoration(
+                        decoration:BoxDecoration(
                           shape: BoxShape.circle,
                           image: const DecorationImage(image: AssetImage("assets/add-photo.png",),scale: 10),
 
-                          border: Border.all(
-                            width: 1.5,
-                            color: Colors.grey.shade500,
-                          ),
-                        ):BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(image: FileImage(value.fileImage!)),
                           border: Border.all(
                             width: 1.5,
                             color: Colors.grey.shade500,
