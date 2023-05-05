@@ -4,7 +4,10 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:luggage_tracking_app/AdminView/home_screen.dart';
 import 'package:luggage_tracking_app/constant/my_functions.dart';
 import 'package:luggage_tracking_app/model/customer_model.dart';
@@ -30,6 +33,13 @@ class AdminProvider with ChangeNotifier {
   List<CustomerModel> customersList = [];
   List<CustomerModel> filterCustomersList = [];
   String qrData='';
+
+
+  final ImagePicker picker = ImagePicker();
+  String imageUrl = "";
+  File? fileImage;
+  bool imgCheck = false;
+  Reference ref = FirebaseStorage.instance.ref("PROFILE_IMAGE");
 
   TextEditingController userPhoneCT = TextEditingController();
   TextEditingController userNameCT = TextEditingController();
@@ -164,7 +174,7 @@ db.collection("LUGGAGE").doc(luggageId).get().then((value) {
 
       ),
       child: TextButton(
-        child: Text("OK",style: TextStyle(color: Colors.black,fontWeight: FontWeight.w600),),
+        child: const Text("OK",style: TextStyle(color: Colors.black,fontWeight: FontWeight.w600),),
         onPressed: () { callNextReplacement(HomeScreen(), context);},
       ),
     );
@@ -172,7 +182,7 @@ db.collection("LUGGAGE").doc(luggageId).get().then((value) {
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       // title: Text("My title"),
-      content: Text(text,style:TextStyle(color: Colors.black,fontWeight: FontWeight.w500) ,),
+      content: Text(text,style:const TextStyle(color: Colors.black,fontWeight: FontWeight.w500) ,),
       actions: [
         okButton,
       ],
@@ -420,6 +430,7 @@ void fetchCustomersForEdit(String userId){
     notifyListeners();
   }
 
+
   void getdataa() {
     modellist.clear();
     filtersStaffList.clear();
@@ -432,6 +443,7 @@ void fetchCustomersForEdit(String userId){
             map["NAME"].toString(),
             map["STAFF_ID"].toString(),
             map["EMAIL"].toString(),
+            map["PROFILE_IMAGE"].toString()
             // element.id,
           ),
         );
@@ -448,7 +460,9 @@ void fetchCustomersForEdit(String userId){
 
 
 
-  void addData(BuildContext context, String from, String userId) {
+//String ref='';
+
+  Future<void> addData(BuildContext context, String from, String userId) async {
     String id = DateTime.now()
         .microsecondsSinceEpoch
         .toString(); //this code is genarate auto id;
@@ -457,6 +471,21 @@ void fetchCustomersForEdit(String userId){
     dataMap["STAFF_ID"] = StaffidController.text;
     dataMap["EMAIL"] = EmailController.text;
     dataMap["AIRPORT"] = staffAirportName.toString();
+    if (fileImage != null) {
+      String time = DateTime.now().millisecondsSinceEpoch.toString();
+      ref = FirebaseStorage.instance.ref().child(time);
+      await ref.putFile(fileImage!).whenComplete(() async {
+        await ref.getDownloadURL().then((value) {
+          dataMap['PROFILE_IMAGE'] = value;
+          notifyListeners();
+        });
+        notifyListeners();
+      });
+      notifyListeners();
+    } else {
+      dataMap['PROFILE_IMAGE'] = '';
+    }
+  //  dataMap["PROFILE_IMAGE"]=fileImage.toString();
     if (from == '') {
       db.collection("STAFF").doc(id).set(dataMap);
     } else {
@@ -496,4 +525,127 @@ void fetchCustomersForEdit(String userId){
     });
     notifyListeners();
   }
+
+
+  void showBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+        elevation: 10,
+        backgroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(10.0),
+              topRight: Radius.circular(10.0),
+            )),
+        context: context,
+        builder: (BuildContext bc) {
+          return Wrap(
+            children: <Widget>[
+              ListTile(
+                  leading: Icon(
+                    Icons.camera_enhance_sharp,
+                    color: cl172f55,
+                  ),
+                  title: const Text(
+                    'Camera',
+                  ),
+                  onTap: () => {imageFromCamera(), Navigator.pop(context)}),
+              ListTile(
+                  leading: Icon(Icons.photo, color: cl172f55),
+                  title: const Text(
+                    'Gallery',
+                  ),
+                  onTap: () => {imageFromGallery(), Navigator.pop(context)}),
+            ],
+          );
+        });
+    // ImageSource
+  }
+
+  imageFromCamera() async {
+    final pickedFile =
+    await picker.pickImage(source: ImageSource.camera, imageQuality: 15);
+
+    if (pickedFile != null) {
+      _cropImage(pickedFile.path);
+    } else {}
+    if (pickedFile!.path.isEmpty) retrieveLostData();
+
+    notifyListeners();
+  }
+
+
+  imageFromGallery() async {
+    final pickedFile =
+    await picker.pickImage(source: ImageSource.gallery, imageQuality: 15);
+    if (pickedFile != null) {
+      // fileimage = File(pickedFile.path);
+      _cropImage(pickedFile.path);
+    } else {}
+    if (pickedFile!.path.isEmpty) retrieveLostData();
+
+    notifyListeners();
+  }
+
+
+  Future<void> retrieveLostData() async {
+    final LostDataResponse response = await picker.retrieveLostData();
+    if (response.isEmpty) {
+      return;
+    }
+    if (response.file != null) {
+      fileImage = File(response.file!.path);
+
+      notifyListeners();
+    }
+    print(fileImage.toString() + "tyuuy");
+  }
+
+
+
+
+  Future<void> _cropImage(String path) async {
+    final croppedFile = await ImageCropper().cropImage(
+      sourcePath: path,
+      aspectRatioPresets: Platform.isAndroid
+          ? [
+        CropAspectRatioPreset.square,
+        CropAspectRatioPreset.ratio3x2,
+        CropAspectRatioPreset.original,
+        CropAspectRatioPreset.ratio4x3,
+        CropAspectRatioPreset.ratio16x9,
+      ]
+          : [
+        CropAspectRatioPreset.original,
+        CropAspectRatioPreset.square,
+        CropAspectRatioPreset.ratio3x2,
+        CropAspectRatioPreset.ratio4x3,
+        CropAspectRatioPreset.ratio5x3,
+        CropAspectRatioPreset.ratio5x4,
+        CropAspectRatioPreset.ratio7x5,
+        CropAspectRatioPreset.ratio16x9,
+        CropAspectRatioPreset.ratio16x9
+      ],
+      uiSettings: [
+        AndroidUiSettings(
+            toolbarTitle: 'Cropper',
+            toolbarColor: Colors.white,
+            toolbarWidgetColor: Colors.black,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        IOSUiSettings(
+          title: 'Cropper',
+        )
+      ],
+    );
+    if (croppedFile != null) {
+      fileImage = File(croppedFile.path);
+      imgCheck = true;
+      notifyListeners();
+    }
+    print("gggggggggggg666" + fileImage.toString());
+  }
+
+
+
+
 }

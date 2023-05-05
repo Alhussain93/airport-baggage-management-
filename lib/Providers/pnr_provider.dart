@@ -60,8 +60,8 @@ class PnrProvider extends ChangeNotifier {
   ) {
     luggageList.clear();
     print(lid.toString() + "gvhb");
-    db.collection("PNRTRAIL").doc(lid).get().then((value) {
-      Map<dynamic, dynamic> map = value.data() as Map;
+    db.collection("PNRTRAIL").doc(lid).snapshots().listen((event){
+      Map<dynamic, dynamic> map = event.data() as Map;
       luggageList.add(
         map["STATUS"].toString(),
       );
