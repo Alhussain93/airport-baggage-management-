@@ -6,6 +6,7 @@ import 'package:luggage_tracking_app/Providers/admin_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../AdminView/home_screen.dart';
+import '../StaffView/staff_home_screen.dart';
 import '../UserView/pnrsearching_screen.dart';
 import '../Users/login_Screen.dart';
 import '../constant/my_functions.dart';
@@ -44,10 +45,13 @@ class LoginProvider extends ChangeNotifier {
             loginUserid=element.id;
 
           }
-if(loginUsertype=="CUSTOMER"){
-  callNextReplacement(PnrSearching(), context);
-
-}
+          if(loginUsertype=="CUSTOMER"){
+            callNextReplacement(const PnrSearching(), context);
+          }else if(loginUsertype=="ADMIN"){
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+          }else if(loginUsertype=="STAFF"){
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StaffHomeScreen()));
+          }
         }
         else {
           const snackBar = SnackBar(
