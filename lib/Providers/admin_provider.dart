@@ -720,4 +720,92 @@ class AdminProvider with ChangeNotifier {
     callNextReplacement( HomeScreen(), context);
     notifyListeners();
   }
+  logOutAlert(BuildContext context) {
+    AlertDialog alert = AlertDialog(
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(32.0))),
+      backgroundColor: cWhite,
+      contentPadding: EdgeInsets.only(bottom:8),
+      scrollable: true,
+      title: Center(
+          child: Column(children: [
+            Icon(
+              Icons.logout,
+              size: 30,
+              color: themecolor,
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            const Text(
+              "LogOut",
+              style: TextStyle(
+                  fontFamily: 'PoppinsMedium',
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14),
+            ),
+
+            SizedBox(height: 15,),
+          ])),
+      content: SizedBox(
+        height: 50,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      finish(context);
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      width: 100,
+                      height: 30,
+                      decoration: BoxDecoration(
+                          color: themecolor,
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Text('NOT NOW',
+                          style: TextStyle(color: cWhite, fontSize: 13)),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () async {
+                      FirebaseAuth auth = FirebaseAuth.instance;
+                      auth.signOut();
+                      finish(context);
+                      callNextReplacement(const SplashScreen(), context);
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      width: 100,
+                      height: 30,
+                      decoration: BoxDecoration(
+                          border: Border.all(color: themecolor),
+                          color: cWhite,
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Text('LOGOUT',
+                          style: TextStyle(
+                              fontSize: 13,
+                              color: themecolor,
+                              fontFamily: "PoppinsMedium")),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
 }
