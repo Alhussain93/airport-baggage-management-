@@ -24,9 +24,9 @@ class CustomersListScreen extends StatelessWidget {
               child: SizedBox(
                 height: 30,
                 width: width / 1,
-                child: const Row(
+                child:  Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
+                  children: const [
                     Text(
                       "Customers",
                       style: TextStyle(

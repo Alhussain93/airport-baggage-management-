@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../Providers/admin_provider.dart';
@@ -35,7 +36,7 @@ class AddTickets extends StatelessWidget {
                               color: Colors.grey,
                               fontWeight: FontWeight.bold),
                         ),
-                        value: value1.flightName,
+                        value: value1.ticketFlightName,
                         iconSize: 30,
                         isExpanded: true,
                         decoration:  InputDecoration(
@@ -64,7 +65,7 @@ class AddTickets extends StatelessWidget {
                           contentPadding: const EdgeInsets.all(11),
                         ),
                         onChanged: (newValue) {
-                          value1.flightName = newValue.toString();
+                          value1.ticketFlightName = newValue.toString();
                         },
                         validator: (value) {
                           if (value == 'Select Flight Name') {
@@ -87,32 +88,7 @@ class AddTickets extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 25,right: 25),
                     child: TextFormField(
                       keyboardType: TextInputType.text,
-                      controller: values.qrUserNameCT,
-                      decoration: InputDecoration(
-                        hintText: 'Name',
-                        helperText: '',
-                        contentPadding: const EdgeInsets.all(11),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(
-                                15.0)),
-                      ),
-                      validator: (value) {
-                        if (value!.trim().isEmpty) {
-                          return "Enter Name";
-                        } else {
-                          return null;
-                        }
-                      },
-                    ),
-                  ),
-
-
-
-                  Padding(
-                    padding: const EdgeInsets.only(left: 25,right: 25),
-                    child: TextFormField(
-                      keyboardType: TextInputType.text,
-                      controller: values.qrPnrCT,
+                      controller: values.ticketPnrController,
                       decoration: InputDecoration(
                         hintText: 'PNR ID',
                         helperText: '',
@@ -125,6 +101,79 @@ class AddTickets extends StatelessWidget {
                       validator: (value) {
                         if (value!.trim().isEmpty) {
                           return "Enter PNR ID";
+                        } else {
+                          return null;
+                        }
+                      },
+                    ),
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.only(left: 25,right: 25),
+                    child: TextFormField(
+                      keyboardType: TextInputType.text,
+                      controller: values.ticketFromController,
+                      decoration: InputDecoration(
+                        hintText: 'From',
+                        helperText: '',
+                        contentPadding: const EdgeInsets.all(11),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(
+                                15.0)),
+                      ),
+                      validator: (value) {
+                        if (value!.trim().isEmpty) {
+                          return "Enter from";
+                        } else {
+                          return null;
+                        }
+                      },
+                    ),
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.only(left: 25,right: 25),
+                    child: TextFormField(
+                      keyboardType: TextInputType.text,
+                      controller: values.ticketToController,
+                      decoration: InputDecoration(
+                        hintText: 'To',
+                        helperText: '',
+                        contentPadding: const EdgeInsets.all(11),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(
+                                15.0)),
+                      ),
+                      validator: (value) {
+                        if (value!.trim().isEmpty) {
+                          return "Enter where to";
+                        } else {
+                          return null;
+                        }
+                      },
+                    ),
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.only(left: 25,right: 25),
+                    child: TextFormField(
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(2),
+                      ],
+                      controller: values.passengerCountController,
+                      decoration: InputDecoration(
+                        hintText: 'Number of Passengers',
+                        helperText: '',
+                        contentPadding: const EdgeInsets.all(11),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(
+                                15.0)),
+                      ),
+                      validator: (value) {
+                        if (value!.trim().isEmpty) {
+                          return "Enter Number of Passengers";
                         } else {
                           return null;
                         }

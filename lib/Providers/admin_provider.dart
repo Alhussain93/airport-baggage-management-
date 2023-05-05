@@ -312,9 +312,22 @@ class AdminProvider with ChangeNotifier {
   TextEditingController qrPnrCT = TextEditingController();
   TextEditingController qrUserNameCT = TextEditingController();
 
+
+  TextEditingController ticketFromController = TextEditingController();
+  TextEditingController ticketToController = TextEditingController();
+  TextEditingController passengerCountController = TextEditingController();
+  TextEditingController ticketPnrController = TextEditingController();
+
+
   void clearQrControllers() {
     qrPnrCT.clear();
     qrUserNameCT.clear();
+  }
+  void clearTicketControllers() {
+    ticketFromController.clear();
+    ticketToController.clear();
+    passengerCountController.clear();
+    ticketPnrController.clear();
   }
 
   TextEditingController NameController = TextEditingController();
@@ -325,6 +338,7 @@ class AdminProvider with ChangeNotifier {
 
   String staffAirportName = 'Select';
   String flightName = 'Select Flight Name';
+  String ticketFlightName = 'Select Flight Name';
   bool qrScreen = false;
   String airportName = '';
   List<String> flightNameList = [

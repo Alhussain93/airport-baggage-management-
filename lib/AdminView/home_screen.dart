@@ -4,6 +4,7 @@ import 'package:luggage_tracking_app/AdminView/scan_page.dart';
 import 'package:luggage_tracking_app/AdminView/staff_screen.dart';
 import 'package:provider/provider.dart';
 import '../Providers/admin_provider.dart';
+import '../StaffView/add_tickets.dart';
 import '../constant/colors.dart';
 import '../constant/my_functions.dart';
 import 'add_staff.dart';
@@ -27,6 +28,7 @@ class HomeScreen extends StatelessWidget {
       const StaffScreen(),
        MisingLaggage(),
       MakeQrScreen(),
+      AddTickets(),
     ];
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
@@ -176,6 +178,41 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                     ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: InkWell(
+                        onTap: () {
+                          isSelected.value = 5;
+                         adminProvider. clearQrControllers();
+                          finish(context);
+                        },
+                        child: Container(
+                          height: 40,
+                          width: width * .77,
+                          color: darkThemeColor,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: const [
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Icon(
+                                Icons.airplane_ticket_outlined,
+                                color: Colors.white,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                "Add Tickets",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 15),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -202,7 +239,8 @@ class HomeScreen extends StatelessWidget {
                         const SizedBox(
                           height: 50,
                         ),
-                        isSelected.value==1||isSelected.value==4 ?const Padding(padding: EdgeInsets.only(top: 52)):const SizedBox(),
+                        isSelected.value==1||isSelected.value==4||isSelected.value==5
+                            ?const Padding(padding: EdgeInsets.only(top: 52)):const SizedBox(),
                         isSelected.value!=1&&isSelected.value!=4 ?Padding(
                           padding: const EdgeInsets.only(top: 15),
                           child: Container(
