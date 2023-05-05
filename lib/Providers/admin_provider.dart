@@ -332,12 +332,14 @@ class AdminProvider with ChangeNotifier {
   void clearQrControllers() {
     qrPnrCT.clear();
     qrUserNameCT.clear();
+     flightName = 'Select Flight Name';
   }
   void clearTicketControllers() {
     ticketFromController.clear();
     ticketToController.clear();
     passengerCountController.clear();
     ticketPnrController.clear();
+    ticketFlightName = 'Select Flight Name';
   }
 
   TextEditingController NameController = TextEditingController();
@@ -683,4 +685,9 @@ class AdminProvider with ChangeNotifier {
     }
     print("gggggggggggg666" + fileImage.toString());
   }
+
+  void addTickets(){
+
+  }
+
 }

@@ -200,7 +200,7 @@ class AddTickets extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(20),
                                     color: Textclr
                                 ),
-                                child: const Center(child: Text("Generate Qr",
+                                child: const Center(child: Text("Add Ticket",
                                   style: TextStyle(fontSize: 18,
                                       fontWeight: FontWeight.w600,
                                       fontFamily: 'Poppins-SemiBold'),)),
