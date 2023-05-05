@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../Providers/admin_provider.dart';
 import '../constant/colors.dart';
 
 class MisingLaggage extends StatelessWidget {
-  const MisingLaggage({Key? key}) : super(key: key);
+   MisingLaggage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    AdminProvider adminProvider =
+    Provider.of<AdminProvider>(context, listen: false);
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -33,54 +37,107 @@ class MisingLaggage extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      height: 35,
-                      width: width / 2,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Colors.white),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.only(left: 10),
-                            child: Text(
+                    // Container(
+                    //   height: 35,
+                    //   width: width / 2,
+                    //   decoration: BoxDecoration(
+                    //       borderRadius: BorderRadius.circular(20),
+                    //       color: Colors.white),
+                    //   child: Row(
+                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //     children: [
+                    //       const Padding(
+                    //         padding: EdgeInsets.only(left: 10),
+                    //         child: Text(
+                    //           "Flight",
+                    //           style: TextStyle(
+                    //               fontWeight: FontWeight.w400,
+                    //               fontSize: 11,
+                    //               fontFamily: "Poppins-SemiBold"),
+                    //         ),
+                    //       ),
+                    //       IconButton(
+                    //           onPressed: () {},
+                    //           icon: const Icon(Icons.arrow_drop_down))
+                    //     ],
+                    //   ),
+                    // ),
+
+                    Consumer<AdminProvider>(builder: (context, value1, child) {
+                      return Container(
+                        height: 40,
+                        width: width / 3,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(width: 1, color: Colors.grey.shade500),
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: DropdownButtonFormField(
+                            hint: const Text(
                               "Flight",
                               style: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 11,
-                                  fontFamily: "Poppins-SemiBold"),
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.bold),
                             ),
-                          ),
-                          IconButton(
-                              onPressed: () {},
-                              icon: const Icon(Icons.arrow_drop_down))
-                        ],
-                      ),
-                    ),
-                    Container(
-                      height: 35,
-                      width: width / 4,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Colors.white),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.only(left: 10),
-                            child: Text(
-                              "Date",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 11,
-                                  fontFamily: "Poppins-SemiBold"),
+                            value: value1.flightName,
+                            iconSize: 30,
+                            isExpanded: true,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                              ),
+                              isCollapsed: true,
+                              filled: true,
+                              fillColor: Colors.white,
                             ),
+                            onChanged: (newValue) {
+                              value1.flightName = newValue.toString();
+                              print("rftgyhjuio" + value1.toString());
+                            },
+                            items:value1.flightNameList.map((item1) {
+                              return DropdownMenuItem(
+                                  value: item1,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 10),
+                                    child: Text(item1,style: TextStyle(fontSize: 11),),
+                                  ));
+                            }).toList(),
                           ),
-                          IconButton(
-                              onPressed: () {},
-                              icon: const Icon(Icons.arrow_drop_down))
-                        ],
+                        ),
+                      );
+                    }),
+                    InkWell(
+                      onTap: (){
+
+                        adminProvider.selectDOB(context);
+
+                      },
+                      child: Container(
+                        height: 35,
+                        width: width / 4,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.white),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.only(left: 10),
+                              child: Text(
+                                "Date",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 12,
+                                    fontFamily: "Poppins-SemiBold"),
+                              ),
+                            ),
+                            // IconButton(
+                            //     onPressed: () {},
+                            //     icon: const Icon(Icons.arrow_drop_down))
+                          ],
+                        ),
                       ),
                     )
                   ],

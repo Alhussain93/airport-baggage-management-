@@ -25,29 +25,24 @@ class AddStaff extends StatelessWidget {
     var width = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: themecolor,
+        title:Text( "Add Staff",style: TextStyle(color: Colors.white,fontSize: 18),),
+        centerTitle: true,
+      ),
+
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              height: height * .1,
-            ),
-            const Padding(
-              padding: EdgeInsets.only(left: 20, top: 15),
-              child: Text(
-                "Add New Staff",
-                style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 18,
-                    fontFamily: "Poppins-SemiBold"),
-              ),
-            ),
+
+
             Consumer<AdminProvider>(builder: (context, value, child) {
               return Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: 70),
+                    padding: const EdgeInsets.only(top: 40),
                     child: Center(
                       child: Container(
                         height: 40,
@@ -152,8 +147,7 @@ class AddStaff extends StatelessWidget {
                       width: width / 1.1,
                       decoration: BoxDecoration(
                          color: Colors.white,
-                        border:
-                            Border.all(width: 1, color: Colors.grey.shade500),
+                        border: Border.all(width: 1, color: Colors.grey.shade500),
                         borderRadius: BorderRadius.circular(15.0),
                       ),
                       child: Padding(

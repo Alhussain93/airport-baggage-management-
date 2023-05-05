@@ -243,7 +243,7 @@ db.collection("LUGGAGE").doc(luggageId).get().then((value) {
         .toString();
     userMap['ADDED_BY'] =addedBy;
     userMap['NAME'] = userNameCT.text;
-    userMap['PHONE_NUMBER'] = "91${userPhoneCT.text}";
+    userMap['PHONE_NUMBER'] = "+91${userPhoneCT.text}";
     userMap['EMAIL'] = userEmailCT.text;
     userMap['TYPE'] = 'CUSTOMER';
     userMap['USER_ID'] = key;
@@ -259,12 +259,13 @@ db.collection("LUGGAGE").doc(luggageId).get().then((value) {
 
 
     if(from=="EDIT"){
-  db.collection('USERS').doc(userId).set(editMap);
+  db.collection('USERS').doc(userId).update(editMap);
 
 }else{
   db.collection('USERS').doc(key).set(userMap);
   ScaffoldMessenger.of(context)
       .showSnackBar(const SnackBar(
+    backgroundColor: Colors.green,
     content: Text("Registration successful..."),
     duration: Duration(milliseconds: 3000),
   ));
@@ -292,8 +293,17 @@ void clearQrControllers(){
   List <AddStaffModel>filtersStaffList = [];
 
   String staffAirportName = 'Select';
+  String flightName = 'Select';
 bool qrScreen=false;
   String airportName ='';
+  List<String> flightNameList = [
+    "Select",
+    "Air Arabia Abu dhabi",
+    "Vistara",
+    "Air india Express",
+    'Srilankan Airlines',
+    'Etihad Airways'
+  ];
 
   Future<void> lockAdminApp() async {
     mRootReference.child("0").onValue.listen((event) {
@@ -368,7 +378,7 @@ bool qrScreen=false;
   }
   void fetchCustomers(){
     print("dshjskmdcfgf");
-    db.collection("USERS").where("TYPE",isEqualTo:"CUSTOMER").get().then((value) {
+    db.collection("USERS").where("TYPE",isEqualTo:"CUSTOMER").snapshots().listen((value) {
      if(value.docs.isNotEmpty){
        customersList.clear();
        filterCustomersList.clear();

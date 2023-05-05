@@ -9,7 +9,7 @@ import '../constant/my_functions.dart';
 import 'add_staff.dart';
 import 'customersList_Screen.dart';
 import 'generateQr_Screen.dart';
-import 'makeQrcode_Screen.dart';
+import 'makeQrcodeScreen.dart';
 import 'missing_luggage.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -25,8 +25,8 @@ class HomeScreen extends StatelessWidget {
       const CustomersListScreen(),
        QrScanner(),
       const StaffScreen(),
-      const MisingLaggage(),
-       MakeQrScreen(),
+       MisingLaggage(),
+      MakeQrScreen(),
     ];
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
@@ -237,7 +237,7 @@ class HomeScreen extends StatelessWidget {
                         const SizedBox(
                           height: 50,
                         ),
-                        isSelected.value==1||isSelected.value==4 ?Padding(padding: EdgeInsets.only(top: 50)):SizedBox(),
+                        isSelected.value==1||isSelected.value==4 ?Padding(padding: EdgeInsets.only(top: 52)):SizedBox(),
                         isSelected.value!=1&&isSelected.value!=4 ?Padding(
                           padding: const EdgeInsets.only(top: 15),
                           child: Container(
