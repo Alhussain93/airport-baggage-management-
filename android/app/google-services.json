@@ -50,35 +50,6 @@
           ]
         }
       }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:28665319861:android:3bb976c13d6d08df9049fc",
-        "android_client_info": {
-          "package_name": "com.spine.luggage_tracking_app_admin"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "28665319861-n8qu8clqcl0fil5qor04s4hlskqjnrhs.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyC2kjnALqHgEnDpmEzABC8lLnDtdwzJZMI"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "28665319861-n8qu8clqcl0fil5qor04s4hlskqjnrhs.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
     }
   ],
   "configuration_version": "1"

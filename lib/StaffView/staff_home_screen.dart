@@ -3,17 +3,15 @@ import 'package:luggage_tracking_app/AdminView/qr_Scanner_Screen.dart';
 import 'package:luggage_tracking_app/AdminView/scan_page.dart';
 import 'package:luggage_tracking_app/AdminView/staff_screen.dart';
 import 'package:provider/provider.dart';
+import '../AdminView/customersList_Screen.dart';
+import '../AdminView/makeQrcodeScreen.dart';
+import '../AdminView/missing_luggage.dart';
 import '../Providers/admin_provider.dart';
 import '../constant/colors.dart';
 import '../constant/my_functions.dart';
-import 'add_staff.dart';
-import 'customersList_Screen.dart';
-import 'generateQr_Screen.dart';
-import 'makeQrcodeScreen.dart';
-import 'missing_luggage.dart';
 
-class HomeScreen extends StatelessWidget {
-  HomeScreen({super.key});
+class StaffHomeScreen extends StatelessWidget {
+  StaffHomeScreen({super.key});
 
   ValueNotifier<int> isSelected = ValueNotifier(0);
 
@@ -23,9 +21,9 @@ class HomeScreen extends StatelessWidget {
 
     List screens = [
       const CustomersListScreen(),
-       QrScanner(),
+      QrScanner(),
       const StaffScreen(),
-       MisingLaggage(),
+      MisingLaggage(),
       MakeQrScreen(),
     ];
     var height = MediaQuery.of(context).size.height;
@@ -67,7 +65,7 @@ class HomeScreen extends StatelessWidget {
                             Text(
                               "Add customer",
                               style:
-                                  TextStyle(color: Colors.white, fontSize: 15),
+                              TextStyle(color: Colors.white, fontSize: 15),
                             )
                           ],
                         ),
@@ -75,7 +73,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     InkWell(
                       onTap: () {
-                        isSelected.value = 2;
+                        isSelected.value = 1;
                         finish(context);
                       },
                       child: Padding(
@@ -91,14 +89,14 @@ class HomeScreen extends StatelessWidget {
                                 width: 10,
                               ),
                               Icon(
-                                Icons.perm_contact_calendar_outlined,
+                                Icons.qr_code_scanner,
                                 color: Colors.white,
                               ),
                               SizedBox(
                                 width: 10,
                               ),
                               Text(
-                                "Staff Details ",
+                                "Scan",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 15),
                               )
@@ -146,7 +144,7 @@ class HomeScreen extends StatelessWidget {
                       child: InkWell(
                         onTap: () {
                           isSelected.value = 4;
-                         adminProvider. clearQrControllers();
+                          adminProvider. clearQrControllers();
                           finish(context);
                         },
                         child: Container(
@@ -212,25 +210,25 @@ class HomeScreen extends StatelessWidget {
                                 color: basewhite,
                                 borderRadius: BorderRadius.circular(32.0)),
                             child: TextFormField(
-                                autofocus: false,
-                                // obscureText: _obscureText,
-                                keyboardType: TextInputType.text,
-                                decoration: InputDecoration(
-                                  hintText: 'Search',
-                                  contentPadding: const EdgeInsets.fromLTRB(
-                                      20.0, 10.0, 20.0, 10.0),
-                                  border: OutlineInputBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(32.0)),
-                                ),
+                              autofocus: false,
+                              // obscureText: _obscureText,
+                              keyboardType: TextInputType.text,
+                              decoration: InputDecoration(
+                                hintText: 'Search',
+                                contentPadding: const EdgeInsets.fromLTRB(
+                                    20.0, 10.0, 20.0, 10.0),
+                                border: OutlineInputBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(32.0)),
+                              ),
                               onChanged: (text){
-                                  if(isSelected.value==0){
-                                    adminProvider.notifyListeners();
-                                    adminProvider.filterCustomerList(text);
-                                  }else if( isSelected.value ==2){
-                                    adminProvider.notifyListeners();
-                                    adminProvider. filterStaffList(text);
-                                  }
+                                if(isSelected.value==0){
+                                  adminProvider.notifyListeners();
+                                  adminProvider.filterCustomerList(text);
+                                }else if( isSelected.value ==2){
+                                  adminProvider.notifyListeners();
+                                  adminProvider. filterStaffList(text);
+                                }
 
                               },
 
@@ -257,45 +255,46 @@ class HomeScreen extends StatelessWidget {
                                   ),
                                   child: Center(
                                       child: Text(
-                                    "Add Costumer",
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w600,
-                                      color: dIsSelected == 0
-                                          ? Colors.white
-                                          : Colors.black,
-                                    ),
-                                  )),
+                                        "Add Costumer",
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w600,
+                                          color: dIsSelected == 0
+                                              ? Colors.white
+                                              : Colors.black,
+                                        ),
+                                      )),
                                 ),
                               ),
                               InkWell(
                                 onTap: () {
-                                  isSelected.value = 3;
+                                  isSelected.value = 1;
                                 },
                                 child: Container(
                                   width: 105,
                                   height: 32,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(20),
-                                    color: dIsSelected == 3
+                                    color: dIsSelected == 1
                                         ? Colors.white.withOpacity(0.2)
                                         : Textclr,
                                   ),
                                   child: Center(
                                       child: Text(
-                                    "Missing",
-                                    style: TextStyle(
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w600,
-                                        color: dIsSelected == 3
-                                            ? Colors.white
-                                            : Colors.black),
-                                  )),
+                                        "Scan",
+                                        style: TextStyle(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w600,
+                                            color: dIsSelected == 1
+                                                ? Colors.white
+                                                : Colors.black),
+                                      )),
                                 ),
                               ),
                               InkWell(
                                 onTap: () {
-                                  isSelected.value = 2;
+                                  isSelected.value = 4;
+                                  adminProvider. clearQrControllers();
                                 },
                                 child: Container(
                                   width: 105,
@@ -308,14 +307,14 @@ class HomeScreen extends StatelessWidget {
                                   ),
                                   child: Center(
                                       child: Text(
-                                    "Staff",
-                                    style: TextStyle(
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w600,
-                                        color: dIsSelected == 2
-                                            ? Colors.white
-                                            : Colors.black),
-                                  )),
+                                        "Generate QR",
+                                        style: TextStyle(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w600,
+                                            color: dIsSelected == 2
+                                                ? Colors.white
+                                                : Colors.black),
+                                      )),
                                 ),
                               )
                             ],

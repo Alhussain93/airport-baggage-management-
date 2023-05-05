@@ -152,7 +152,7 @@ class AdminProvider with ChangeNotifier {
         color: Textclr,
       ),
       child: TextButton(
-        child: Text(
+        child: const Text(
           "OK",
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
         ),
@@ -167,7 +167,7 @@ class AdminProvider with ChangeNotifier {
       // title: Text("My title"),
       content: Text(
         text,
-        style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
+        style: constTextStyle(color: Colors.black, fontWeight: FontWeight.w500),
       ),
       actions: [
         okButton,
@@ -324,11 +324,11 @@ class AdminProvider with ChangeNotifier {
   List<AddStaffModel> filtersStaffList = [];
 
   String staffAirportName = 'Select';
-  String flightName = 'Select';
+  String flightName = 'Select Flight Name';
   bool qrScreen = false;
   String airportName = '';
   List<String> flightNameList = [
-    "Select",
+    "Select Flight Name",
     "Air Arabia Abu dhabi",
     "Vistara",
     "Air india Express",
@@ -454,6 +454,7 @@ class AdminProvider with ChangeNotifier {
     notifyListeners();
   }
 
+
   void getdataa() {
     modellist.clear();
     filtersStaffList.clear();
@@ -481,6 +482,8 @@ class AdminProvider with ChangeNotifier {
       notifyListeners();
     });
   }
+
+
 
 //String ref='';
 
