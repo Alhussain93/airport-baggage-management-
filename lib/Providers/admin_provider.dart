@@ -32,14 +32,15 @@ class AdminProvider with ChangeNotifier {
   var outputDayNode = DateFormat('d/MM/yyy');
   List<CustomerModel> customersList = [];
   List<CustomerModel> filterCustomersList = [];
-  String qrData='';
-
+  String qrData = '';
 
   final ImagePicker picker = ImagePicker();
   String imageUrl = "";
   File? fileImage;
   bool imgCheck = false;
   Reference ref = FirebaseStorage.instance.ref("PROFILE_IMAGE");
+  String editImage = "";
+  bool waitRegister=true;
 
   TextEditingController userPhoneCT = TextEditingController();
   TextEditingController userNameCT = TextEditingController();
@@ -79,110 +80,95 @@ class AdminProvider with ChangeNotifier {
     return decrypted2;
   }
 
-  enterQrData( String luggageId,BuildContext context) {
-String userName='';
-String pnrId='';
+  enterQrData(String luggageId, BuildContext context) {
+    String userName = '';
+    String pnrId = '';
 
     print('how many times happend 2');
 
-
     DateTime now = DateTime.now();
     String milli = now.millisecondsSinceEpoch.toString();
-db.collection("LUGGAGE").doc(luggageId).get().then((value) {
-  if(value.exists){
-    Map<dynamic, dynamic> map = value.data() as Map;
-    userName=map["NAME"].toString();
-    pnrId=map["PNR_ID"].toString();
+    db.collection("LUGGAGE").doc(luggageId).get().then((value) {
+      if (value.exists) {
+        Map<dynamic, dynamic> map = value.data() as Map;
+        userName = map["NAME"].toString();
+        pnrId = map["PNR_ID"].toString();
 
-    db.collection("QR_VALUES").doc(luggageId).get().then((value) {
-      if(value.exists){
-        Map<dynamic, dynamic> qrMap = value.data() as Map;
+        db.collection("QR_VALUES").doc(luggageId).get().then((value) {
+          if (value.exists) {
+            Map<dynamic, dynamic> qrMap = value.data() as Map;
 
-        if( qrMap["STATUS"].toString()=="SECURITY CHECKING"){
+            if (qrMap["STATUS"].toString() == "SECURITY CHECKING") {
+              db.collection("QR_VALUES").doc(luggageId).set({
+                "LUGGAGE_ID": luggageId,
+                "PNR_ID": pnrId,
+                "USER_NAME": userName,
+                "TIME": now,
+                "TIME MILLI": milli,
+                "STATUS": 'SCREENING',
+              });
+              String text = 'Screening  completed';
+              showAlertDialog(context, text);
+            } else if (qrMap["STATUS"].toString() == "SCREENING") {
+              db.collection("QR_VALUES").doc(luggageId).set({
+                "LUGGAGE_ID": luggageId,
+                "PNR_ID": pnrId,
+                "USER_NAME": userName,
+                "TIME": now,
+                "TIME MILLI": milli,
+                "STATUS": 'CHECK OUT',
+              });
+              String text = 'Check out  completed';
+              showAlertDialog(context, text);
+            } else if (qrMap["STATUS"].toString() == "CHECK OUT") {
+              String text = 'Already check out';
+              showAlertDialog(context, text);
+            }
+          } else {
+            db.collection("QR_VALUES").doc(luggageId).set({
+              "LUGGAGE_ID": luggageId,
+              "PNR_ID": pnrId,
+              "USER_NAME": userName,
+              "TIME": now,
+              "TIME MILLI": milli,
+              "STATUS": 'SECURITY CHECKING',
+            });
 
-          db.collection("QR_VALUES").doc(luggageId).set({
-            "LUGGAGE_ID": luggageId,
-            "PNR_ID": pnrId,
-            "USER_NAME": userName,
-            "TIME": now,
-            "TIME MILLI": milli,
-            "STATUS": 'SCREENING',
-          });
-          String text='Screening  completed';
-          showAlertDialog(context,text);
-
-
-
-
-
-        }
-
-        else if(qrMap["STATUS"].toString()=="SCREENING"){
-
-          db.collection("QR_VALUES").doc(luggageId).set({
-            "LUGGAGE_ID": luggageId,
-            "PNR_ID": pnrId,
-            "USER_NAME": userName,
-            "TIME": now,
-            "TIME MILLI": milli,
-            "STATUS": 'CHECK OUT',
-          });
-          String text='Check out  completed';
-          showAlertDialog(context,text);
-
-        }
-
-        else if(qrMap["STATUS"].toString()=="CHECK OUT"){
-          String text='Already check out';
-          showAlertDialog(context,text);
-
-        }
-
-      }else{
-        db.collection("QR_VALUES").doc(luggageId).set({
-          "LUGGAGE_ID": luggageId,
-          "PNR_ID": pnrId,
-          "USER_NAME": userName,
-          "TIME": now,
-          "TIME MILLI": milli,
-          "STATUS": 'SECURITY CHECKING',
+            String text = 'Security checking completed';
+            showAlertDialog(context, text);
+          }
         });
-
-        String text='Security checking completed';
-        showAlertDialog(context,text);
-
       }
-
     });
-
-
   }
 
-});
-
-
-  }
-
-  showAlertDialog(BuildContext context,String text) {
-
+  showAlertDialog(BuildContext context, String text) {
     // set up the button
     Widget okButton = Container(
       height: 38,
       width: 90,
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
         color: Textclr,
-
       ),
       child: TextButton(
-        child: Text("OK",style: TextStyle(color: Colors.black,fontWeight: FontWeight.w600),),
-        onPressed: () { callNextReplacement(HomeScreen(), context);},
+        child: Text(
+          "OK",
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
+        ),
+        onPressed: () {
+          callNextReplacement(HomeScreen(), context);
+        },
       ),
     );
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       // title: Text("My title"),
-      content: Text(text,style:TextStyle(color: Colors.black,fontWeight: FontWeight.w500) ,),
+      content: Text(
+        text,
+        style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
+      ),
       actions: [
         okButton,
       ],
@@ -197,24 +183,28 @@ db.collection("LUGGAGE").doc(luggageId).get().then((value) {
     );
   }
 
+  void filterCustomerList(String item) {
+    filterCustomersList = customersList
+        .where((a) =>
+            a.name.toLowerCase().contains(item.toLowerCase()) ||
+            a.phone.toLowerCase().contains(item.toLowerCase()))
+        .toList();
+    notifyListeners();
+  }
 
-  void filterCustomerList(String item){
-    filterCustomersList = customersList.where((a) =>
-    a.name.toLowerCase().contains(item.toLowerCase()) ||
-        a.phone.toLowerCase().contains(item.toLowerCase())).toList();
+  void filterStaffList(String item) {
+    filtersStaffList = modellist
+        .where((a) =>
+            a.Name.toLowerCase().contains(item.toLowerCase()) ||
+            a.StaffId.toLowerCase().contains(item.toLowerCase()))
+        .toList();
     notifyListeners();
   }
-  void filterStaffList(String item){
-    filtersStaffList = modellist.where((a) =>
-    a.Name.toLowerCase().contains(item.toLowerCase()) ||
-        a.StaffId.toLowerCase().contains(item.toLowerCase())).toList();
-    notifyListeners();
-  }
+
   void dateSetting(DateTime birthDate) {
-
     userDobCT.text = outputDayNode.format(birthDate).toString();
-
   }
+
   Future<void> selectDOB(BuildContext context) async {
     // userAgeController.text = "";
     final DateTime? pickedDate = await showDatePicker(
@@ -233,25 +223,30 @@ db.collection("LUGGAGE").doc(luggageId).get().then((value) {
     notifyListeners();
   }
 
-  void clearUserControllers(){
+  void clearUserControllers() {
     userPhoneCT.clear();
     userNameCT.clear();
     userEmailCT.clear();
     userDobCT.clear();
+    editImage="";
     notifyListeners();
-
   }
 
-  void userRegistration(BuildContext context,String addedBy,String userId,String from){
+  Future<void> userRegistration(
+      BuildContext context1, String addedBy, String userId, String from) async {
+    showDialog(
+        context: context1,
+        builder: (context) {
+          return  Center(
+            child: CircularProgressIndicator(color: themecolor),
+          );
+        });
     print("jjdsmcdckdscdfegrrfe");
     HashMap<String, Object> userMap = HashMap();
     HashMap<String, Object> editMap = HashMap();
 
-    String key = DateTime
-        .now()
-        .millisecondsSinceEpoch
-        .toString();
-    userMap['ADDED_BY'] =addedBy;
+    String key = DateTime.now().millisecondsSinceEpoch.toString();
+    userMap['ADDED_BY'] = addedBy;
     userMap['NAME'] = userNameCT.text;
     userMap['PHONE_NUMBER'] = "+91${userPhoneCT.text}";
     userMap['EMAIL'] = userEmailCT.text;
@@ -259,53 +254,79 @@ db.collection("LUGGAGE").doc(luggageId).get().then((value) {
     userMap['USER_ID'] = key;
     userMap["DOB"] = birthDate;
     userMap["DOB STRING"] = userDobCT.text;
-
+    if (fileImage != null) {
+      String time = DateTime.now().millisecondsSinceEpoch.toString();
+      ref = FirebaseStorage.instance.ref().child(time);
+      await ref.putFile(fileImage!).whenComplete(() async {
+        await ref.getDownloadURL().then((value) {
+          userMap['USER_IMAGE'] = value;
+          notifyListeners();
+        });
+        notifyListeners();
+      });
+      notifyListeners();
+    } else {
+      userMap['USER_IMAGE'] = '';
+    }
 
     editMap["DOB STRING"] = userDobCT.text;
     editMap["DOB"] = birthDate;
     editMap['EMAIL'] = userEmailCT.text;
-    editMap['PHONE_NUMBER'] = "91${userPhoneCT.text}";
+    editMap['PHONE_NUMBER'] = "+91${userPhoneCT.text}";
     editMap['NAME'] = userNameCT.text;
+    if (fileImage != null) {
+      String time = DateTime.now().millisecondsSinceEpoch.toString();
+      ref = FirebaseStorage.instance.ref().child(time);
+      await ref.putFile(fileImage!).whenComplete(() async {
+        await ref.getDownloadURL().then((value) {
+          editMap['USER_IMAGE'] = value;
+          notifyListeners();
+        });
+        notifyListeners();
+      });
+      notifyListeners();
+    } else if(editImage!="") {
 
+      editMap['USER_IMAGE'] = editImage;
+    }else{
+      editMap['USER_IMAGE'] = "";
 
-    if(from=="EDIT"){
-  db.collection('USERS').doc(userId).update(editMap);
+    }
 
-}else{
-  db.collection('USERS').doc(key).set(userMap);
-  ScaffoldMessenger.of(context)
-      .showSnackBar(const SnackBar(
-    backgroundColor: Colors.green,
-    content: Text("Registration successful..."),
-    duration: Duration(milliseconds: 3000),
-  ));
-}
-
-    finish(context);
+    if (from == "EDIT") {
+      db.collection('USERS').doc(userId).update(editMap);
+    } else {
+      db.collection('USERS').doc(key).set(userMap);
+      ScaffoldMessenger.of(context1).showSnackBar(const SnackBar(
+        backgroundColor: Colors.green,
+        content: Text("Registration successful..."),
+        duration: Duration(milliseconds: 3000),
+      ));
+    }
+    finish(context1);
+    finish(context1);
     notifyListeners();
   }
 
-/// generate qr controllers
+  /// generate qr controllers
   TextEditingController qrPnrCT = TextEditingController();
   TextEditingController qrUserNameCT = TextEditingController();
 
-void clearQrControllers(){
-  qrPnrCT.clear();
-  qrUserNameCT.clear();
-
-}
-
+  void clearQrControllers() {
+    qrPnrCT.clear();
+    qrUserNameCT.clear();
+  }
 
   TextEditingController NameController = TextEditingController();
   TextEditingController StaffidController = TextEditingController();
   TextEditingController EmailController = TextEditingController();
-  List <AddStaffModel>modellist = [];
-  List <AddStaffModel>filtersStaffList = [];
+  List<AddStaffModel> modellist = [];
+  List<AddStaffModel> filtersStaffList = [];
 
   String staffAirportName = 'Select';
   String flightName = 'Select';
-bool qrScreen=false;
-  String airportName ='';
+  bool qrScreen = false;
+  String airportName = '';
   List<String> flightNameList = [
     "Select",
     "Air Arabia Abu dhabi",
@@ -366,63 +387,66 @@ bool qrScreen=false;
     });
   }
 
-
-  void generateQrCode(BuildContext context){
-
+  void generateQrCode(BuildContext context) {
     HashMap<String, Object> qrMap = HashMap();
-      qrData = DateTime.now().millisecondsSinceEpoch.toString() + getRandomString(4);
-    String key = DateTime
-        .now()
-        .millisecondsSinceEpoch
-        .toString();
+    qrData =
+        DateTime.now().millisecondsSinceEpoch.toString() + getRandomString(4);
+    String key = DateTime.now().millisecondsSinceEpoch.toString();
 
     qrMap['NAME'] = qrUserNameCT.text;
     qrMap['PNR_ID'] = qrPnrCT.text;
     qrMap['LUGGAGE_ID'] = qrData;
     db.collection("LUGGAGE").doc(qrData).set(qrMap);
-    qrScreen=true;
+    qrScreen = true;
     notifyListeners();
 
-    callNext( GenerateQrScreen(qrData: qrData,), context);
-
+    callNext(
+        GenerateQrScreen(
+          qrData: qrData,
+        ),
+        context);
   }
-  void fetchCustomers(){
+
+  void fetchCustomers() {
     print("dshjskmdcfgf");
-    db.collection("USERS").where("TYPE",isEqualTo:"CUSTOMER").snapshots().listen((value) {
-     if(value.docs.isNotEmpty){
-       customersList.clear();
-       filterCustomersList.clear();
-       for (var element in value.docs) {
-         Map<dynamic, dynamic> map = element.data();
+    db
+        .collection("USERS")
+        .where("TYPE", isEqualTo: "CUSTOMER")
+        .snapshots()
+        .listen((value) {
+      if (value.docs.isNotEmpty) {
+        customersList.clear();
+        filterCustomersList.clear();
+        for (var element in value.docs) {
+          Map<dynamic, dynamic> map = element.data();
 
-         customersList.add(CustomerModel(element.id, map["NAME"].toString(), map["PHONE_NUMBER"].toString(), map["DOB STRING"].toString(),));
-       }
-       filterCustomersList=customersList;
-       notifyListeners();
-
+          customersList.add(CustomerModel(
+            element.id,
+            map["NAME"].toString(),
+            map["PHONE_NUMBER"].toString(),
+            map["DOB STRING"].toString(),
+            map["USER_IMAGE"].toString(),
+          ));
+        }
+        filterCustomersList = customersList;
+        notifyListeners();
+      }
+    });
   }
 
-  });
-
-}
-
-
-void fetchCustomersForEdit(String userId){
+  void fetchCustomersForEdit(String userId) {
     db.collection("USERS").doc(userId).get().then((value) async {
-    if (value.exists) {
-      Map<dynamic, dynamic> map = value.data() as Map;
-      userNameCT.text = map["NAME"].toString();
-      userEmailCT.text = map["EMAIL"].toString();
-      userDobCT.text = map["DOB STRING"].toString();
-      userPhoneCT.text = map["PHONE_NUMBER"].toString().replaceAll("+91", '');
-    }
-    notifyListeners();
-  });
-
-
-}
-
-
+      if (value.exists) {
+        Map<dynamic, dynamic> map = value.data() as Map;
+        editImage = map["USER_IMAGE"].toString();
+        userNameCT.text = map["NAME"].toString();
+        userEmailCT.text = map["EMAIL"].toString();
+        userDobCT.text = map["DOB STRING"].toString();
+        userPhoneCT.text = map["PHONE_NUMBER"].toString().replaceAll("+91", '');
+      }
+      notifyListeners();
+    });
+  }
 
   void deleteCustomer(BuildContext context, String id) {
     db.collection("USERS").doc(id).delete();
@@ -437,16 +461,17 @@ void fetchCustomersForEdit(String userId){
     db.collection("STAFF").get().then((value) {
       for (var element in value.docs) {
         Map<dynamic, dynamic> map = element.data();
-        modellist.add(AddStaffModel(
-            element.id.toString(),
-            map["NAME"].toString(),
-            map["STAFF_ID"].toString(),
-            map["EMAIL"].toString(),
-            map["PROFILE_IMAGE"].toString()
-            // element.id,
-          ),
+        modellist.add(
+          AddStaffModel(
+              element.id.toString(),
+              map["NAME"].toString(),
+              map["STAFF_ID"].toString(),
+              map["EMAIL"].toString(),
+              map["PROFILE_IMAGE"].toString()
+              // element.id,
+              ),
         );
-        filtersStaffList=modellist;
+        filtersStaffList = modellist;
         // searchlist = modellist;
         notifyListeners();
 
@@ -482,7 +507,7 @@ void fetchCustomersForEdit(String userId){
     } else {
       dataMap['PROFILE_IMAGE'] = '';
     }
-  //  dataMap["PROFILE_IMAGE"]=fileImage.toString();
+    //  dataMap["PROFILE_IMAGE"]=fileImage.toString();
     if (from == '') {
       db.collection("STAFF").doc(id).set(dataMap);
     } else {
@@ -493,7 +518,6 @@ void fetchCustomersForEdit(String userId){
     finish(context);
     notifyListeners();
   }
-
 
   void clearStaff() {
     NameController.clear();
@@ -523,16 +547,15 @@ void fetchCustomersForEdit(String userId){
     notifyListeners();
   }
 
-
   void showBottomSheet(BuildContext context) {
     showModalBottomSheet(
         elevation: 10,
         backgroundColor: Colors.white,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(10.0),
-              topRight: Radius.circular(10.0),
-            )),
+          topLeft: Radius.circular(10.0),
+          topRight: Radius.circular(10.0),
+        )),
         context: context,
         builder: (BuildContext bc) {
           return Wrap(
@@ -560,7 +583,7 @@ void fetchCustomersForEdit(String userId){
 
   imageFromCamera() async {
     final pickedFile =
-    await picker.pickImage(source: ImageSource.camera, imageQuality: 15);
+        await picker.pickImage(source: ImageSource.camera, imageQuality: 15);
 
     if (pickedFile != null) {
       _cropImage(pickedFile.path);
@@ -570,10 +593,9 @@ void fetchCustomersForEdit(String userId){
     notifyListeners();
   }
 
-
   imageFromGallery() async {
     final pickedFile =
-    await picker.pickImage(source: ImageSource.gallery, imageQuality: 15);
+        await picker.pickImage(source: ImageSource.gallery, imageQuality: 15);
     if (pickedFile != null) {
       // fileimage = File(pickedFile.path);
       _cropImage(pickedFile.path);
@@ -582,7 +604,6 @@ void fetchCustomersForEdit(String userId){
 
     notifyListeners();
   }
-
 
   Future<void> retrieveLostData() async {
     final LostDataResponse response = await picker.retrieveLostData();
@@ -597,31 +618,28 @@ void fetchCustomersForEdit(String userId){
     print(fileImage.toString() + "tyuuy");
   }
 
-
-
-
   Future<void> _cropImage(String path) async {
     final croppedFile = await ImageCropper().cropImage(
       sourcePath: path,
       aspectRatioPresets: Platform.isAndroid
           ? [
-        CropAspectRatioPreset.square,
-        CropAspectRatioPreset.ratio3x2,
-        CropAspectRatioPreset.original,
-        CropAspectRatioPreset.ratio4x3,
-        CropAspectRatioPreset.ratio16x9,
-      ]
+              CropAspectRatioPreset.square,
+              CropAspectRatioPreset.ratio3x2,
+              CropAspectRatioPreset.original,
+              CropAspectRatioPreset.ratio4x3,
+              CropAspectRatioPreset.ratio16x9,
+            ]
           : [
-        CropAspectRatioPreset.original,
-        CropAspectRatioPreset.square,
-        CropAspectRatioPreset.ratio3x2,
-        CropAspectRatioPreset.ratio4x3,
-        CropAspectRatioPreset.ratio5x3,
-        CropAspectRatioPreset.ratio5x4,
-        CropAspectRatioPreset.ratio7x5,
-        CropAspectRatioPreset.ratio16x9,
-        CropAspectRatioPreset.ratio16x9
-      ],
+              CropAspectRatioPreset.original,
+              CropAspectRatioPreset.square,
+              CropAspectRatioPreset.ratio3x2,
+              CropAspectRatioPreset.ratio4x3,
+              CropAspectRatioPreset.ratio5x3,
+              CropAspectRatioPreset.ratio5x4,
+              CropAspectRatioPreset.ratio7x5,
+              CropAspectRatioPreset.ratio16x9,
+              CropAspectRatioPreset.ratio16x9
+            ],
       uiSettings: [
         AndroidUiSettings(
             toolbarTitle: 'Cropper',
@@ -641,8 +659,4 @@ void fetchCustomersForEdit(String userId){
     }
     print("gggggggggggg666" + fileImage.toString());
   }
-
-
-
-
 }

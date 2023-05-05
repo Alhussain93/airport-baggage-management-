@@ -24,10 +24,10 @@ class CustomersListScreen extends StatelessWidget {
               child: SizedBox(
                 height: 30,
                 width: width / 1,
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
+                    Text(
                       "Customers",
                       style: TextStyle(
                           fontWeight: FontWeight.w600,
@@ -45,7 +45,7 @@ class CustomersListScreen extends StatelessWidget {
                     itemCount:value2.filterCustomersList.length,
                     shrinkWrap: true,
                     scrollDirection: Axis.vertical,
-                    physics: ScrollPhysics(),
+                    physics: const ScrollPhysics(),
                     itemBuilder: (BuildContext context, int index) {
                       var item=value2.filterCustomersList[index];
                       return Padding(
@@ -76,12 +76,17 @@ class CustomersListScreen extends StatelessWidget {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                 Padding(
-                                  padding: EdgeInsets.only(left: 10),
-                                  child: CircleAvatar(
+                                  Padding(
+                                  padding: const EdgeInsets.only(left: 10),
+                                  child:item.profileImage!=""? CircleAvatar(
+                                      backgroundColor: cWhite,
                                       radius: 25,
                                       backgroundImage:
-                                      AssetImage("assets/girl.png")),
+                                      NetworkImage(item.profileImage)): CircleAvatar(
+                                    backgroundColor: cWhite,
+                                      radius: 25,
+                                      backgroundImage:
+                                      const AssetImage("assets/user.png"),),
                                 ),
                                 SizedBox(
                                   height: 60,
@@ -96,17 +101,17 @@ class CustomersListScreen extends StatelessWidget {
                                         children: [
                                           Text(
                                             item.name,
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                                 fontFamily: "Poppins-SemiBold",
                                                 fontSize: 17,
                                                 fontWeight: FontWeight.w600),
                                           ),
-                                          Text(item.phone,style: TextStyle( fontFamily: "Poppins-SemiBold",
+                                          Text(item.phone,style: const TextStyle( fontFamily: "Poppins-SemiBold",
                                               fontSize: 12,
                                               fontWeight: FontWeight.w400),)
                                         ],
                                       ),
-                                      IconButton(onPressed: (){},icon: Icon(Icons.edit_calendar_outlined,size: 10.5,))
+                                      IconButton(onPressed: (){},icon: const Icon(Icons.edit_calendar_outlined,size: 10.5,))
                                     ],
                                   ),
                                 )
