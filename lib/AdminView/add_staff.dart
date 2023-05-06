@@ -207,16 +207,23 @@ class AddStaff extends StatelessWidget {
                    Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 17.0),
                       child: TextFormField(
-                        validator: (value) {
-                          if (value!.trim().isEmpty) {
-                            return "Enter Number";
-                          } else {
-                            return null;
+                        // validator: (value) {
+                        //   if (value!.trim().isEmpty ) {
+                        //     return "Enter Number";
+                        //   } else {
+                        //     return null;
+                        //   }
+                        // },
+                        validator: (value){
+                          if(value!.isEmpty){
+                            return "Please Enter a Phone Number";
+                          }else if(!RegExp(r'^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$').hasMatch(value)){
+                            return "Please Enter a Valid Phone Number";
                           }
                         },
                         keyboardType: TextInputType.phone,
                         inputFormatters: [LengthLimitingTextInputFormatter(10)],
-                        // maxLength: 10,
+
                          controller: value.PhoneNumberController,
                         decoration: InputDecoration(
                           helperText: "",
@@ -274,6 +281,7 @@ class AddStaff extends StatelessWidget {
                               ),
                               onChanged: (newValue) {
                                 value1.staffAirportName = newValue.toString();
+
                               },
                               items: airportNameList.map((item1) {
                                 return DropdownMenuItem(
@@ -314,7 +322,7 @@ class AddStaff extends StatelessWidget {
                           ),
                         ),
                       );
-                    }),SizedBox(height: 10,),
+                    }),const SizedBox(height: 10,),
                     Consumer<AdminProvider>(builder: (context, value1, child) {
                       return Container(
                         height: 45,
@@ -416,7 +424,7 @@ class AddStaff extends StatelessWidget {
                     //   // onChanged: print,
                     //   // selectedItems: ["Brazil"],
                     // ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     Center(
@@ -505,7 +513,8 @@ class AddStaff extends StatelessWidget {
                           child: const Text('YES',
                               style: TextStyle(color: Colors.black)),
                           onPressed: () {
-                            adminProvider.deleteData(context, id);
+                            // adminProvider.deleteData(context, id);
+                            value.deleteData(context,id);
                           }),
                     );
                   }),

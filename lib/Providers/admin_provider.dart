@@ -14,6 +14,7 @@ import 'package:luggage_tracking_app/AdminView/home_screen.dart';
 import 'package:luggage_tracking_app/constant/my_functions.dart';
 import 'package:luggage_tracking_app/model/customer_model.dart';
 import 'package:luggage_tracking_app/constant/my_functions.dart';
+import 'package:luggage_tracking_app/model/tickets_model.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:encrypt/encrypt.dart' as enc;
@@ -38,6 +39,8 @@ class AdminProvider with ChangeNotifier {
   var outputDayNode = DateFormat('d/MM/yyy');
   List<CustomerModel> customersList = [];
   List<CustomerModel> filterCustomersList = [];
+  List<TicketModel> ticketList = [];
+  List<TicketModel> filterTicketLIst = [];
   String qrData = '';
 
   final ImagePicker picker = ImagePicker();
@@ -200,6 +203,17 @@ class AdminProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void filterTickets(String item) {
+    filterTicketLIst = ticketList
+        .where(
+          (a) =>
+              a.pnrId.toLowerCase().contains(item.toLowerCase()) ||
+              a.flightName.toLowerCase().contains(item.toLowerCase())
+        ).toList();
+
+    notifyListeners();
+  }
+
   void filterStaffList(String item) {
     filtersStaffList = modellist
         .where((a) =>
@@ -340,7 +354,6 @@ class AdminProvider with ChangeNotifier {
 
   List<String> ticketNameList = [];
 
-
   void clearQrControllers() {
     qrLuggageCountCT.clear();
     qrPnrCT.clear();
@@ -356,6 +369,8 @@ class AdminProvider with ChangeNotifier {
     ticketFlightName = 'Select Flight Name';
     arrivalTime.clear();
     departureTime.clear();
+    ticketPassengersController.clear();
+    ticketNameList.clear();
   }
 
   TextEditingController NameController = TextEditingController();
@@ -450,11 +465,7 @@ class AdminProvider with ChangeNotifier {
 
   void fetchCustomers() {
     print("dshjskmdcfgf");
-    db
-        .collection("PASSENGERS")
-        .where("DESIGNATION", isEqualTo: "PASSENGER")
-        .snapshots()
-        .listen((value) {
+    db.collection("PASSENGERS").snapshots().listen((value) {
       if (value.docs.isNotEmpty) {
         customersList.clear();
         filterCustomersList.clear();
@@ -495,7 +506,7 @@ class AdminProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void getdataa() {
+  void fetchStaff() {
     modellist.clear();
     filtersStaffList.clear();
 
@@ -528,7 +539,7 @@ class AdminProvider with ChangeNotifier {
   Future<void> addData(
       BuildContext context, String from, String userId, String status) async {
     String id = DateTime.now()
-        .microsecondsSinceEpoch
+        .millisecondsSinceEpoch
         .toString();
     //this code is genarate auto id;
     Map<String, Object> dataMap = HashMap();
@@ -536,6 +547,7 @@ class AdminProvider with ChangeNotifier {
     dataMap["NAME"] = NameController.text;
     userMap["NAME"] = NameController.text;
     dataMap["STAFF_ID"] = StaffidController.text;
+    dataMap["TIME"] = DateTime.now();
     userMap["STAFF_ID"] = StaffidController.text;
     // dataMap["EMAIL"] = EmailController.text;
     dataMap["MOBILE_NUMBER"] = PhoneNumberController.text;
@@ -543,9 +555,11 @@ class AdminProvider with ChangeNotifier {
     dataMap["AIRPORT"] = staffAirportName.toString();
     dataMap["DESIGNATION"]=designation.toString();
     userMap["DESIGNATION"]=designation.toString();
+    userMap["TYPE"]="STAFF";
     dataMap["ID"] = id.toString();
     userMap["ID"] = id.toString();
     dataMap["STATUS"] = status;
+    userMap["STATUS"] = status;
     if (fileImage != null) {
       String time = DateTime.now().millisecondsSinceEpoch.toString();
       ref = FirebaseStorage.instance.ref().child(time);
@@ -569,7 +583,7 @@ class AdminProvider with ChangeNotifier {
       db.collection("USERS").doc(userId).update(userMap);
     }
     notifyListeners();
-    getdataa();
+    fetchStaff();
     finish(context);
     notifyListeners();
   }
@@ -585,7 +599,7 @@ class AdminProvider with ChangeNotifier {
 
   void deleteData(BuildContext context, String id) {
     db.collection("STAFF").doc(id).delete();
-    getdataa();
+    fetchStaff();
     callNextReplacement(HomeScreen(), context);
     notifyListeners();
   }
@@ -746,6 +760,7 @@ class AdminProvider with ChangeNotifier {
     ticketMap["ADDED_TIME"] = DateTime.now();
     ticketMap["ARRIVAL"] = arrivalTime.text;
     ticketMap["DEPARTURE"] = departureTime.text;
+    ticketMap["PASSENGERS"] = ticketNameList;
 
     db.collection("TICKETS").doc(ticketId).set(ticketMap);
 
@@ -753,13 +768,13 @@ class AdminProvider with ChangeNotifier {
 
   void blockStaff(BuildContext context, String id) {
     db.collection("STAFF").doc(id).update({'STATUS': 'BLOCK'});
-    getdataa();
+    fetchStaff();
     callNextReplacement(HomeScreen(), context);
     notifyListeners();
   }
   void unBlockStaff(BuildContext context,String id){
     db.collection("STAFF").doc(id).update({'STATUS':'ACTIVE'});
-    getdataa();
+    fetchStaff();
     callNextReplacement( HomeScreen(), context);
     notifyListeners();
   }
@@ -854,7 +869,8 @@ class AdminProvider with ChangeNotifier {
   }
 
   String selectedDateTime = "";
-  datePicker(context,String ticketTime) {
+
+  datePicker(context, String ticketTime) {
     DatePicker.showDateTimePicker(context,
         showTitleActions: true,
         minTime: DateTime(1980, 1, 1),
@@ -863,17 +879,38 @@ class AdminProvider with ChangeNotifier {
       if (ticketTime == "Arrival") {
         arrivalTime.text = selectedDateTime;
       } else {
-        departureTime.text=selectedDateTime;
+        departureTime.text = selectedDateTime;
       }
       notifyListeners();
-    },locale: LocaleType.en);
+    }, locale: LocaleType.en);
   }
 
-  void addPassengersName(String passenger,BuildContext context2) {
+  void addPassengersName(String passenger, BuildContext context2) {
     ticketPassengersController.clear();
     ticketNameList.add(passenger);
     notifyListeners();
   }
 
+  fetchTicketsList() {
+    db.collection("TICKETS").snapshots().listen((value) {
+      if (value.docs.isNotEmpty) {
+        ticketList.clear();
+        filterTicketLIst.clear();
+        for (var element in value.docs) {
+          Map<dynamic, dynamic> map = element.data();
 
+          ticketList.add(TicketModel(
+              map["ID"].toString(),
+              map["PNR_ID"].toString(),
+              map["ARRIVAL"].toString(),
+              map["DEPARTURE"].toString(),
+              map["FLIGHT_NAME"].toString(),
+              map["FROM"].toString(),
+              map["TO"].toString()));
+        }
+        filterTicketLIst = ticketList;
+        notifyListeners();
+      }
+    });
+  }
 }

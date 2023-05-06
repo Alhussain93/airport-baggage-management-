@@ -31,6 +31,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
         adminProvider.lockApp();
         adminProvider.fetchCustomers();
+        adminProvider.fetchTicketsList();
+        adminProvider.fetchStaff();
 
       FirebaseAuth auth = FirebaseAuth.instance;
       var user = auth.currentUser;
