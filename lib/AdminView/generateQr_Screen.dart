@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:syncfusion_flutter_barcodes/barcodes.dart';
 
 import '../Providers/admin_provider.dart';
 import '../constant/colors.dart';
 
 class GenerateQrScreen extends StatelessWidget {
-  String qrData;
+  int qrData;
    GenerateQrScreen({Key? key,required this.qrData}) : super(key: key);
 
   @override
@@ -23,22 +24,31 @@ class GenerateQrScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(height: height*.3,),
-                Center(
-                  child: Container(
-                    height: 290,
-                    width: 290,
-                    color: Colors.white,
-                    child: Padding(
-                      padding: const EdgeInsets.all(45),
-                      child: QrImage(
-                        data: value.encrypt(qrData),
-                        version: QrVersions.auto,
-                        // size: 200,
-                      ),
-                    ),
-                  ),
-                ),
+                SizedBox(height: height*.05,),
+
+
+    GridView.builder(
+    scrollDirection: Axis.vertical,
+    physics: const NeverScrollableScrollPhysics(),
+    shrinkWrap: true,
+    itemCount:qrData ,
+    gridDelegate:
+    const SliverGridDelegateWithFixedCrossAxisCount(
+    childAspectRatio: 1.1,
+    crossAxisSpacing: 2,
+    crossAxisCount: 2),
+    itemBuilder: (context, index) {
+      return Container(
+        height: 200,
+        child: SfBarcodeGenerator(
+          value: (index+1).toString(),
+          symbology: QRCode(),
+          showValue: true,
+        ),
+      );
+
+    }),
+
               ],
             );
           }

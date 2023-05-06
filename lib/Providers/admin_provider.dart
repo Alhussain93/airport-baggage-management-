@@ -384,7 +384,6 @@ class AdminProvider with ChangeNotifier {
   String designation = 'Select Designation';
   String flightName = 'Select Flight Name';
   String ticketFlightName = 'Select Flight Name';
-  bool qrScreen = false;
   String airportName = '';
   List<String> flightNameList = [
     "Select Flight Name",
@@ -448,19 +447,20 @@ class AdminProvider with ChangeNotifier {
 
   void generateQrCode(BuildContext context) {
     HashMap<String, Object> qrMap = HashMap();
+
+    int luggageCount=int.parse(qrLuggageCountCT.text);
+
     qrData = DateTime.now().millisecondsSinceEpoch.toString() + getRandomString(4);
     String key = DateTime.now().millisecondsSinceEpoch.toString();
-
     qrMap['NAME'] = qrUserNameCT.text;
     qrMap['PNR_ID'] = qrPnrCT.text;
     qrMap['LUGGAGE_COUNT'] = qrLuggageCountCT.text;
     qrMap['LUGGAGE_ID'] = qrData;
     db.collection("LUGGAGE").doc(qrData).set(qrMap);
-    qrScreen = true;
     notifyListeners();
 
     callNext(
-        GenerateQrScreen(qrData: qrData,), context);
+        GenerateQrScreen(qrData: luggageCount,), context);
   }
 
   void fetchCustomers() {
