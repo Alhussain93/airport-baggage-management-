@@ -68,19 +68,25 @@ class AddStaff extends StatelessWidget {
                         onTap: () {
                           value.showBottomSheet(context);
                         },
-                        child: Container(
-                          height: 80,
-                          width: 80,
-                          decoration: BoxDecoration(
+                        child:Container(
+                            height: 90,
+                            decoration: BoxDecoration(
+                              color: cWhite,
                               shape: BoxShape.circle,
-                              border:
-                                  Border.all(width: 1.5, color: Colors.grey)),
-                          child: Icon(
-                            Icons.add_a_photo_outlined,
-                            size: 30,
-                            color: Colors.grey,
-                          ),
-                        )),
+                              image: value.fileImage != null
+                                  ?  DecorationImage(
+                                  image: FileImage(value.fileImage!),fit: BoxFit.fill)
+                                  : value.editImage!=""? DecorationImage(
+                                  image: NetworkImage(value.editImage),fit: BoxFit.fill,
+                                  scale: 15):
+                              const DecorationImage(
+                                  image: AssetImage("assets/user.png"),
+                                  scale: 10),
+                              border: Border.all(
+                                width: 1.5,
+                                color: Colors.grey.shade500,
+                              ),
+                            )),),
                     from=='edit'?
                     Padding(
                       padding: const EdgeInsets.only(right: 30, top: 20),
