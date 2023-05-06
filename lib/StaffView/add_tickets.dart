@@ -81,6 +81,7 @@ class AddTickets extends StatelessWidget {
                     ),
                   );
                 }),
+
                 Padding(
                   padding: const EdgeInsets.only(left: 25, right: 25),
                   child: TextFormField(
@@ -103,6 +104,7 @@ class AddTickets extends StatelessWidget {
                     },
                   ),
                 ),
+
                 Padding(
                   padding: const EdgeInsets.only(left: 25, right: 25),
                   child: TextFormField(
@@ -125,6 +127,7 @@ class AddTickets extends StatelessWidget {
                     },
                   ),
                 ),
+
                 Padding(
                   padding: const EdgeInsets.only(left: 25, right: 25),
                   child: TextFormField(
@@ -147,6 +150,7 @@ class AddTickets extends StatelessWidget {
                     },
                   ),
                 ),
+
                 Padding(
                   padding: const EdgeInsets.only(left: 25, right: 25),
                   child: TextFormField(
@@ -173,6 +177,7 @@ class AddTickets extends StatelessWidget {
                     },
                   ),
                 ),
+
                 Padding(
                   padding: const EdgeInsets.only(left: 25, right: 25, top: 5),
                   child: TextFormField(
@@ -199,6 +204,7 @@ class AddTickets extends StatelessWidget {
                     },
                   ),
                 ),
+
                 Padding(
                   padding: const EdgeInsets.only(left: 25, right: 25),
                   child: TextFormField(
@@ -224,6 +230,116 @@ class AddTickets extends StatelessWidget {
                     },
                   ),
                 ),
+
+                Padding(
+                  padding: const EdgeInsets.only(left: 25,right: 25),
+                  child: SizedBox(
+                    width: width-50,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: width-150,
+                          child: TextFormField(
+
+                            // autofocus: false,
+                            // obscureText: _obscureText,
+                            keyboardType: TextInputType.text,
+                            controller: values.ticketPassengersController,
+                            decoration: InputDecoration(
+                              hintText: 'Add Passengers Name',
+                              helperText: '',
+
+                              // isDense: true, // important line
+                              // contentPadding: EdgeInsets.fromLTRB(10, 50, 50, 0),
+
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      15.0)),
+                            ),
+                            validator: (value3) {
+                              if (value3!.trim().isEmpty) {
+                                return "Enter Passenger Name";
+                              } else {
+                                return null;
+                              }
+                            },
+                          ),
+                        ),
+                        InkWell(
+                            onTap: () {
+                              if(values.ticketPassengersController.text.trim().isNotEmpty) {
+                                values.addPassengersName(values.ticketPassengersController.text,context);
+                              }
+                            },
+                            child: Container(
+                                width: 90,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.all(Radius.circular(25)),
+                                  color: Textclr,
+                                ),
+                                child: const Center(
+                                  child: Text('Add',
+                                    style: TextStyle(
+                                      fontFamily: 'BarlowCondensed',
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 14,
+                                    ),
+                                    textAlign: TextAlign.center,),
+                                ))),
+                      ],
+                    ),
+                  ),
+                ),
+
+                ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: values.ticketNameList.length,
+                    itemBuilder: (BuildContext context,
+                        int index) {
+                      return Padding(
+                        padding:
+                        const EdgeInsets.all(8.0),
+                        child: Container(
+                            alignment: Alignment.centerLeft,
+                            //  color: Colors.red,
+                            // height: 50,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (values.ticketNameList.isNotEmpty && index == 0)
+                                  Center(child: Padding(
+                                    padding: const EdgeInsets.only(bottom: 30.0,top: 20),
+                                    child: Text(' Passengers List (${values.ticketNameList.length})',
+                                        style: const TextStyle(fontWeight: FontWeight.w600,
+                                          fontSize: 18,)),
+                                  )) else const SizedBox(),
+
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                        '  ${index + 1} -   ${values.ticketNameList[index]}',
+                                        style: const TextStyle(fontWeight: FontWeight.w600,fontSize: 18,)
+                                    ),
+                                    InkWell(
+                                        onTap: (){
+                                          values.ticketNameList.removeAt(index);
+                                          values.notifyListeners();
+                                        },
+                                        child: const Icon(Icons.delete))
+                                  ],
+                                ),
+                                const Divider(color: cGrey,)
+                              ],
+                            )),
+                      );
+                    }),
+
                 Center(
                   child: Padding(
                     padding: const EdgeInsets.only(top: 10,bottom: 20),
@@ -254,7 +370,9 @@ class AddTickets extends StatelessWidget {
                       );
                     }),
                   ),
-                )
+                ),
+
+
               ],
             );
           }),
