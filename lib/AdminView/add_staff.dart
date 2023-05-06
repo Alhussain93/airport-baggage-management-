@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:luggage_tracking_app/AdminView/staff_screen.dart';
 import 'package:luggage_tracking_app/constant/my_functions.dart';
 import 'package:provider/provider.dart';
@@ -24,7 +23,7 @@ class AddStaff extends StatelessWidget {
     "Sohar International Airport",
     'Khasab Airport'
   ];
-  List<String> DesignationList = [
+  List<String> Designation = [
     'Select Designation',
     "Check_In",
     "Loading",
@@ -68,19 +67,25 @@ class AddStaff extends StatelessWidget {
                         onTap: () {
                           value.showBottomSheet(context);
                         },
-                        child: Container(
-                          height: 80,
-                          width: 80,
-                          decoration: BoxDecoration(
+                        child:Container(
+                            height: 90,
+                            decoration: BoxDecoration(
+                              color: cWhite,
                               shape: BoxShape.circle,
-                              border:
-                                  Border.all(width: 1.5, color: Colors.grey)),
-                          child: Icon(
-                            Icons.add_a_photo_outlined,
-                            size: 30,
-                            color: Colors.grey,
-                          ),
-                        )),
+                              image: value.fileImage != null
+                                  ?  DecorationImage(
+                                  image: FileImage(value.fileImage!),fit: BoxFit.fill)
+                                  : value.editImage!=""? DecorationImage(
+                                  image: NetworkImage(value.editImage),fit: BoxFit.fill,
+                                  scale: 15):
+                              const DecorationImage(
+                                  image: AssetImage("assets/user.png"),
+                                  scale: 10),
+                              border: Border.all(
+                                width: 1.5,
+                                color: Colors.grey.shade500,
+                              ),
+                            )),),
                     from=='edit'?
                     Padding(
                       padding: const EdgeInsets.only(right: 30, top: 20),
@@ -125,6 +130,7 @@ class AddStaff extends StatelessWidget {
                                           borderRadius: BorderRadius.circular(20),
                                           color: cnttColor),
                                       child: Center(child:status=='ACTIVE'? const Text("Block"):const Text("Unblock")),
+
                                     ),
                                   );
                                 }
@@ -207,13 +213,6 @@ class AddStaff extends StatelessWidget {
                    Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 17.0),
                       child: TextFormField(
-                        // validator: (value) {
-                        //   if (value!.trim().isEmpty ) {
-                        //     return "Enter Number";
-                        //   } else {
-                        //     return null;
-                        //   }
-                        // },
                         validator: (value){
                           if(value!.isEmpty){
                             return "Please Enter a Phone Number";
@@ -222,7 +221,6 @@ class AddStaff extends StatelessWidget {
                           }
                         },
                         keyboardType: TextInputType.phone,
-                        inputFormatters: [LengthLimitingTextInputFormatter(10)],
 
                          controller: value.PhoneNumberController,
                         decoration: InputDecoration(
@@ -230,7 +228,6 @@ class AddStaff extends StatelessWidget {
                           fillColor: Colors.white,
                           contentPadding: const EdgeInsets.all(11),
                           hintText: 'Phone Number',
-
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15.0)),
                         ),
@@ -281,7 +278,6 @@ class AddStaff extends StatelessWidget {
                               ),
                               onChanged: (newValue) {
                                 value1.staffAirportName = newValue.toString();
-
                               },
                               items: airportNameList.map((item1) {
                                 return DropdownMenuItem(
@@ -322,7 +318,7 @@ class AddStaff extends StatelessWidget {
                           ),
                         ),
                       );
-                    }),const SizedBox(height: 10,),
+                    }),SizedBox(height: 10,),
                     Consumer<AdminProvider>(builder: (context, value1, child) {
                       return Container(
                         height: 45,
@@ -369,7 +365,7 @@ class AddStaff extends StatelessWidget {
                               onChanged: (newValue) {
                                 value1.designation = newValue.toString();
                               },
-                              items: DesignationList.map((item1) {
+                              items: Designation.map((item1) {
                                 return DropdownMenuItem(
                                     value: item1,
                                     child: Padding(
@@ -424,7 +420,7 @@ class AddStaff extends StatelessWidget {
                     //   // onChanged: print,
                     //   // selectedItems: ["Brazil"],
                     // ),
-                    const SizedBox(
+                    SizedBox(
                       height: 20,
                     ),
                     Center(
@@ -513,8 +509,7 @@ class AddStaff extends StatelessWidget {
                           child: const Text('YES',
                               style: TextStyle(color: Colors.black)),
                           onPressed: () {
-                            // adminProvider.deleteData(context, id);
-                            value.deleteData(context,id);
+                            adminProvider.deleteData(context, id);
                           }),
                     );
                   }),
@@ -607,3 +602,4 @@ class AddStaff extends StatelessWidget {
     );
   }
 }
+

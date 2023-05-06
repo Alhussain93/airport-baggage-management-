@@ -518,9 +518,8 @@ class AdminProvider with ChangeNotifier {
               element.id.toString(),
               map["NAME"].toString(),
               map["STAFF_ID"].toString(),
-              // map["EMAIL"].toString(),
-              map["PHONE_NUMBER"].toString(),
               map["PROFILE_IMAGE"].toString(),
+              map["PHONE_NUMBER"].toString(),
               map["STATUS"].toString()),
         );
         filtersStaffList = modellist;
@@ -550,8 +549,8 @@ class AdminProvider with ChangeNotifier {
     dataMap["TIME"] = DateTime.now();
     userMap["STAFF_ID"] = StaffidController.text;
     // dataMap["EMAIL"] = EmailController.text;
-    dataMap["MOBILE_NUMBER"] = PhoneNumberController.text;
-    userMap["MOBILE_NUMBER"] = PhoneNumberController.text;
+    dataMap["MOBILE_NUMBER"] ="+91${PhoneNumberController.text}";
+    userMap["MOBILE_NUMBER"] ="+91${PhoneNumberController.text}";
     dataMap["AIRPORT"] = staffAirportName.toString();
     dataMap["DESIGNATION"]=designation.toString();
     userMap["DESIGNATION"]=designation.toString();

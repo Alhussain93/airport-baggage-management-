@@ -125,6 +125,7 @@ class AddCustomerScreen extends StatelessWidget {
                     keyboardType: TextInputType.phone,
                     textAlign: TextAlign.start,
                     inputFormatters: [LengthLimitingTextInputFormatter(10)],
+
                     decoration: InputDecoration(
                       counterStyle: const TextStyle(color: Colors.grey),
                       hintStyle:
