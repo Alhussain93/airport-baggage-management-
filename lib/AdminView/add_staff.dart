@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:luggage_tracking_app/AdminView/staff_screen.dart';
 import 'package:luggage_tracking_app/constant/my_functions.dart';
 import 'package:provider/provider.dart';
@@ -24,7 +23,7 @@ class AddStaff extends StatelessWidget {
     "Sohar International Airport",
     'Khasab Airport'
   ];
-  List<String> DesignationList = [
+  List<String> Designation = [
     'Select Designation',
     "Check_In",
     "Loading",
@@ -139,6 +138,7 @@ class AddStaff extends StatelessWidget {
                                           borderRadius: BorderRadius.circular(20),
                                           color: cnttColor),
                                       child: Center(child:status=='ACTIVE'? const Text("Block"):const Text("Unblock")),
+
                                     ),
                                   );
                                 }
@@ -221,13 +221,6 @@ class AddStaff extends StatelessWidget {
                    Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 17.0),
                       child: TextFormField(
-                        // validator: (value) {
-                        //   if (value!.trim().isEmpty ) {
-                        //     return "Enter Number";
-                        //   } else {
-                        //     return null;
-                        //   }
-                        // },
                         validator: (value){
                           if(value!.isEmpty){
                             return "Please Enter a Phone Number";
@@ -236,7 +229,6 @@ class AddStaff extends StatelessWidget {
                           }
                         },
                         keyboardType: TextInputType.phone,
-                        inputFormatters: [LengthLimitingTextInputFormatter(10)],
 
                          controller: value.PhoneNumberController,
                         decoration: InputDecoration(
@@ -244,7 +236,6 @@ class AddStaff extends StatelessWidget {
                           fillColor: Colors.white,
                           contentPadding: const EdgeInsets.all(11),
                           hintText: 'Phone Number',
-
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15.0)),
                         ),
@@ -295,7 +286,6 @@ class AddStaff extends StatelessWidget {
                               ),
                               onChanged: (newValue) {
                                 value1.staffAirportName = newValue.toString();
-
                               },
                               items: airportNameList.map((item1) {
                                 return DropdownMenuItem(
@@ -336,7 +326,7 @@ class AddStaff extends StatelessWidget {
                           ),
                         ),
                       );
-                    }),const SizedBox(height: 10,),
+                    }),SizedBox(height: 10,),
                     Consumer<AdminProvider>(builder: (context, value1, child) {
                       return Container(
                         height: 45,
@@ -383,7 +373,7 @@ class AddStaff extends StatelessWidget {
                               onChanged: (newValue) {
                                 value1.designation = newValue.toString();
                               },
-                              items: DesignationList.map((item1) {
+                              items: Designation.map((item1) {
                                 return DropdownMenuItem(
                                     value: item1,
                                     child: Padding(
@@ -438,7 +428,7 @@ class AddStaff extends StatelessWidget {
                     //   // onChanged: print,
                     //   // selectedItems: ["Brazil"],
                     // ),
-                    const SizedBox(
+                    SizedBox(
                       height: 20,
                     ),
                     Center(
@@ -528,8 +518,7 @@ class AddStaff extends StatelessWidget {
                           child: const Text('YES',
                               style: TextStyle(color: Colors.black)),
                           onPressed: () {
-                            // adminProvider.deleteData(context, id);
-                            value.deleteData(context,id);
+                            adminProvider.deleteData(context, id);
                           }),
                     );
                   }),
@@ -622,3 +611,4 @@ class AddStaff extends StatelessWidget {
     );
   }
 }
+
