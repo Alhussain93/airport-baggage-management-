@@ -67,19 +67,25 @@ class AddStaff extends StatelessWidget {
                         onTap: () {
                           value.showBottomSheet(context);
                         },
-                        child: Container(
-                          height: 80,
-                          width: 80,
-                          decoration: BoxDecoration(
+                        child:Container(
+                            height: 90,
+                            decoration: BoxDecoration(
+                              color: cWhite,
                               shape: BoxShape.circle,
-                              border:
-                                  Border.all(width: 1.5, color: Colors.grey)),
-                          child: Icon(
-                            Icons.add_a_photo_outlined,
-                            size: 30,
-                            color: Colors.grey,
-                          ),
-                        )),
+                              image: value.fileImage != null
+                                  ?  DecorationImage(
+                                  image: FileImage(value.fileImage!),fit: BoxFit.fill)
+                                  : value.editImage!=""? DecorationImage(
+                                  image: NetworkImage(value.editImage),fit: BoxFit.fill,
+                                  scale: 15):
+                              const DecorationImage(
+                                  image: AssetImage("assets/user.png"),
+                                  scale: 10),
+                              border: Border.all(
+                                width: 1.5,
+                                color: Colors.grey.shade500,
+                              ),
+                            )),),
                     from=='edit'?
                     Padding(
                       padding: const EdgeInsets.only(right: 30, top: 20),
@@ -123,11 +129,8 @@ class AddStaff extends StatelessWidget {
                                       decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(20),
                                           color: cnttColor),
-<<<<<<<<< Temporary merge branch 1
-                                      child: Center(child:status=='UNBLOCK'? const Text("Block"):const Text("Unblock")),
-=========
                                       child: Center(child:status=='ACTIVE'? const Text("Block"):const Text("Unblock")),
->>>>>>>>> Temporary merge branch 2
+
                                     ),
                                   );
                                 }
@@ -210,15 +213,15 @@ class AddStaff extends StatelessWidget {
                    Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 17.0),
                       child: TextFormField(
-                        validator: (value) {
-                          if (value!.trim().isEmpty) {
-                            return "Enter Number";
-                          } else {
-                            return null;
+                        validator: (value){
+                          if(value!.isEmpty){
+                            return "Please Enter a Phone Number";
+                          }else if(!RegExp(r'^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$').hasMatch(value)){
+                            return "Please Enter a Valid Phone Number";
                           }
                         },
                         keyboardType: TextInputType.phone,
-                        maxLength: 10,
+
                          controller: value.PhoneNumberController,
                         decoration: InputDecoration(
                           helperText: "",
@@ -531,11 +534,7 @@ class AddStaff extends StatelessWidget {
     AlertDialog alert = AlertDialog(
       backgroundColor: themecolor,
       scrollable: true,
-<<<<<<<<< Temporary merge branch 1
-      title:  userStatus=='UNBLOCK'? const Text(
-=========
       title:  userStatus=='ACTIVE'? const Text(
->>>>>>>>> Temporary merge branch 2
         "Do you want to block this staff",
         style: TextStyle(
             fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
@@ -579,11 +578,7 @@ class AddStaff extends StatelessWidget {
                           child: const Text('YES',
                               style: TextStyle(color: Colors.black)),
                           onPressed: () {
-<<<<<<<<< Temporary merge branch 1
-                            if(userStatus=='UNBLOCK'){
-=========
                             if(userStatus=='ACTIVE'){
->>>>>>>>> Temporary merge branch 2
                               adminProvider.blockStaff(context, id);
                             }else{
                               adminProvider.unBlockStaff(context, id);
@@ -607,3 +602,4 @@ class AddStaff extends StatelessWidget {
     );
   }
 }
+

@@ -130,23 +130,18 @@ class StaffScreen extends StatelessWidget {
                                 children: [
                                   Padding(
                                       padding: EdgeInsets.only(left: 10),
-                                      child: Container(
-                                        height: 50,
-                                        width: 50,
-                                        decoration:item.profileImage!=""?BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          image: DecorationImage(
-                                              image:
-                                                  NetworkImage(item.profileImage),
-                                              fit: BoxFit.fill),
-                                        ):const BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          image: DecorationImage(
-                                              image:
-                                              AssetImage("assets/girl.png"),
-                                              fit: BoxFit.fill),
-                                        )
-                                      )),
+                                      child: item.profileImage != ""
+                                          ? CircleAvatar(
+                                          backgroundColor: cWhite,
+                                          radius: 25,
+                                          backgroundImage:
+                                          NetworkImage(item.profileImage))
+                                          : CircleAvatar(
+                                        backgroundColor: cWhite,
+                                        radius: 25,
+                                        backgroundImage:
+                                        const AssetImage("assets/user.png"),
+                                      ),),
                                   SizedBox(
                                     height: 60,
                                     width: width / 1.3,
