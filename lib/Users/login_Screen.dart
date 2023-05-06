@@ -224,7 +224,7 @@ border: Border.all(color:Colors.grey.shade200),
 
     db
         .collection("USERS")
-        .where("PHONE_NUMBER",
+        .where("MOBILE_NUMBER",
     isEqualTo: "+91${phoneController.text}")
         .get()
         .then((userValue) async {

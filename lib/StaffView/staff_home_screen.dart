@@ -11,7 +11,8 @@ import '../constant/colors.dart';
 import '../constant/my_functions.dart';
 
 class StaffHomeScreen extends StatelessWidget {
-  StaffHomeScreen({super.key});
+  String designation;
+  StaffHomeScreen({super.key,required this.designation});
 
   ValueNotifier<int> isSelected = ValueNotifier(0);
 
@@ -21,10 +22,9 @@ class StaffHomeScreen extends StatelessWidget {
 
     List screens = [
       const CustomersListScreen(),
-      QrScanner(),
-      const StaffScreen(),
-      MisingLaggage(),
+       QrScanner(),
       MakeQrScreen(),
+      MisingLaggage(),
     ];
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
@@ -63,7 +63,7 @@ class StaffHomeScreen extends StatelessWidget {
                               width: 10,
                             ),
                             Text(
-                              "Add customer",
+                              "Add Passenger",
                               style:
                               TextStyle(color: Colors.white, fontSize: 15),
                             )
@@ -71,10 +71,12 @@ class StaffHomeScreen extends StatelessWidget {
                         ),
                       ),
                     ),
+                    designation!="Loading"?
                     InkWell(
                       onTap: () {
                         isSelected.value = 1;
-                        finish(context);
+                          finish(context);
+
                       },
                       child: Padding(
                         padding: const EdgeInsets.only(top: 10),
@@ -97,6 +99,41 @@ class StaffHomeScreen extends StatelessWidget {
                               ),
                               Text(
                                 "Scan",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 15),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ):
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: InkWell(
+                        onTap: () {
+                          isSelected.value = 2;
+                          adminProvider. clearQrControllers();
+                          finish(context);
+                        },
+                        child: Container(
+                          height: 40,
+                          width: width * .77,
+                          color: darkThemeColor,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: const [
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Icon(
+                                Icons.qr_code_outlined,
+                                color: Colors.white,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                "Generate Qr  ",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 15),
                               )
@@ -139,33 +176,33 @@ class StaffHomeScreen extends StatelessWidget {
                         ),
                       ),
                     ),
+                    Spacer(),
                     Padding(
-                      padding: const EdgeInsets.only(top: 10),
+                      padding: const EdgeInsets.only(bottom: 20),
                       child: InkWell(
                         onTap: () {
-                          isSelected.value = 4;
-                          adminProvider. clearQrControllers();
-                          finish(context);
+
+                          adminProvider.logOutAlert(context);
                         },
                         child: Container(
                           height: 40,
                           width: width * .77,
                           color: darkThemeColor,
-                          child: Row(
+                          child:  Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: const [
                               SizedBox(
                                 width: 10,
                               ),
                               Icon(
-                                Icons.qr_code_outlined,
+                                Icons.logout,
                                 color: Colors.white,
                               ),
                               SizedBox(
                                 width: 10,
                               ),
                               Text(
-                                "Generate Qr  ",
+                                "Log Out",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 15),
                               )
@@ -200,8 +237,8 @@ class StaffHomeScreen extends StatelessWidget {
                         const SizedBox(
                           height: 50,
                         ),
-                        isSelected.value==1||isSelected.value==4 ?const Padding(padding: EdgeInsets.only(top: 52)):const SizedBox(),
-                        isSelected.value!=1&&isSelected.value!=4 ?Padding(
+                        isSelected.value==1||isSelected.value==4?const Padding(padding: EdgeInsets.only(top: 52)):const SizedBox(),
+                        isSelected.value!=1&&isSelected.value!=4?Padding(
                           padding: const EdgeInsets.only(top: 15),
                           child: Container(
                             height: 40,
@@ -225,9 +262,9 @@ class StaffHomeScreen extends StatelessWidget {
                                 if(isSelected.value==0){
                                   adminProvider.notifyListeners();
                                   adminProvider.filterCustomerList(text);
-                                }else if( isSelected.value ==2){
+                                }else if( isSelected.value ==3){
                                   adminProvider.notifyListeners();
-                                  adminProvider. filterStaffList(text);
+                                  // adminProvider. filterStaffList(text);
                                 }
 
                               },
@@ -255,7 +292,7 @@ class StaffHomeScreen extends StatelessWidget {
                                   ),
                                   child: Center(
                                       child: Text(
-                                        "Add Costumer",
+                                        "Add Passenger",
                                         style: TextStyle(
                                           fontSize: 11,
                                           fontWeight: FontWeight.w600,
@@ -268,24 +305,31 @@ class StaffHomeScreen extends StatelessWidget {
                               ),
                               InkWell(
                                 onTap: () {
-                                  isSelected.value = 1;
+                                  if(designation!="Loading"){
+                                    isSelected.value = 1;
+                                  }else{
+                                    isSelected.value = 2;
+
+                                  }
+
                                 },
                                 child: Container(
                                   width: 105,
                                   height: 32,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(20),
-                                    color: dIsSelected == 1
+                                    color: dIsSelected ==1||dIsSelected ==2
                                         ? Colors.white.withOpacity(0.2)
                                         : Textclr,
                                   ),
                                   child: Center(
                                       child: Text(
-                                        "Scan",
+                                        designation!="Loading"?
+                                        "Scan":"Generate Qr",
                                         style: TextStyle(
                                             fontSize: 11,
                                             fontWeight: FontWeight.w600,
-                                            color: dIsSelected == 1
+                                            color: dIsSelected == 1||dIsSelected == 2
                                                 ? Colors.white
                                                 : Colors.black),
                                       )),
@@ -293,25 +337,24 @@ class StaffHomeScreen extends StatelessWidget {
                               ),
                               InkWell(
                                 onTap: () {
-                                  isSelected.value = 4;
-                                  adminProvider. clearQrControllers();
+                                  isSelected.value = 3;
                                 },
                                 child: Container(
                                   width: 105,
                                   height: 32,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(20),
-                                    color: dIsSelected == 2
+                                    color: dIsSelected ==3
                                         ? Colors.white.withOpacity(0.2)
                                         : Textclr,
                                   ),
                                   child: Center(
                                       child: Text(
-                                        "Generate QR",
+                                        "Missing Luggage",
                                         style: TextStyle(
                                             fontSize: 11,
                                             fontWeight: FontWeight.w600,
-                                            color: dIsSelected == 2
+                                            color: dIsSelected == 3
                                                 ? Colors.white
                                                 : Colors.black),
                                       )),
