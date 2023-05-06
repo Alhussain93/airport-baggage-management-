@@ -21,7 +21,7 @@ class AddCustomerScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: themecolor,
         title: const Text(
-          "Add Customer",
+          "Add Passenger",
           style: TextStyle(color: Colors.white, fontSize: 18),
         ),
         centerTitle: true,

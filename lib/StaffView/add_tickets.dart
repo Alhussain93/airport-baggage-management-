@@ -18,13 +18,22 @@ class AddTickets extends StatelessWidget {
     AdminProvider adminProvider =
         Provider.of<AdminProvider>(context, listen: false);
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: themecolor,
+        title: const Text(
+          "Add Ticket",
+          style: TextStyle(color: Colors.white, fontSize: 18),
+        ),
+        centerTitle: true,
+      ),
+
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
           child: Consumer<AdminProvider>(builder: (context, values, child) {
             return Column(
               children: [
-                SizedBox(height: height/10,),
+                SizedBox(height: height/40,),
                 Consumer<AdminProvider>(builder: (context, value1, child) {
                   return Padding(
                     padding:
@@ -271,12 +280,12 @@ class AddTickets extends StatelessWidget {
                                 decoration: BoxDecoration(
                                   borderRadius: const BorderRadius.all(
                                       Radius.circular(25)),
-                                  color: Textclr,
+                                  color: themecolor,
                                 ),
-                                child: const Center(
+                                child:  Center(
                                   child: Text(
                                     'Add',
-                                    style: TextStyle(
+                                    style: TextStyle(color: cWhite,
                                       fontFamily: 'BarlowCondensed',
                                       fontWeight: FontWeight.w500,
                                       fontSize: 14,
@@ -385,11 +394,11 @@ class AddTickets extends StatelessWidget {
                           width: width / 1.1,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
-                              color: Textclr),
-                          child: const Center(
+                              color: themecolor),
+                          child:  Center(
                               child: Text(
                             "Add Ticket",
-                            style: TextStyle(
+                            style: TextStyle(color: cWhite,
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600,
                                 fontFamily: 'Poppins-SemiBold'),
