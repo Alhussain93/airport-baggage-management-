@@ -20,7 +20,6 @@ import 'package:encrypt/encrypt.dart' as enc;
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
 
-
 import '../AdminView/add_staff.dart';
 import '../AdminView/generateQr_Screen.dart';
 import '../UserView/splash_screen.dart';
@@ -330,24 +329,27 @@ class AdminProvider with ChangeNotifier {
   TextEditingController qrPnrCT = TextEditingController();
   TextEditingController qrUserNameCT = TextEditingController();
 
-
   TextEditingController ticketFromController = TextEditingController();
   TextEditingController ticketToController = TextEditingController();
   TextEditingController passengerCountController = TextEditingController();
   TextEditingController ticketPnrController = TextEditingController();
-
+  TextEditingController arrivalTime = TextEditingController();
+  TextEditingController departureTime = TextEditingController();
 
   void clearQrControllers() {
     qrPnrCT.clear();
     qrUserNameCT.clear();
-     flightName = 'Select Flight Name';
+    flightName = 'Select Flight Name';
   }
+
   void clearTicketControllers() {
     ticketFromController.clear();
     ticketToController.clear();
     passengerCountController.clear();
     ticketPnrController.clear();
     ticketFlightName = 'Select Flight Name';
+    arrivalTime.clear();
+    departureTime.clear();
   }
 
   TextEditingController NameController = TextEditingController();
@@ -502,9 +504,7 @@ class AdminProvider with ChangeNotifier {
               map["STAFF_ID"].toString(),
               map["EMAIL"].toString(),
               map["PROFILE_IMAGE"].toString(),
-              map["STATUS"].toString()
-
-              ),
+              map["STATUS"].toString()),
         );
         filtersStaffList = modellist;
         // searchlist = modellist;
@@ -519,7 +519,8 @@ class AdminProvider with ChangeNotifier {
 
 //String ref='';
 
-  Future<void> addData(BuildContext context, String from, String userId,String status) async {
+  Future<void> addData(
+      BuildContext context, String from, String userId, String status) async {
     String id = DateTime.now()
         .microsecondsSinceEpoch
         .toString(); //this code is genarate auto id;
@@ -566,31 +567,30 @@ class AdminProvider with ChangeNotifier {
   void deleteData(BuildContext context, String id) {
     db.collection("STAFF").doc(id).delete();
     getdataa();
-    callNextReplacement( HomeScreen(), context);
+    callNextReplacement(HomeScreen(), context);
     notifyListeners();
   }
 
-  void editStaff(BuildContext context,String id) {
-    String status='';
+  void editStaff(BuildContext context, String id) {
+    String status = '';
     db.collection("STAFF").doc(id).get().then((value) {
       if (value.exists) {
         Map<dynamic, dynamic> map = value.data() as Map;
-        staffEditId=map['ID'].toString();
+        staffEditId = map['ID'].toString();
         NameController.text = map['NAME'].toString();
         StaffidController.text = map['STAFF_ID'].toString();
         staffAirportName = map['AIRPORT'].toString();
         EmailController.text = map['EMAIL'].toString();
         status = map['STATUS'].toString();
       }
-      print("chucifhf"+status.toString());
+      print("chucifhf" + status.toString());
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) =>
-                  AddStaff(
+              builder: (context) => AddStaff(
                     from: "edit",
-                    userId:id,
-                    status:status,
+                    userId: id,
+                    status: status,
                   )));
     });
 
@@ -710,8 +710,7 @@ class AdminProvider with ChangeNotifier {
     print("gggggggggggg666" + fileImage.toString());
   }
 
-  void addTickets(String addedBy,String addedName){
-
+  void addTickets(String addedBy, String addedName) {
     HashMap<String, Object> ticketMap = HashMap();
     String ticketId = DateTime.now().millisecondsSinceEpoch.toString();
 
@@ -724,50 +723,54 @@ class AdminProvider with ChangeNotifier {
     ticketMap["ADDED_BY"] = addedBy;
     ticketMap["ADDED_BY_NAME"] = addedName;
     ticketMap["ADDED_TIME"] = DateTime.now();
+    ticketMap["ARRIVAL"] = arrivalTime.text;
+    ticketMap["DEPARTURE"] = departureTime.text;
 
     db.collection("TICKETS").doc(ticketId).set(ticketMap);
-
   }
 
-  void blockStaff(BuildContext context,String id){
-    db.collection("STAFF").doc(id).update({'STATUS':'BLOCK'});
+  void blockStaff(BuildContext context, String id) {
+    db.collection("STAFF").doc(id).update({'STATUS': 'BLOCK'});
     getdataa();
-    callNextReplacement( HomeScreen(), context);
+    callNextReplacement(HomeScreen(), context);
     notifyListeners();
   }
-  void unBlockStaff(BuildContext context,String id){
-    db.collection("STAFF").doc(id).update({'STATUS':'UNBLOCK'});
+
+  void unBlockStaff(BuildContext context, String id) {
+    db.collection("STAFF").doc(id).update({'STATUS': 'UNBLOCK'});
     getdataa();
-    callNextReplacement( HomeScreen(), context);
+    callNextReplacement(HomeScreen(), context);
     notifyListeners();
   }
+
   logOutAlert(BuildContext context) {
     AlertDialog alert = AlertDialog(
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(32.0))),
       backgroundColor: cWhite,
-      contentPadding: EdgeInsets.only(bottom:8),
+      contentPadding: EdgeInsets.only(bottom: 8),
       scrollable: true,
       title: Center(
           child: Column(children: [
-            Icon(
-              Icons.logout,
-              size: 30,
-              color: themecolor,
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            const Text(
-              "LogOut",
-              style: TextStyle(
-                  fontFamily: 'PoppinsMedium',
-                  fontWeight: FontWeight.w500,
-                  fontSize: 14),
-            ),
-
-            SizedBox(height: 15,),
-          ])),
+        Icon(
+          Icons.logout,
+          size: 30,
+          color: themecolor,
+        ),
+        const SizedBox(
+          height: 15,
+        ),
+        const Text(
+          "LogOut",
+          style: TextStyle(
+              fontFamily: 'PoppinsMedium',
+              fontWeight: FontWeight.w500,
+              fontSize: 14),
+        ),
+        SizedBox(
+          height: 15,
+        ),
+      ])),
       content: SizedBox(
         height: 50,
         child: SingleChildScrollView(
@@ -828,17 +831,20 @@ class AdminProvider with ChangeNotifier {
       },
     );
   }
-  String selectedDateTime="";
-  datePicker(context){
 
+  String selectedDateTime = "";
+  datePicker(context,String ticketTime) {
     DatePicker.showDateTimePicker(context,
         showTitleActions: true,
         minTime: DateTime(1980, 1, 1),
-    maxTime: DateTime(3000, 12, 31),
-    onConfirm: (dateTime) {
+        maxTime: DateTime(3000, 12, 31), onConfirm: (dateTime) {
       selectedDateTime = DateFormat("dd/MM/yyyy  HH:mm").format(dateTime);
+      if (ticketTime == "Arrival") {
+        arrivalTime.text = selectedDateTime;
+      } else {
+        departureTime.text=selectedDateTime;
+      }
       notifyListeners();
-    },locale: LocaleType.en); }
-
-
+    }, locale: LocaleType.en);
+  }
 }
