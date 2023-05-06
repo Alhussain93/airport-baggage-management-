@@ -37,6 +37,14 @@ class AddStaff extends StatelessWidget {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: themecolor,
+        title: const Text(
+          "Add Staff",
+          style: TextStyle(color: Colors.white, fontSize: 18),
+        ),
+        centerTitle: true,
+      ),
       backgroundColor: bgColor,
       body: Form(
         key: _formKey,
@@ -46,18 +54,18 @@ class AddStaff extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: height * .1,
+                height: height /40,
               ),
-              const Padding(
-                padding: EdgeInsets.only(left: 20),
-                child: Text(
-                  "Add New Staff",
-                  style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 20,
-                      fontFamily: "Poppins-SemiBold"),
-                ),
-              ),
+              // const Padding(
+              //   padding: EdgeInsets.only(left: 20),
+              //   child: Text(
+              //     "Add New Staff",
+              //     style: TextStyle(
+              //         fontWeight: FontWeight.w600,
+              //         fontSize: 20,
+              //         fontFamily: "Poppins-SemiBold"),
+              //   ),
+              // ),
               Consumer<AdminProvider>(builder: (context, value, child) {
                 return Column(
                   children: [
@@ -76,8 +84,8 @@ class AddStaff extends StatelessWidget {
                               image: value.fileImage != null
                                   ?  DecorationImage(
                                   image: FileImage(value.fileImage!),fit: BoxFit.fill)
-                                  : value.editImage!=""? DecorationImage(
-                                  image: NetworkImage(value.editImage),fit: BoxFit.fill,
+                                  : value.staffImage!=""? DecorationImage(
+                                  image: NetworkImage(value.staffImage),fit: BoxFit.fill,
                                   scale: 15):
                               const DecorationImage(
                                   image: AssetImage("assets/user.png"),
@@ -449,11 +457,12 @@ class AddStaff extends StatelessWidget {
                             width: width / 1.1,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
-                                color: Textclr),
-                            child: const Center(
+                                color: themecolor),
+                            child:  Center(
                                 child: Text(
                               "Submit",
                               style: TextStyle(
+                                color: cWhite,
                                   fontSize: 18,
                                   fontWeight: FontWeight.w600,
                                   fontFamily: 'Poppins-SemiBold'),
