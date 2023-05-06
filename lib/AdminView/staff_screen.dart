@@ -186,13 +186,14 @@ class StaffScreen extends StatelessWidget {
                                         ),
                                         IconButton(
                                             onPressed: () {
+                                              value.fileImage=null;
                                               // value. storing(item.Name,item.StaffId,item.Email);
                                               value.editStaff(context,item.id);
 
                                             },
                                             icon: const Icon(
                                               Icons.edit_calendar_outlined,
-                                              size: 15,
+                                              size: 25,
                                             ))
                                       ],
                                     ),

@@ -538,6 +538,13 @@ class AdminProvider with ChangeNotifier {
 
   Future<void> addData(
       BuildContext context, String from, String userId, String status) async {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return const Center(
+            child: CircularProgressIndicator(color: Colors.green),
+          );
+        });
     String id = DateTime.now()
         .millisecondsSinceEpoch
         .toString();
@@ -585,6 +592,7 @@ class AdminProvider with ChangeNotifier {
     notifyListeners();
     fetchStaff();
     finish(context);
+    finish(context);
     notifyListeners();
   }
 
@@ -594,6 +602,7 @@ class AdminProvider with ChangeNotifier {
     PhoneNumberController.clear();
     designation = 'Select Designation';
     staffAirportName = 'Select Airport';
+    fileImage=null;
     notifyListeners();
   }
 
@@ -603,9 +612,10 @@ class AdminProvider with ChangeNotifier {
     callNextReplacement(HomeScreen(), context);
     notifyListeners();
   }
-
+  String status = '';
+  String staffImage = '';
   void editStaff(BuildContext context, String id) {
-    String status = '';
+
     db.collection("STAFF").doc(id).get().then((value) {
       if (value.exists) {
         Map<dynamic, dynamic> map = value.data() as Map;
@@ -617,6 +627,7 @@ class AdminProvider with ChangeNotifier {
         // EmailController.text = map['EMAIL'].toString();
         PhoneNumberController.text = map['MOBILE_NUMBER'].toString();
         status = map['STATUS'].toString();
+        staffImage=map["PROFILE_IMAGE"].toString();
       }
       print("chucifhf" + status.toString());
       Navigator.push(
