@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:luggage_tracking_app/AdminView/qr_Scanner_Screen.dart';
 import 'package:luggage_tracking_app/AdminView/scan_page.dart';
 import 'package:luggage_tracking_app/AdminView/staff_screen.dart';
+import 'package:luggage_tracking_app/StaffView/tickets_List.dart';
 import 'package:provider/provider.dart';
 import '../Providers/admin_provider.dart';
 import '../StaffView/add_tickets.dart';
@@ -29,7 +30,7 @@ class HomeScreen extends StatelessWidget {
       const StaffScreen(),
       MisingLaggage(),
       MakeQrScreen(),
-      AddTickets(),
+      const TicketList(),
     ];
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
@@ -184,7 +185,7 @@ class HomeScreen extends StatelessWidget {
                       child: InkWell(
                         onTap: () {
                           isSelected.value = 5;
-                          adminProvider.clearTicketControllers();
+                          adminProvider.fetchTicketsList();
                           finish(context);
                         },
                         child: Container(
@@ -205,7 +206,7 @@ class HomeScreen extends StatelessWidget {
                                 width: 10,
                               ),
                               Text(
-                                "Add Tickets",
+                                "Tickets",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 15),
                               )
@@ -214,7 +215,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Spacer(),
+                    const Spacer(),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 20),
                       child: InkWell(
@@ -309,6 +310,9 @@ class HomeScreen extends StatelessWidget {
                                       } else if (isSelected.value == 2) {
                                         adminProvider.notifyListeners();
                                         adminProvider.filterStaffList(text);
+                                      }else if(isSelected.value==5){
+                                        adminProvider.notifyListeners();
+                                        adminProvider.filterTickets(text);
                                       }
                                     },
                                   ),
@@ -348,20 +352,21 @@ class HomeScreen extends StatelessWidget {
                               ),
                               InkWell(
                                 onTap: () {
-                                  isSelected.value = 3;
+                                  //adminProvider.getTicketsList();
+                                  isSelected.value = 5;
                                 },
                                 child: Container(
                                   width: 105,
                                   height: 32,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(20),
-                                    color: dIsSelected == 3
+                                    color: dIsSelected == 5
                                         ? Colors.white.withOpacity(0.2)
                                         : Textclr,
                                   ),
                                   child: Center(
                                       child: Text(
-                                    "Missing",
+                                    "Tickets",
                                     style: TextStyle(
                                         fontSize: 11,
                                         fontWeight: FontWeight.w600,
