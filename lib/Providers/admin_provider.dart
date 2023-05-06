@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:luggage_tracking_app/AdminView/home_screen.dart';
@@ -16,6 +17,9 @@ import 'package:luggage_tracking_app/constant/my_functions.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:encrypt/encrypt.dart' as enc;
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:intl/intl.dart';
+
 
 import '../AdminView/add_staff.dart';
 import '../AdminView/generateQr_Screen.dart';
@@ -515,7 +519,7 @@ class AdminProvider with ChangeNotifier {
 
 //String ref='';
 
-  Future<void> addData(BuildContext context, String from, String userId) async {
+  Future<void> addData(BuildContext context, String from, String userId,String status) async {
     String id = DateTime.now()
         .microsecondsSinceEpoch
         .toString(); //this code is genarate auto id;
@@ -525,7 +529,7 @@ class AdminProvider with ChangeNotifier {
     dataMap["EMAIL"] = EmailController.text;
     dataMap["AIRPORT"] = staffAirportName.toString();
     dataMap["ID"] = id.toString();
-    dataMap["STATUS"] = 'UNBLOCK';
+    dataMap["STATUS"] = status;
     if (fileImage != null) {
       String time = DateTime.now().millisecondsSinceEpoch.toString();
       ref = FirebaseStorage.instance.ref().child(time);
@@ -566,7 +570,8 @@ class AdminProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void editStaff(String id) {
+  void editStaff(BuildContext context,String id) {
+    String status='';
     db.collection("STAFF").doc(id).get().then((value) {
       if (value.exists) {
         Map<dynamic, dynamic> map = value.data() as Map;
@@ -575,8 +580,20 @@ class AdminProvider with ChangeNotifier {
         StaffidController.text = map['STAFF_ID'].toString();
         staffAirportName = map['AIRPORT'].toString();
         EmailController.text = map['EMAIL'].toString();
+        status = map['STATUS'].toString();
       }
+      print("chucifhf"+status.toString());
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  AddStaff(
+                    from: "edit",
+                    userId:id,
+                    status:status,
+                  )));
     });
+
     notifyListeners();
   }
 
@@ -710,12 +727,16 @@ class AdminProvider with ChangeNotifier {
 
     db.collection("TICKETS").doc(ticketId).set(ticketMap);
 
-
-
   }
 
   void blockStaff(BuildContext context,String id){
     db.collection("STAFF").doc(id).update({'STATUS':'BLOCK'});
+    getdataa();
+    callNextReplacement( HomeScreen(), context);
+    notifyListeners();
+  }
+  void unBlockStaff(BuildContext context,String id){
+    db.collection("STAFF").doc(id).update({'STATUS':'UNBLOCK'});
     getdataa();
     callNextReplacement( HomeScreen(), context);
     notifyListeners();
@@ -807,5 +828,17 @@ class AdminProvider with ChangeNotifier {
       },
     );
   }
+  String selectedDateTime="";
+  datePicker(context){
+
+    DatePicker.showDateTimePicker(context,
+        showTitleActions: true,
+        minTime: DateTime(1980, 1, 1),
+    maxTime: DateTime(3000, 12, 31),
+    onConfirm: (dateTime) {
+      selectedDateTime = DateFormat("dd/MM/yyyy  HH:mm").format(dateTime);
+      notifyListeners();
+    },locale: LocaleType.en); }
+
 
 }

@@ -10,9 +10,9 @@ import '../constant/colors.dart';
 import 'home_screen.dart';
 
 class AddStaff extends StatelessWidget {
-  String from, userId;
+  String from, userId,status;
 
-  AddStaff({Key? key, required this.from, required this.userId})
+  AddStaff({Key? key, required this.from, required this.userId,required this.status})
       : super(key: key);
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -106,7 +106,9 @@ class AddStaff extends StatelessWidget {
                                 builder: (context,value1,child) {
                                   return InkWell(
                                     onTap: (){
-                                      blockStaff(context,value1.staffEditId);
+
+                                        blockStaff(context, value1.staffEditId,status);
+
                                     },
                                     child: Container(
                                       height: 30,
@@ -114,7 +116,7 @@ class AddStaff extends StatelessWidget {
                                       decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(20),
                                           color: cnttColor),
-                                      child: Center(child: Text("Block")),
+                                      child: Center(child:status=='UNBLOCK'? const Text("Block"):const Text("Unblock")),
                                     ),
                                   );
                                 }
@@ -309,7 +311,7 @@ class AddStaff extends StatelessWidget {
                             // val.getdataa();
                             final FormState? forme = _formKey.currentState;
                             if (forme!.validate()) {
-                              value.addData(context, from, userId);
+                              value.addData(context, from, userId,status);
                             }
                           },
                           child: Container(
@@ -405,15 +407,19 @@ class AddStaff extends StatelessWidget {
       },
     );
   }
-  blockStaff(BuildContext context, String id) {
+  blockStaff(BuildContext context, String id,String userStatus) {
     AdminProvider adminProvider =
     Provider.of<AdminProvider>(context, listen: false);
 
     AlertDialog alert = AlertDialog(
       backgroundColor: themecolor,
       scrollable: true,
-      title: const Text(
-        "Do you want to Block this staff",
+      title:  userStatus=='UNBLOCK'? const Text(
+        "Do you want to block this staff",
+        style: TextStyle(
+            fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
+      ):const Text(
+        "Do you want to unblock this staff",
         style: TextStyle(
             fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
       ),
@@ -452,7 +458,12 @@ class AddStaff extends StatelessWidget {
                           child: const Text('YES',
                               style: TextStyle(color: Colors.black)),
                           onPressed: () {
-                            adminProvider.blockStaff(context, id);
+                            if(userStatus=='UNBLOCK'){
+                              adminProvider.blockStaff(context, id);
+                            }else{
+                              adminProvider.unBlockStaff(context, id);
+                            }
+
                           }),
                     );
                   }),

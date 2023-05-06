@@ -56,7 +56,7 @@ class HomeScreen extends StatelessWidget {
                         color: darkThemeColor,
                         child:  Row(
                           mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
+                          children: const [
                             SizedBox(
                               width: 10,
                             ),
@@ -89,7 +89,7 @@ class HomeScreen extends StatelessWidget {
                           color: darkThemeColor,
                           child:  Row(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
+                            children: const [
                               SizedBox(
                                 width: 10,
                               ),
@@ -123,7 +123,7 @@ class HomeScreen extends StatelessWidget {
                           color: darkThemeColor,
                           child:  Row(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
+                            children: const [
                               SizedBox(
                                 width: 10,
                               ),
@@ -158,7 +158,7 @@ class HomeScreen extends StatelessWidget {
                           color: darkThemeColor,
                           child:  Row(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
+                            children: const [
                               SizedBox(
                                 width: 10,
                               ),
@@ -193,7 +193,7 @@ class HomeScreen extends StatelessWidget {
                           color: darkThemeColor,
                           child:  Row(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
+                            children: const [
                               SizedBox(
                                 width: 10,
                               ),
@@ -228,7 +228,7 @@ class HomeScreen extends StatelessWidget {
                           color: darkThemeColor,
                           child:  Row(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
+                            children: const [
                               SizedBox(
                                 width: 10,
                               ),
