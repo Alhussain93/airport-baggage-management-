@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../Providers/admin_provider.dart';
+import '../Providers/pnr_provider.dart';
 import '../constant/colors.dart';
 
 class MakeQrScreen extends StatelessWidget {
    MakeQrScreen({Key? key}) : super(key: key);
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  @override
+   @override
   Widget build(BuildContext context) {
-
     var height = MediaQuery
         .of(context)
         .size
@@ -110,8 +110,6 @@ class MakeQrScreen extends StatelessWidget {
                     },
                   ),
                 ),
-
-
 
                 Padding(
                   padding: const EdgeInsets.only(left: 25,right: 25),

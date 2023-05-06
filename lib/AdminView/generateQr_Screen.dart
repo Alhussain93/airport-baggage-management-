@@ -23,7 +23,7 @@ class GenerateQrScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-SizedBox(height: height*.3,),
+                SizedBox(height: height*.3,),
                 Center(
                   child: Container(
                     height: 290,

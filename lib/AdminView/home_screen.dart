@@ -54,9 +54,9 @@ class HomeScreen extends StatelessWidget {
                         height: 40,
                         width: width * .77,
                         color: darkThemeColor,
-                        child: const Row(
+                        child:  Row(
                           mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
+                          children: const [
                             SizedBox(
                               width: 10,
                             ),
@@ -87,9 +87,9 @@ class HomeScreen extends StatelessWidget {
                           height: 40,
                           width: width * .77,
                           color: darkThemeColor,
-                          child: const Row(
+                          child:  Row(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
+                            children: const [
                               SizedBox(
                                 width: 10,
                               ),
@@ -121,9 +121,9 @@ class HomeScreen extends StatelessWidget {
                           height: 40,
                           width: width * .77,
                           color: darkThemeColor,
-                          child: const Row(
+                          child:  Row(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
+                            children: const [
                               SizedBox(
                                 width: 10,
                               ),
@@ -156,9 +156,9 @@ class HomeScreen extends StatelessWidget {
                           height: 40,
                           width: width * .77,
                           color: darkThemeColor,
-                          child: const Row(
+                          child:  Row(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
+                            children: const [
                               SizedBox(
                                 width: 10,
                               ),
@@ -184,16 +184,16 @@ class HomeScreen extends StatelessWidget {
                       child: InkWell(
                         onTap: () {
                           isSelected.value = 5;
-                          adminProvider.clearQrControllers();
+                          adminProvider.clearTicketControllers();
                           finish(context);
                         },
                         child: Container(
                           height: 40,
                           width: width * .77,
                           color: darkThemeColor,
-                          child: const Row(
+                          child:  Row(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
+                            children: const [
                               SizedBox(
                                 width: 10,
                               ),
@@ -226,9 +226,9 @@ class HomeScreen extends StatelessWidget {
                           height: 40,
                           width: width * .77,
                           color: darkThemeColor,
-                          child: const Row(
+                          child:  Row(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
+                            children: const [
                               SizedBox(
                                 width: 10,
                               ),
