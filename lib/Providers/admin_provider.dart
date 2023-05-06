@@ -518,9 +518,8 @@ class AdminProvider with ChangeNotifier {
               element.id.toString(),
               map["NAME"].toString(),
               map["STAFF_ID"].toString(),
-              // map["EMAIL"].toString(),
-              map["PHONE_NUMBER"].toString(),
               map["PROFILE_IMAGE"].toString(),
+              map["PHONE_NUMBER"].toString(),
               map["STATUS"].toString()),
         );
         filtersStaffList = modellist;
