@@ -26,9 +26,9 @@ class CustomersListScreen extends StatelessWidget {
                 width: width / 1,
                 child:  Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
+                  children: const [
                     Text(
-                      "Customers",
+                      "Passengers",
                       style: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 18,

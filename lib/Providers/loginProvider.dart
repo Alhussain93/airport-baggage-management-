@@ -38,7 +38,7 @@ class LoginProvider extends ChangeNotifier {
       print("ahhhhhhhhhhhhh"+phone);
 
       // final ref= db.collection('USERS').doc(phone).get();
-      db.collection("USERS").where("PHONE_NUMBER",isEqualTo:phone ).get().then((value) {
+      db.collection("USERS").where("MOBILE_NUMBER",isEqualTo:phone ).get().then((value) {
         if(value.docs.isNotEmpty){
           for(var element in value.docs){
             Map<dynamic,dynamic> map = element.data();
