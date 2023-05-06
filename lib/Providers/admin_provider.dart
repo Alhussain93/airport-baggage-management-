@@ -335,6 +335,9 @@ class AdminProvider with ChangeNotifier {
   TextEditingController ticketToController = TextEditingController();
   TextEditingController passengerCountController = TextEditingController();
   TextEditingController ticketPnrController = TextEditingController();
+  TextEditingController ticketPassengersController = TextEditingController();
+
+  List<String> ticketNameList = [];
 
 
   void clearQrControllers() {
@@ -838,7 +841,14 @@ class AdminProvider with ChangeNotifier {
     onConfirm: (dateTime) {
       selectedDateTime = DateFormat("dd/MM/yyyy  HH:mm").format(dateTime);
       notifyListeners();
-    },locale: LocaleType.en); }
+    },locale: LocaleType.en);
+  }
+
+  void addPassengersName(String passenger,BuildContext context2) {
+    ticketPassengersController.clear();
+    ticketNameList.add(passenger);
+    notifyListeners();
+  }
 
 
 }
