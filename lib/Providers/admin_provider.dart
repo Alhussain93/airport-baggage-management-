@@ -273,8 +273,8 @@ class AdminProvider with ChangeNotifier {
     userMap['ADDED_BY'] = addedBy;
     userMap['NAME'] = userNameCT.text;
     passengerMap['NAME'] = userNameCT.text;
-    userMap['PHONE_NUMBER'] = "+91${userPhoneCT.text}";
-    passengerMap['PHONE_NUMBER'] = "+91${userPhoneCT.text}";
+    userMap['MOBILE_NUMBER'] = "+91${userPhoneCT.text}";
+    passengerMap['MOBILE_NUMBER'] = "+91${userPhoneCT.text}";
     passengerMap['EMAIL'] = userEmailCT.text;
     userMap['USER_ID'] = key;
     userMap['DESIGNATION'] = "PASSENGER";
@@ -301,8 +301,8 @@ class AdminProvider with ChangeNotifier {
     passengerEditMap["DOB STRING"] = userDobCT.text;
     passengerEditMap["DOB"] = birthDate;
     passengerEditMap['EMAIL'] = userEmailCT.text;
-    editMap['PHONE_NUMBER'] = "+91${userPhoneCT.text}";
-    passengerEditMap['PHONE_NUMBER'] = "+91${userPhoneCT.text}";
+    editMap['MOBILE_NUMBER'] = "+91${userPhoneCT.text}";
+    passengerEditMap['MOBILE_NUMBER'] = "+91${userPhoneCT.text}";
     editMap['NAME'] = userNameCT.text;
     passengerEditMap['NAME'] = userNameCT.text;
     if (fileImage != null) {
@@ -475,7 +475,7 @@ class AdminProvider with ChangeNotifier {
           customersList.add(CustomerModel(
             element.id,
             map["NAME"].toString(),
-            map["PHONE_NUMBER"].toString(),
+            map["MOBILE_NUMBER"].toString(),
             map["DOB STRING"].toString(),
             map["PASSENGER_IMAGE"].toString(),
           ));
@@ -494,7 +494,7 @@ class AdminProvider with ChangeNotifier {
         userNameCT.text = map["NAME"].toString();
         userEmailCT.text = map["EMAIL"].toString();
         userDobCT.text = map["DOB STRING"].toString();
-        userPhoneCT.text = map["PHONE_NUMBER"].toString().replaceAll("+91", '');
+        userPhoneCT.text = map["MOBILE_NUMBER"].toString().replaceAll("+91", '');
       }
       notifyListeners();
     });
@@ -502,6 +502,7 @@ class AdminProvider with ChangeNotifier {
 
   void deleteCustomer(BuildContext context, String id) {
     db.collection("USERS").doc(id).delete();
+    db.collection("PASSENGERS").doc(id).delete();
     finish(context);
     notifyListeners();
   }
@@ -519,7 +520,7 @@ class AdminProvider with ChangeNotifier {
               map["NAME"].toString(),
               map["STAFF_ID"].toString(),
               map["PROFILE_IMAGE"].toString(),
-              map["PHONE_NUMBER"].toString(),
+              map["MOBILE_NUMBER"].toString(),
               map["STATUS"].toString()),
         );
         filtersStaffList = modellist;

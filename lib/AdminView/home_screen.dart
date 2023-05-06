@@ -277,8 +277,8 @@ class HomeScreen extends StatelessWidget {
                           height: 50,
                         ),
                         isSelected.value == 1 ||
-                                isSelected.value == 4 ||
-                                isSelected.value == 5
+                                isSelected.value == 4
+                      // || isSelected.value == 5
                             ? const Padding(padding: EdgeInsets.only(top: 52))
                             : const SizedBox(),
                         isSelected.value != 1 && isSelected.value != 4
