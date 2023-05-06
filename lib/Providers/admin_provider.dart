@@ -374,10 +374,12 @@ class AdminProvider with ChangeNotifier {
   TextEditingController NameController = TextEditingController();
   TextEditingController StaffidController = TextEditingController();
   TextEditingController EmailController = TextEditingController();
+  TextEditingController PhoneNumberController = TextEditingController();
   List<AddStaffModel> modellist = [];
   List<AddStaffModel> filtersStaffList = [];
 
   String staffAirportName = 'Select Airport';
+  String designation = 'Select Designation';
   String flightName = 'Select Flight Name';
   String ticketFlightName = 'Select Flight Name';
   bool qrScreen = false;
@@ -517,7 +519,8 @@ class AdminProvider with ChangeNotifier {
               element.id.toString(),
               map["NAME"].toString(),
               map["STAFF_ID"].toString(),
-              map["EMAIL"].toString(),
+              // map["EMAIL"].toString(),
+              map["PHONE_NUMBER"].toString(),
               map["PROFILE_IMAGE"].toString(),
               map["STATUS"].toString()),
         );
@@ -538,13 +541,22 @@ class AdminProvider with ChangeNotifier {
       BuildContext context, String from, String userId, String status) async {
     String id = DateTime.now()
         .microsecondsSinceEpoch
-        .toString(); //this code is genarate auto id;
+        .toString();
+    //this code is genarate auto id;
     Map<String, Object> dataMap = HashMap();
+    Map<String, Object> userMap = HashMap();
     dataMap["NAME"] = NameController.text;
+    userMap["NAME"] = NameController.text;
     dataMap["STAFF_ID"] = StaffidController.text;
-    dataMap["EMAIL"] = EmailController.text;
+    userMap["STAFF_ID"] = StaffidController.text;
+    // dataMap["EMAIL"] = EmailController.text;
+    dataMap["MOBILE_NUMBER"] = PhoneNumberController.text;
+    userMap["MOBILE_NUMBER"] = PhoneNumberController.text;
     dataMap["AIRPORT"] = staffAirportName.toString();
+    dataMap["DESIGNATION"]=designation.toString();
+    userMap["DESIGNATION"]=designation.toString();
     dataMap["ID"] = id.toString();
+    userMap["ID"] = id.toString();
     dataMap["STATUS"] = status;
     if (fileImage != null) {
       String time = DateTime.now().millisecondsSinceEpoch.toString();
@@ -563,8 +575,10 @@ class AdminProvider with ChangeNotifier {
     //  dataMap["PROFILE_IMAGE"]=fileImage.toString();
     if (from == '') {
       db.collection("STAFF").doc(id).set(dataMap);
+      db.collection("USERS").doc(id).set(userMap);
     } else {
       db.collection("STAFF").doc(userId).update(dataMap);
+      db.collection("USERS").doc(userId).update(userMap);
     }
     notifyListeners();
     fetchStaff();
@@ -575,7 +589,9 @@ class AdminProvider with ChangeNotifier {
   void clearStaff() {
     NameController.clear();
     StaffidController.clear();
-    EmailController.clear();
+    PhoneNumberController.clear();
+    designation = 'Select Designation';
+    staffAirportName = 'Select Airport';
     notifyListeners();
   }
 
@@ -595,7 +611,9 @@ class AdminProvider with ChangeNotifier {
         NameController.text = map['NAME'].toString();
         StaffidController.text = map['STAFF_ID'].toString();
         staffAirportName = map['AIRPORT'].toString();
-        EmailController.text = map['EMAIL'].toString();
+        designation = map['DESIGNATION'].toString();
+        // EmailController.text = map['EMAIL'].toString();
+        PhoneNumberController.text = map['MOBILE_NUMBER'].toString();
         status = map['STATUS'].toString();
       }
       print("chucifhf" + status.toString());
@@ -743,6 +761,7 @@ class AdminProvider with ChangeNotifier {
     ticketMap["PASSENGERS"] = ticketNameList;
 
     db.collection("TICKETS").doc(ticketId).set(ticketMap);
+
   }
 
   void blockStaff(BuildContext context, String id) {
@@ -751,11 +770,10 @@ class AdminProvider with ChangeNotifier {
     callNextReplacement(HomeScreen(), context);
     notifyListeners();
   }
-
-  void unBlockStaff(BuildContext context, String id) {
-    db.collection("STAFF").doc(id).update({'STATUS': 'UNBLOCK'});
+  void unBlockStaff(BuildContext context,String id){
+    db.collection("STAFF").doc(id).update({'STATUS':'ACTIVE'});
     fetchStaff();
-    callNextReplacement(HomeScreen(), context);
+    callNextReplacement( HomeScreen(), context);
     notifyListeners();
   }
 
