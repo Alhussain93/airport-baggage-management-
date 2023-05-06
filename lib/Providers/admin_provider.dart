@@ -328,6 +328,7 @@ class AdminProvider with ChangeNotifier {
   /// generate qr controllers
   TextEditingController qrPnrCT = TextEditingController();
   TextEditingController qrUserNameCT = TextEditingController();
+  TextEditingController qrLuggageCountCT = TextEditingController();
 
   TextEditingController ticketFromController = TextEditingController();
   TextEditingController ticketToController = TextEditingController();
@@ -337,6 +338,7 @@ class AdminProvider with ChangeNotifier {
   TextEditingController departureTime = TextEditingController();
 
   void clearQrControllers() {
+    qrLuggageCountCT.clear();
     qrPnrCT.clear();
     qrUserNameCT.clear();
     flightName = 'Select Flight Name';
@@ -425,22 +427,19 @@ class AdminProvider with ChangeNotifier {
 
   void generateQrCode(BuildContext context) {
     HashMap<String, Object> qrMap = HashMap();
-    qrData =
-        DateTime.now().millisecondsSinceEpoch.toString() + getRandomString(4);
+    qrData = DateTime.now().millisecondsSinceEpoch.toString() + getRandomString(4);
     String key = DateTime.now().millisecondsSinceEpoch.toString();
 
     qrMap['NAME'] = qrUserNameCT.text;
     qrMap['PNR_ID'] = qrPnrCT.text;
+    qrMap['LUGGAGE_COUNT'] = qrLuggageCountCT.text;
     qrMap['LUGGAGE_ID'] = qrData;
     db.collection("LUGGAGE").doc(qrData).set(qrMap);
     qrScreen = true;
     notifyListeners();
 
     callNext(
-        GenerateQrScreen(
-          qrData: qrData,
-        ),
-        context);
+        GenerateQrScreen(qrData: qrData,), context);
   }
 
   void fetchCustomers() {

@@ -11,7 +11,8 @@ import '../constant/colors.dart';
 import '../constant/my_functions.dart';
 
 class StaffHomeScreen extends StatelessWidget {
-  StaffHomeScreen({super.key});
+  String designation;
+  StaffHomeScreen({super.key,required this.designation});
 
   ValueNotifier<int> isSelected = ValueNotifier(0);
 

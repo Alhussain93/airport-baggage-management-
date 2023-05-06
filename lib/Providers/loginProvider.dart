@@ -29,8 +29,10 @@ class LoginProvider extends ChangeNotifier {
     AdminProvider adminProvider = Provider.of<AdminProvider>(context, listen: false);
 
     String loginUsername = '';
+    String designation = '';
     String loginUsertype = '';
     String loginUserid = '';
+    String userStatus= '';
     try {
       var phone = phoneNumber!;
       print("ahhhhhhhhhhhhh"+phone);
@@ -41,16 +43,18 @@ class LoginProvider extends ChangeNotifier {
           for(var element in value.docs){
             Map<dynamic,dynamic> map = element.data();
             loginUsername=map['NAME'].toString();
+            designation=map['DESIGNATION'].toString();
             loginUsertype= map['TYPE'].toString();
+            userStatus= map['STATUS'].toString();
             loginUserid=element.id;
 
           }
-          if(loginUsertype=="CUSTOMER"){
+          if(loginUsertype=="PASSENGER"){
             callNextReplacement(const PnrSearching(), context);
           }else if(loginUsertype=="ADMIN"){
             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
           }else if(loginUsertype=="STAFF"){
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StaffHomeScreen()));
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StaffHomeScreen(designation:designation,)));
           }
         }
         else {
