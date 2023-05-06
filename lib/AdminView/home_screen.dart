@@ -184,7 +184,7 @@ class HomeScreen extends StatelessWidget {
                       child: InkWell(
                         onTap: () {
                           isSelected.value = 5;
-                          adminProvider.clearQrControllers();
+                          adminProvider.clearTicketControllers();
                           finish(context);
                         },
                         child: Container(
