@@ -540,7 +540,7 @@ class AdminProvider with ChangeNotifier {
   Future<void> addData(
       BuildContext context, String from, String userId, String status) async {
     String id = DateTime.now()
-        .microsecondsSinceEpoch
+        .millisecondsSinceEpoch
         .toString();
     //this code is genarate auto id;
     Map<String, Object> dataMap = HashMap();
@@ -548,6 +548,7 @@ class AdminProvider with ChangeNotifier {
     dataMap["NAME"] = NameController.text;
     userMap["NAME"] = NameController.text;
     dataMap["STAFF_ID"] = StaffidController.text;
+    dataMap["TIME"] = DateTime.now();
     userMap["STAFF_ID"] = StaffidController.text;
     // dataMap["EMAIL"] = EmailController.text;
     dataMap["MOBILE_NUMBER"] = PhoneNumberController.text;
@@ -555,9 +556,11 @@ class AdminProvider with ChangeNotifier {
     dataMap["AIRPORT"] = staffAirportName.toString();
     dataMap["DESIGNATION"]=designation.toString();
     userMap["DESIGNATION"]=designation.toString();
+    userMap["TYPE"]="STAFF";
     dataMap["ID"] = id.toString();
     userMap["ID"] = id.toString();
     dataMap["STATUS"] = status;
+    userMap["STATUS"] = status;
     if (fileImage != null) {
       String time = DateTime.now().millisecondsSinceEpoch.toString();
       ref = FirebaseStorage.instance.ref().child(time);
