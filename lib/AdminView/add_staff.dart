@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:luggage_tracking_app/AdminView/staff_screen.dart';
 import 'package:luggage_tracking_app/constant/my_functions.dart';
 import 'package:provider/provider.dart';
@@ -23,7 +24,7 @@ class AddStaff extends StatelessWidget {
     "Sohar International Airport",
     'Khasab Airport'
   ];
-  List<String> Designation = [
+  List<String> DesignationList = [
     'Select Designation',
     "Check_In",
     "Loading",
@@ -214,13 +215,15 @@ class AddStaff extends StatelessWidget {
                           }
                         },
                         keyboardType: TextInputType.phone,
-                        maxLength: 10,
+                        inputFormatters: [LengthLimitingTextInputFormatter(10)],
+                        // maxLength: 10,
                          controller: value.PhoneNumberController,
                         decoration: InputDecoration(
                           helperText: "",
                           fillColor: Colors.white,
                           contentPadding: const EdgeInsets.all(11),
                           hintText: 'Phone Number',
+
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15.0)),
                         ),
@@ -358,7 +361,7 @@ class AddStaff extends StatelessWidget {
                               onChanged: (newValue) {
                                 value1.designation = newValue.toString();
                               },
-                              items: Designation.map((item1) {
+                              items: DesignationList.map((item1) {
                                 return DropdownMenuItem(
                                     value: item1,
                                     child: Padding(
