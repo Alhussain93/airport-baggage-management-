@@ -91,6 +91,7 @@ class MakeQrScreen extends StatelessWidget {
                   child: TextFormField(
                     // autofocus: false,
                     // obscureText: _obscureText,
+                    focusNode: true,
                     keyboardType: TextInputType.text,
                     controller: values.qrUserNameCT,
                     decoration: InputDecoration(
