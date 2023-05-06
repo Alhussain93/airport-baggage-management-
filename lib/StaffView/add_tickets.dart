@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:luggage_tracking_app/constant/my_functions.dart';
 import 'package:provider/provider.dart';
 
 import '../Providers/admin_provider.dart';
@@ -8,7 +9,7 @@ import '../constant/colors.dart';
 
 class AddTickets extends StatelessWidget {
   AddTickets({Key? key}) : super(key: key);
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  static final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +24,11 @@ class AddTickets extends StatelessWidget {
           child: Consumer<AdminProvider>(builder: (context, values, child) {
             return Column(
               children: [
+                SizedBox(height: height/10,),
                 Consumer<AdminProvider>(builder: (context, value1, child) {
                   return Padding(
-                    padding: const EdgeInsets.only(top: 20, left: 25, right: 25),
+                    padding:
+                        const EdgeInsets.only(top: 20, left: 25, right: 25),
                     child: DropdownButtonFormField(
                       hint: const Text(
                         "Flight",
@@ -81,7 +84,6 @@ class AddTickets extends StatelessWidget {
                     ),
                   );
                 }),
-
                 Padding(
                   padding: const EdgeInsets.only(left: 25, right: 25),
                   child: TextFormField(
@@ -104,7 +106,6 @@ class AddTickets extends StatelessWidget {
                     },
                   ),
                 ),
-
                 Padding(
                   padding: const EdgeInsets.only(left: 25, right: 25),
                   child: TextFormField(
@@ -127,7 +128,6 @@ class AddTickets extends StatelessWidget {
                     },
                   ),
                 ),
-
                 Padding(
                   padding: const EdgeInsets.only(left: 25, right: 25),
                   child: TextFormField(
@@ -150,7 +150,6 @@ class AddTickets extends StatelessWidget {
                     },
                   ),
                 ),
-
                 Padding(
                   padding: const EdgeInsets.only(left: 25, right: 25),
                   child: TextFormField(
@@ -177,12 +176,10 @@ class AddTickets extends StatelessWidget {
                     },
                   ),
                 ),
-
                 Padding(
                   padding: const EdgeInsets.only(left: 25, right: 25, top: 5),
                   child: TextFormField(
-
-                     readOnly: true,
+                    readOnly: true,
                     decoration: InputDecoration(
                       labelText: 'Arrival Time',
                       hintText: 'Arrival Time',
@@ -204,7 +201,6 @@ class AddTickets extends StatelessWidget {
                     },
                   ),
                 ),
-
                 Padding(
                   padding: const EdgeInsets.only(left: 25, right: 25),
                   child: TextFormField(
@@ -230,24 +226,24 @@ class AddTickets extends StatelessWidget {
                     },
                   ),
                 ),
-
                 Padding(
-                  padding: const EdgeInsets.only(left: 25,right: 25),
+                  padding: const EdgeInsets.only(left: 25, right: 25),
                   child: SizedBox(
-                    width: width-50,
+                    width: width - 50,
+                    height: 70,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(
-                          width: width-150,
+                          width: width - 150,
                           child: TextFormField(
-
                             // autofocus: false,
                             // obscureText: _obscureText,
                             keyboardType: TextInputType.text,
                             controller: values.ticketPassengersController,
                             decoration: InputDecoration(
+                              alignLabelWithHint: true,
                               hintText: 'Add Passengers Name',
                               helperText: '',
 
@@ -255,54 +251,50 @@ class AddTickets extends StatelessWidget {
                               // contentPadding: EdgeInsets.fromLTRB(10, 50, 50, 0),
 
                               border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      15.0)),
+                                  borderRadius: BorderRadius.circular(15.0)),
                             ),
-                            validator: (value3) {
-                              if (value3!.trim().isEmpty) {
-                                return "Enter Passenger Name";
-                              } else {
-                                return null;
-                              }
-                            },
                           ),
                         ),
                         InkWell(
                             onTap: () {
-                              if(values.ticketPassengersController.text.trim().isNotEmpty) {
-                                values.addPassengersName(values.ticketPassengersController.text,context);
+                              if (values.ticketPassengersController.text
+                                  .trim()
+                                  .isNotEmpty) {
+                                values.addPassengersName(
+                                    values.ticketPassengersController.text,
+                                    context);
                               }
                             },
                             child: Container(
                                 width: 90,
-                                height: 50,
+                                height: 45,
                                 decoration: BoxDecoration(
-                                  borderRadius: const BorderRadius.all(Radius.circular(25)),
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(25)),
                                   color: Textclr,
                                 ),
                                 child: const Center(
-                                  child: Text('Add',
+                                  child: Text(
+                                    'Add',
                                     style: TextStyle(
                                       fontFamily: 'BarlowCondensed',
                                       fontWeight: FontWeight.w500,
                                       fontSize: 14,
                                     ),
-                                    textAlign: TextAlign.center,),
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ))),
                       ],
                     ),
                   ),
                 ),
-
                 ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: values.ticketNameList.length,
-                    itemBuilder: (BuildContext context,
-                        int index) {
+                    itemBuilder: (BuildContext context, int index) {
                       return Padding(
-                        padding:
-                        const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(8.0),
                         child: Container(
                             alignment: Alignment.centerLeft,
                             //  color: Colors.red,
@@ -310,46 +302,82 @@ class AddTickets extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                if (values.ticketNameList.isNotEmpty && index == 0)
-                                  Center(child: Padding(
-                                    padding: const EdgeInsets.only(bottom: 30.0,top: 20),
-                                    child: Text(' Passengers List (${values.ticketNameList.length})',
-                                        style: const TextStyle(fontWeight: FontWeight.w600,
-                                          fontSize: 18,)),
-                                  )) else const SizedBox(),
-
+                                if (values.ticketNameList.isNotEmpty &&
+                                    index == 0)
+                                  Center(
+                                      child: Padding(
+                                    padding: const EdgeInsets.only(
+                                      bottom: 10.0,
+                                    ),
+                                    child: Text(
+                                        ' Passengers List (${values.ticketNameList.length})',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 18,
+                                        )),
+                                  ))
+                                else
+                                  const SizedBox(),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
                                         '  ${index + 1} -   ${values.ticketNameList[index]}',
-                                        style: const TextStyle(fontWeight: FontWeight.w600,fontSize: 18,)
-                                    ),
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 18,
+                                        )),
                                     InkWell(
-                                        onTap: (){
+                                        onTap: () {
                                           values.ticketNameList.removeAt(index);
                                           values.notifyListeners();
                                         },
                                         child: const Icon(Icons.delete))
                                   ],
                                 ),
-                                const Divider(color: cGrey,)
+                                const Divider(
+                                  color: cGrey,
+                                )
                               ],
                             )),
                       );
                     }),
-
                 Center(
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 10,bottom: 20),
+                    padding: const EdgeInsets.only(top: 10, bottom: 20),
                     child: Consumer<AdminProvider>(
                         builder: (context, value1, child) {
                       return InkWell(
                         onTap: () {
                           final FormState? form = _formKey.currentState;
+
                           if (form!.validate()) {
-                            adminProvider.addTickets("", "");
+                            if (values.ticketNameList.isNotEmpty &&
+                                values
+                                    .ticketPassengersController.text.isEmpty) {
+                              adminProvider.addTickets("", "");
+                              finish(context);
+                              adminProvider.clearTicketControllers();
+                            } else {
+                              final snackBar = SnackBar(
+                                elevation: 6.0,
+                                backgroundColor: cWhite,
+                                behavior: SnackBarBehavior.floating,
+                                shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(Radius.circular(20))),
+                                content:  Text(
+                                  values.ticketNameList.isEmpty
+                                  ?"No Passengers Found"
+                                  :values.ticketPassengersController.text.isNotEmpty
+                                  ?"Please Add Passenger":"",
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              );
+                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+                            }
                           }
                         },
                         child: Container(
@@ -371,8 +399,6 @@ class AddTickets extends StatelessWidget {
                     }),
                   ),
                 ),
-
-
               ],
             );
           }),

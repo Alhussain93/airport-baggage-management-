@@ -15,7 +15,7 @@ class StaffScreen extends StatelessWidget {
     var width = MediaQuery.of(context).size.width;
 
     AdminProvider get = Provider.of<AdminProvider>(context, listen: false);
-    get.getdataa();
+
 
     return Scaffold(
       body: SingleChildScrollView(
