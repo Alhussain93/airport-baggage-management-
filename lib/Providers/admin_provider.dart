@@ -596,7 +596,7 @@ String passengerOldPhone="";
 
 //String ref='';
 
-  Future<void> addData(
+  Future<void> addStaff(
       BuildContext context, String from, String userId, String status) async {
     showDialog(
         context: context,
@@ -685,7 +685,7 @@ String passengerOldPhone="";
         staffAirportName = map['AIRPORT'].toString();
         designation = map['DESIGNATION'].toString();
         // EmailController.text = map['EMAIL'].toString();
-        PhoneNumberController.text = map['MOBILE_NUMBER'].toString();
+        PhoneNumberController.text = map['MOBILE_NUMBER'].toString().substring(3);
         status = map['STATUS'].toString();
         staffImage=map["PROFILE_IMAGE"].toString();
       }
