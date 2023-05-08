@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:luggage_tracking_app/AdminView/staff_screen.dart';
 import 'package:luggage_tracking_app/constant/my_functions.dart';
 import 'package:provider/provider.dart';
@@ -25,10 +26,10 @@ class AddStaff extends StatelessWidget {
   ];
   List<String> Designation = [
     'Select Designation',
-    "Check_In",
-    "Loading",
-    "UnLoading",
-    'Check_Out'
+    "CHECK_IN",
+    "LOADING",
+    "UNLOADING",
+    'CHECK_OUT'
   ];
 
   @override
@@ -221,16 +222,21 @@ class AddStaff extends StatelessWidget {
                    Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 17.0),
                       child: TextFormField(
+                        keyboardType: TextInputType.number,
                         validator: (value){
                           if(value!.isEmpty){
                             return "Please Enter a Phone Number";
-                          }else if(!RegExp(r'^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$').hasMatch(value)){
+                          }else if
+                          (!RegExp(r'^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$').hasMatch(value))
+                          {
                             return "Please Enter a Valid Phone Number";
                           }
                         },
-                        keyboardType: TextInputType.phone,
-
                          controller: value.PhoneNumberController,
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(10),
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
                         decoration: InputDecoration(
                           helperText: "",
                           fillColor: Colors.white,
@@ -287,6 +293,7 @@ class AddStaff extends StatelessWidget {
                               onChanged: (newValue) {
                                 value1.staffAirportName = newValue.toString();
                               },
+
                               items: airportNameList.map((item1) {
                                 return DropdownMenuItem(
                                     value: item1,
@@ -295,6 +302,12 @@ class AddStaff extends StatelessWidget {
                                       child: Text(item1),
                                     ));
                               }).toList(),
+                              validator: (dropValue){
+                                if(dropValue=="Select Airport"){
+                                  return "Select Airport";
+                                }
+                                return null;
+                              },
                             ),
                             // DropdownButtonHideUnderline(
                             //   child: DropdownSearch<String>(
@@ -381,6 +394,12 @@ class AddStaff extends StatelessWidget {
                                       child: Text(item1),
                                     ));
                               }).toList(),
+                              validator: (dropValue){
+                                if(dropValue=="Select Designation"){
+                                  return "Select Designation";
+                                }
+                                return null;
+                              },
                             ),
                             // DropdownButtonHideUnderline(
                             //   child: DropdownSearch<String>(
@@ -436,11 +455,10 @@ class AddStaff extends StatelessWidget {
                         padding: const EdgeInsets.only(top: 40),
                         child: InkWell(
                           onTap: () {
-                            // val.getdataa();
                             final FormState? forme = _formKey.currentState;
                             if (forme!.validate()) {
-                              value.addData(context, from, userId,status);
-                            }
+                              value.addStaff(context, from, userId,status);
+                           }
                           },
                           child: Container(
                             height: 48,
