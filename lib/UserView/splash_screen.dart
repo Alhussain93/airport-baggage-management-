@@ -66,7 +66,8 @@ class _SplashScreenState extends State<SplashScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Center(
-            child: Text("LOGO",style: TextStyle(color: clc00a618,fontSize: 36,fontWeight: FontWeight.bold),),
+            child: Image.asset("assets/logoutBG.png"),
+         //   child:Text("LOGO",style:TextStyle(color:clc00a618,fontSize: 36,fontWeight: FontWeight.bold),),
           ),
         ],
       ),

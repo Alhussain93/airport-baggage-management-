@@ -4,12 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:luggage_tracking_app/UserView/splash_screen.dart';
 import 'package:provider/provider.dart';
 
-import 'AdminView/makeQrcodeScreen.dart';
 import 'Providers/admin_provider.dart';
 import 'Providers/loginProvider.dart';
 import 'Providers/pnr_provider.dart';
-import 'Users/login_Screen.dart';
-import 'Users/userRegistration_Screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
