@@ -89,6 +89,40 @@ class AdminProvider with ChangeNotifier {
 
     return decrypted2;
   }
+  Future<bool> checkNumberExist(String phone) async {
+    var D = await db
+        .collection("USERS")
+        .where("MOBILE_NUMBER", isEqualTo: "+91$phone")
+        .get();
+
+    if (D.docs.isNotEmpty) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  Future<bool> checkStaffIdExist(String staffId) async {
+    var D = await db
+        .collection("STAFF")
+        .where("STAFF_ID", isEqualTo: staffId)
+        .get();
+    if (D.docs.isNotEmpty) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  Future<bool> checkPnrIdExist(String pnrID) async {
+    var D = await db
+        .collection("TICKETS")
+        .where("PNR_ID", isEqualTo: pnrID)
+        .get();
+    if (D.docs.isNotEmpty) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   enterQrData(String luggageId, BuildContext context) {
     String userName = '';
@@ -256,87 +290,113 @@ class AdminProvider with ChangeNotifier {
 
   Future<void> userRegistration(
       BuildContext context1, String addedBy, String userId, String from) async {
-    showDialog(
-        context: context1,
-        builder: (context) {
-          return Center(
-            child: CircularProgressIndicator(color: themecolor),
-          );
-        });
-    print("jjdsmcdckdscdfegrrfe");
-    HashMap<String, Object> userMap = HashMap();
-    HashMap<String, Object> passengerMap = HashMap();
-    HashMap<String, Object> passengerEditMap = HashMap();
-    HashMap<String, Object> editMap = HashMap();
+    bool numberStatus = await checkNumberExist(userPhoneCT.text);
+    if (!numberStatus|| userPhoneCT.text == passengerOldPhone) {
+      showDialog(
+          context: context1,
+          builder: (context) {
+            return Center(
+              child: CircularProgressIndicator(color: themecolor),
+            );
+          });
+      print("jjdsmcdckdscdfegrrfe");
+      HashMap<String, Object> userMap = HashMap();
+      HashMap<String, Object> passengerMap = HashMap();
+      HashMap<String, Object> passengerEditMap = HashMap();
+      HashMap<String, Object> editMap = HashMap();
 
-    String key = DateTime.now().millisecondsSinceEpoch.toString();
-    userMap['ADDED_BY'] = addedBy;
-    userMap['NAME'] = userNameCT.text;
-    passengerMap['NAME'] = userNameCT.text;
-    userMap['MOBILE_NUMBER'] = "+91${userPhoneCT.text}";
-    passengerMap['MOBILE_NUMBER'] = "+91${userPhoneCT.text}";
-    passengerMap['EMAIL'] = userEmailCT.text;
-    userMap['USER_ID'] = key;
-    userMap['DESIGNATION'] = "PASSENGER";
-    passengerMap['DESIGNATION'] = "PASSENGER";
-    passengerMap['PASSENGER_ID'] = key;
-    passengerMap["DOB"] = birthDate;
-    passengerMap["DOB STRING"] = userDobCT.text;
-    passengerMap["REGISTRATION_TIME"] = DateTime.now();
-    if (fileImage != null) {
-      String time = DateTime.now().millisecondsSinceEpoch.toString();
-      ref = FirebaseStorage.instance.ref().child(time);
-      await ref.putFile(fileImage!).whenComplete(() async {
-        await ref.getDownloadURL().then((value) {
-          passengerMap['PASSENGER_IMAGE'] = value;
+      String key = DateTime
+          .now()
+          .millisecondsSinceEpoch
+          .toString();
+      userMap['ADDED_BY'] = addedBy;
+      userMap['NAME'] = userNameCT.text;
+      passengerMap['NAME'] = userNameCT.text;
+      userMap['MOBILE_NUMBER'] = "+91${userPhoneCT.text}";
+      passengerMap['MOBILE_NUMBER'] = "+91${userPhoneCT.text}";
+      passengerMap['EMAIL'] = userEmailCT.text;
+      userMap['USER_ID'] = key;
+      userMap['DESIGNATION'] = "PASSENGER";
+      passengerMap['DESIGNATION'] = "PASSENGER";
+      passengerMap['PASSENGER_ID'] = key;
+      passengerMap["DOB"] = birthDate;
+      passengerMap["DOB STRING"] = userDobCT.text;
+      passengerMap["REGISTRATION_TIME"] = DateTime.now();
+      if (fileImage != null) {
+        String time = DateTime
+            .now()
+            .millisecondsSinceEpoch
+            .toString();
+        ref = FirebaseStorage.instance.ref().child(time);
+        await ref.putFile(fileImage!).whenComplete(() async {
+          await ref.getDownloadURL().then((value) {
+            passengerMap['PASSENGER_IMAGE'] = value;
+            notifyListeners();
+          });
           notifyListeners();
         });
         notifyListeners();
-      });
-      notifyListeners();
-    } else {
-      passengerMap['PASSENGER_IMAGE'] = '';
-    }
+      } else {
+        passengerMap['PASSENGER_IMAGE'] = '';
+      }
 
-    passengerEditMap["DOB STRING"] = userDobCT.text;
-    passengerEditMap["DOB"] = birthDate;
-    passengerEditMap['EMAIL'] = userEmailCT.text;
-    editMap['MOBILE_NUMBER'] = "+91${userPhoneCT.text}";
-    passengerEditMap['MOBILE_NUMBER'] = "+91${userPhoneCT.text}";
-    editMap['NAME'] = userNameCT.text;
-    passengerEditMap['NAME'] = userNameCT.text;
-    if (fileImage != null) {
-      String time = DateTime.now().millisecondsSinceEpoch.toString();
-      ref = FirebaseStorage.instance.ref().child(time);
-      await ref.putFile(fileImage!).whenComplete(() async {
-        await ref.getDownloadURL().then((value) {
-          passengerEditMap['PASSENGER_IMAGE'] = value;
+      passengerEditMap["DOB STRING"] = userDobCT.text;
+      passengerEditMap["DOB"] = birthDate;
+      passengerEditMap['EMAIL'] = userEmailCT.text;
+      editMap['MOBILE_NUMBER'] = "+91${userPhoneCT.text}";
+      passengerEditMap['MOBILE_NUMBER'] = "+91${userPhoneCT.text}";
+      editMap['NAME'] = userNameCT.text;
+      passengerEditMap['NAME'] = userNameCT.text;
+      if (fileImage != null) {
+        String time = DateTime
+            .now()
+            .millisecondsSinceEpoch
+            .toString();
+        ref = FirebaseStorage.instance.ref().child(time);
+        await ref.putFile(fileImage!).whenComplete(() async {
+          await ref.getDownloadURL().then((value) {
+            passengerEditMap['PASSENGER_IMAGE'] = value;
+            notifyListeners();
+          });
           notifyListeners();
         });
         notifyListeners();
-      });
-      notifyListeners();
-    } else if (editImage != "") {
-      passengerEditMap['PASSENGER_IMAGE'] = editImage;
-    } else {
-      passengerEditMap['PASSENGER_IMAGE'] = "";
-    }
+      } else if (editImage != "") {
+        passengerEditMap['PASSENGER_IMAGE'] = editImage;
+      } else {
+        passengerEditMap['PASSENGER_IMAGE'] = "";
+      }
 
-    if (from == "EDIT") {
-      db.collection('USERS').doc(userId).update(editMap);
-      db.collection('PASSENGERS').doc(userId).update(passengerEditMap);
-    } else {
-      db.collection('USERS').doc(key).set(userMap);
-      db.collection('PASSENGERS').doc(key).set(passengerMap);
-      ScaffoldMessenger.of(context1).showSnackBar(const SnackBar(
-        backgroundColor: Colors.green,
-        content: Text("Registration successful..."),
-        duration: Duration(milliseconds: 3000),
-      ));
+      if (from == "EDIT") {
+        db.collection('USERS').doc(userId).update(editMap);
+        db.collection('PASSENGERS').doc(userId).update(passengerEditMap);
+      } else {
+        db.collection('USERS').doc(key).set(userMap);
+        db.collection('PASSENGERS').doc(key).set(passengerMap);
+        ScaffoldMessenger.of(context1).showSnackBar(const SnackBar(
+          backgroundColor: Colors.green,
+          content: Text("Registration successful..."),
+          duration: Duration(milliseconds: 3000),
+        ));
+      }
+      finish(context1);
+      finish(context1);
+      notifyListeners();
     }
-    finish(context1);
-    finish(context1);
-    notifyListeners();
+    else {
+      final snackBar = SnackBar(
+        elevation: 6.0,
+        backgroundColor: themecolor,
+        behavior: SnackBarBehavior.floating,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20))),
+        content:  Text(
+          "Number Already Exist...",
+          style: TextStyle(color: cWhite),
+        ),
+      );
+      ScaffoldMessenger.of(context1).showSnackBar(snackBar);
+    }
   }
 
   /// generate qr controllers
@@ -485,7 +545,7 @@ class AdminProvider with ChangeNotifier {
       }
     });
   }
-
+String passengerOldPhone="";
   void fetchCustomersForEdit(String userId) {
     db.collection("PASSENGERS").doc(userId).get().then((value) async {
       if (value.exists) {
@@ -494,7 +554,7 @@ class AdminProvider with ChangeNotifier {
         userNameCT.text = map["NAME"].toString();
         userEmailCT.text = map["EMAIL"].toString();
         userDobCT.text = map["DOB STRING"].toString();
-        userPhoneCT.text = map["MOBILE_NUMBER"].toString().replaceAll("+91", '');
+        passengerOldPhone=userPhoneCT.text = map["MOBILE_NUMBER"].toString().replaceAll("+91", '');
       }
       notifyListeners();
     });
@@ -756,24 +816,44 @@ class AdminProvider with ChangeNotifier {
     print("gggggggggggg666" + fileImage.toString());
   }
 
-  void addTickets(String addedBy, String addedName) {
-    HashMap<String, Object> ticketMap = HashMap();
-    String ticketId = DateTime.now().millisecondsSinceEpoch.toString();
+  Future<void> addTickets(BuildContext context, String addedBy, String addedName) async {
+   bool numberStatus = await checkPnrIdExist(ticketPnrController.text);
+   if(!numberStatus) {
+      HashMap<String, Object> ticketMap = HashMap();
+      String ticketId = DateTime
+          .now()
+          .millisecondsSinceEpoch
+          .toString();
 
-    ticketMap["PNR_ID"] = ticketPnrController.text;
-    ticketMap["FLIGHT_NAME"] = ticketFlightName;
-    ticketMap["FROM"] = ticketFromController.text;
-    ticketMap["TO"] = ticketToController.text;
-    ticketMap["PASSENGERS_NUM"] = int.parse(passengerCountController.text);
-    ticketMap["ID"] = ticketId;
-    ticketMap["ADDED_BY"] = addedBy;
-    ticketMap["ADDED_BY_NAME"] = addedName;
-    ticketMap["ADDED_TIME"] = DateTime.now();
-    ticketMap["ARRIVAL"] = arrivalTime.text;
-    ticketMap["DEPARTURE"] = departureTime.text;
-    ticketMap["PASSENGERS"] = ticketNameList;
+      ticketMap["PNR_ID"] = ticketPnrController.text;
+      ticketMap["FLIGHT_NAME"] = ticketFlightName;
+      ticketMap["FROM"] = ticketFromController.text;
+      ticketMap["TO"] = ticketToController.text;
+      ticketMap["PASSENGERS_NUM"] = int.parse(passengerCountController.text);
+      ticketMap["ID"] = ticketId;
+      ticketMap["ADDED_BY"] = addedBy;
+      ticketMap["ADDED_BY_NAME"] = addedName;
+      ticketMap["ADDED_TIME"] = DateTime.now();
+      ticketMap["ARRIVAL"] = arrivalTime.text;
+      ticketMap["DEPARTURE"] = departureTime.text;
+      ticketMap["PASSENGERS"] = ticketNameList;
 
-    db.collection("TICKETS").doc(ticketId).set(ticketMap);
+      db.collection("TICKETS").doc(ticketId).set(ticketMap);
+      finish(context);
+    }else{
+      final snackBar = SnackBar(
+        elevation: 6.0,
+        backgroundColor: cWhite,
+        behavior: SnackBarBehavior.floating,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20))),
+        content:  const Text(
+          "PNR ID Already Exist..",
+          style: TextStyle(color: Colors.red),
+        ),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
 
   }
 
@@ -795,7 +875,7 @@ class AdminProvider with ChangeNotifier {
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(32.0))),
       backgroundColor: cWhite,
-      contentPadding: EdgeInsets.only(bottom: 8),
+      contentPadding: const EdgeInsets.only(bottom: 8),
       scrollable: true,
       title: Center(
           child: Column(children: [
@@ -814,7 +894,7 @@ class AdminProvider with ChangeNotifier {
               fontWeight: FontWeight.w500,
               fontSize: 14),
         ),
-        SizedBox(
+        const SizedBox(
           height: 15,
         ),
       ])),

@@ -287,13 +287,13 @@ class AddCustomerScreen extends StatelessWidget {
                               const Color(0xff432244))),
                       onPressed: () {
                         // Navigator.pushNamed(context, newLoginScreen ,arguments: {'type': type});
-
                         final FormState? form = _formKey.currentState;
                         if (form!.validate()) {
                           if (from == "EDIT") {
                             adminProvider.userRegistration(
                                 context, 'Admin', userId, from);
                           } else {
+
                             adminProvider.userRegistration(
                                 context, 'Admin', '', '');
                           }

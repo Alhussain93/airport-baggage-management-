@@ -366,8 +366,8 @@ class AddTickets extends StatelessWidget {
                             if (values.ticketNameList.isNotEmpty &&
                                 values
                                     .ticketPassengersController.text.isEmpty) {
-                              adminProvider.addTickets("", "");
-                              finish(context);
+                              adminProvider.addTickets(context,"", "");
+
                               adminProvider.clearTicketControllers();
                             } else {
                               final snackBar = SnackBar(
