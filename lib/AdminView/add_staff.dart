@@ -37,6 +37,14 @@ class AddStaff extends StatelessWidget {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: themecolor,
+        title: const Text(
+          "Add Staff",
+          style: TextStyle(color: Colors.white, fontSize: 18),
+        ),
+        centerTitle: true,
+      ),
       backgroundColor: bgColor,
       body: Form(
         key: _formKey,
@@ -46,18 +54,18 @@ class AddStaff extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: height * .1,
+                height: height /40,
               ),
-              const Padding(
-                padding: EdgeInsets.only(left: 20),
-                child: Text(
-                  "Add New Staff",
-                  style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 20,
-                      fontFamily: "Poppins-SemiBold"),
-                ),
-              ),
+              // const Padding(
+              //   padding: EdgeInsets.only(left: 20),
+              //   child: Text(
+              //     "Add New Staff",
+              //     style: TextStyle(
+              //         fontWeight: FontWeight.w600,
+              //         fontSize: 20,
+              //         fontFamily: "Poppins-SemiBold"),
+              //   ),
+              // ),
               Consumer<AdminProvider>(builder: (context, value, child) {
                 return Column(
                   children: [
@@ -76,8 +84,8 @@ class AddStaff extends StatelessWidget {
                               image: value.fileImage != null
                                   ?  DecorationImage(
                                   image: FileImage(value.fileImage!),fit: BoxFit.fill)
-                                  : value.editImage!=""? DecorationImage(
-                                  image: NetworkImage(value.editImage),fit: BoxFit.fill,
+                                  : value.staffImage!=""? DecorationImage(
+                                  image: NetworkImage(value.staffImage),fit: BoxFit.fill,
                                   scale: 15):
                               const DecorationImage(
                                   image: AssetImage("assets/user.png"),
@@ -214,6 +222,7 @@ class AddStaff extends StatelessWidget {
                    Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 17.0),
                       child: TextFormField(
+                        keyboardType: TextInputType.number,
                         validator: (value){
                           if(value!.isEmpty){
                             return "Please Enter a Phone Number";
@@ -223,10 +232,10 @@ class AddStaff extends StatelessWidget {
                             return "Please Enter a Valid Phone Number";
                           }
                         },
-                        keyboardType: TextInputType.phone,
                          controller: value.PhoneNumberController,
                         inputFormatters: [
                           LengthLimitingTextInputFormatter(10),
+                          FilteringTextInputFormatter.digitsOnly,
                         ],
                         decoration: InputDecoration(
                           helperText: "",
@@ -293,6 +302,12 @@ class AddStaff extends StatelessWidget {
                                       child: Text(item1),
                                     ));
                               }).toList(),
+                              validator: (dropValue){
+                                if(dropValue=="Select Airport"){
+                                  return "Select Airport";
+                                }
+                                return null;
+                              },
                             ),
                             // DropdownButtonHideUnderline(
                             //   child: DropdownSearch<String>(
@@ -379,6 +394,12 @@ class AddStaff extends StatelessWidget {
                                       child: Text(item1),
                                     ));
                               }).toList(),
+                              validator: (dropValue){
+                                if(dropValue=="Select Designation"){
+                                  return "Select Designation";
+                                }
+                                return null;
+                              },
                             ),
                             // DropdownButtonHideUnderline(
                             //   child: DropdownSearch<String>(
@@ -434,55 +455,22 @@ class AddStaff extends StatelessWidget {
                         padding: const EdgeInsets.only(top: 40),
                         child: InkWell(
                           onTap: () {
-                            // val.getdataa();
                             final FormState? forme = _formKey.currentState;
-                            if (forme!.validate()&&value.designation!="Select Designation"&& value.staffAirportName!='Select Airport') {
-                              value.addData(context, from, userId,status);
-                            }else {
-                              if (value.designation == "Select Designation"&& value.staffAirportName=='Select Airport') {
-                                // print("dtyufgfj");
-                                const snackBar = SnackBar(
-                                  content: Text('Please select Airport and Designation'),
-                                  backgroundColor: Colors.red,
-                                  elevation: 10,
-                                  behavior: SnackBarBehavior.floating,
-                                  margin: EdgeInsets.all(5),
-                                );
-                                ScaffoldMessenger.of(context).showSnackBar(snackBar) ;
-                              }
-                              else {
-                                if(value.designation == "Select Designation"){
-                                  const snackBar = SnackBar(
-                                    content: Text('Please select Designation'),
-                                    backgroundColor: Colors.red,
-                                    elevation: 10,
-                                    behavior: SnackBarBehavior.floating,
-                                    margin: EdgeInsets.all(5),
-                                  );
-                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                }else if( value.staffAirportName=='Select Airport' ){
-                                  const snackBar = SnackBar(
-                                    content: Text('Please select Airport'),
-                                    backgroundColor: Colors.red,
-                                    elevation: 10,
-                                    behavior: SnackBarBehavior.floating,
-                                    margin: EdgeInsets.all(5),
-                                  );
-                                  ScaffoldMessenger.of(context).showSnackBar(snackBar) ;
-                            }
-                          }
-                          }
+                            if (forme!.validate()) {
+                              value.addStaff(context, from, userId,status);
+                           }
                           },
                           child: Container(
                             height: 48,
                             width: width / 1.1,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
-                                color: Textclr),
-                            child: const Center(
+                                color: themecolor),
+                            child:  Center(
                                 child: Text(
                               "Submit",
                               style: TextStyle(
+                                color: cWhite,
                                   fontSize: 18,
                                   fontWeight: FontWeight.w600,
                                   fontFamily: 'Poppins-SemiBold'),
