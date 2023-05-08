@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:ffi';
 import 'dart:io';
 import 'dart:math';
 
@@ -23,6 +24,7 @@ import 'package:intl/intl.dart';
 
 import '../AdminView/add_staff.dart';
 import '../AdminView/generateQr_Screen.dart';
+import '../StaffView/staff_home_screen.dart';
 import '../UserView/splash_screen.dart';
 import '../AdminView/staff_screen.dart';
 import '../admin_model/add_staff_model.dart';
@@ -90,69 +92,39 @@ class AdminProvider with ChangeNotifier {
     return decrypted2;
   }
 
-  enterQrData(String luggageId, BuildContext context) {
-    String userName = '';
-    String pnrId = '';
+  statusUpdateQrData(String luggageId, String staffDes,BuildContext context) {
 
     print('how many times happend 2');
 
     DateTime now = DateTime.now();
     String milli = now.millisecondsSinceEpoch.toString();
+    
     db.collection("LUGGAGE").doc(luggageId).get().then((value) {
       if (value.exists) {
-        Map<dynamic, dynamic> map = value.data() as Map;
-        userName = map["NAME"].toString();
-        pnrId = map["PNR_ID"].toString();
+        if(staffDes=="Loading"){
+          db.collection("LUGGAGE").doc(luggageId).set({"LOADED_TIME": now, "STATUS": 'LOADING',}, SetOptions(merge: true));
+          String text = 'Loading completed';
+                  showAlertDialog(context, text,staffDes);
+        }else if(staffDes=="UnLoading"){
+          db.collection("LUGGAGE").doc(luggageId).set({"UNLOADED_TIME": now, "STATUS": 'UNLOADING',}, SetOptions(merge: true));
+          String text = 'Unloading completed';
+          showAlertDialog(context, text,staffDes);
+        }else if(staffDes=="Check_Out"){
+          db.collection("LUGGAGE").doc(luggageId).set({"CHECKOUT_TIME": now, "STATUS": 'CHECKOUT',}, SetOptions(merge: true));
+          String text = 'Checkout completed';
+          showAlertDialog(context, text,staffDes);
+        }
 
-        db.collection("QR_VALUES").doc(luggageId).get().then((value) {
-          if (value.exists) {
-            Map<dynamic, dynamic> qrMap = value.data() as Map;
-
-            if (qrMap["STATUS"].toString() == "SECURITY CHECKING") {
-              db.collection("QR_VALUES").doc(luggageId).set({
-                "LUGGAGE_ID": luggageId,
-                "PNR_ID": pnrId,
-                "USER_NAME": userName,
-                "TIME": now,
-                "TIME MILLI": milli,
-                "STATUS": 'SCREENING',
-              });
-              String text = 'Screening  completed';
-              showAlertDialog(context, text);
-            } else if (qrMap["STATUS"].toString() == "SCREENING") {
-              db.collection("QR_VALUES").doc(luggageId).set({
-                "LUGGAGE_ID": luggageId,
-                "PNR_ID": pnrId,
-                "USER_NAME": userName,
-                "TIME": now,
-                "TIME MILLI": milli,
-                "STATUS": 'CHECK OUT',
-              });
-              String text = 'Check out  completed';
-              showAlertDialog(context, text);
-            } else if (qrMap["STATUS"].toString() == "CHECK OUT") {
-              String text = 'Already check out';
-              showAlertDialog(context, text);
-            }
-          } else {
-            db.collection("QR_VALUES").doc(luggageId).set({
-              "LUGGAGE_ID": luggageId,
-              "PNR_ID": pnrId,
-              "USER_NAME": userName,
-              "TIME": now,
-              "TIME MILLI": milli,
-              "STATUS": 'SECURITY CHECKING',
-            });
-
-            String text = 'Security checking completed';
-            showAlertDialog(context, text);
-          }
-        });
       }
+
     });
+
+
+
   }
 
-  showAlertDialog(BuildContext context, String text) {
+
+  showAlertDialog(BuildContext context, String text,String staffDes) {
     // set up the button
     Widget okButton = Container(
       height: 38,
@@ -167,7 +139,7 @@ class AdminProvider with ChangeNotifier {
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
         ),
         onPressed: () {
-          callNextReplacement(HomeScreen(), context);
+          callNextReplacement(StaffHomeScreen(designation: staffDes,), context);
         },
       ),
     );
@@ -445,22 +417,69 @@ class AdminProvider with ChangeNotifier {
     });
   }
 
+void checkPnrIdExist(String pnrId,BuildContext context){
+    db.collection("TICKETS").where("PNR_ID",isNotEqualTo:pnrId).get().then((value) {
+      if(value.docs.isNotEmpty){
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            backgroundColor: Colors.red,
+            content: Text(
+              "No data found ", style: TextStyle(color: Colors.white),)));
+
+        print("djdjckcekmrko");
+
+      }
+
+    });
+
+}
+
+  Future<bool> checkPnrIDExist(String pnrId) async {
+    var D = await db
+        .collection("TICKETS")
+        .where("PNR_ID", isEqualTo: pnrId)
+        .get();
+    if (D.docs.isNotEmpty) {
+      print("sjsjmmssmsl");
+      return true;
+    } else {
+      print("HHHHHHHHHHHHHHHHH");
+
+      return false;
+    }
+  }
+
+
+
   void generateQrCode(BuildContext context) {
     HashMap<String, Object> qrMap = HashMap();
 
     int luggageCount=int.parse(qrLuggageCountCT.text);
+    for (int i = 0; i < luggageCount; i++) {
+      qrData = DateTime
+          .now()
+          .millisecondsSinceEpoch
+          .toString() + getRandomString(4);
+      String key = DateTime
+          .now()
+          .millisecondsSinceEpoch
+          .toString();
+      DateTime now = DateTime.now();
 
-    qrData = DateTime.now().millisecondsSinceEpoch.toString() + getRandomString(4);
-    String key = DateTime.now().millisecondsSinceEpoch.toString();
-    qrMap['NAME'] = qrUserNameCT.text;
-    qrMap['PNR_ID'] = qrPnrCT.text;
-    qrMap['LUGGAGE_COUNT'] = qrLuggageCountCT.text;
-    qrMap['LUGGAGE_ID'] = qrData;
-    db.collection("LUGGAGE").doc(qrData).set(qrMap);
-    notifyListeners();
-
-    callNext(
-        GenerateQrScreen(qrData: luggageCount,), context);
+      qrMap['NAME'] = qrUserNameCT.text;
+      qrMap['PNR_ID'] = qrPnrCT.text;
+      qrMap['QR_ID'] = qrPnrCT.text;
+      // qrMap['LUGGAGE_COUNT'] = qrLuggageCountCT.text;
+      qrMap['LUGGAGE_ID'] = qrData;
+      qrMap['DATE'] = now;
+      qrMap['STATUS'] = "CHECK_IN";
+      qrMap['CHECK_IN_TIME'] = now;
+      qrMap['LOADED_TIME'] = '';
+      qrMap['UNLOADED_TIME'] = '';
+      qrMap['CHECKOUT_TIME'] = '';
+      db.collection("LUGGAGE").doc(qrData).set(qrMap);
+      notifyListeners();
+    }
+    callNext(GenerateQrScreen(qrData: luggageCount,), context);
   }
 
   void fetchCustomers() {

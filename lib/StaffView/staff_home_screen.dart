@@ -22,7 +22,7 @@ class StaffHomeScreen extends StatelessWidget {
 
     List screens = [
       const CustomersListScreen(),
-       QrScanner(),
+       QrScanner(designation: designation,),
       MakeQrScreen(),
       MisingLaggage(),
     ];
@@ -71,7 +71,7 @@ class StaffHomeScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    designation!="Loading"?
+                    designation!="Check_In"?
                     InkWell(
                       onTap: () {
                         isSelected.value = 1;
@@ -305,7 +305,7 @@ class StaffHomeScreen extends StatelessWidget {
                               ),
                               InkWell(
                                 onTap: () {
-                                  if(designation!="Loading"){
+                                  if(designation!="Check_In"){
                                     isSelected.value = 1;
                                   }else{
                                     adminProvider. clearQrControllers();
@@ -326,7 +326,7 @@ class StaffHomeScreen extends StatelessWidget {
                                   ),
                                   child: Center(
                                       child: Text(
-                                        designation!="Loading"?
+                                        designation!="Check_In"?
                                         "Scan":"Generate Qr",
                                         style: TextStyle(
                                             fontSize: 11,
