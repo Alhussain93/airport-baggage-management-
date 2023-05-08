@@ -26,7 +26,9 @@ class HomeScreen extends StatelessWidget {
 
     List screens = [
       const CustomersListScreen(),
-      QrScanner(designation: '',),
+      QrScanner(
+        designation: '',
+      ),
       const StaffScreen(),
       MisingLaggage(),
       MakeQrScreen(),
@@ -55,7 +57,7 @@ class HomeScreen extends StatelessWidget {
                         height: 40,
                         width: width * .77,
                         color: darkThemeColor,
-                        child:  Row(
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: const [
                             SizedBox(
@@ -88,7 +90,7 @@ class HomeScreen extends StatelessWidget {
                           height: 40,
                           width: width * .77,
                           color: darkThemeColor,
-                          child:  Row(
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: const [
                               SizedBox(
@@ -122,7 +124,7 @@ class HomeScreen extends StatelessWidget {
                           height: 40,
                           width: width * .77,
                           color: darkThemeColor,
-                          child:  Row(
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: const [
                               SizedBox(
@@ -157,7 +159,7 @@ class HomeScreen extends StatelessWidget {
                           height: 40,
                           width: width * .77,
                           color: darkThemeColor,
-                          child:  Row(
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: const [
                               SizedBox(
@@ -192,7 +194,7 @@ class HomeScreen extends StatelessWidget {
                           height: 40,
                           width: width * .77,
                           color: darkThemeColor,
-                          child:  Row(
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: const [
                               SizedBox(
@@ -220,14 +222,13 @@ class HomeScreen extends StatelessWidget {
                       padding: const EdgeInsets.only(bottom: 20),
                       child: InkWell(
                         onTap: () {
-
                           adminProvider.logOutAlert(context);
                         },
                         child: Container(
                           height: 40,
                           width: width * .77,
                           color: darkThemeColor,
-                          child:  Row(
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: const [
                               SizedBox(
@@ -258,15 +259,11 @@ class HomeScreen extends StatelessWidget {
                 child: AppBar(
                   elevation: 0,
                   backgroundColor: themecolor,
-                  centerTitle: true,
-                  title: Text(
-                    "LOGO",
-                    style: TextStyle(
-                        fontFamily: 'Poppins-SemiBold',
-                        fontWeight: FontWeight.w600,
-                        fontSize: 36,
-                        color: Textclr),
-                  ),
+                  centerTitle: false,
+                  title: SizedBox(height: 30,
+                      child: Image.asset(
+                    "assets/WhiteLogo.png",
+                  )),
                   flexibleSpace: Container(
                     height: height / 3,
                     width: width,
@@ -276,9 +273,8 @@ class HomeScreen extends StatelessWidget {
                         const SizedBox(
                           height: 50,
                         ),
-                        isSelected.value == 1 ||
-                                isSelected.value == 4
-                      // || isSelected.value == 5
+                        isSelected.value == 1 || isSelected.value == 4
+                            // || isSelected.value == 5
                             ? const Padding(padding: EdgeInsets.only(top: 52))
                             : const SizedBox(),
                         isSelected.value != 1 && isSelected.value != 4
@@ -310,7 +306,7 @@ class HomeScreen extends StatelessWidget {
                                       } else if (isSelected.value == 2) {
                                         adminProvider.notifyListeners();
                                         adminProvider.filterStaffList(text);
-                                      }else if(isSelected.value==5){
+                                      } else if (isSelected.value == 5) {
                                         adminProvider.notifyListeners();
                                         adminProvider.filterTickets(text);
                                       }

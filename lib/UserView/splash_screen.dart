@@ -60,13 +60,13 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Widget initwidget() {
     return Scaffold(
-      backgroundColor: themecolor,
+      backgroundColor: cWhite,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Center(
-            child: Image.asset("assets/logoutBG.png"),
+            child: Image.asset("assets/logoutBG.png",scale: 2,),
          //   child:Text("LOGO",style:TextStyle(color:clc00a618,fontSize: 36,fontWeight: FontWeight.bold),),
           ),
         ],
