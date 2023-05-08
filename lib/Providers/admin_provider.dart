@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -16,6 +17,8 @@ import 'package:luggage_tracking_app/constant/my_functions.dart';
 import 'package:luggage_tracking_app/model/customer_model.dart';
 import 'package:luggage_tracking_app/constant/my_functions.dart';
 import 'package:luggage_tracking_app/model/tickets_model.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:encrypt/encrypt.dart' as enc;
@@ -31,7 +34,7 @@ import '../admin_model/add_staff_model.dart';
 import '../constant/colors.dart';
 import '../strings.dart';
 import '../update.dart';
-
+import 'package:pdf/widgets.dart'as pw;
 class AdminProvider with ChangeNotifier {
   final DatabaseReference mRootReference = FirebaseDatabase.instance.ref();
   final FirebaseFirestore db = FirebaseFirestore.instance;
@@ -467,10 +470,10 @@ class AdminProvider with ChangeNotifier {
     });
   }
 
-void checkPnrIdExist(String pnrId,BuildContext context){
+void checkPnrIdExists(String pnrId,BuildContext context){
     db.collection("TICKETS").where("PNR_ID",isNotEqualTo:pnrId).get().then((value) {
       if(value.docs.isNotEmpty){
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             backgroundColor: Colors.red,
             content: Text(
               "No data found ", style: TextStyle(color: Colors.white),)));
@@ -1036,4 +1039,36 @@ void checkPnrIdExist(String pnrId,BuildContext context){
       }
     });
   }
+
+  Future savePdf(String qrData) async {
+    print("hai");
+    final pdf = pw.Document();
+   // final font = await rootBundle.load("assets/Hind-Regular.ttf");
+   // final ttf = pw.Font.ttf(font);
+    print("JNmk");
+    pdf.addPage(pw.Page(
+        pageFormat: PdfPageFormat.a4.portrait,
+        build: (pw.Context context) {
+          return pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.center,
+              // mainAxisAlignment: pw.MainAxisAlignment.center,
+              children: [
+                pw.BarcodeWidget(
+                    data: qrData,
+                    barcode: pw.Barcode.qrCode(),
+                    width: 100,
+                    height:50
+                ),
+              ]);
+        }));
+    Directory documentDirectory = await getApplicationDocumentsDirectory();
+    String documentPath = documentDirectory.path;
+    print(documentPath.toString() + "bbbbbbbbbbbbbbbbb");
+    File file = File("$documentPath/Invoice2.pdf");
+    print(file.toString() + "vvvvvvvvv");
+    // return await Printing.layoutPdf(
+    //     onLayout: (PdfPageFormat format) async => pdf.save());
+    notifyListeners();
+    }
+
 }

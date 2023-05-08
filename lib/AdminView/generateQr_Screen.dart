@@ -27,7 +27,21 @@ class GenerateQrScreen extends StatelessWidget {
               children: [
                 SizedBox(height: height*.05,),
 
+Consumer<AdminProvider>(
+  builder: (context,value,child) {
+    return     InkWell(
+      onTap: (){
+        value.savePdf(value.qrData);
+      },
+      child:   Container(
+        height: 40,
+        width: 100,
+        color: Colors.yellowAccent,
 
+      ),
+    );
+  }
+),
 
     GridView.builder(
     scrollDirection: Axis.vertical,
