@@ -39,25 +39,42 @@ class AddCustomerScreen extends StatelessWidget {
                   onTap: () {
                     values.showBottomSheet(context);
                   },
-                  child: Container(
-                      height: 90,
-                      decoration: BoxDecoration(
-                        color: cWhite,
-                        shape: BoxShape.circle,
-                        image: values.fileImage != null
-                            ?  DecorationImage(
-                            image: FileImage(values.fileImage!),fit: BoxFit.fill)
-                            : values.editImage!=""? DecorationImage(
-                            image: NetworkImage(values.editImage),fit: BoxFit.fill,
-                            scale: 15):
-                        const DecorationImage(
-                            image: AssetImage("assets/user.png"),
-                            scale: 10),
-                        border: Border.all(
-                          width: 1.5,
-                          color: Colors.grey.shade500,
-                        ),
-                      )),
+                  child: values.fileImage != null
+                      ? CircleAvatar(
+                          backgroundColor: cWhite,
+                          radius: 50,
+                          backgroundImage: FileImage(values.fileImage!),
+                        )
+                      : values.editImage != ""
+                          ? CircleAvatar(
+                              backgroundColor: cWhite,
+                              radius: 50,
+                              backgroundImage: NetworkImage(values.editImage))
+                          : CircleAvatar(
+                              backgroundColor: cWhite,
+                              radius: 50,
+                              backgroundImage:
+                                  const AssetImage("assets/user.png"),
+                            ),
+                  // child: Container(
+                  //     height: 90,
+                  //     decoration: BoxDecoration(
+                  //       color: cWhite,
+                  //       shape: BoxShape.circle,
+                  //       image: values.fileImage != null
+                  //           ?  DecorationImage(
+                  //           image: FileImage(values.fileImage!),fit: BoxFit.fill)
+                  //           : values.editImage!=""? DecorationImage(
+                  //           image: NetworkImage(values.editImage),fit: BoxFit.fill,
+                  //           scale: 15):
+                  //       const DecorationImage(
+                  //           image: AssetImage("assets/user.png"),
+                  //           scale: 10),
+                  //       border: Border.all(
+                  //         width: 1.5,
+                  //         color: Colors.grey.shade500,
+                  //       ),
+                  //     )),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 25, right: 25, top: 30),
@@ -125,7 +142,6 @@ class AddCustomerScreen extends StatelessWidget {
                     keyboardType: TextInputType.phone,
                     textAlign: TextAlign.start,
                     inputFormatters: [LengthLimitingTextInputFormatter(10)],
-
                     decoration: InputDecoration(
                       counterStyle: const TextStyle(color: Colors.grey),
                       hintStyle:
@@ -293,7 +309,6 @@ class AddCustomerScreen extends StatelessWidget {
                             adminProvider.userRegistration(
                                 context, 'Admin', userId, from);
                           } else {
-
                             adminProvider.userRegistration(
                                 context, 'Admin', '', '');
                           }

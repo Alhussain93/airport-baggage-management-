@@ -11,9 +11,13 @@ import '../constant/colors.dart';
 import 'home_screen.dart';
 
 class AddStaff extends StatelessWidget {
-  String from, userId,status;
+  String from, userId, status;
 
-  AddStaff({Key? key, required this.from, required this.userId,required this.status})
+  AddStaff(
+      {Key? key,
+      required this.from,
+      required this.userId,
+      required this.status})
       : super(key: key);
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -54,7 +58,7 @@ class AddStaff extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: height /40,
+                height: height / 40,
               ),
               // const Padding(
               //   padding: EdgeInsets.only(left: 20),
@@ -76,79 +80,106 @@ class AddStaff extends StatelessWidget {
                         onTap: () {
                           value.showBottomSheet(context);
                         },
-                        child:Container(
-                            height: 90,
-                            decoration: BoxDecoration(
-                              color: cWhite,
-                              shape: BoxShape.circle,
-                              image: value.fileImage != null
-                                  ?  DecorationImage(
-                                  image: FileImage(value.fileImage!),fit: BoxFit.fill)
-                                  : value.staffImage!=""? DecorationImage(
-                                  image: NetworkImage(value.staffImage),fit: BoxFit.fill,
-                                  scale: 15):
-                              const DecorationImage(
-                                  image: AssetImage("assets/user.png"),
-                                  scale: 10),
-                              border: Border.all(
-                                width: 1.5,
-                                color: Colors.grey.shade500,
-                              ),
-                            )),),
-                    from=='edit'?
-                    Padding(
-                      padding: const EdgeInsets.only(right: 30, top: 20),
-                      child: Consumer<AdminProvider>(
-                        builder: (context,value,child) {
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              StreamBuilder<Object>(
-                                stream: null,
-                                builder: (context, snapshot) {
-                                  return InkWell(
-                                    onTap: (){
-                                      deleteStaff(context, value.staffEditId);
-                                    },
-                                    child: Container(
-                                      height: 30,
-                                      width: 80,
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(20),
-                                          color: cnttColor),
-                                      child: Center(child: Text("Remove")),
-                                    ),
-                                  );
-                                }
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Consumer<AdminProvider>(
-                                builder: (context,value1,child) {
-                                  return InkWell(
-                                    onTap: (){
+                        child: value.fileImage != null
+                            ? CircleAvatar(
+                          backgroundColor: cWhite,
+                          radius: 50,
+                                backgroundImage: FileImage(value.fileImage!),
+                              )
+                            : value.staffImage != ""
+                                ? CircleAvatar(
+                          backgroundColor: cWhite,
 
-                                        blockStaff(context, value1.staffEditId,status);
+                          radius: 50,
 
-                                    },
-                                    child: Container(
-                                      height: 30,
-                                      width: 80,
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(20),
-                                          color: cnttColor),
-                                      child: Center(child:status=='ACTIVE'? const Text("Block"):const Text("Unblock")),
+                          backgroundImage:
+                                        NetworkImage(value.staffImage),
+                                  )
+                                : CircleAvatar(
+                          backgroundColor: cWhite,
 
-                                    ),
-                                  );
-                                }
-                              ),
-                            ],
-                          );
-                        }
-                      ),
-                    ):SizedBox(),
+                          radius: 50,
+
+                          backgroundImage:
+                                        const AssetImage("assets/user.png"),
+                                  )
+                        // Container(
+                        //     height: 100,
+                        //     decoration: BoxDecoration(
+                        //       color: cWhite,
+                        //       shape: BoxShape.circle,
+                        //       image: value.fileImage != null
+                        //           ?  DecorationImage(
+                        //           image: FileImage(value.fileImage!),fit: BoxFit.fill)
+                        //           : value.staffImage!=""? DecorationImage(
+                        //           image: NetworkImage(value.staffImage),fit: BoxFit.contain,
+                        //           scale: 15):
+                        //       const DecorationImage(
+                        //           image: AssetImage("assets/user.png"),
+                        //           scale: 10),
+                        //       border: Border.all(
+                        //         width: 1.5,
+                        //         color: Colors.grey.shade500,
+                        //       ),
+                        //     )),
+                        ),
+                    from == 'edit'
+                        ? Padding(
+                            padding: const EdgeInsets.only(right: 30, top: 20),
+                            child: Consumer<AdminProvider>(
+                                builder: (context, value, child) {
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  StreamBuilder<Object>(
+                                      stream: null,
+                                      builder: (context, snapshot) {
+                                        return InkWell(
+                                          onTap: () {
+                                            deleteStaff(
+                                                context, value.staffEditId);
+                                          },
+                                          child: Container(
+                                            height: 30,
+                                            width: 80,
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                                color: cnttColor),
+                                            child:
+                                                Center(child: Text("Remove")),
+                                          ),
+                                        );
+                                      }),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Consumer<AdminProvider>(
+                                      builder: (context, value1, child) {
+                                    return InkWell(
+                                      onTap: () {
+                                        blockStaff(context, value1.staffEditId,
+                                            status);
+                                      },
+                                      child: Container(
+                                        height: 30,
+                                        width: 80,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            color: cnttColor),
+                                        child: Center(
+                                            child: status == 'ACTIVE'
+                                                ? const Text("Block")
+                                                : const Text("Unblock")),
+                                      ),
+                                    );
+                                  }),
+                                ],
+                              );
+                            }),
+                          )
+                        : SizedBox(),
                     Padding(
                       padding:
                           const EdgeInsets.only(top: 30, left: 20, right: 20),
@@ -219,20 +250,20 @@ class AddStaff extends StatelessWidget {
                     //     ),
                     //   ),
                     // ),
-                   Padding(
+                    Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 17.0),
                       child: TextFormField(
                         keyboardType: TextInputType.number,
-                        validator: (value){
-                          if(value!.isEmpty){
+                        validator: (value) {
+                          if (value!.isEmpty) {
                             return "Please Enter a Phone Number";
-                          }else if
-                          (!RegExp(r'^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$').hasMatch(value))
-                          {
+                          } else if (!RegExp(
+                                  r'^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$')
+                              .hasMatch(value)) {
                             return "Please Enter a Valid Phone Number";
                           }
                         },
-                         controller: value.PhoneNumberController,
+                        controller: value.PhoneNumberController,
                         inputFormatters: [
                           LengthLimitingTextInputFormatter(10),
                           FilteringTextInputFormatter.digitsOnly,
@@ -253,7 +284,7 @@ class AddStaff extends StatelessWidget {
                         width: width / 1.1,
                         decoration: BoxDecoration(
                           color: Colors.transparent,
-                          border: Border.all(width: 1,color: Colors.grey),
+                          border: Border.all(width: 1, color: Colors.grey),
                           // boxShadow: [
                           //   BoxShadow(
                           //     color: Colors.grey.shade300,
@@ -293,7 +324,6 @@ class AddStaff extends StatelessWidget {
                               onChanged: (newValue) {
                                 value1.staffAirportName = newValue.toString();
                               },
-
                               items: airportNameList.map((item1) {
                                 return DropdownMenuItem(
                                     value: item1,
@@ -302,8 +332,8 @@ class AddStaff extends StatelessWidget {
                                       child: Text(item1),
                                     ));
                               }).toList(),
-                              validator: (dropValue){
-                                if(dropValue=="Select Airport"){
+                              validator: (dropValue) {
+                                if (dropValue == "Select Airport") {
                                   return "Select Airport";
                                 }
                                 return null;
@@ -339,14 +369,17 @@ class AddStaff extends StatelessWidget {
                           ),
                         ),
                       );
-                    }),SizedBox(height: 10,),
+                    }),
+                    SizedBox(
+                      height: 10,
+                    ),
                     Consumer<AdminProvider>(builder: (context, value1, child) {
                       return Container(
                         height: 45,
                         width: width / 1.1,
                         decoration: BoxDecoration(
                           color: Colors.transparent,
-                          border: Border.all(width: 1,color: Colors.grey),
+                          border: Border.all(width: 1, color: Colors.grey),
                           // boxShadow: [
                           //   BoxShadow(
                           //     color: Colors.grey.shade300,
@@ -394,8 +427,8 @@ class AddStaff extends StatelessWidget {
                                       child: Text(item1),
                                     ));
                               }).toList(),
-                              validator: (dropValue){
-                                if(dropValue=="Select Designation"){
+                              validator: (dropValue) {
+                                if (dropValue == "Select Designation") {
                                   return "Select Designation";
                                 }
                                 return null;
@@ -457,8 +490,8 @@ class AddStaff extends StatelessWidget {
                           onTap: () {
                             final FormState? forme = _formKey.currentState;
                             if (forme!.validate()) {
-                              value.addStaff(context, from, userId,status);
-                           }
+                              value.addStaff(context, from, userId, status);
+                            }
                           },
                           child: Container(
                             height: 48,
@@ -466,11 +499,11 @@ class AddStaff extends StatelessWidget {
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
                                 color: themecolor),
-                            child:  Center(
+                            child: Center(
                                 child: Text(
                               "Submit",
                               style: TextStyle(
-                                color: cWhite,
+                                  color: cWhite,
                                   fontSize: 18,
                                   fontWeight: FontWeight.w600,
                                   fontFamily: 'Poppins-SemiBold'),
@@ -491,7 +524,7 @@ class AddStaff extends StatelessWidget {
 
   deleteStaff(BuildContext context, String id) {
     AdminProvider adminProvider =
-    Provider.of<AdminProvider>(context, listen: false);
+        Provider.of<AdminProvider>(context, listen: false);
 
     AlertDialog alert = AlertDialog(
       backgroundColor: themecolor,
@@ -554,22 +587,29 @@ class AddStaff extends StatelessWidget {
       },
     );
   }
-  blockStaff(BuildContext context, String id,String userStatus) {
+
+  blockStaff(BuildContext context, String id, String userStatus) {
     AdminProvider adminProvider =
-    Provider.of<AdminProvider>(context, listen: false);
+        Provider.of<AdminProvider>(context, listen: false);
 
     AlertDialog alert = AlertDialog(
       backgroundColor: themecolor,
       scrollable: true,
-      title:  userStatus=='ACTIVE'? const Text(
-        "Do you want to block this staff",
-        style: TextStyle(
-            fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
-      ):const Text(
-        "Do you want to unblock this staff",
-        style: TextStyle(
-            fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
-      ),
+      title: userStatus == 'ACTIVE'
+          ? const Text(
+              "Do you want to block this staff",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  color: Colors.white),
+            )
+          : const Text(
+              "Do you want to unblock this staff",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  color: Colors.white),
+            ),
       content: SizedBox(
         height: 50,
         child: SingleChildScrollView(
@@ -605,12 +645,11 @@ class AddStaff extends StatelessWidget {
                           child: const Text('YES',
                               style: TextStyle(color: Colors.black)),
                           onPressed: () {
-                            if(userStatus=='ACTIVE'){
+                            if (userStatus == 'ACTIVE') {
                               adminProvider.blockStaff(context, id);
-                            }else{
+                            } else {
                               adminProvider.unBlockStaff(context, id);
                             }
-
                           }),
                     );
                   }),
@@ -629,4 +668,3 @@ class AddStaff extends StatelessWidget {
     );
   }
 }
-

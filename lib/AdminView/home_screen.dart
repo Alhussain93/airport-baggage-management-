@@ -69,7 +69,7 @@ class HomeScreen extends StatelessWidget {
                               width: 10,
                             ),
                             Text(
-                              "Add customer",
+                              "Add Passenger",
                               style:
                                   TextStyle(color: Colors.white, fontSize: 15),
                             )
@@ -339,7 +339,7 @@ class HomeScreen extends StatelessWidget {
                                   ),
                                   child: Center(
                                       child: Text(
-                                    "Add Costumer",
+                                    "Add Passenger",
                                     style: TextStyle(
                                       fontSize: 11,
                                       fontWeight: FontWeight.w600,

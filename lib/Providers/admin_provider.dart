@@ -89,6 +89,7 @@ class AdminProvider with ChangeNotifier {
 
     return decrypted2;
   }
+
   Future<bool> checkNumberExist(String phone) async {
     var D = await db
         .collection("USERS")
@@ -101,6 +102,7 @@ class AdminProvider with ChangeNotifier {
       return false;
     }
   }
+
   Future<bool> checkStaffIdExist(String staffId) async {
     var D = await db
         .collection("STAFF")
@@ -112,11 +114,10 @@ class AdminProvider with ChangeNotifier {
       return false;
     }
   }
+
   Future<bool> checkPnrIdExist(String pnrID) async {
-    var D = await db
-        .collection("TICKETS")
-        .where("PNR_ID", isEqualTo: pnrID)
-        .get();
+    var D =
+        await db.collection("TICKETS").where("PNR_ID", isEqualTo: pnrID).get();
     if (D.docs.isNotEmpty) {
       return true;
     } else {
@@ -239,11 +240,10 @@ class AdminProvider with ChangeNotifier {
 
   void filterTickets(String item) {
     filterTicketLIst = ticketList
-        .where(
-          (a) =>
-              a.pnrId.toLowerCase().contains(item.toLowerCase()) ||
-              a.flightName.toLowerCase().contains(item.toLowerCase())
-        ).toList();
+        .where((a) =>
+            a.pnrId.toLowerCase().contains(item.toLowerCase()) ||
+            a.flightName.toLowerCase().contains(item.toLowerCase()))
+        .toList();
 
     notifyListeners();
   }
@@ -284,6 +284,7 @@ class AdminProvider with ChangeNotifier {
     userNameCT.clear();
     userEmailCT.clear();
     userDobCT.clear();
+    fileImage = null;
     editImage = "";
     notifyListeners();
   }
@@ -291,7 +292,7 @@ class AdminProvider with ChangeNotifier {
   Future<void> userRegistration(
       BuildContext context1, String addedBy, String userId, String from) async {
     bool numberStatus = await checkNumberExist(userPhoneCT.text);
-    if (!numberStatus|| userPhoneCT.text == passengerOldPhone) {
+    if (!numberStatus || userPhoneCT.text == passengerOldPhone) {
       showDialog(
           context: context1,
           builder: (context) {
@@ -305,10 +306,7 @@ class AdminProvider with ChangeNotifier {
       HashMap<String, Object> passengerEditMap = HashMap();
       HashMap<String, Object> editMap = HashMap();
 
-      String key = DateTime
-          .now()
-          .millisecondsSinceEpoch
-          .toString();
+      String key = DateTime.now().millisecondsSinceEpoch.toString();
       userMap['ADDED_BY'] = addedBy;
       userMap['NAME'] = userNameCT.text;
       passengerMap['NAME'] = userNameCT.text;
@@ -323,10 +321,7 @@ class AdminProvider with ChangeNotifier {
       passengerMap["DOB STRING"] = userDobCT.text;
       passengerMap["REGISTRATION_TIME"] = DateTime.now();
       if (fileImage != null) {
-        String time = DateTime
-            .now()
-            .millisecondsSinceEpoch
-            .toString();
+        String time = DateTime.now().millisecondsSinceEpoch.toString();
         ref = FirebaseStorage.instance.ref().child(time);
         await ref.putFile(fileImage!).whenComplete(() async {
           await ref.getDownloadURL().then((value) {
@@ -348,10 +343,7 @@ class AdminProvider with ChangeNotifier {
       editMap['NAME'] = userNameCT.text;
       passengerEditMap['NAME'] = userNameCT.text;
       if (fileImage != null) {
-        String time = DateTime
-            .now()
-            .millisecondsSinceEpoch
-            .toString();
+        String time = DateTime.now().millisecondsSinceEpoch.toString();
         ref = FirebaseStorage.instance.ref().child(time);
         await ref.putFile(fileImage!).whenComplete(() async {
           await ref.getDownloadURL().then((value) {
@@ -382,15 +374,14 @@ class AdminProvider with ChangeNotifier {
       finish(context1);
       finish(context1);
       notifyListeners();
-    }
-    else {
+    } else {
       final snackBar = SnackBar(
         elevation: 6.0,
         backgroundColor: themecolor,
         behavior: SnackBarBehavior.floating,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(20))),
-        content:  Text(
+        content: Text(
           "Number Already Exist...",
           style: TextStyle(color: cWhite),
         ),
@@ -508,9 +499,10 @@ class AdminProvider with ChangeNotifier {
   void generateQrCode(BuildContext context) {
     HashMap<String, Object> qrMap = HashMap();
 
-    int luggageCount=int.parse(qrLuggageCountCT.text);
+    int luggageCount = int.parse(qrLuggageCountCT.text);
 
-    qrData = DateTime.now().millisecondsSinceEpoch.toString() + getRandomString(4);
+    qrData =
+        DateTime.now().millisecondsSinceEpoch.toString() + getRandomString(4);
     String key = DateTime.now().millisecondsSinceEpoch.toString();
     qrMap['NAME'] = qrUserNameCT.text;
     qrMap['PNR_ID'] = qrPnrCT.text;
@@ -520,7 +512,10 @@ class AdminProvider with ChangeNotifier {
     notifyListeners();
 
     callNext(
-        GenerateQrScreen(qrData: luggageCount,), context);
+        GenerateQrScreen(
+          qrData: luggageCount,
+        ),
+        context);
   }
 
   void fetchCustomers() {
@@ -545,7 +540,9 @@ class AdminProvider with ChangeNotifier {
       }
     });
   }
-String passengerOldPhone="";
+
+  String passengerOldPhone = "";
+
   void fetchCustomersForEdit(String userId) {
     db.collection("PASSENGERS").doc(userId).get().then((value) async {
       if (value.exists) {
@@ -554,7 +551,8 @@ String passengerOldPhone="";
         userNameCT.text = map["NAME"].toString();
         userEmailCT.text = map["EMAIL"].toString();
         userDobCT.text = map["DOB STRING"].toString();
-        passengerOldPhone=userPhoneCT.text = map["MOBILE_NUMBER"].toString().replaceAll("+91", '');
+        passengerOldPhone = userPhoneCT.text =
+            map["MOBILE_NUMBER"].toString().replaceAll("+91", '');
       }
       notifyListeners();
     });
@@ -571,7 +569,7 @@ String passengerOldPhone="";
     modellist.clear();
     filtersStaffList.clear();
 
-    db.collection("STAFF").snapshots().listen((event)  {
+    db.collection("STAFF").snapshots().listen((event) {
       for (var element in event.docs) {
         Map<dynamic, dynamic> map = element.data();
         modellist.add(
@@ -598,62 +596,77 @@ String passengerOldPhone="";
 
   Future<void> addStaff(
       BuildContext context, String from, String userId, String status) async {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return const Center(
-            child: CircularProgressIndicator(color: Colors.green),
-          );
-        });
-    String id = DateTime.now()
-        .millisecondsSinceEpoch
-        .toString();
-    //this code is genarate auto id;
-    Map<String, Object> dataMap = HashMap();
-    Map<String, Object> userMap = HashMap();
-    dataMap["NAME"] = NameController.text;
-    userMap["NAME"] = NameController.text;
-    dataMap["STAFF_ID"] = StaffidController.text;
-    dataMap["TIME"] = DateTime.now();
-    userMap["STAFF_ID"] = StaffidController.text;
-    // dataMap["EMAIL"] = EmailController.text;
-    dataMap["MOBILE_NUMBER"] ="+91${PhoneNumberController.text}";
-    userMap["MOBILE_NUMBER"] ="+91${PhoneNumberController.text}";
-    dataMap["AIRPORT"] = staffAirportName.toString();
-    dataMap["DESIGNATION"]=designation.toString();
-    userMap["DESIGNATION"]=designation.toString();
-    userMap["TYPE"]="STAFF";
-    dataMap["ID"] = id.toString();
-    userMap["ID"] = id.toString();
-    dataMap["STATUS"] = status;
-    userMap["STATUS"] = status;
-    if (fileImage != null) {
-      String time = DateTime.now().millisecondsSinceEpoch.toString();
-      ref = FirebaseStorage.instance.ref().child(time);
-      await ref.putFile(fileImage!).whenComplete(() async {
-        await ref.getDownloadURL().then((value) {
-          dataMap['PROFILE_IMAGE'] = value;
+    bool numberStatus = await checkStaffIdExist(StaffidController.text);
+    if (!numberStatus) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return const Center(
+              child: CircularProgressIndicator(color: Colors.green),
+            );
+          });
+      String id = DateTime.now().millisecondsSinceEpoch.toString();
+      //this code is genarate auto id;
+      Map<String, Object> dataMap = HashMap();
+      Map<String, Object> userMap = HashMap();
+      dataMap["NAME"] = NameController.text;
+      userMap["NAME"] = NameController.text;
+      dataMap["STAFF_ID"] = StaffidController.text;
+      dataMap["TIME"] = DateTime.now();
+      userMap["STAFF_ID"] = StaffidController.text;
+      // dataMap["EMAIL"] = EmailController.text;
+      dataMap["MOBILE_NUMBER"] = "+91${PhoneNumberController.text}";
+      userMap["MOBILE_NUMBER"] = "+91${PhoneNumberController.text}";
+      dataMap["AIRPORT"] = staffAirportName.toString();
+      dataMap["DESIGNATION"] = designation.toString();
+      userMap["DESIGNATION"] = designation.toString();
+      userMap["TYPE"] = "STAFF";
+      dataMap["ID"] = id.toString();
+      userMap["ID"] = id.toString();
+      dataMap["STATUS"] = status;
+      userMap["STATUS"] = status;
+      if (fileImage != null) {
+        String time = DateTime.now().millisecondsSinceEpoch.toString();
+        ref = FirebaseStorage.instance.ref().child(time);
+        await ref.putFile(fileImage!).whenComplete(() async {
+          await ref.getDownloadURL().then((value) {
+            dataMap['PROFILE_IMAGE'] = value;
+            notifyListeners();
+          });
           notifyListeners();
         });
         notifyListeners();
-      });
+      } else {
+        dataMap['PROFILE_IMAGE'] = '';
+      }
+      //  dataMap["PROFILE_IMAGE"]=fileImage.toString();
+      if (from == '') {
+        db.collection("STAFF").doc(id).set(dataMap);
+        db.collection("USERS").doc(id).set(userMap);
+      } else {
+        db.collection("STAFF").doc(userId).update(dataMap);
+        db.collection("USERS").doc(userId).update(userMap);
+      }
+      notifyListeners();
+
+      finish(context);
+      finish(context);
+      notifyListeners();
       notifyListeners();
     } else {
-      dataMap['PROFILE_IMAGE'] = '';
+      final snackBar = SnackBar(
+        elevation: 6.0,
+        backgroundColor: themecolor,
+        behavior: SnackBarBehavior.floating,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20))),
+        content: Text(
+          "Staff ID Already Exist...",
+          style: TextStyle(color: cWhite),
+        ),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
-    //  dataMap["PROFILE_IMAGE"]=fileImage.toString();
-    if (from == '') {
-      db.collection("STAFF").doc(id).set(dataMap);
-      db.collection("USERS").doc(id).set(userMap);
-    } else {
-      db.collection("STAFF").doc(userId).update(dataMap);
-      db.collection("USERS").doc(userId).update(userMap);
-    }
-    notifyListeners();
-
-    finish(context);
-    finish(context);
-    notifyListeners();
   }
 
   void clearStaff() {
@@ -662,7 +675,8 @@ String passengerOldPhone="";
     PhoneNumberController.clear();
     designation = 'Select Designation';
     staffAirportName = 'Select Airport';
-    fileImage=null;
+    fileImage = null;
+    staffImage="";
     notifyListeners();
   }
 
@@ -672,10 +686,11 @@ String passengerOldPhone="";
     callNextReplacement(HomeScreen(), context);
     notifyListeners();
   }
+
   String status = '';
   String staffImage = '';
-  void editStaff(BuildContext context, String id) {
 
+  void editStaff(BuildContext context, String id) {
     db.collection("STAFF").doc(id).get().then((value) {
       if (value.exists) {
         Map<dynamic, dynamic> map = value.data() as Map;
@@ -685,9 +700,10 @@ String passengerOldPhone="";
         staffAirportName = map['AIRPORT'].toString();
         designation = map['DESIGNATION'].toString();
         // EmailController.text = map['EMAIL'].toString();
-        PhoneNumberController.text = map['MOBILE_NUMBER'].toString().substring(3);
+        PhoneNumberController.text =
+            map['MOBILE_NUMBER'].toString().substring(3);
         status = map['STATUS'].toString();
-        staffImage=map["PROFILE_IMAGE"].toString();
+        staffImage = map["PROFILE_IMAGE"].toString();
       }
       print("chucifhf" + status.toString());
       Navigator.push(
@@ -816,14 +832,12 @@ String passengerOldPhone="";
     print("gggggggggggg666" + fileImage.toString());
   }
 
-  Future<void> addTickets(BuildContext context, String addedBy, String addedName) async {
-   bool numberStatus = await checkPnrIdExist(ticketPnrController.text);
-   if(!numberStatus) {
+  Future<void> addTickets(
+      BuildContext context, String addedBy, String addedName) async {
+    bool numberStatus = await checkPnrIdExist(ticketPnrController.text);
+    if (!numberStatus) {
       HashMap<String, Object> ticketMap = HashMap();
-      String ticketId = DateTime
-          .now()
-          .millisecondsSinceEpoch
-          .toString();
+      String ticketId = DateTime.now().millisecondsSinceEpoch.toString();
 
       ticketMap["PNR_ID"] = ticketPnrController.text;
       ticketMap["FLIGHT_NAME"] = ticketFlightName;
@@ -840,21 +854,20 @@ String passengerOldPhone="";
 
       db.collection("TICKETS").doc(ticketId).set(ticketMap);
       finish(context);
-    }else{
+    } else {
       final snackBar = SnackBar(
         elevation: 6.0,
         backgroundColor: cWhite,
         behavior: SnackBarBehavior.floating,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(20))),
-        content:  const Text(
+        content: const Text(
           "PNR ID Already Exist..",
           style: TextStyle(color: Colors.red),
         ),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
-
   }
 
   void blockStaff(BuildContext context, String id) {
@@ -863,10 +876,11 @@ String passengerOldPhone="";
     callNextReplacement(HomeScreen(), context);
     notifyListeners();
   }
-  void unBlockStaff(BuildContext context,String id){
-    db.collection("STAFF").doc(id).update({'STATUS':'ACTIVE'});
 
-    callNextReplacement( HomeScreen(), context);
+  void unBlockStaff(BuildContext context, String id) {
+    db.collection("STAFF").doc(id).update({'STATUS': 'ACTIVE'});
+
+    callNextReplacement(HomeScreen(), context);
     notifyListeners();
   }
 
