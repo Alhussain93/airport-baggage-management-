@@ -26,7 +26,7 @@ class HomeScreen extends StatelessWidget {
 
     List screens = [
       const CustomersListScreen(),
-      QrScanner(),
+      QrScanner(designation: '',),
       const StaffScreen(),
       MisingLaggage(),
       MakeQrScreen(),

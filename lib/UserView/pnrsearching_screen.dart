@@ -4,6 +4,7 @@ import 'package:luggage_tracking_app/constant/colors.dart';
 import 'package:luggage_tracking_app/constant/my_functions.dart';
 import 'package:provider/provider.dart';
 
+import '../Providers/admin_provider.dart';
 import '../Providers/pnr_provider.dart';
 
 class PnrSearching extends StatelessWidget {
@@ -15,12 +16,14 @@ class PnrSearching extends StatelessWidget {
     var width = MediaQuery.of(context).size.width;
     PnrProvider pnrProvider =
     Provider.of<PnrProvider>(context, listen: false);
-
+    AdminProvider adminProvider =
+    Provider.of<AdminProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: themecolor,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+
           Container(
             height: height / 2.6,
             width: width,
@@ -32,16 +35,36 @@ class PnrSearching extends StatelessWidget {
                   ),
                   fit: BoxFit.fill,
                 )),
-            child: Column(
+            child: Stack(
+              alignment: Alignment.topRight,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 40),
-                  child: Container(
-                    height: 250,
-                    width: 250,
-                    child: Image.asset("assets/LOGO.png"),
-                  ),
-                )
+                  padding: const EdgeInsets.only(top: 40,right: 20),
+                  child: InkWell(
+                      onTap: (){
+
+                        adminProvider.logOutAlert(context);
+
+                      },
+                      child: Icon(Icons.logout,size: 30,)),
+                ),
+
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+
+                    Center(
+                      child: Container(
+                        alignment: Alignment.center,
+                        height: 150,
+                        width: 250,
+                        child: Image.asset("assets/LOGO.png"),
+                      ),
+                    ),
+
+                  ],
+                ),
               ],
             ),
           ),
