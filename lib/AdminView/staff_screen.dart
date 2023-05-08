@@ -207,7 +207,7 @@ class StaffScreen extends StatelessWidget {
                          child: Align(
                            alignment: Alignment.center,
                            child: item.status=='BLOCK'?
-                              Text("BLOCKED",style: TextStyle(color: Colors.red,fontWeight: FontWeight.w600,fontSize: 16),):SizedBox(),
+                              const Text("BLOCKED",style: TextStyle(color: Colors.red,fontWeight: FontWeight.w600,fontSize: 16),):SizedBox(),
                          ),
                        )
                         ],
