@@ -571,8 +571,8 @@ String passengerOldPhone="";
     modellist.clear();
     filtersStaffList.clear();
 
-    db.collection("STAFF").get().then((value) {
-      for (var element in value.docs) {
+    db.collection("STAFF").snapshots().listen((event)  {
+      for (var element in event.docs) {
         Map<dynamic, dynamic> map = element.data();
         modellist.add(
           AddStaffModel(
@@ -650,7 +650,7 @@ String passengerOldPhone="";
       db.collection("USERS").doc(userId).update(userMap);
     }
     notifyListeners();
-    fetchStaff();
+
     finish(context);
     finish(context);
     notifyListeners();
@@ -859,13 +859,13 @@ String passengerOldPhone="";
 
   void blockStaff(BuildContext context, String id) {
     db.collection("STAFF").doc(id).update({'STATUS': 'BLOCK'});
-    fetchStaff();
+
     callNextReplacement(HomeScreen(), context);
     notifyListeners();
   }
   void unBlockStaff(BuildContext context,String id){
     db.collection("STAFF").doc(id).update({'STATUS':'ACTIVE'});
-    fetchStaff();
+
     callNextReplacement( HomeScreen(), context);
     notifyListeners();
   }
