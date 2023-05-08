@@ -49,7 +49,7 @@ class LoginProvider extends ChangeNotifier {
             loginUserid=element.id;
 
           }
-          if(loginUsertype=="PASSENGER"){
+          if(designation=="PASSENGER"){
             callNextReplacement(const PnrSearching(), context);
           }else if(loginUsertype=="ADMIN"){
             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
