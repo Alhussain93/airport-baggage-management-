@@ -308,6 +308,8 @@ class StaffHomeScreen extends StatelessWidget {
                                   if(designation!="Loading"){
                                     isSelected.value = 1;
                                   }else{
+                                    adminProvider. clearQrControllers();
+
                                     isSelected.value = 2;
 
                                   }

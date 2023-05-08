@@ -50,15 +50,7 @@ class CustomersListScreen extends StatelessWidget {
                       padding:
                           const EdgeInsets.only(left: 8, right: 8, bottom: 2),
                       child: InkWell(
-                        onTap: () {
-                          value2.fetchCustomersForEdit(item.id);
-                          callNext(
-                              AddCustomerScreen(
-                                userId: item.id,
-                                from: 'EDIT',
-                              ),
-                              context);
-                        },
+
                         onLongPress: () {
                           deleteCustomer(context, item.id);
                         },
@@ -122,10 +114,16 @@ class CustomersListScreen extends StatelessWidget {
                                       ],
                                     ),
                                     IconButton(
-                                        onPressed: () {},
+                                        onPressed: () {value2.fetchCustomersForEdit(item.id);
+                                        callNext(
+                                            AddCustomerScreen(
+                                              userId: item.id,
+                                              from: 'EDIT',
+                                            ),
+                                            context);},
                                         icon: const Icon(
                                           Icons.edit_calendar_outlined,
-                                          size: 10.5,
+                                          size: 25,
                                         ))
                                   ],
                                 ),
