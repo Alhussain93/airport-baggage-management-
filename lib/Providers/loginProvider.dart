@@ -85,19 +85,5 @@ class LoginProvider extends ChangeNotifier {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
 
-    Future<void> getPackageName() async {
-      // PackageInfo packageInfo = await PackageInfo.fromPlatform();
-      // packageName = packageInfo.packageName;
-      print("${packageName}packagenameee");
-      notifyListeners();
-    }
-    void LoaderOn() {
-      loader = true;
-      notifyListeners();
-    }
-    void LoaderOFF() {
-      loader = false;
-      notifyListeners();
-    }
   }
 }
