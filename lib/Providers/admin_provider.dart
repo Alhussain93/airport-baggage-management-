@@ -35,7 +35,8 @@ import '../admin_model/add_staff_model.dart';
 import '../constant/colors.dart';
 import '../strings.dart';
 import '../update.dart';
-import 'package:pdf/widgets.dart'as pw;
+import 'package:pdf/widgets.dart' as pw;
+
 class AdminProvider with ChangeNotifier {
   final DatabaseReference mRootReference = FirebaseDatabase.instance.ref();
   final FirebaseFirestore db = FirebaseFirestore.instance;
@@ -57,6 +58,8 @@ class AdminProvider with ChangeNotifier {
   Reference ref = FirebaseStorage.instance.ref("PROFILE_IMAGE");
   String editImage = "";
   bool waitRegister = true;
+  String passengerStatusForEdit = "";
+  String passengerID = "";
 
   TextEditingController userPhoneCT = TextEditingController();
   TextEditingController userNameCT = TextEditingController();
@@ -95,6 +98,7 @@ class AdminProvider with ChangeNotifier {
 
     return decrypted2;
   }
+
   Future<bool> checkNumberExist(String phone) async {
     var D = await db
         .collection("USERS")
@@ -122,7 +126,7 @@ class AdminProvider with ChangeNotifier {
 
   Future<bool> checkPnrIdExist(String pnrID) async {
     var D =
-    await db.collection("TICKETS").where("PNR_ID", isEqualTo: pnrID).get();
+        await db.collection("TICKETS").where("PNR_ID", isEqualTo: pnrID).get();
     if (D.docs.isNotEmpty) {
       return true;
     } else {
@@ -130,8 +134,7 @@ class AdminProvider with ChangeNotifier {
     }
   }
 
-  statusUpdateQrData(String luggageId, String staffDes,BuildContext context) {
-
+  statusUpdateQrData(String luggageId, String staffDes, BuildContext context) {
     print('how many times happend 2');
 
     DateTime now = DateTime.now();
@@ -139,30 +142,33 @@ class AdminProvider with ChangeNotifier {
 
     db.collection("LUGGAGE").doc(luggageId).get().then((value) {
       if (value.exists) {
-        if(staffDes=="Loading"){
-          db.collection("LUGGAGE").doc(luggageId).set({"LOADED_TIME": now, "STATUS": 'LOADING',}, SetOptions(merge: true));
+        if (staffDes == "Loading") {
+          db.collection("LUGGAGE").doc(luggageId).set({
+            "LOADED_TIME": now,
+            "STATUS": 'LOADING',
+          }, SetOptions(merge: true));
           String text = 'Loading completed';
-                  showAlertDialog(context, text,staffDes);
-        }else if(staffDes=="UnLoading"){
-          db.collection("LUGGAGE").doc(luggageId).set({"UNLOADED_TIME": now, "STATUS": 'UNLOADING',}, SetOptions(merge: true));
+          showAlertDialog(context, text, staffDes);
+        } else if (staffDes == "UnLoading") {
+          db.collection("LUGGAGE").doc(luggageId).set({
+            "UNLOADED_TIME": now,
+            "STATUS": 'UNLOADING',
+          }, SetOptions(merge: true));
           String text = 'Unloading completed';
-          showAlertDialog(context, text,staffDes);
-        }else if(staffDes=="Check_Out"){
-          db.collection("LUGGAGE").doc(luggageId).set({"CHECKOUT_TIME": now, "STATUS": 'CHECKOUT',}, SetOptions(merge: true));
+          showAlertDialog(context, text, staffDes);
+        } else if (staffDes == "Check_Out") {
+          db.collection("LUGGAGE").doc(luggageId).set({
+            "CHECKOUT_TIME": now,
+            "STATUS": 'CHECKOUT',
+          }, SetOptions(merge: true));
           String text = 'Checkout completed';
-          showAlertDialog(context, text,staffDes);
+          showAlertDialog(context, text, staffDes);
         }
-
       }
-
     });
-
-
-
   }
 
-
-  showAlertDialog(BuildContext context, String text,String staffDes) {
+  showAlertDialog(BuildContext context, String text, String staffDes) {
     // set up the button
     Widget okButton = Container(
       height: 38,
@@ -177,7 +183,11 @@ class AdminProvider with ChangeNotifier {
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
         ),
         onPressed: () {
-          callNextReplacement(StaffHomeScreen(designation: staffDes,), context);
+          callNextReplacement(
+              StaffHomeScreen(
+                designation: staffDes,
+              ),
+              context);
         },
       ),
     );
@@ -264,8 +274,8 @@ class AdminProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> userRegistration(
-      BuildContext context1, String addedBy, String userId, String from) async {
+  Future<void> userRegistration(BuildContext context1, String addedBy,
+      String userId, String from, String passengerStatus) async {
     bool numberStatus = await checkNumberExist(userPhoneCT.text);
     if (!numberStatus || userPhoneCT.text == passengerOldPhone) {
       showDialog(
@@ -295,12 +305,14 @@ class AdminProvider with ChangeNotifier {
       passengerMap["DOB"] = birthDate;
       passengerMap["DOB STRING"] = userDobCT.text;
       passengerMap["REGISTRATION_TIME"] = DateTime.now();
+      passengerMap["STATUS"] = passengerStatus;
+      userMap["STATUS"] = passengerStatus;
       if (fileImage != null) {
         String time = DateTime.now().millisecondsSinceEpoch.toString();
         ref = FirebaseStorage.instance.ref().child(time);
         await ref.putFile(fileImage!).whenComplete(() async {
           await ref.getDownloadURL().then((value) {
-            print(value+"fcvgbh");
+            print(value + "fcvgbh");
             passengerMap['PASSENGER_IMAGE'] = value;
             notifyListeners();
           });
@@ -318,6 +330,9 @@ class AdminProvider with ChangeNotifier {
       passengerEditMap['MOBILE_NUMBER'] = "+91${userPhoneCT.text}";
       editMap['NAME'] = userNameCT.text;
       passengerEditMap['NAME'] = userNameCT.text;
+      passengerEditMap["STATUS"] = passengerStatus;
+      editMap["STATUS"] = passengerStatus;
+
       if (fileImage != null) {
         String time = DateTime.now().millisecondsSinceEpoch.toString();
         ref = FirebaseStorage.instance.ref().child(time);
@@ -473,27 +488,28 @@ class AdminProvider with ChangeNotifier {
     });
   }
 
-void checkPnrIdExists(String pnrId,BuildContext context){
-    db.collection("TICKETS").where("PNR_ID",isNotEqualTo:pnrId).get().then((value) {
-      if(value.docs.isNotEmpty){
+  void checkPnrIdExists(String pnrId, BuildContext context) {
+    db
+        .collection("TICKETS")
+        .where("PNR_ID", isNotEqualTo: pnrId)
+        .get()
+        .then((value) {
+      if (value.docs.isNotEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             backgroundColor: Colors.red,
             content: Text(
-              "No data found ", style: TextStyle(color: Colors.white),)));
+              "No data found ",
+              style: TextStyle(color: Colors.white),
+            )));
 
         print("djdjckcekmrko");
-
       }
-
     });
-
-}
+  }
 
   Future<bool> checkPnrIDExist(String pnrId) async {
-    var D = await db
-        .collection("TICKETS")
-        .where("PNR_ID", isEqualTo: pnrId)
-        .get();
+    var D =
+        await db.collection("TICKETS").where("PNR_ID", isEqualTo: pnrId).get();
     if (D.docs.isNotEmpty) {
       print("sjsjmmssmsl");
       return true;
@@ -504,21 +520,14 @@ void checkPnrIdExists(String pnrId,BuildContext context){
     }
   }
 
-
-
   void generateQrCode(BuildContext context) {
     HashMap<String, Object> qrMap = HashMap();
 
     int luggageCount = int.parse(qrLuggageCountCT.text);
     for (int i = 0; i < luggageCount; i++) {
-      qrData = DateTime
-          .now()
-          .millisecondsSinceEpoch
-          .toString() + getRandomString(4);
-      String key = DateTime
-          .now()
-          .millisecondsSinceEpoch
-          .toString();
+      qrData =
+          DateTime.now().millisecondsSinceEpoch.toString() + getRandomString(4);
+      String key = DateTime.now().millisecondsSinceEpoch.toString();
       DateTime now = DateTime.now();
 
       qrMap['NAME'] = qrUserNameCT.text;
@@ -557,6 +566,7 @@ void checkPnrIdExists(String pnrId,BuildContext context){
             map["MOBILE_NUMBER"].toString(),
             map["DOB STRING"].toString(),
             map["PASSENGER_IMAGE"].toString(),
+            map["STATUS"].toString(),
           ));
         }
         filterCustomersList = customersList;
@@ -577,23 +587,18 @@ void checkPnrIdExists(String pnrId,BuildContext context){
         userDobCT.text = map["DOB STRING"].toString();
         passengerOldPhone = userPhoneCT.text =
             map["MOBILE_NUMBER"].toString().replaceAll("+91", '');
+        passengerStatusForEdit = map["STATUS"].toString();
       }
       notifyListeners();
     });
   }
 
-  void deleteCustomer(BuildContext context, String id) {
-    db.collection("USERS").doc(id).delete();
-    db.collection("PASSENGERS").doc(id).delete();
-    finish(context);
-    notifyListeners();
-  }
 
   void fetchStaff() {
     modellist.clear();
     filtersStaffList.clear();
 
-    db.collection("STAFF").snapshots().listen((event) {
+    db.collection("STAFF").where("STATUS",isEqualTo: "ACTIVE").where("STATUS",isEqualTo: "BLOCKED").snapshots().listen((event) {
       modellist.clear();
       filtersStaffList.clear();
       for (var element in event.docs) {
@@ -702,15 +707,29 @@ void checkPnrIdExists(String pnrId,BuildContext context){
     designation = 'Select Designation';
     staffAirportName = 'Select Airport';
     fileImage = null;
-    staffImage="";
+    staffImage = "";
     notifyListeners();
   }
 
-  void deleteData(BuildContext context, String id) {
-    db.collection("STAFF").doc(id).delete();
-    fetchStaff();
-    callNextReplacement(HomeScreen(), context);
-    notifyListeners();
+  void deleteData(BuildContext context, String id, String from) {
+    if (from == "Staff") {
+      db.collection("STAFF").doc(id).update({'STATUS': 'DELETED'});
+
+      db.collection("USERS").doc(id).delete();
+
+
+      notifyListeners();
+      finish(context);
+      finish(context);
+    } else {
+      db.collection("PASSENGERS").doc(id).update({'STATUS': 'DELETED'});
+
+      db.collection("USERS").doc(id).delete();
+
+      notifyListeners();
+      finish(context);
+      finish(context);
+    }
   }
 
   String status = '';
@@ -903,18 +922,33 @@ void checkPnrIdExists(String pnrId,BuildContext context){
     clearTicketControllers();
   }
 
-  void blockStaff(BuildContext context, String id) {
-    db.collection("STAFF").doc(id).update({'STATUS': 'BLOCK'});
+  void blockStaff(BuildContext context, String id, String from) {
+    if (from == "Staff") {
+      db.collection("STAFF").doc(id).update({'STATUS': 'BLOCKED'});
+      db.collection("USERS").doc(id).update({'STATUS': 'BLOCKED'});
+    } else {
+      db.collection("PASSENGERS").doc(id).update({'STATUS': 'BLOCKED'});
+      db.collection("USERS").doc(id).update({'STATUS': 'BLOCKED'});
+    }
 
-    callNextReplacement(HomeScreen(), context);
+    // callNextReplacement(HomeScreen(), context);
+
     notifyListeners();
+    finish(context);
+    finish(context);
   }
 
-  void unBlockStaff(BuildContext context, String id) {
-    db.collection("STAFF").doc(id).update({'STATUS': 'ACTIVE'});
+  void unBlockStaff(BuildContext context, String id, String from) {
+    if (from == "Staff") {
+      db.collection("STAFF").doc(id).update({'STATUS': 'ACTIVE'});
+    } else {
+      db.collection("PASSENGERS").doc(id).update({'STATUS': 'ACTIVE'});
+    }
 
-    callNextReplacement(HomeScreen(), context);
+    // callNextReplacement(HomeScreen(), context);
     notifyListeners();
+    finish(context);
+    finish(context);
   }
 
   logOutAlert(BuildContext context) {
@@ -1055,8 +1089,8 @@ void checkPnrIdExists(String pnrId,BuildContext context){
   Future savePdf(String qrData) async {
     print("hai");
     final pdf = pw.Document();
-   // final font = await rootBundle.load("assets/Hind-Regular.ttf");
-   // final ttf = pw.Font.ttf(font);
+    // final font = await rootBundle.load("assets/Hind-Regular.ttf");
+    // final ttf = pw.Font.ttf(font);
     print("JNmk");
     pdf.addPage(pw.Page(
         pageFormat: PdfPageFormat.a4.portrait,
@@ -1069,8 +1103,7 @@ void checkPnrIdExists(String pnrId,BuildContext context){
                     data: qrData,
                     barcode: pw.Barcode.qrCode(),
                     width: 100,
-                    height:50
-                ),
+                    height: 50),
               ]);
         }));
     Directory documentDirectory = await getApplicationDocumentsDirectory();
@@ -1081,6 +1114,7 @@ void checkPnrIdExists(String pnrId,BuildContext context){
     // return await Printing.layoutPdf(
     //     onLayout: (PdfPageFormat format) async => pdf.save());
     notifyListeners();
+  }
     }
   void deleteTickets(BuildContext context, String id) {
     db.collection("TICKETS").doc(id).delete();
@@ -1121,7 +1155,7 @@ print("qqqqq 11");
 
     } );
 
-    
-    
+
+
 }
 }
