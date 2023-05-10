@@ -96,7 +96,7 @@ class AddTickets extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(left: 25, right: 25),
                   child: TextFormField(
-                    keyboardType: TextInputType.text,
+                    keyboardType: TextInputType.phone,
                     controller: values.ticketPnrController,
                     decoration: InputDecoration(
                       labelText: 'PNR ID',
@@ -368,7 +368,7 @@ class AddTickets extends StatelessWidget {
                                     .ticketPassengersController.text.isEmpty) {
                               adminProvider.addTickets(context,"", "");
 
-                              adminProvider.clearTicketControllers();
+
                             } else {
                               final snackBar = SnackBar(
                                 elevation: 6.0,

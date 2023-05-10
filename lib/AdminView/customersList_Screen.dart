@@ -24,7 +24,7 @@ class CustomersListScreen extends StatelessWidget {
               child: SizedBox(
                 height: 30,
                 width: width / 1,
-                child:  Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: const [
                     Text(
@@ -50,7 +50,6 @@ class CustomersListScreen extends StatelessWidget {
                       padding:
                           const EdgeInsets.only(left: 8, right: 8, bottom: 2),
                       child: InkWell(
-
                         onLongPress: () {
                           deleteCustomer(context, item.id);
                         },
@@ -114,13 +113,15 @@ class CustomersListScreen extends StatelessWidget {
                                       ],
                                     ),
                                     IconButton(
-                                        onPressed: () {value2.fetchCustomersForEdit(item.id);
-                                        callNext(
-                                            AddCustomerScreen(
-                                              userId: item.id,
-                                              from: 'EDIT',
-                                            ),
-                                            context);},
+                                        onPressed: () {
+                                          value2.fetchCustomersForEdit(item.id);
+                                          callNext(
+                                              AddCustomerScreen(
+                                                userId: item.id,
+                                                from: 'EDIT',
+                                              ),
+                                              context);
+                                        },
                                         icon: const Icon(
                                           Icons.edit_calendar_outlined,
                                           size: 25,

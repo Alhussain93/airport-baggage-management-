@@ -299,6 +299,7 @@ class AdminProvider with ChangeNotifier {
         ref = FirebaseStorage.instance.ref().child(time);
         await ref.putFile(fileImage!).whenComplete(() async {
           await ref.getDownloadURL().then((value) {
+            print(value+"fcvgbh");
             passengerMap['PASSENGER_IMAGE'] = value;
             notifyListeners();
           });
@@ -591,6 +592,8 @@ void checkPnrIdExists(String pnrId,BuildContext context){
     filtersStaffList.clear();
 
     db.collection("STAFF").snapshots().listen((event) {
+      modellist.clear();
+      filtersStaffList.clear();
       for (var element in event.docs) {
         Map<dynamic, dynamic> map = element.data();
         modellist.add(
@@ -864,7 +867,7 @@ void checkPnrIdExists(String pnrId,BuildContext context){
       ticketMap["FLIGHT_NAME"] = ticketFlightName;
       ticketMap["FROM"] = ticketFromController.text;
       ticketMap["TO"] = ticketToController.text;
-      ticketMap["PASSENGERS_NUM"] = int.parse(passengerCountController.text);
+      ticketMap["PASSENGERS_NUM"] = passengerCountController.text;
       ticketMap["ID"] = ticketId;
       ticketMap["ADDED_BY"] = addedBy;
       ticketMap["ADDED_BY_NAME"] = addedName;
@@ -889,6 +892,7 @@ void checkPnrIdExists(String pnrId,BuildContext context){
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
+    clearTicketControllers();
   }
 
   void blockStaff(BuildContext context, String id) {

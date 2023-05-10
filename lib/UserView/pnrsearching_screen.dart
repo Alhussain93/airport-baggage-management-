@@ -55,12 +55,7 @@ class PnrSearching extends StatelessWidget {
                   children: [
 
                     Center(
-                      child: Container(
-                        alignment: Alignment.center,
-                        height: 150,
-                        width: 250,
-                        child: Image.asset("assets/LOGO.png"),
-                      ),
+                      child: Image.asset("assets/Frame49.png",scale: 2,),
                     ),
 
                   ],

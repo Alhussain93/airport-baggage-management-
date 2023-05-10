@@ -260,10 +260,9 @@ class HomeScreen extends StatelessWidget {
                   elevation: 0,
                   backgroundColor: themecolor,
                   centerTitle: false,
-                  title: SizedBox(height: 30,
-                      child: Image.asset(
-                    "assets/WhiteLogo.png",
-                  )),
+                  title: Image.asset(
+                    "assets/Frame48.png",scale: 3.5,
+                  ),
                   flexibleSpace: Container(
                     height: height / 3,
                     width: width,

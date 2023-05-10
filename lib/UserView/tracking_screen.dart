@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luggage_tracking_app/constant/my_functions.dart';
 import 'package:provider/provider.dart';
 
 import '../Providers/pnr_provider.dart';
@@ -41,20 +42,13 @@ class TrackingScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             IconButton(
-                                onPressed: () {},
+                                onPressed: () {finish(context);},
                                 icon: const Icon(
                                   Icons.arrow_back_ios_new,
                                   color: Colors.white,
                                 )),
                             const Spacer(),
-                            Text(
-                              "LOGO",
-                              style: TextStyle(
-                                  fontFamily: 'Poppins-SemiBold',
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 36,
-                                  color: Textclr),
-                            ),
+                           Image.asset("assets/Frame48.png",scale: 3,),
                             const Spacer(),
                             const SizedBox(
                               width: 35,
@@ -249,20 +243,24 @@ class TrackingScreen extends StatelessWidget {
                                     CircleAvatar(
                                         radius: 13,
                                         backgroundColor: value.luggageList
-                                                .contains('Loading')
+                                                .contains('CHECK_OUT')
                                             ? cl00962A
                                             : value.luggageList
-                                                    .contains('Screening')
+                                                    .contains('UNLOADING')
                                                 ? cl00962A
-                                                : value.luggageList.contains(
-                                                        'Security_customer')
+                                                : value.luggageList
+                                                        .contains('LOADING')
                                                     ? cl00962A
-                                                    : cl938492),
+                                                    : value.luggageList
+                                                            .contains(
+                                                                'CHECK_IN')
+                                                        ? cl00962A
+                                                        : cl938492),
                                     const Expanded(
                                         child: Padding(
                                       padding: EdgeInsets.only(left: 8.0),
                                       child: Text(
-                                        "Security Checking",
+                                        "CHECK_IN",
                                         style: TextStyle(
                                             fontWeight: FontWeight.w600,
                                             fontSize: 16),
@@ -287,15 +285,20 @@ class TrackingScreen extends StatelessWidget {
                                                   const BorderRadius.vertical(
                                                       top: Radius.circular(20)),
                                               color: value.luggageList
-                                                      .contains('Loading')
+                                                      .contains('CHECK_OUT')
                                                   ? cl00962A
                                                   : value.luggageList
-                                                          .contains('Screening')
+                                                          .contains('UNLOADING')
                                                       ? cl00962A
-                                                      : value.luggageList.contains(
-                                                              'Security_customer')
+                                                      : value.luggageList
+                                                              .contains(
+                                                                  'LOADING')
                                                           ? cl00962A
-                                                          : cl938492),
+                                                          : value.luggageList
+                                                                  .contains(
+                                                                      'CHECK_IN')
+                                                              ? cl00962A
+                                                              : cl938492),
                                         ),
                                         Container(
                                           height: 70,
@@ -306,19 +309,23 @@ class TrackingScreen extends StatelessWidget {
                                                       bottom:
                                                           Radius.circular(20)),
                                               color: value.luggageList
-                                                      .contains('Loading')
+                                                      .contains('CHECK_OUT')
                                                   ? cl00962A
                                                   : value.luggageList
-                                                          .contains('Screening')
+                                                          .contains('UNLOADING')
                                                       ? cl00962A
-                                                      : cl938492),
+                                                      : value.luggageList
+                                                              .contains(
+                                                                  'LOADING')
+                                                          ? cl00962A
+                                                          : cl938492),
                                         ),
                                       ],
                                     ),
                                     Expanded(
                                         child: Padding(
                                       padding:
-                                          const EdgeInsets.only(left: 15.0),
+                                          const EdgeInsets.only(left: 17.0),
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,
@@ -356,7 +363,7 @@ class TrackingScreen extends StatelessWidget {
                                     const Padding(
                                       padding: EdgeInsets.only(right: 8.0),
                                       child: Text(
-                                        "Screening",
+                                        "LOADING",
                                         style: TextStyle(
                                             fontWeight: FontWeight.w600,
                                             fontSize: 16),
@@ -365,14 +372,17 @@ class TrackingScreen extends StatelessWidget {
                                     CircleAvatar(
                                         radius: 13,
                                         backgroundColor: value.luggageList
-                                                .contains('Loading')
+                                                .contains('CHECK_OUT')
                                             ? cl00962A
                                             : value.luggageList
-                                                    .contains('Screening')
+                                                    .contains('UNLOADING')
                                                 ? cl00962A
-                                                : cl938492),
+                                                : value.luggageList
+                                                        .contains('LOADING')
+                                                    ? cl00962A
+                                                    : cl938492),
                                     const SizedBox(
-                                      width: 80,
+                                      width: 75,
                                     ),
                                     const Spacer()
                                   ],
@@ -386,7 +396,7 @@ class TrackingScreen extends StatelessWidget {
                                     const Spacer(),
                                     Padding(
                                       padding:
-                                          const EdgeInsets.only(right: 30.0),
+                                          const EdgeInsets.only(right: 25.0),
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,
@@ -423,12 +433,16 @@ class TrackingScreen extends StatelessWidget {
                                                   const BorderRadius.vertical(
                                                       top: Radius.circular(20)),
                                               color: value.luggageList
-                                                      .contains('Loading')
+                                                      .contains('CHECK_OUT')
                                                   ? cl00962A
                                                   : value.luggageList
-                                                          .contains('Screening')
+                                                          .contains('UNLOADING')
                                                       ? cl00962A
-                                                      : cl938492),
+                                                      : value.luggageList
+                                                              .contains(
+                                                                  'LOADING')
+                                                          ? cl00962A
+                                                          : cl938492),
                                         ),
                                         Container(
                                           height: 70,
@@ -439,14 +453,17 @@ class TrackingScreen extends StatelessWidget {
                                                       bottom:
                                                           Radius.circular(20)),
                                               color: value.luggageList
-                                                      .contains('Loading')
+                                                      .contains('CHECK_OUT')
                                                   ? cl00962A
-                                                  : cl938492),
+                                                  : value.luggageList
+                                                          .contains('UNLOADING')
+                                                      ? cl00962A
+                                                      : cl938492),
                                         ),
                                       ],
                                     ),
                                     const SizedBox(
-                                      width: 87,
+                                      width: 85,
                                     ),
                                     const Spacer()
                                   ],
@@ -460,14 +477,17 @@ class TrackingScreen extends StatelessWidget {
                                     CircleAvatar(
                                         radius: 13,
                                         backgroundColor: value.luggageList
-                                                .contains('Loading')
+                                                .contains('CHECK_OUT')
                                             ? cl00962A
-                                            : cl938492),
+                                            : value.luggageList
+                                                    .contains('UNLOADING')
+                                                ? cl00962A
+                                                : cl938492),
                                     const Expanded(
                                       child: Padding(
                                         padding: EdgeInsets.only(left: 8.0),
                                         child: Text(
-                                          "Loading",
+                                          "UNLOADING",
                                           style: TextStyle(
                                               fontWeight: FontWeight.w600,
                                               fontSize: 16),
@@ -479,6 +499,102 @@ class TrackingScreen extends StatelessWidget {
                                 const SizedBox(
                                   height: 5,
                                 ),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Spacer(),
+                                    Column(
+                                      children: [
+                                        Container(
+                                          height: 30,
+                                          width: 10,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  const BorderRadius.vertical(
+                                                      top: Radius.circular(20)),
+                                              color: value.luggageList
+                                                      .contains('CHECK_OUT')
+                                                  ? cl00962A
+                                                  : value.luggageList
+                                                          .contains('UNLOADING')
+                                                      ? cl00962A
+                                                      : cl938492),
+                                        ),
+                                        Container(
+                                          height: 70,
+                                          width: 10,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  const BorderRadius.vertical(
+                                                      bottom:
+                                                          Radius.circular(20)),
+                                              color: value.luggageList
+                                                      .contains('CHECK_OUT')
+                                                  ? cl00962A
+                                                  : cl938492),
+                                        ),
+                                      ],
+                                    ),
+                                    Expanded(
+                                        child: Padding(
+                                      padding:
+                                          const EdgeInsets.only(left: 15.0),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "dfghj",
+                                            style: TextStyle(
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.w500,
+                                                color: cl252525),
+                                          ),
+                                          Text("16/08/2023",
+                                              style: TextStyle(
+                                                  fontSize: 11,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: cl252525)),
+                                          Text("15:45",
+                                              style: TextStyle(
+                                                  fontSize: 11,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: cl252525)),
+                                        ],
+                                      ),
+                                    ))
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                Row(
+                                  children: [
+                                    const Spacer(),
+                                    const Padding(
+                                      padding: EdgeInsets.only(right: 8.0),
+                                      child: Text(
+                                        "CHECK_OUT",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 16),
+                                      ),
+                                    ),
+                                    CircleAvatar(
+                                        radius: 13,
+                                        backgroundColor: value.luggageList
+                                                .contains('CHECK_OUT')
+                                            ? cl00962A
+                                            : cl938492),
+                                    const SizedBox(
+                                      width: 96,
+                                    ),
+                                    const Spacer()
+                                  ],
+                                ),
+
                                 // Container(
                                 //   height: 100,
                                 //   width: 10,
