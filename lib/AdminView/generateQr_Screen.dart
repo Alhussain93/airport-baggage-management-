@@ -2,22 +2,69 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
+import 'package:pdf/widgets.dart' as pw;
 
 import 'package:flutter/material.dart';
+import 'package:luggage_tracking_app/constant/my_functions.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
+import 'package:printing/printing.dart';
 import 'package:provider/provider.dart';
-import 'package:qr_flutter/qr_flutter.dart';
+import 'package:qr_widget/qr_widget.dart';
+import 'package:qr_widget/qr_widget.dart';
+import 'package:qr_widget/qr_widget.dart';
+import 'package:qr_widget/qr_widget.dart';
+import 'package:qr_widget/qr_widget.dart';
 import '../Providers/admin_provider.dart';
 import '../constant/colors.dart';
 class GenerateQrScreen extends StatelessWidget {
-  int qrData;
-   GenerateQrScreen({Key? key,required this.qrData}) : super(key: key);
+  List qrDatasList;
+  String qrId;
+
+   GenerateQrScreen({Key? key,required this.qrDatasList,required this.qrId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    print("QQQQQQQQQq"+qrDatasList.toString());
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: scanbkgrnd,
+      appBar: AppBar(
+        backgroundColor: themecolor,
+        title: const Text(
+          "Qr Codes",
+          style: TextStyle(color: Colors.white, fontSize: 18),
+        ),
+        centerTitle: true,
+        actions: [Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: InkWell(
+            onTap: (){
+              generatePDF(qrDatasList);
+
+            },
+            child: Container(
+              alignment: Alignment.center,
+              width: 90,
+              height: 10,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10)
+
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Download",style: TextStyle(color: Colors.red,fontSize: 13),),
+                  Icon(Icons.download_outlined,color: Colors.red,size: 20,)
+                ],
+              ),
+            ),
+          ),
+        )],
+      ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Consumer<AdminProvider>(
@@ -28,64 +75,30 @@ class GenerateQrScreen extends StatelessWidget {
               children: [
                 SizedBox(height: height*.05,),
 
-Consumer<AdminProvider>(
-  builder: (context,value,child) {
-    return     InkWell(
-      onTap: (){
-        final rand = Random().nextInt(10000000);
-        String fileName =
-            value.newPath+ "File$rand.pdf";
-        value.saveFile(context,value.qrData,fileName);
-        ScaffoldMessenger.of(context)
-            .showSnackBar(
-          SnackBar(
-            backgroundColor:
-            Colors.black,
-            duration:
-            const Duration(
-                milliseconds:
-                5000),
-            content: Text(
-              ' successfully downloaded to '+value.pdfPath,
-              style: const TextStyle(
-                  color: Colors
-                      .white),
-            ),
-          ),
-        );
-      },
-      child:   Container(
-        height: 40,
-        width: 100,
-        color: Colors.yellowAccent,
-
-      ),
-    );
-  }
-),
-
     GridView.builder(
     scrollDirection: Axis.vertical,
     physics: const NeverScrollableScrollPhysics(),
     shrinkWrap: true,
-    itemCount:qrData,
+    itemCount:qrDatasList.length,
     gridDelegate:
     const SliverGridDelegateWithFixedCrossAxisCount(
-    childAspectRatio: 0.9,
+    childAspectRatio: 0.7,
     crossAxisSpacing: 2,
     crossAxisCount: 2),
     itemBuilder: (context, index) {
+      final qrCodeValue = qrDatasList[index];
       return Column(
         children: [
           Text((index+1).toString(),style: TextStyle(fontSize: 12),),
           Container(
             height: 180,
-            child: QrImage(
-              data: value.encrypt(value.qrData),
+            child: QrImageView(
+              data: value.encrypt(qrCodeValue),
               version: QrVersions.auto,
               // size: 200,
             ),
           ),
+          Text(""+qrId,style: TextStyle(fontSize: 13),),
         ],
       );
 
@@ -100,5 +113,87 @@ Consumer<AdminProvider>(
       ),
     );
   }
+
+
+//   pw.Column makeQrcode(){
+//
+//
+//     return pw.Column(
+//       children: [
+//
+//         pw.Center(
+//           child:
+//           pw.BarcodeWidget(
+//             data:qrcode,
+//             barcode: pw.Barcode.qrCode(),
+//             width: 300,
+//             height: 300,
+//
+//           ),
+//         ),
+// pw.Text("gebdeed"),
+//         pw.SizedBox(width: 20,
+//         height: 30)
+//       ],
+//     );
+//   }
+
+  Future generatePDF(List qrDataLists) async {
+    final pdf = pw.Document();
+    print("sjssjjfdwjk"+qrDataLists.toString());
+    pdf.addPage(
+      pw.MultiPage(
+        pageFormat: PdfPageFormat.a4,
+        build: (pw.Context context) {
+
+          List<pw.Widget> listWidgets = [];
+          for (final qrCodeValue in qrDatasList) {
+            // Create a new page for each QR code
+            pdf.addPage(
+              pw.Page(
+                build: (context) {
+                  return pw.Column(
+                    mainAxisAlignment: pw.MainAxisAlignment.center,
+                    crossAxisAlignment: pw.CrossAxisAlignment.center,
+                    children: [
+                      pw.SizedBox(height: 70),
+                      pw.Text('QR code for $qrCodeValue'),
+                      pw.SizedBox(height: 20),
+                      pw.Center(
+                        child: pw.Container(
+                          width: 250,
+                          height: 250,
+                          child:pw.BarcodeWidget(
+                              data:qrCodeValue,
+                              barcode: pw.Barcode.qrCode(),
+                              width: 200,
+                              height: 200
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            );
+          }
+
+          return listWidgets;
+
+
+        },
+      ),
+    );
+
+    Directory documentDirectory = await getApplicationDocumentsDirectory();
+    String documentPath = documentDirectory.path;
+    print(documentPath.toString() + "bbbbbbbbbbbbbbbbb");
+    File file = File("$documentPath/Qrcode.pdf");
+    print(file.toString() + "vvvvvvvvv");
+    return await Printing.layoutPdf(onLayout: (PdfPageFormat format) async => pdf.save());
+
+  }
+
+
 
 }

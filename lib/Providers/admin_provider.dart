@@ -20,6 +20,7 @@ import 'package:luggage_tracking_app/model/tickets_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:printing/printing.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:encrypt/encrypt.dart' as enc;
@@ -49,7 +50,7 @@ class AdminProvider with ChangeNotifier {
   List<TicketModel> ticketList = [];
   List<TicketModel> filterTicketLIst = [];
   String qrData = '';
-
+List<String>qrDataList=[];
   final ImagePicker picker = ImagePicker();
   String imageUrl = "";
   String staffEditId = "";
@@ -86,13 +87,15 @@ class AdminProvider with ChangeNotifier {
   }
 
   String decrypt(String cipher) {
+    print("ybxwdytbyu87h877h");
     final key = enc.Key.fromUtf8('XedfNNHdfgCCCCvsdFRT34567nbhHHHn');
-
+    print("ybxwdytbyu87huuuuh");
     final iv = enc.IV.fromLength(16);
 
     final encrypter = enc.Encrypter(enc.AES(key));
 
     final decrypted2 = encrypter.decrypt64(cipher, iv: iv);
+
 
     return decrypted2;
   }
@@ -140,15 +143,15 @@ class AdminProvider with ChangeNotifier {
 
     db.collection("LUGGAGE").doc(luggageId).get().then((value) {
       if (value.exists) {
-        if(staffDes=="Loading"){
+        if(staffDes=="LOADING"){
           db.collection("LUGGAGE").doc(luggageId).set({"LOADED_TIME": now, "STATUS": 'LOADING',}, SetOptions(merge: true));
           String text = 'Loading completed';
                   showAlertDialog(context, text,staffDes);
-        }else if(staffDes=="UnLoading"){
+        }else if(staffDes=="UNLOADING"){
           db.collection("LUGGAGE").doc(luggageId).set({"UNLOADED_TIME": now, "STATUS": 'UNLOADING',}, SetOptions(merge: true));
           String text = 'Unloading completed';
           showAlertDialog(context, text,staffDes);
-        }else if(staffDes=="Check_Out"){
+        }else if(staffDes=="CHECK_OUT"){
           db.collection("LUGGAGE").doc(luggageId).set({"CHECKOUT_TIME": now, "STATUS": 'CHECKOUT',}, SetOptions(merge: true));
           String text = 'Checkout completed';
           showAlertDialog(context, text,staffDes);
@@ -511,10 +514,7 @@ void checkPnrIdExists(String pnrId,BuildContext context){
 
     int luggageCount = int.parse(qrLuggageCountCT.text);
     for (int i = 0; i < luggageCount; i++) {
-      qrData = DateTime
-          .now()
-          .millisecondsSinceEpoch
-          .toString() + getRandomString(4);
+      qrData = DateTime.now().millisecondsSinceEpoch.toString() + getRandomString(4);
       String key = DateTime
           .now()
           .millisecondsSinceEpoch
@@ -532,14 +532,13 @@ void checkPnrIdExists(String pnrId,BuildContext context){
       qrMap['LOADED_TIME'] = '';
       qrMap['UNLOADED_TIME'] = '';
       qrMap['CHECKOUT_TIME'] = '';
+      qrDataList.add(qrData);
+      print("usuuunxeiuihjk"+qrDataList.length.toString());
+      print("trtrdrdtffffffff"+qrData.toString());
       db.collection("LUGGAGE").doc(qrData).set(qrMap);
       notifyListeners();
     }
-    callNext(
-        GenerateQrScreen(
-          qrData: luggageCount,
-        ),
-        context);
+      callNext(GenerateQrScreen( qrDatasList: qrDataList, qrId: qrData,), context);
   }
 
   void fetchCustomers() {

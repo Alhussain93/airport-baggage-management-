@@ -71,7 +71,7 @@ class StaffHomeScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    designation!="Check_In"?
+                    designation!="CHECK_IN"?
                     InkWell(
                       onTap: () {
                         isSelected.value = 1;
@@ -305,7 +305,7 @@ class StaffHomeScreen extends StatelessWidget {
                               ),
                               InkWell(
                                 onTap: () {
-                                  if(designation!="Check_In"){
+                                  if(designation!="CHECK_IN"){
                                     isSelected.value = 1;
                                   }else{
                                     adminProvider. clearQrControllers();
@@ -326,7 +326,7 @@ class StaffHomeScreen extends StatelessWidget {
                                   ),
                                   child: Center(
                                       child: Text(
-                                        designation!="Check_In"?
+                                        designation!="CHECK_IN"?
                                         "Scan":"Generate Qr",
                                         style: TextStyle(
                                             fontSize: 11,

@@ -1,129 +1,70 @@
-import 'dart:io';
-
-import 'package:flutter/material.dart';
-import 'package:luggage_tracking_app/Providers/admin_provider.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pdfWidgets;
-import 'package:provider/provider.dart';
-import 'package:qr_flutter/qr_flutter.dart';
-import 'package:file_picker/file_picker.dart';
-
-class DownloadQRCodePDF extends StatefulWidget {
-  const DownloadQRCodePDF({Key? key}) : super(key: key);
-
-  @override
-  _DownloadQRCodePDFState createState() => _DownloadQRCodePDFState();
-}
-
-class _DownloadQRCodePDFState extends State<DownloadQRCodePDF> {
-  String? _filePath;
-  final file = File('qr_code.pdf');
-
-  Future<void> _downloadPDF() async {
-    final pdf = pdfWidgets.Document();
-    final qrCodeNew = Consumer<AdminProvider>(
-      builder: (context,value,child) {
-        return QrImage(
-          data: value.encrypt(value.qrData),
-          version: QrVersions.auto,
-          size: 200.0,
-        );
-      }
-    );
-
-    pdf.addPage(
-      pdfWidgets.Page(
-        pageFormat: PdfPageFormat.a4,
-        build: (context) {
-          return pdfWidgets.BarcodeWidget(
-              data: qrCodeNew.toString(),
-              barcode: pdfWidgets.Barcode.qrCode(),
-              width: 100,
-              height: 50
-          );
-        },
-      ),
-    );
-
-
-
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Download QR Code as PDF'),
-      ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: _downloadPDF,
-          child: Text('Download QR Code PDF'),
-        ),
-      ),
-    );
-  }
-}
-
-
-// import 'package:flutter/material.dart';
-// import 'package:http/http.dart' as http;
 // import 'dart:io';
+// import 'package:flutter/material.dart';
 // import 'package:path_provider/path_provider.dart';
+// import 'package:pdf/pdf.dart';
+// import 'package:pdf/widgets.dart' as pw;
+// import 'package:qr_flutter/qr_flutter.dart';
 //
-// class PDFDownloader extends StatefulWidget {
-//   final String pdfUrl;
+// class QRCodePDFGenerator extends StatefulWidget {
+//   final String qrData;
 //
-//   PDFDownloader({required this.pdfUrl});
+//   QRCodePDFGenerator({required this.qrData});
 //
 //   @override
-//   _PDFDownloaderState createState() => _PDFDownloaderState();
+//   _QRCodePDFGeneratorState createState() => _QRCodePDFGeneratorState();
 // }
 //
-// class _PDFDownloaderState extends State<PDFDownloader> {
-//   bool downloading = false;
-//   String? progressMessage;
+// class _QRCodePDFGeneratorState extends State<QRCodePDFGenerator> {
 //   late String _fileName;
 //   late String _localPath;
 //
-//   Future<void> downloadFile(String url, String fileName) async {
-//     setState(() {
-//       downloading = true;
-//       progressMessage = 'Downloading file...';
-//     });
+//   Future<void> generatePDF() async {
+//     final pdf = pw.Document();
+//     final qrImage = await QrPainter(
+//       data: widget.qrData,
+//       version: QrVersions.auto,
+//       gapless: false,
+//       color: Color(0xFF000000),
+//       emptyColor: Color(0xFFFFFFFF),
+//     ).toImageData(200.0);
 //
-//     final response = await http.get(Uri.parse(url));
-//     final documentDirectory = await getApplicationDocumentsDirectory();
+//     pdf.addPage(
+//       pw.Page(
+//         pageFormat: PdfPageFormat.a4,
+//         build: (context) {
+//           return pw.Center(
+//             child: pw.Image(
+//             ),
+//           );
+//         },
+//       ),
+//     );
 //
-//     _localPath = documentDirectory.path;
-//     _fileName = fileName;
-//
+//     final bytes = await pdf.save();
 //     final file = File('$_localPath/$_fileName');
-//     await file.writeAsBytes(response.bodyBytes);
-//
-//     setState(() {
-//       downloading = false;
-//       progressMessage = 'Download completed.';
-//     });
+//     await file.writeAsBytes(bytes);
 //   }
 //
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(
 //       appBar: AppBar(
-//         title: Text('PDF Downloader'),
+//         title: Text('QR Code PDF Generator'),
 //       ),
 //       body: Center(
 //         child: Column(
 //           mainAxisAlignment: MainAxisAlignment.center,
 //           children: [
-//             Text(downloading ? progressMessage! : 'Click the button to download the PDF file.'),
+//             Text('Click the button to generate and download the QR code as a PDF.'),
 //             SizedBox(height: 20),
 //             ElevatedButton(
-//               child: Text('Download PDF'),
-//               onPressed: () {
-//                 downloadFile(widget.pdfUrl, 'my_file.pdf');
+//               child: Text('Generate PDF'),
+//               onPressed: () async {
+//                 final directory = await getApplicationDocumentsDirectory();
+//                 _localPath = directory.path;
+//                 _fileName = 'qr_code.pdf';
+//                 await generatePDF();
+//                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('PDF saved to $_localPath/$_fileName')));
 //               },
 //             ),
 //           ],

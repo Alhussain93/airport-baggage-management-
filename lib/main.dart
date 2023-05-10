@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => PnrProvider(),),
 
       ],
-      child:  const MaterialApp(
+      child:   MaterialApp(
         // title: 'Flutter Demo',
         // theme: ThemeData(
         //   colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
         // ),
         debugShowCheckedModeBanner: false,
         // home: MakeQrScreen(),
-        home:  PDFDownloader(pdfUrl: '',),
+        home: SplashScreen()
         // home: AddProducts(),
         // home: CustomerRegistration(adminName: "adminName", adminPhone: "9048001001", adminId: "adminId"),
       ),

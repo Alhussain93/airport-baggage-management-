@@ -49,15 +49,15 @@ dependencies:
   firebase_crashlytics: ^3.0.17
   device_info_plus: ^8.1.0
   dropdown_search: ^5.0.6
-  qr_flutter: ^4.0.0
+  qr_widget: ^4.1.0
   encrypt: ^5.0.1
   qr_code_scanner: ^1.0.0
   flutter_datetime_picker: ^1.5.1
   pdf: ^3.6.4
-  permission_handler: ^10.2.0
   path_provider: ^2.0.14
+  permission_handler: ^10.2.0
   dio: ^5.1.1
-  file_picker: ^5.3.0
+  printing: ^5.10.3
 
 
 

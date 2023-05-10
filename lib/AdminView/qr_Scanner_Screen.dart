@@ -76,7 +76,9 @@ class _QrScannerState extends State<QrScanner> {
     controller.scannedDataStream.listen((scanData) async {
       result = scanData;
       AdminProvider adminProvider = Provider.of<AdminProvider>(context, listen: false);
-      String luggageId = adminProvider.decrypt(result!.code.toString());
+      print('QR code scanned: ${scanData.code}');
+
+      String luggageId = scanData.code.toString();
       print(luggageId.length.toString()+'FFFFFFFFFFFFF');
       print(luggageId.toString()+'WWWWWWWWWWWWWWWq');
       print(widget.designation.toString()+'dfghtujkytjrhegsf');
