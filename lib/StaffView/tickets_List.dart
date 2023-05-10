@@ -16,7 +16,6 @@ class TicketList extends StatelessWidget {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
-
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
@@ -26,7 +25,7 @@ class TicketList extends StatelessWidget {
               child: SizedBox(
                 height: 30,
                 width: width / 1,
-                child:  Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: const [
                     Text(
@@ -47,59 +46,87 @@ class TicketList extends StatelessWidget {
                   scrollDirection: Axis.vertical,
                   physics: const ScrollPhysics(),
                   itemBuilder: (BuildContext context, int index) {
+                    var ID = value2.filterTicketLIst[index];
                     var item = value2.filterTicketLIst[index];
-                    return Container(
-                        margin:const EdgeInsets.all(10),
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.shade300,
-                              blurRadius: 1.0,
-                              spreadRadius: 1.0,
-                            )
-                          ],
-                        ),
-                        child: Column(
-                          crossAxisAlignment:
-                          CrossAxisAlignment.start,
-                          mainAxisAlignment:
-                          MainAxisAlignment.center,
-                          children: [
-                            Text(
-                             "PNR ID : ${item.pnrId}",
-                              style: const TextStyle(
-                                  fontFamily: "Poppins-SemiBold",
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600),
-                            ),
-                            Text(
-                              "Flight Name : ${item.flightName}",
-                              style: const TextStyle(
-                                  fontFamily: "Poppins-SemiBold",
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400),
-                            ),
-                            Text(
-                              "Arrival Time : ${item.arrivalTime}",
-                              style: const TextStyle(
-                                  fontFamily: "Poppins-SemiBold",
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400),
-                            ),
-                            Text(
-                              "Departure Time : ${item.departureTime}",
-                              style: const TextStyle(
-                                  fontFamily: "Poppins-SemiBold",
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400),
-                            ),
+                    return Consumer<AdminProvider>(
+                        builder: (context, value, child) {
+                      return InkWell(
+                        onLongPress: () {
+                          deleteStaff(context, ID.id);
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.all(10),
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.shade300,
+                                blurRadius: 1.0,
+                                spreadRadius: 1.0,
+                              )
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "PNR ID : ${item.pnrId}",
+                                    style: const TextStyle(
+                                        fontFamily: "Poppins-SemiBold",
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                  Text(
+                                    "Flight Name : ${item.flightName}",
+                                    style: const TextStyle(
+                                        fontFamily: "Poppins-SemiBold",
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400),
+                                  ),
+                                  Text(
+                                    "Arrival Time : ${item.arrivalTime}",
+                                    style: const TextStyle(
+                                        fontFamily: "Poppins-SemiBold",
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400),
+                                  ),
+                                  Text(
+                                    "Departure Time : ${item.departureTime}",
+                                    style: const TextStyle(
+                                        fontFamily: "Poppins-SemiBold",
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400),
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                // crossAxisAlignment: CrossAxisAlignment.end,
+                                // mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Consumer<AdminProvider>(
+                                      builder: (context, value2, child) {
+                                    return IconButton(
+                                        onPressed: () {
+                                          value2.editTickets(context,ID.id);
 
-                          ],
+                                        },
+                                        icon: Icon(
+                                          Icons.edit_calendar,
+                                          size: 20,
+                                        ));
+                                  })
+                                ],
+                              )
+                            ],
+                          ),
                         ),
-
-                    );
+                      );
+                    });
                   });
             })
           ],
@@ -118,10 +145,7 @@ class TicketList extends StatelessWidget {
                   backgroundColor: themecolor,
                   onPressed: () {
                     value3.clearTicketControllers();
-                    callNext(
-                        AddTickets(),
-
-                        context);
+                    callNext(AddTickets(from: '', userId: '',), context);
                   },
                   child: const Icon(Icons.add),
                 );
@@ -134,4 +158,69 @@ class TicketList extends StatelessWidget {
     );
   }
 
+  deleteStaff(BuildContext context, String id) {
+    AdminProvider adminProvider =
+        Provider.of<AdminProvider>(context, listen: false);
+
+    AlertDialog alert = AlertDialog(
+      backgroundColor: themecolor,
+      scrollable: true,
+      title: const Text(
+        "Do you want to delete this staff",
+        style: TextStyle(
+            fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
+      ),
+      content: SizedBox(
+        height: 50,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    height: 37,
+                    width: 100,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white),
+                    child: TextButton(
+                        child: const Text(
+                          'NO',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        onPressed: () {
+                          finish(context);
+                        }),
+                  ),
+                  Consumer<AdminProvider>(builder: (context, value, child) {
+                    return Container(
+                      height: 37,
+                      width: 100,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Textclr),
+                      child: TextButton(
+                          child: const Text('YES',
+                              style: TextStyle(color: Colors.black)),
+                          onPressed: () {
+                            adminProvider.deleteTickets(context, id);
+                          }),
+                    );
+                  }),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
 }

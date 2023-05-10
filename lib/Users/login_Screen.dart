@@ -98,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
       body: SingleChildScrollView(
-        child: Container(
+        child: SizedBox(
           height: height,
           width: width,
           // color: Colors.cyan,
@@ -116,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   Padding(
                     padding: const EdgeInsets.only(left: 20,right: 20,top: 20),
-                    child: Container(
+                    child: SizedBox(
                       height: 70,
                       child: TextFormField(
 
@@ -179,8 +179,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       callNext( UserRegistrationScreen(), context);
 
-                    }, child: Padding(
-                      padding: const EdgeInsets.only(left: 55,right: 55),
+                    }, child: Center(
                       child: Container(
                       height: 43,
                       width: 260,
@@ -205,22 +204,21 @@ border: Border.all(color:Colors.grey.shade200),
              showLoading?
                 Center(
                   child: CircularProgressIndicator(color: grapeColor,),
-                ): Padding(
-                padding: const EdgeInsets.only(left: 23,right: 23,top: 35),
-                child: SizedBox(
-                  height:50,
-                  width: 330,
+                ): Center(
+                  child: SizedBox(
+                    height:50,
+                    width: 330,
 
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                        shape: MaterialStateProperty.all(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                          shape: MaterialStateProperty.all(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                           ),
-                        ),
-                        backgroundColor:
-                        MaterialStateProperty.all(Color(0xff432244))),
-                      onPressed: ()async{
+                          backgroundColor:
+                          MaterialStateProperty.all(Color(0xff432244))),
+                        onPressed: ()async{
 
     db
         .collection("USERS")
@@ -238,11 +236,11 @@ border: Border.all(color:Colors.grey.shade200),
             phoneNumber: "+91${phoneController.text}",
             verificationCompleted: (phoneAuthCredential) async {
               setState(() {
-                showLoading = false;
+                  showLoading = false;
               });
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text("Verification Completed"),
-                duration: Duration(milliseconds: 3000),
+                  content: Text("Verification Completed"),
+                  duration: Duration(milliseconds: 3000),
               ));
               if (kDebugMode) {
               }
@@ -250,31 +248,31 @@ border: Border.all(color:Colors.grey.shade200),
             verificationFailed: (verificationFailed) async {
 
               setState(() {
-                showLoading = false;
+                  showLoading = false;
               });
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text("Sorry, Verification Failed"),
-                duration: Duration(milliseconds: 3000),
+                  content: Text("Sorry, Verification Failed"),
+                  duration: Duration(milliseconds: 3000),
               ));
               if (kDebugMode) {
-                print(verificationFailed.message.toString());
+                  print(verificationFailed.message.toString());
               }
             },
             codeSent: (verificationId, resendingToken) async {
               setState(() {
-                showLoading = false;
-                currentSate =
-                    MobileVarificationState.SHOW_OTP_FORM_STATE;
-                this.verificationId = verificationId;
+                  showLoading = false;
+                  currentSate =
+                      MobileVarificationState.SHOW_OTP_FORM_STATE;
+                  this.verificationId = verificationId;
 
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  content: Text("OTP sent to phone successfully"),
-                  duration: Duration(milliseconds: 3000),
-                ));
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text("OTP sent to phone successfully"),
+                    duration: Duration(milliseconds: 3000),
+                  ));
 
-                if (kDebugMode) {
-                  print("");
-                }
+                  if (kDebugMode) {
+                    print("");
+                  }
               });
             },
             codeAutoRetrievalTimeout: (verificationId) async {
@@ -292,15 +290,15 @@ border: Border.all(color:Colors.grey.shade200),
 
 
 
-                      },
-                    child:  Text(
-                      "Log in",
-                      style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600),
-                    ),
+                        },
+                      child:  Text(
+                        "Log in",
+                        style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600),
+                      ),
 
+                    ),
                   ),
                 ),
-              ),
               Align(alignment: Alignment.bottomLeft,
                 child: Image(image: AssetImage("assets/downLayer.png"),),
               ),

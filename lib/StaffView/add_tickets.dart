@@ -8,7 +8,8 @@ import '../Providers/admin_provider.dart';
 import '../constant/colors.dart';
 
 class AddTickets extends StatelessWidget {
-  AddTickets({Key? key}) : super(key: key);
+  String from,userId;
+  AddTickets({Key? key,required this.from,required this.userId}) : super(key: key);
   static final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
@@ -96,7 +97,7 @@ class AddTickets extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(left: 25, right: 25),
                   child: TextFormField(
-                    keyboardType: TextInputType.text,
+                    keyboardType: TextInputType.phone,
                     controller: values.ticketPnrController,
                     decoration: InputDecoration(
                       labelText: 'PNR ID',
@@ -366,9 +367,9 @@ class AddTickets extends StatelessWidget {
                             if (values.ticketNameList.isNotEmpty &&
                                 values
                                     .ticketPassengersController.text.isEmpty) {
-                              adminProvider.addTickets(context,"", "");
+                              adminProvider.addTickets(context,"", "",userId,from);
 
-                              adminProvider.clearTicketControllers();
+
                             } else {
                               final snackBar = SnackBar(
                                 elevation: 6.0,
@@ -396,13 +397,19 @@ class AddTickets extends StatelessWidget {
                               borderRadius: BorderRadius.circular(20),
                               color: themecolor),
                           child:  Center(
-                              child: Text(
+                              child:from!='edit'? Text(
                             "Add Ticket",
                             style: TextStyle(color: cWhite,
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600,
                                 fontFamily: 'Poppins-SemiBold'),
-                          )),
+                          ):Text(
+                                "Update Ticket",
+                                style: TextStyle(color: cWhite,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: 'Poppins-SemiBold'),
+                              )),
                         ),
                       );
                     }),

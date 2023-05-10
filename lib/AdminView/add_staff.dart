@@ -147,11 +147,11 @@ class AddStaff extends StatelessWidget {
                                                     BorderRadius.circular(20),
                                                 color: cnttColor),
                                             child:
-                                                Center(child: Text("Remove")),
+                                                const Center(child: Text("Remove")),
                                           ),
                                         );
                                       }),
-                                  SizedBox(
+                                  const SizedBox(
                                     width: 5,
                                   ),
                                   Consumer<AdminProvider>(
@@ -179,7 +179,7 @@ class AddStaff extends StatelessWidget {
                               );
                             }),
                           )
-                        : SizedBox(),
+                        : const SizedBox(),
                     Padding(
                       padding:
                           const EdgeInsets.only(top: 30, left: 20, right: 20),
@@ -370,7 +370,7 @@ class AddStaff extends StatelessWidget {
                         ),
                       );
                     }),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     Consumer<AdminProvider>(builder: (context, value1, child) {
@@ -480,7 +480,7 @@ class AddStaff extends StatelessWidget {
                     //   // onChanged: print,
                     //   // selectedItems: ["Brazil"],
                     // ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     Center(
