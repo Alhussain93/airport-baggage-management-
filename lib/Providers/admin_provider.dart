@@ -1115,7 +1115,7 @@ class AdminProvider with ChangeNotifier {
     //     onLayout: (PdfPageFormat format) async => pdf.save());
     notifyListeners();
   }
-    }
+
   void deleteTickets(BuildContext context, String id) {
     db.collection("TICKETS").doc(id).delete();
     fetchTicketsList();
