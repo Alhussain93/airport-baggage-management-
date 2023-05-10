@@ -15,12 +15,14 @@ class PnrProvider extends ChangeNotifier {
   List<String> luggageList = [];
 
   // db.collection("USERS").where("PHONE",isEqualTo:phoneNumber ).get().
-  checkingPnr(String pnrControllerText, BuildContext context) {
+  checkingPnr(String pnrControllerText, BuildContext context, String username) {
+
     db
         .collection("PNRTRAIL")
         .where("PNR_ID", isEqualTo: pnrControllerText)
         .get()
         .then((value) {
+          checkList.clear();
       if (value.docs.isNotEmpty) {
         for (var element in value.docs) {
           Map<dynamic, dynamic> map = element.data();
@@ -36,7 +38,7 @@ class PnrProvider extends ChangeNotifier {
         );
         if (checkList.length != 0) {
           luggageTracking(checkList[0].id);
-          callNext(TrackingScreen(pnrid: pnrControllerText), context);
+          callNext(TrackingScreen(pnrid: pnrControllerText, username: username,), context);
         }
       } else {
         final snackBar = SnackBar(

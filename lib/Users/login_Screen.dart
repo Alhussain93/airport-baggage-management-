@@ -107,7 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
 
-              Image(image: AssetImage("assets/topLayer.png"),height: 150),
+              const Image(image: AssetImage("assets/topLayer.png"),height: 150),
 
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,8 +138,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         decoration:  InputDecoration(
 
-                          counterStyle: TextStyle(color: Colors.grey),
-                          hintStyle: TextStyle(color: Colors.grey, fontSize: 15),
+                          counterStyle: const TextStyle(color: Colors.grey),
+                          hintStyle: const TextStyle(color: Colors.grey, fontSize: 15),
                           // labelText: 'MOBILE NUMBER',
                           hintText: 'MOBILE NUMBER',
                           enabledBorder: OutlineInputBorder(
@@ -169,7 +169,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
 
-                  SizedBox(height: 10,),
+                  const SizedBox(height: 10,),
                   InkWell(
                     onTap: (){
                       // OnlineClassProvider onlineClassProvider =
@@ -186,13 +186,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       decoration: BoxDecoration(
                           color: Colors.white,
 border: Border.all(color:Colors.grey.shade200),
-                          borderRadius: BorderRadius.all(Radius.circular(10))
+                          borderRadius: const BorderRadius.all(Radius.circular(10))
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text("new user? ",style: TextStyle(color: Colors.grey.shade500),),
-                          Text(" REGISTER",style: TextStyle(color: Colors.blue,fontSize: 15),)
+                          const Text(" REGISTER",style: TextStyle(color: Colors.blue,fontSize: 15),)
                         ],
                       ),
                   ),
@@ -217,7 +217,7 @@ border: Border.all(color:Colors.grey.shade200),
                             ),
                           ),
                           backgroundColor:
-                          MaterialStateProperty.all(Color(0xff432244))),
+                          MaterialStateProperty.all(const Color(0xff432244))),
                         onPressed: ()async{
 
     db
@@ -228,11 +228,13 @@ border: Border.all(color:Colors.grey.shade200),
         .then((userValue) async {
       if (userValue.docs.isNotEmpty) {
         setState(() {
+          print(phoneController.text.toString()+"fgefegh9h8w");
           if (phoneController.text.length == 10) {
             showLoading = true;
           }
         });
         await auth.verifyPhoneNumber(
+
             phoneNumber: "+91${phoneController.text}",
             verificationCompleted: (phoneAuthCredential) async {
               setState(() {
@@ -291,7 +293,7 @@ border: Border.all(color:Colors.grey.shade200),
 
 
                         },
-                      child:  Text(
+                      child:  const Text(
                         "Log in",
                         style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600),
                       ),
@@ -299,7 +301,7 @@ border: Border.all(color:Colors.grey.shade200),
                     ),
                   ),
                 ),
-              Align(alignment: Alignment.bottomLeft,
+              const Align(alignment: Alignment.bottomLeft,
                 child: Image(image: AssetImage("assets/downLayer.png"),),
               ),
 
@@ -322,7 +324,7 @@ border: Border.all(color:Colors.grey.shade200),
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
 
-              Image(image: AssetImage("assets/topLayer.png"),height: 150),
+              const Image(image: AssetImage("assets/topLayer.png"),height: 150),
 
              Column(
                crossAxisAlignment: CrossAxisAlignment.start,
@@ -342,7 +344,7 @@ border: Border.all(color:Colors.grey.shade200),
                      currentCode: "",
                      decoration:  BoxLooseDecoration(
                        textStyle: const TextStyle( color: Colors.black),
-                       radius: const Radius.circular(5), strokeColorBuilder: FixedColorBuilder(Colors.black38),
+                       radius: const Radius.circular(5), strokeColorBuilder: const FixedColorBuilder(Colors.black38),
                      ),
                      onCodeChanged: (pin) {
                        if (pin!.length == 6) {
@@ -368,7 +370,7 @@ border: Border.all(color:Colors.grey.shade200),
                 padding: const EdgeInsets.all(20.0),
                 child: CircularProgressIndicator(color: cWhite,),
               ) : Container(),
-              Align(alignment: Alignment.bottomLeft,
+              const Align(alignment: Alignment.bottomLeft,
                 child: Image(image: AssetImage("assets/downLayer.png"),),
               ),
             ],

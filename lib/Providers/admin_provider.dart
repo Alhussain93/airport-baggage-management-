@@ -2,7 +2,7 @@ import 'dart:collection';
 import 'dart:ffi';
 import 'dart:io';
 import 'dart:math';
-import 'package:dio/dio.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -19,8 +19,6 @@ import 'package:luggage_tracking_app/constant/my_functions.dart';
 import 'package:luggage_tracking_app/model/tickets_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:printing/printing.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:encrypt/encrypt.dart' as enc;
@@ -29,6 +27,7 @@ import 'package:intl/intl.dart';
 
 import '../AdminView/add_staff.dart';
 import '../AdminView/generateQr_Screen.dart';
+import '../StaffView/add_tickets.dart';
 import '../StaffView/staff_home_screen.dart';
 import '../UserView/splash_screen.dart';
 import '../AdminView/staff_screen.dart';
@@ -36,11 +35,11 @@ import '../admin_model/add_staff_model.dart';
 import '../constant/colors.dart';
 import '../strings.dart';
 import '../update.dart';
-import 'package:pdf/widgets.dart'as pw;
+import 'package:pdf/widgets.dart' as pw;
+
 class AdminProvider with ChangeNotifier {
   final DatabaseReference mRootReference = FirebaseDatabase.instance.ref();
   final FirebaseFirestore db = FirebaseFirestore.instance;
-  final Dio dio = Dio();
 
   bool showTick = false;
   DateTime birthDate = DateTime.now();
@@ -59,6 +58,8 @@ List<String>qrDataList=[];
   Reference ref = FirebaseStorage.instance.ref("PROFILE_IMAGE");
   String editImage = "";
   bool waitRegister = true;
+  String passengerStatusForEdit = "";
+  String passengerID = "";
 
   TextEditingController userPhoneCT = TextEditingController();
   TextEditingController userNameCT = TextEditingController();
@@ -99,6 +100,7 @@ List<String>qrDataList=[];
 
     return decrypted2;
   }
+
   Future<bool> checkNumberExist(String phone) async {
     var D = await db
         .collection("USERS")
@@ -126,7 +128,7 @@ List<String>qrDataList=[];
 
   Future<bool> checkPnrIdExist(String pnrID) async {
     var D =
-    await db.collection("TICKETS").where("PNR_ID", isEqualTo: pnrID).get();
+        await db.collection("TICKETS").where("PNR_ID", isEqualTo: pnrID).get();
     if (D.docs.isNotEmpty) {
       return true;
     } else {
@@ -134,8 +136,7 @@ List<String>qrDataList=[];
     }
   }
 
-  statusUpdateQrData(String luggageId, String staffDes,BuildContext context) {
-
+  statusUpdateQrData(String luggageId, String staffDes, BuildContext context) {
     print('how many times happend 2');
 
     DateTime now = DateTime.now();
@@ -156,17 +157,11 @@ List<String>qrDataList=[];
           String text = 'Checkout completed';
           showAlertDialog(context, text,staffDes);
         }
-
       }
-
     });
-
-
-
   }
 
-
-  showAlertDialog(BuildContext context, String text,String staffDes) {
+  showAlertDialog(BuildContext context, String text, String staffDes) {
     // set up the button
     Widget okButton = Container(
       height: 38,
@@ -181,7 +176,11 @@ List<String>qrDataList=[];
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
         ),
         onPressed: () {
-          callNextReplacement(StaffHomeScreen(designation: staffDes,), context);
+          callNextReplacement(
+              StaffHomeScreen(
+                designation: staffDes,
+              ),
+              context);
         },
       ),
     );
@@ -268,8 +267,8 @@ List<String>qrDataList=[];
     notifyListeners();
   }
 
-  Future<void> userRegistration(
-      BuildContext context1, String addedBy, String userId, String from) async {
+  Future<void> userRegistration(BuildContext context1, String addedBy,
+      String userId, String from, String passengerStatus) async {
     bool numberStatus = await checkNumberExist(userPhoneCT.text);
     if (!numberStatus || userPhoneCT.text == passengerOldPhone) {
       showDialog(
@@ -299,12 +298,14 @@ List<String>qrDataList=[];
       passengerMap["DOB"] = birthDate;
       passengerMap["DOB STRING"] = userDobCT.text;
       passengerMap["REGISTRATION_TIME"] = DateTime.now();
+      passengerMap["STATUS"] = passengerStatus;
+      userMap["STATUS"] = passengerStatus;
       if (fileImage != null) {
         String time = DateTime.now().millisecondsSinceEpoch.toString();
         ref = FirebaseStorage.instance.ref().child(time);
         await ref.putFile(fileImage!).whenComplete(() async {
           await ref.getDownloadURL().then((value) {
-            print(value+"fcvgbh");
+            print(value + "fcvgbh");
             passengerMap['PASSENGER_IMAGE'] = value;
             notifyListeners();
           });
@@ -322,6 +323,9 @@ List<String>qrDataList=[];
       passengerEditMap['MOBILE_NUMBER'] = "+91${userPhoneCT.text}";
       editMap['NAME'] = userNameCT.text;
       passengerEditMap['NAME'] = userNameCT.text;
+      passengerEditMap["STATUS"] = passengerStatus;
+      editMap["STATUS"] = passengerStatus;
+
       if (fileImage != null) {
         String time = DateTime.now().millisecondsSinceEpoch.toString();
         ref = FirebaseStorage.instance.ref().child(time);
@@ -383,7 +387,7 @@ List<String>qrDataList=[];
   TextEditingController departureTime = TextEditingController();
   TextEditingController ticketPassengersController = TextEditingController();
 
-  List<String> ticketNameList = [];
+  List<dynamic> ticketNameList = [];
 
   void clearQrControllers() {
     qrLuggageCountCT.clear();
@@ -393,6 +397,7 @@ List<String>qrDataList=[];
   }
 
   void clearTicketControllers() {
+    previousPnrId = '';
     ticketFromController.clear();
     ticketToController.clear();
     passengerCountController.clear();
@@ -476,27 +481,28 @@ List<String>qrDataList=[];
     });
   }
 
-void checkPnrIdExists(String pnrId,BuildContext context){
-    db.collection("TICKETS").where("PNR_ID",isNotEqualTo:pnrId).get().then((value) {
-      if(value.docs.isNotEmpty){
+  void checkPnrIdExists(String pnrId, BuildContext context) {
+    db
+        .collection("TICKETS")
+        .where("PNR_ID", isNotEqualTo: pnrId)
+        .get()
+        .then((value) {
+      if (value.docs.isNotEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             backgroundColor: Colors.red,
             content: Text(
-              "No data found ", style: TextStyle(color: Colors.white),)));
+              "No data found ",
+              style: TextStyle(color: Colors.white),
+            )));
 
         print("djdjckcekmrko");
-
       }
-
     });
-
-}
+  }
 
   Future<bool> checkPnrIDExist(String pnrId) async {
-    var D = await db
-        .collection("TICKETS")
-        .where("PNR_ID", isEqualTo: pnrId)
-        .get();
+    var D =
+        await db.collection("TICKETS").where("PNR_ID", isEqualTo: pnrId).get();
     if (D.docs.isNotEmpty) {
       print("sjsjmmssmsl");
       return true;
@@ -506,8 +512,6 @@ void checkPnrIdExists(String pnrId,BuildContext context){
       return false;
     }
   }
-
-
 
   void generateQrCode(BuildContext context) {
     HashMap<String, Object> qrMap = HashMap();
@@ -543,7 +547,7 @@ void checkPnrIdExists(String pnrId,BuildContext context){
 
   void fetchCustomers() {
     print("dshjskmdcfgf");
-    db.collection("PASSENGERS").snapshots().listen((value) {
+    db.collection("PASSENGERS").where("STATUS",isNotEqualTo: "DELETED").snapshots().listen((value) {
       if (value.docs.isNotEmpty) {
         customersList.clear();
         filterCustomersList.clear();
@@ -556,6 +560,7 @@ void checkPnrIdExists(String pnrId,BuildContext context){
             map["MOBILE_NUMBER"].toString(),
             map["DOB STRING"].toString(),
             map["PASSENGER_IMAGE"].toString(),
+            map["STATUS"].toString(),
           ));
         }
         filterCustomersList = customersList;
@@ -576,23 +581,18 @@ void checkPnrIdExists(String pnrId,BuildContext context){
         userDobCT.text = map["DOB STRING"].toString();
         passengerOldPhone = userPhoneCT.text =
             map["MOBILE_NUMBER"].toString().replaceAll("+91", '');
+        passengerStatusForEdit = map["STATUS"].toString();
       }
       notifyListeners();
     });
   }
 
-  void deleteCustomer(BuildContext context, String id) {
-    db.collection("USERS").doc(id).delete();
-    db.collection("PASSENGERS").doc(id).delete();
-    finish(context);
-    notifyListeners();
-  }
 
   void fetchStaff() {
     modellist.clear();
     filtersStaffList.clear();
 
-    db.collection("STAFF").snapshots().listen((event) {
+    db.collection("STAFF").where("STATUS",isNotEqualTo: "DELETED").snapshots().listen((event) {
       modellist.clear();
       filtersStaffList.clear();
       for (var element in event.docs) {
@@ -767,15 +767,29 @@ void checkPnrIdExists(String pnrId,BuildContext context){
     designation = 'Select Designation';
     staffAirportName = 'Select Airport';
     fileImage = null;
-    staffImage="";
+    staffImage = "";
     notifyListeners();
   }
 
-  void deleteData(BuildContext context, String id) {
-    db.collection("STAFF").doc(id).delete();
-    fetchStaff();
-    callNextReplacement(HomeScreen(), context);
-    notifyListeners();
+  void deleteData(BuildContext context, String id, String from) {
+    if (from == "Staff") {
+      db.collection("STAFF").doc(id).update({'STATUS':'DELETED'});
+
+      db.collection("USERS").doc(id).delete();
+
+
+      notifyListeners();
+      finish(context);
+      finish(context);
+    } else {
+      db.collection("PASSENGERS").doc(id).update({'STATUS': 'DELETED'});
+
+      db.collection("USERS").doc(id).delete();
+
+      notifyListeners();
+      finish(context);
+      finish(context);
+    }
   }
 
   String status = '';
@@ -923,10 +937,10 @@ void checkPnrIdExists(String pnrId,BuildContext context){
     print("gggggggggggg666" + fileImage.toString());
   }
 
-  Future<void> addTickets(
-      BuildContext context, String addedBy, String addedName) async {
+  Future<void> addTickets(BuildContext context, String addedBy,
+      String addedName, String id, String from) async {
     bool numberStatus = await checkPnrIdExist(ticketPnrController.text);
-    if (!numberStatus) {
+    if (!numberStatus || ticketPnrController.text == previousPnrId) {
       HashMap<String, Object> ticketMap = HashMap();
       String ticketId = DateTime.now().millisecondsSinceEpoch.toString();
 
@@ -935,15 +949,21 @@ void checkPnrIdExists(String pnrId,BuildContext context){
       ticketMap["FROM"] = ticketFromController.text;
       ticketMap["TO"] = ticketToController.text;
       ticketMap["PASSENGERS_NUM"] = passengerCountController.text;
-      ticketMap["ID"] = ticketId;
-      ticketMap["ADDED_BY"] = addedBy;
-      ticketMap["ADDED_BY_NAME"] = addedName;
+      if (from != 'edit') {
+        ticketMap["ID"] = ticketId;
+        ticketMap["ADDED_BY"] = addedBy;
+        ticketMap["ADDED_BY_NAME"] = addedName;
+      }
       ticketMap["ADDED_TIME"] = DateTime.now();
       ticketMap["ARRIVAL"] = arrivalTime.text;
       ticketMap["DEPARTURE"] = departureTime.text;
       ticketMap["PASSENGERS"] = ticketNameList;
-
-      db.collection("TICKETS").doc(ticketId).set(ticketMap);
+      if (from != 'edit') {
+        db.collection("TICKETS").doc(ticketId).set(ticketMap);
+      } else {
+        db.collection("TICKETS").doc(id).update(ticketMap);
+      }
+      fetchTicketsList();
       finish(context);
     } else {
       final snackBar = SnackBar(
@@ -962,18 +982,32 @@ void checkPnrIdExists(String pnrId,BuildContext context){
     clearTicketControllers();
   }
 
-  void blockStaff(BuildContext context, String id) {
-    db.collection("STAFF").doc(id).update({'STATUS': 'BLOCK'});
+  void blockStaff(BuildContext context, String id, String from) {
+    if (from == "Staff") {
+      db.collection("STAFF").doc(id).update({'STATUS': 'BLOCKED'});
+      db.collection("USERS").doc(id).update({'STATUS': 'BLOCKED'});
+    } else {
+      db.collection("PASSENGERS").doc(id).update({'STATUS': 'BLOCKED'});
+      db.collection("USERS").doc(id).update({'STATUS': 'BLOCKED'});
+    }
 
-    callNextReplacement(HomeScreen(), context);
+    // callNextReplacement(HomeScreen(), context);
+
     notifyListeners();
+    finish(context);
   }
 
-  void unBlockStaff(BuildContext context, String id) {
-    db.collection("STAFF").doc(id).update({'STATUS': 'ACTIVE'});
+  void unBlockStaff(BuildContext context, String id, String from) {
+    if (from == "Staff") {
+      db.collection("STAFF").doc(id).update({'STATUS': 'ACTIVE'});
+    } else {
+      db.collection("PASSENGERS").doc(id).update({'STATUS': 'ACTIVE'});
+    }
 
-    callNextReplacement(HomeScreen(), context);
+    // callNextReplacement(HomeScreen(), context);
     notifyListeners();
+    finish(context);
+
   }
 
   logOutAlert(BuildContext context) {
@@ -1140,6 +1174,38 @@ void checkPnrIdExists(String pnrId,BuildContext context){
     // return await Printing.layoutPdf(
     //     onLayout: (PdfPageFormat format) async => pdf.save());
     notifyListeners();
-    }
+  }
 
+  void deleteTickets(BuildContext context, String id) {
+    db.collection("TICKETS").doc(id).delete();
+    fetchTicketsList();
+    callNextReplacement(HomeScreen(), context);
+    notifyListeners();
+  }
+
+  String previousPnrId = '';
+
+  void editTickets(BuildContext context, String id) {
+    db.collection('TICKETS').doc(id).get().then((value) {
+      if (value.exists) {
+        Map<dynamic, dynamic> map = value.data() as Map;
+        ticketFlightName = map['FLIGHT_NAME'].toString();
+        ticketPnrController.text = map['PNR_ID'].toString();
+        previousPnrId = map['PNR_ID'].toString();
+        ticketFromController.text = map['FROM'].toString();
+        ticketToController.text = map['TO'].toString();
+        passengerCountController.text = map['PASSENGERS_NUM'].toString();
+        arrivalTime.text = map['ARRIVAL'].toString();
+        departureTime.text = map['DEPARTURE'].toString();
+        ticketNameList = map['PASSENGERS'];
+        notifyListeners();
+        callNext(
+            AddTickets(
+              from: 'edit',
+              userId: id,
+            ),
+            context);
+      }
+    });
+  }
 }

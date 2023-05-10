@@ -108,109 +108,119 @@ class StaffScreen extends StatelessWidget {
                     var item = value.filtersStaffList[index];
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 8),
-                      child: Stack(
-                        children: [
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(left: 8, right: 8, bottom: 2),
-                            child: Container(
-                              height: 85,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.shade300,
-                                    blurRadius: 1.0,
-                                    spreadRadius: 1.0,
-                                  )
-                                ],
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Padding(
-                                      padding: EdgeInsets.only(left: 10),
-                                      child: item.profileImage != ""
-                                          ? CircleAvatar(
-                                          backgroundColor: cWhite,
-                                          radius: 25,
-                                          backgroundImage:
-                                          NetworkImage(item.profileImage))
-                                          : CircleAvatar(
-                                        backgroundColor: cWhite,
-                                        radius: 25,
-                                        backgroundImage:
-                                        const AssetImage("assets/user.png"),
-                                      ),),
-                                  SizedBox(
-                                    height: 60,
-                                    width: width / 1.3,
-                                    child: Row(
+                      child: Padding(
+                        padding:
+                            const EdgeInsets.only(left: 8, right: 8, bottom: 2),
+                        child: Container(
+                          height: 85,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.shade300,
+                                blurRadius: 1.0,
+                                spreadRadius: 1.0,
+                              )
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                  padding: EdgeInsets.only(left: 10),
+                                  child: item.profileImage != ""
+                                      ? CircleAvatar(
+                                      backgroundColor: cWhite,
+                                      radius: 25,
+                                      backgroundImage:
+                                      NetworkImage(item.profileImage))
+                                      : CircleAvatar(
+                                    backgroundColor: cWhite,
+                                    radius: 25,
+                                    backgroundImage:
+                                    const AssetImage("assets/user.png"),
+                                  ),),
+                              SizedBox(
+                                width: width / 1.3,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                          MainAxisAlignment.center,
                                       children: [
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                        Text(
+                                          item.Name,
+                                          style: const TextStyle(
+                                              fontFamily: "Poppins-SemiBold",
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                        Row(
                                           children: [
+                                            const Text(
+                                              "ID : ",
+                                              style: TextStyle(
+                                                  fontFamily:
+                                                      "Poppins-SemiBold",
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w400),
+                                            ),
                                             Text(
-                                              item.Name,
+                                              value.modellist[index].StaffId,
                                               style: const TextStyle(
-                                                  fontFamily: "Poppins-SemiBold",
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.w600),
+                                                  fontFamily:
+                                                      "Poppins-SemiBold",
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w400),
                                             ),
-                                            Row(
-                                              children: [
-                                                const Text(
-                                                  "ID : ",
-                                                  style: TextStyle(
-                                                      fontFamily:
-                                                          "Poppins-SemiBold",
-                                                      fontSize: 12,
-                                                      fontWeight: FontWeight.w400),
-                                                ),
-                                                Text(
-                                                  value.modellist[index].StaffId,
-                                                  style: const TextStyle(
-                                                      fontFamily:
-                                                          "Poppins-SemiBold",
-                                                      fontSize: 12,
-                                                      fontWeight: FontWeight.w400),
-                                                ),
-                                              ],
-                                            ),
+
                                           ],
                                         ),
-                                        IconButton(
-                                            onPressed: () {
-                                              value.fileImage=null;
-                                              // value. storing(item.Name,item.StaffId,item.Email);
-                                              value.editStaff(context,item.id);
+                                        Row(
+                                          children: [
+                                            const Text(
+                                              "STATUS : ",
+                                              style: TextStyle(
+                                                  fontFamily:
+                                                  "Poppins-SemiBold",
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w400),
+                                            ),
+                                            Text(
+                                              item.status,
+                                              style:  TextStyle(
+                                                color: item.status=="BLOCKED"?Colors.red:Colors.black,
+                                                  fontFamily:
+                                                  "Poppins-SemiBold",
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w400),
+                                            ),
 
-                                            },
-                                            icon: const Icon(
-                                              Icons.edit_calendar_outlined,
-                                              size: 25,
-                                            ))
+                                          ],
+                                        ),
                                       ],
                                     ),
-                                  )
-                                ],
-                              ),
-                            ),
+                                    IconButton(
+                                        onPressed: () {
+                                          value.fileImage=null;
+                                          // value. storing(item.Name,item.StaffId,item.Email);
+                                          value.editStaff(context,item.id);
+
+                                        },
+                                        icon: const Icon(
+                                          Icons.edit_calendar_outlined,
+                                          size: 25,
+                                        ))
+                                  ],
+                                ),
+                              )
+                            ],
                           ),
-                       Padding(
-                         padding: const EdgeInsets.only(top: 40,left: 40),
-                         child: Align(
-                           alignment: Alignment.center,
-                           child: item.status=='BLOCK'?
-                              const Text("BLOCKED",style: TextStyle(color: Colors.red,fontWeight: FontWeight.w600,fontSize: 16),):SizedBox(),
-                         ),
-                       )
-                        ],
+                        ),
                       ),
                     );
                   });

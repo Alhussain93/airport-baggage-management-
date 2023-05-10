@@ -4,11 +4,12 @@ import 'package:luggage_tracking_app/Providers/admin_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../constant/colors.dart';
+import '../constant/my_functions.dart';
 
 class AddCustomerScreen extends StatelessWidget {
-  String userId, from;
+  String userId, from, passengerStatus;
 
-  AddCustomerScreen({Key? key, required this.userId, required this.from})
+  AddCustomerScreen({Key? key, required this.userId, required this.from, required this.passengerStatus})
       : super(key: key);
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -77,62 +78,62 @@ class AddCustomerScreen extends StatelessWidget {
                   //       ),
                   //     )),
                  ),
-                  // from == 'edit'
-                //     ? Padding(
-                //   padding: const EdgeInsets.only(right: 30, top: 20),
-                //   child: Consumer<AdminProvider>(
-                //       builder: (context, value, child) {
-                //         return Row(
-                //           mainAxisAlignment: MainAxisAlignment.end,
-                //           children: [
-                //             StreamBuilder<Object>(
-                //                 stream: null,
-                //                 builder: (context, snapshot) {
-                //                   return InkWell(
-                //                     onTap: () {
-                //                       deleteStaff(
-                //                           context, value.staffEditId);
-                //                     },
-                //                     child: Container(
-                //                       height: 30,
-                //                       width: 80,
-                //                       decoration: BoxDecoration(
-                //                           borderRadius:
-                //                           BorderRadius.circular(20),
-                //                           color: cnttColor),
-                //                       child:
-                //                       const Center(child: Text("Remove")),
-                //                     ),
-                //                   );
-                //                 }),
-                //             const SizedBox(
-                //               width: 5,
-                //             ),
-                //             Consumer<AdminProvider>(
-                //                 builder: (context, value1, child) {
-                //                   return InkWell(
-                //                     onTap: () {
-                //                   adminProvider.blockStaff(context, value1.staffEditId,status);
-                //                     },
-                //                     child: Container(
-                //                       height: 30,
-                //                       width: 80,
-                //                       decoration: BoxDecoration(
-                //                           borderRadius:
-                //                           BorderRadius.circular(20),
-                //                           color: cnttColor),
-                //                       child: Center(
-                //                           child: status == 'ACTIVE'
-                //                               ? const Text("Block")
-                //                               : const Text("Unblock")),
-                //                     ),
-                //                   );
-                //                 }),
-                //           ],
-                //         );
-                //       }),
-                // )
-                //     : const SizedBox(),
+                  from == 'EDIT'
+                    ? Padding(
+                  padding: const EdgeInsets.only(right: 30, top: 20),
+                  child: Consumer<AdminProvider>(
+                      builder: (context, value, child) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            StreamBuilder<Object>(
+                                stream: null,
+                                builder: (context, snapshot) {
+                                  return InkWell(
+                                    onTap: () {
+                                    deleteStaff(
+                                          context, userId);
+                                    },
+                                    child: Container(
+                                      height: 30,
+                                      width: 80,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                          BorderRadius.circular(20),
+                                          color: cnttColor),
+                                      child:
+                                      const Center(child: Text("Remove")),
+                                    ),
+                                  );
+                                }),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Consumer<AdminProvider>(
+                                builder: (context, value1, child) {
+                                  return InkWell(
+                                    onTap: () {
+                                  blockStaff(context,userId,value1.passengerStatusForEdit);
+                                    },
+                                    child: Container(
+                                      height: 30,
+                                      width: 80,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                          BorderRadius.circular(20),
+                                          color: cnttColor),
+                                      child: Center(
+                                          child: value1.passengerStatusForEdit == 'ACTIVE'
+                                              ? const Text("Block")
+                                              : const Text("Unblock")),
+                                    ),
+                                  );
+                                }),
+                          ],
+                        );
+                      }),
+                )
+                    : const SizedBox(),
 
                 Padding(
                   padding: const EdgeInsets.only(left: 25, right: 25, top: 30),
@@ -365,10 +366,10 @@ class AddCustomerScreen extends StatelessWidget {
                         if (form!.validate()) {
                           if (from == "EDIT") {
                             adminProvider.userRegistration(
-                                context, 'Admin', userId, from);
+                                context, 'Admin', userId, from,passengerStatus);
                           } else {
                             adminProvider.userRegistration(
-                                context, 'Admin', '', '');
+                                context, 'Admin', '', '',"ACTIVE");
                           }
                         }
 
@@ -386,6 +387,151 @@ class AddCustomerScreen extends StatelessWidget {
           ),
         );
       }),
+    );
+  }
+  deleteStaff(BuildContext context, String id) {
+    AdminProvider adminProvider =
+    Provider.of<AdminProvider>(context, listen: false);
+
+    AlertDialog alert = AlertDialog(
+      backgroundColor: themecolor,
+      scrollable: true,
+      title: const Text(
+        "Do you want to delete this staff",
+        style: TextStyle(
+            fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
+      ),
+      content: SizedBox(
+        height: 50,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    height: 37,
+                    width: 100,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white),
+                    child: TextButton(
+                        child: const Text(
+                          'NO',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        onPressed: () {
+                          finish(context);
+                        }),
+                  ),
+                  Consumer<AdminProvider>(builder: (context, value, child) {
+                    return Container(
+                      height: 37,
+                      width: 100,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Textclr),
+                      child: TextButton(
+                          child: const Text('YES',
+                              style: TextStyle(color: Colors.black)),
+                          onPressed: () {
+                            adminProvider.deleteData(context, id,"Passenger");
+                          }),
+                    );
+                  }),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  blockStaff(BuildContext context, String id, String userStatus) {
+    AdminProvider adminProvider =
+    Provider.of<AdminProvider>(context, listen: false);
+
+    AlertDialog alert = AlertDialog(
+      backgroundColor: themecolor,
+      scrollable: true,
+      title: userStatus == 'ACTIVE'
+          ? const Text(
+        "Do you want to block this staff",
+        style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+            color: Colors.white),
+      )
+          : const Text(
+        "Do you want to unblock this staff",
+        style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+            color: Colors.white),
+      ),
+      content: SizedBox(
+        height: 50,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    height: 37,
+                    width: 100,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white),
+                    child: TextButton(
+                        child: const Text(
+                          'NO',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        onPressed: () {
+                          finish(context);
+                        }),
+                  ),
+                  Consumer<AdminProvider>(builder: (context, value, child) {
+                    return Container(
+                      height: 37,
+                      width: 100,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Textclr),
+                      child: TextButton(
+                          child: const Text('YES',
+                              style: TextStyle(color: Colors.black)),
+                          onPressed: () {
+                            if (userStatus == 'ACTIVE') {
+                              adminProvider.blockStaff(context, id,"Passengers");
+                            } else {
+                              adminProvider.unBlockStaff(context, id,"Passengers");
+                            }
+                          }),
+                    );
+                  }),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 }

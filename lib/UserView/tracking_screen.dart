@@ -7,8 +7,9 @@ import '../constant/colors.dart';
 
 class TrackingScreen extends StatelessWidget {
   final String pnrid;
+  final String username;
 
-  TrackingScreen({Key? key, required this.pnrid}) : super(key: key);
+  TrackingScreen({Key? key, required this.pnrid, required this.username}) : super(key: key);
   int i = 0;
 
   @override
@@ -61,7 +62,7 @@ class TrackingScreen extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(left: 20),
                           child: Text(
-                            'hai',
+                            username,
                             style: TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontSize: 22,
@@ -213,7 +214,7 @@ class TrackingScreen extends StatelessWidget {
                           shrinkWrap: true,
                           itemCount: 1,
                           itemBuilder: (BuildContext context, int index) {
-                            var item = value.luggageList[index];
+                           // var item = value.luggageList[index];
                             return Column(
                               children: [
                                 const Text(

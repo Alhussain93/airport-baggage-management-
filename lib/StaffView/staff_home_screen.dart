@@ -219,14 +219,9 @@ class StaffHomeScreen extends StatelessWidget {
                 child: AppBar(
                   elevation: 0,
                   backgroundColor: themecolor,
-                  centerTitle: true,
-                  title: Text(
-                    "LOGO",
-                    style: TextStyle(
-                        fontFamily: 'Poppins-SemiBold',
-                        fontWeight: FontWeight.w600,
-                        fontSize: 36,
-                        color: Textclr),
+                  centerTitle: false,
+                  title: Image.asset(
+                    "assets/Frame48.png",scale: 3.5,
                   ),
                   flexibleSpace: Container(
                     height: height / 3,
