@@ -569,7 +569,7 @@ class AddStaff extends StatelessWidget {
                           child: const Text('YES',
                               style: TextStyle(color: Colors.black)),
                           onPressed: () {
-                            adminProvider.deleteData(context, id,"staff");
+                            adminProvider.deleteData(context, id,"Staff");
                           }),
                     );
                   }),

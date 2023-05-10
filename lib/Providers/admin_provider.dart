@@ -551,7 +551,7 @@ class AdminProvider with ChangeNotifier {
 
   void fetchCustomers() {
     print("dshjskmdcfgf");
-    db.collection("PASSENGERS").snapshots().listen((value) {
+    db.collection("PASSENGERS").where("STATUS",isNotEqualTo: "DELETED").snapshots().listen((value) {
       if (value.docs.isNotEmpty) {
         customersList.clear();
         filterCustomersList.clear();
@@ -596,7 +596,7 @@ class AdminProvider with ChangeNotifier {
     modellist.clear();
     filtersStaffList.clear();
 
-    db.collection("STAFF").where("STATUS",isEqualTo: "ACTIVE").where("STATUS",isEqualTo: "BLOCKED").snapshots().listen((event) {
+    db.collection("STAFF").where("STATUS",isNotEqualTo: "DELETED").snapshots().listen((event) {
       modellist.clear();
       filtersStaffList.clear();
       for (var element in event.docs) {
@@ -711,7 +711,7 @@ class AdminProvider with ChangeNotifier {
 
   void deleteData(BuildContext context, String id, String from) {
     if (from == "Staff") {
-      db.collection("STAFF").doc(id).update({'STATUS': 'DELETED'});
+      db.collection("STAFF").doc(id).update({'STATUS':'DELETED'});
 
       db.collection("USERS").doc(id).delete();
 

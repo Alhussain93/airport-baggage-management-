@@ -228,11 +228,13 @@ border: Border.all(color:Colors.grey.shade200),
         .then((userValue) async {
       if (userValue.docs.isNotEmpty) {
         setState(() {
+          print(phoneController.text.toString()+"fgefegh9h8w");
           if (phoneController.text.length == 10) {
             showLoading = true;
           }
         });
         await auth.verifyPhoneNumber(
+
             phoneNumber: "+91${phoneController.text}",
             verificationCompleted: (phoneAuthCredential) async {
               setState(() {

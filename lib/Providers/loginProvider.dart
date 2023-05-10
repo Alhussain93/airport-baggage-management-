@@ -63,7 +63,7 @@ class LoginProvider extends ChangeNotifier {
           }
           if(designation=="PASSENGER"){
             if(userStatus=="ACTIVE") {
-              callNextReplacement(const PnrSearching(), context);
+              callNextReplacement( PnrSearching(username: loginUsername), context);
             }else{
 
 
