@@ -569,7 +569,7 @@ class AddStaff extends StatelessWidget {
                           child: const Text('YES',
                               style: TextStyle(color: Colors.black)),
                           onPressed: () {
-                            adminProvider.deleteData(context, id);
+                            adminProvider.deleteData(context, id,"staff");
                           }),
                     );
                   }),
@@ -646,9 +646,9 @@ class AddStaff extends StatelessWidget {
                               style: TextStyle(color: Colors.black)),
                           onPressed: () {
                             if (userStatus == 'ACTIVE') {
-                              adminProvider.blockStaff(context, id);
+                              adminProvider.blockStaff(context, id,"Staff");
                             } else {
-                              adminProvider.unBlockStaff(context, id);
+                              adminProvider.unBlockStaff(context, id,"Staff");
                             }
                           }),
                     );

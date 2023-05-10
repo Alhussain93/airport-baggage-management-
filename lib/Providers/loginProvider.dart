@@ -26,6 +26,18 @@ class LoginProvider extends ChangeNotifier {
 
   Future<void> userAuthorized(String? phoneNumber, BuildContext context) async {
 
+    const snackBar2 = SnackBar(
+        backgroundColor: Colors.white,
+        duration: Duration(milliseconds: 2000),
+        content: Text("Sorry , You don't have any access",
+          textAlign: TextAlign.center,
+          softWrap: true,
+          style: TextStyle(
+              fontSize: 18,
+              color: Colors.black,
+              fontWeight: FontWeight.bold),
+        ));
+
     AdminProvider adminProvider = Provider.of<AdminProvider>(context, listen: false);
 
     String loginUsername = '';
@@ -50,27 +62,35 @@ class LoginProvider extends ChangeNotifier {
 
           }
           if(designation=="PASSENGER"){
-            callNextReplacement(const PnrSearching(), context);
+            if(userStatus=="ACTIVE") {
+              callNextReplacement(const PnrSearching(), context);
+            }else{
+
+
+              ScaffoldMessenger.of(context).showSnackBar(snackBar2);
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
+              FirebaseAuth auth = FirebaseAuth.instance;
+              auth.signOut();
+            }
           }else if(loginUsertype=="ADMIN"){
             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
           }else if(loginUsertype=="STAFF"){
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StaffHomeScreen(designation:designation,)));
+            if(userStatus=="ACTIVE") {
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StaffHomeScreen(designation:designation,)));
+            }else{
+
+
+              ScaffoldMessenger.of(context).showSnackBar(snackBar2);
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
+              FirebaseAuth auth = FirebaseAuth.instance;
+              auth.signOut();
+
+            }
           }
         }
         else {
-          const snackBar = SnackBar(
-              backgroundColor: Colors.white,
-              duration: Duration(milliseconds: 2000),
-              content: Text("Sorry , You don't have any access",
-                textAlign: TextAlign.center,
-                softWrap: true,
-                style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold),
-              ));
 
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          ScaffoldMessenger.of(context).showSnackBar(snackBar2);
         }
 
 
