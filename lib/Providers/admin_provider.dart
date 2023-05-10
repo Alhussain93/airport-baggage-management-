@@ -2,7 +2,7 @@ import 'dart:collection';
 import 'dart:ffi';
 import 'dart:io';
 import 'dart:math';
-
+import 'package:dio/dio.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -19,6 +19,7 @@ import 'package:luggage_tracking_app/constant/my_functions.dart';
 import 'package:luggage_tracking_app/model/tickets_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:encrypt/encrypt.dart' as enc;
@@ -38,6 +39,7 @@ import 'package:pdf/widgets.dart'as pw;
 class AdminProvider with ChangeNotifier {
   final DatabaseReference mRootReference = FirebaseDatabase.instance.ref();
   final FirebaseFirestore db = FirebaseFirestore.instance;
+  final Dio dio = Dio();
 
   bool showTick = false;
   DateTime birthDate = DateTime.now();
@@ -614,6 +616,72 @@ void checkPnrIdExists(String pnrId,BuildContext context){
   }
 
 //String ref='';
+
+  Future<bool> _requestPermission(Permission permission) async {
+    if (await permission.isGranted) {
+      return true;
+    } else {
+      var result = await permission.request();
+      if (result == PermissionStatus.granted) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  String newPath = "";
+  String pdfPath='';
+
+  Future<bool> saveFile(BuildContext context,String url, String fileName) async {
+    Directory? directory;
+    print("dcnefncushdcj"+fileName);
+    try {
+      if (Platform.isAndroid) {
+        if (await _requestPermission(Permission.storage)) {
+          directory = await getExternalStorageDirectory();
+          newPath = "";
+          print(directory);
+          List<String> paths = directory!.path.split("/");
+          for (int x = 1; x < paths.length; x++) {
+            String folder = paths[x];
+            if (folder != "Android") {
+              newPath += "/" + folder;
+            } else {
+              break;
+            }
+          }
+          newPath = "$newPath/Documents";
+          directory = Directory(newPath);
+        } else {
+          return false;
+        }
+
+      } else {
+        if (await _requestPermission(Permission.photos)) {
+          directory = await getTemporaryDirectory();
+        } else {
+          return false;
+        }
+      }
+      File saveFile = File(directory.path + "/$fileName");
+      pdfPath=directory.path + "/$fileName";
+      if (!await directory.exists()) {
+        await directory.create(recursive: true);
+      }
+      if (await directory.exists()) {
+        await dio.download(url, saveFile.path,
+
+        );
+
+      }
+
+      return false;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
 
   Future<void> addStaff(
       BuildContext context, String from, String userId, String status) async {

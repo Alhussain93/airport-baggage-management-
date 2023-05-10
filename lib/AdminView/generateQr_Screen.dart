@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -31,7 +32,27 @@ Consumer<AdminProvider>(
   builder: (context,value,child) {
     return     InkWell(
       onTap: (){
-        value.savePdf(value.qrData);
+        final rand = Random().nextInt(10000000);
+        String fileName =
+            value.newPath+ "File$rand.pdf";
+        value.saveFile(context,value.qrData,fileName);
+        ScaffoldMessenger.of(context)
+            .showSnackBar(
+          SnackBar(
+            backgroundColor:
+            Colors.black,
+            duration:
+            const Duration(
+                milliseconds:
+                5000),
+            content: Text(
+              ' successfully downloaded to '+value.pdfPath,
+              style: const TextStyle(
+                  color: Colors
+                      .white),
+            ),
+          ),
+        );
       },
       child:   Container(
         height: 40,
