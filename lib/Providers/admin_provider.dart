@@ -27,6 +27,7 @@ import 'package:intl/intl.dart';
 
 import '../AdminView/add_staff.dart';
 import '../AdminView/generateQr_Screen.dart';
+import '../StaffView/add_tickets.dart';
 import '../StaffView/staff_home_screen.dart';
 import '../UserView/splash_screen.dart';
 import '../AdminView/staff_screen.dart';
@@ -393,7 +394,7 @@ class AdminProvider with ChangeNotifier {
   TextEditingController departureTime = TextEditingController();
   TextEditingController ticketPassengersController = TextEditingController();
 
-  List<String> ticketNameList = [];
+  List<dynamic> ticketNameList = [];
 
   void clearQrControllers() {
     qrLuggageCountCT.clear();
@@ -403,6 +404,7 @@ class AdminProvider with ChangeNotifier {
   }
 
   void clearTicketControllers() {
+    previousPnrId = '';
     ticketFromController.clear();
     ticketToController.clear();
     passengerCountController.clear();
@@ -876,9 +878,9 @@ class AdminProvider with ChangeNotifier {
   }
 
   Future<void> addTickets(
-      BuildContext context, String addedBy, String addedName) async {
+      BuildContext context, String addedBy, String addedName,String id,String from) async {
     bool numberStatus = await checkPnrIdExist(ticketPnrController.text);
-    if (!numberStatus) {
+    if (!numberStatus || ticketPnrController.text == previousPnrId) {
       HashMap<String, Object> ticketMap = HashMap();
       String ticketId = DateTime.now().millisecondsSinceEpoch.toString();
 
@@ -887,15 +889,21 @@ class AdminProvider with ChangeNotifier {
       ticketMap["FROM"] = ticketFromController.text;
       ticketMap["TO"] = ticketToController.text;
       ticketMap["PASSENGERS_NUM"] = passengerCountController.text;
-      ticketMap["ID"] = ticketId;
-      ticketMap["ADDED_BY"] = addedBy;
-      ticketMap["ADDED_BY_NAME"] = addedName;
+      if(from!='edit') {
+        ticketMap["ID"] = ticketId;
+        ticketMap["ADDED_BY"] = addedBy;
+        ticketMap["ADDED_BY_NAME"] = addedName;
+      }
       ticketMap["ADDED_TIME"] = DateTime.now();
       ticketMap["ARRIVAL"] = arrivalTime.text;
       ticketMap["DEPARTURE"] = departureTime.text;
       ticketMap["PASSENGERS"] = ticketNameList;
-
-      db.collection("TICKETS").doc(ticketId).set(ticketMap);
+      if(from!='edit') {
+        db.collection("TICKETS").doc(ticketId).set(ticketMap);
+      }else{
+        db.collection("TICKETS").doc(id).update(ticketMap);
+      }
+      fetchTicketsList();
       finish(context);
     } else {
       final snackBar = SnackBar(
@@ -1107,4 +1115,47 @@ class AdminProvider with ChangeNotifier {
     //     onLayout: (PdfPageFormat format) async => pdf.save());
     notifyListeners();
   }
+    }
+  void deleteTickets(BuildContext context, String id) {
+    db.collection("TICKETS").doc(id).delete();
+    fetchTicketsList();
+    callNextReplacement(HomeScreen(), context);
+    notifyListeners();
+  }
+  String previousPnrId = '';
+void editTickets(BuildContext context,String id){
+print("qqqqq 11");
+    db.collection('TICKETS').doc(id).get().then((value){
+      print("$id  qqqqq 22");
+
+      if(value.exists){
+        print("qqqqq 33");
+
+        Map<dynamic, dynamic> map = value.data() as Map;
+        ticketFlightName =map['FLIGHT_NAME'].toString();
+        ticketPnrController.text = map['PNR_ID'].toString();
+        previousPnrId = map['PNR_ID'].toString();
+        ticketFromController.text=map['FROM'].toString();
+        ticketToController.text=map['TO'].toString();
+        passengerCountController.text=map['PASSENGERS_NUM'].toString();
+        arrivalTime.text=map['ARRIVAL'].toString();
+        departureTime.text=map['DEPARTURE'].toString();
+        ticketNameList=map['PASSENGERS'];
+        print("qqqqq 44");
+
+
+        notifyListeners();
+
+        callNext(AddTickets(from: 'edit', userId: id,), context);
+        print("qqqqq 55");
+
+      }
+
+
+
+    } );
+
+
+
+}
 }
