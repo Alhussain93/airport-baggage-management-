@@ -56,6 +56,7 @@ class AddCustomerScreen extends StatelessWidget {
                               backgroundImage:
                                   const AssetImage("assets/user.png"),
                             ),
+
                   // child: Container(
                   //     height: 90,
                   //     decoration: BoxDecoration(
@@ -75,7 +76,64 @@ class AddCustomerScreen extends StatelessWidget {
                   //         color: Colors.grey.shade500,
                   //       ),
                   //     )),
-                ),
+                 ),
+                  // from == 'edit'
+                //     ? Padding(
+                //   padding: const EdgeInsets.only(right: 30, top: 20),
+                //   child: Consumer<AdminProvider>(
+                //       builder: (context, value, child) {
+                //         return Row(
+                //           mainAxisAlignment: MainAxisAlignment.end,
+                //           children: [
+                //             StreamBuilder<Object>(
+                //                 stream: null,
+                //                 builder: (context, snapshot) {
+                //                   return InkWell(
+                //                     onTap: () {
+                //                       deleteStaff(
+                //                           context, value.staffEditId);
+                //                     },
+                //                     child: Container(
+                //                       height: 30,
+                //                       width: 80,
+                //                       decoration: BoxDecoration(
+                //                           borderRadius:
+                //                           BorderRadius.circular(20),
+                //                           color: cnttColor),
+                //                       child:
+                //                       const Center(child: Text("Remove")),
+                //                     ),
+                //                   );
+                //                 }),
+                //             const SizedBox(
+                //               width: 5,
+                //             ),
+                //             Consumer<AdminProvider>(
+                //                 builder: (context, value1, child) {
+                //                   return InkWell(
+                //                     onTap: () {
+                //                   adminProvider.blockStaff(context, value1.staffEditId,status);
+                //                     },
+                //                     child: Container(
+                //                       height: 30,
+                //                       width: 80,
+                //                       decoration: BoxDecoration(
+                //                           borderRadius:
+                //                           BorderRadius.circular(20),
+                //                           color: cnttColor),
+                //                       child: Center(
+                //                           child: status == 'ACTIVE'
+                //                               ? const Text("Block")
+                //                               : const Text("Unblock")),
+                //                     ),
+                //                   );
+                //                 }),
+                //           ],
+                //         );
+                //       }),
+                // )
+                //     : const SizedBox(),
+
                 Padding(
                   padding: const EdgeInsets.only(left: 25, right: 25, top: 30),
                   child: TextFormField(
@@ -313,7 +371,7 @@ class AddCustomerScreen extends StatelessWidget {
                                 context, 'Admin', '', '');
                           }
                         }
-                        values.fileImage = null;
+
                       },
                       child: const Text(
                         "save",
