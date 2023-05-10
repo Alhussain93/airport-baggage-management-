@@ -877,8 +877,8 @@ class AdminProvider with ChangeNotifier {
     print("gggggggggggg666" + fileImage.toString());
   }
 
-  Future<void> addTickets(
-      BuildContext context, String addedBy, String addedName,String id,String from) async {
+  Future<void> addTickets(BuildContext context, String addedBy,
+      String addedName, String id, String from) async {
     bool numberStatus = await checkPnrIdExist(ticketPnrController.text);
     if (!numberStatus || ticketPnrController.text == previousPnrId) {
       HashMap<String, Object> ticketMap = HashMap();
@@ -889,7 +889,7 @@ class AdminProvider with ChangeNotifier {
       ticketMap["FROM"] = ticketFromController.text;
       ticketMap["TO"] = ticketToController.text;
       ticketMap["PASSENGERS_NUM"] = passengerCountController.text;
-      if(from!='edit') {
+      if (from != 'edit') {
         ticketMap["ID"] = ticketId;
         ticketMap["ADDED_BY"] = addedBy;
         ticketMap["ADDED_BY_NAME"] = addedName;
@@ -898,9 +898,9 @@ class AdminProvider with ChangeNotifier {
       ticketMap["ARRIVAL"] = arrivalTime.text;
       ticketMap["DEPARTURE"] = departureTime.text;
       ticketMap["PASSENGERS"] = ticketNameList;
-      if(from!='edit') {
+      if (from != 'edit') {
         db.collection("TICKETS").doc(ticketId).set(ticketMap);
-      }else{
+      } else {
         db.collection("TICKETS").doc(id).update(ticketMap);
       }
       fetchTicketsList();
@@ -1122,40 +1122,30 @@ class AdminProvider with ChangeNotifier {
     callNextReplacement(HomeScreen(), context);
     notifyListeners();
   }
+
   String previousPnrId = '';
-void editTickets(BuildContext context,String id){
-print("qqqqq 11");
-    db.collection('TICKETS').doc(id).get().then((value){
-      print("$id  qqqqq 22");
 
-      if(value.exists){
-        print("qqqqq 33");
-
+  void editTickets(BuildContext context, String id) {
+    db.collection('TICKETS').doc(id).get().then((value) {
+      if (value.exists) {
         Map<dynamic, dynamic> map = value.data() as Map;
-        ticketFlightName =map['FLIGHT_NAME'].toString();
+        ticketFlightName = map['FLIGHT_NAME'].toString();
         ticketPnrController.text = map['PNR_ID'].toString();
         previousPnrId = map['PNR_ID'].toString();
-        ticketFromController.text=map['FROM'].toString();
-        ticketToController.text=map['TO'].toString();
-        passengerCountController.text=map['PASSENGERS_NUM'].toString();
-        arrivalTime.text=map['ARRIVAL'].toString();
-        departureTime.text=map['DEPARTURE'].toString();
-        ticketNameList=map['PASSENGERS'];
-        print("qqqqq 44");
-
-
+        ticketFromController.text = map['FROM'].toString();
+        ticketToController.text = map['TO'].toString();
+        passengerCountController.text = map['PASSENGERS_NUM'].toString();
+        arrivalTime.text = map['ARRIVAL'].toString();
+        departureTime.text = map['DEPARTURE'].toString();
+        ticketNameList = map['PASSENGERS'];
         notifyListeners();
-
-        callNext(AddTickets(from: 'edit', userId: id,), context);
-        print("qqqqq 55");
-
+        callNext(
+            AddTickets(
+              from: 'edit',
+              userId: id,
+            ),
+            context);
       }
-
-
-
-    } );
-
-
-
-}
+    });
+  }
 }
