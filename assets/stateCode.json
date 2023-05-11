@@ -1,0 +1,224 @@
+{
+  "1":{
+  "SL Number": 1,
+  "Name of State": "Andaman and Nicobar Islands",
+  "State Code (GST)": 35,
+  "Alpha Code": "AN"
+},
+  "2":{
+"SL Number": 2,
+"Name of State": "Andhra Pradesh",
+"State Code (GST)": 37,
+"Alpha Code": "AD"
+},
+  "3":{
+"SL Number": 3,
+"Name of State": "Arunachal Pradesh",
+"State Code (GST)": 12,
+"Alpha Code": "AR"
+},
+  "4":{
+"SL Number": 4,
+"Name of State": "Assam",
+"State Code (GST)": 18,
+"Alpha Code": "AS"
+},
+  "5":{
+"SL Number": 5,
+"Name of State": "Bihar",
+"State Code (GST)": 10,
+"Alpha Code": "BH"
+},
+  "6":{
+"SL Number": 6,
+"Name of State": "Chandigarh",
+"State Code (GST)": 4,
+"Alpha Code": "CH"
+},
+  "7":{
+"SL Number": 7,
+"Name of State": "Chattisgarh",
+"State Code (GST)": 22,
+"Alpha Code": "CT"
+},
+  "8":{
+"SL Number": 8,
+"Name of State": "Dadra and Nagar Haveli",
+"State Code (GST)": 26,
+"Alpha Code": "DN"
+},
+  "9":{
+"SL Number": 9,
+"Name of State": "Daman and Diu",
+"State Code (GST)": 25,
+"Alpha Code": "DD"
+},
+  "10":{
+"SL Number": 10,
+"Name of State": "Delhi",
+"State Code (GST)": 7,
+"Alpha Code": "DL"
+},
+  "11":{
+"SL Number": 11,
+"Name of State": "Goa",
+"State Code (GST)": 30,
+"Alpha Code": "GA"
+},
+  "12":{
+"SL Number": 12,
+"Name of State": "Gujarat",
+"State Code (GST)": 24,
+"Alpha Code": "GJ"
+},
+  "13":{
+"SL Number": 13,
+"Name of State": "Haryana",
+"State Code (GST)": 6,
+"Alpha Code": "HR"
+},
+  "14":{
+"SL Number": 14,
+"Name of State": "Himachal Pradesh",
+"State Code (GST)": 2,
+"Alpha Code": "HP"
+},
+  "15":{
+"SL Number": 15,
+"Name of State": "Jammu and Kashmir",
+"State Code (GST)": 1,
+"Alpha Code": "JK"
+},
+  "16":{
+"SL Number": 16,
+"Name of State": "Jharkhand",
+"State Code (GST)": 20,
+"Alpha Code": "JH"
+},
+  "17":{
+"SL Number": 17,
+"Name of State": "Karnataka",
+"State Code (GST)": 29,
+"Alpha Code": "KA"
+},
+  "18":{
+"SL Number": 18,
+"Name of State": "Kerala",
+"State Code (GST)": 32,
+"Alpha Code": "KL"
+},
+  "19":{
+"SL Number": 19,
+"Name of State": "Ladakh",
+"State Code (GST)": 38,
+"Alpha Code": "LA"
+},
+  "20":{
+"SL Number": 20,
+"Name of State": "Lakshadweep Islands",
+"State Code (GST)": 31,
+"Alpha Code": "LD"
+},
+  "21":{
+"SL Number": 21,
+"Name of State": "Madhya Pradesh",
+"State Code (GST)": 23,
+"Alpha Code": "MP"
+},
+  "22":{
+"SL Number": 22,
+"Name of State": "Maharashtra",
+"State Code (GST)": 27,
+"Alpha Code": "MH"
+},
+  "23":{
+"SL Number": 23,
+"Name of State": "Manipur",
+"State Code (GST)": 14,
+"Alpha Code": "MN"
+},
+  "24":{
+"SL Number": 24,
+"Name of State": "Meghalaya",
+"State Code (GST)": 17,
+"Alpha Code": "ME"
+},
+  "25":{
+"SL Number": 25,
+"Name of State": "Mizoram",
+"State Code (GST)": 15,
+"Alpha Code": "MI"
+},
+  "26":{
+"SL Number": 26,
+"Name of State": "Nagaland",
+"State Code (GST)": 13,
+"Alpha Code": "NL"
+},
+  "27":{
+"SL Number": 27,
+"Name of State": "Odisha",
+"State Code (GST)": 21,
+"Alpha Code": "OR"
+},
+  "28":{
+"SL Number": 28,
+"Name of State": "Pondicherry",
+"State Code (GST)": 34,
+"Alpha Code": "PY"
+},
+  "29":{
+"SL Number": 29,
+"Name of State": "Punjab",
+"State Code (GST)": 3,
+"Alpha Code": "PB"
+},
+  "30":{
+"SL Number": 30,
+"Name of State": "Rajasthan",
+"State Code (GST)": 8,
+"Alpha Code": "RJ"
+},
+  "31":{
+"SL Number": 31,
+"Name of State": "Sikkim",
+"State Code (GST)": 11,
+"Alpha Code": "SK"
+},
+  "32":{
+"SL Number": 32,
+"Name of State": "Tamil Nadu",
+"State Code (GST)": 33,
+"Alpha Code": "TN"
+},
+  "33":{
+"SL Number": 33,
+"Name of State": "Telangana",
+"State Code (GST)": 36,
+"Alpha Code": "TL"
+},
+  "34":{
+"SL Number": 34,
+"Name of State": "Tripura",
+"State Code (GST)": 16,
+"Alpha Code": "TR"
+},
+  "35":{
+"SL Number": 35,
+"Name of State": "Uttar Pradesh",
+"State Code (GST)": 9,
+"Alpha Code": "UP"
+},
+  "36":{
+"SL Number": 36,
+"Name of State": "Uttarakhand",
+"State Code (GST)": 5,
+"Alpha Code": "UT"
+},
+  "37":{
+"SL Number": 37,
+"Name of State": "West Bengal",
+"State Code (GST)": 19,
+"Alpha Code": "WB"
+}
+}
