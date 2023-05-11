@@ -490,7 +490,7 @@ class AddStaff extends StatelessWidget {
                           onTap: () {
                             final FormState? forme = _formKey.currentState;
                             if (forme!.validate()) {
-                              value.addStaff(context, from, userId, status);
+                              value.addStaff(context, from, userId, status,addedBy);
                             }
                           },
                           child: Container(

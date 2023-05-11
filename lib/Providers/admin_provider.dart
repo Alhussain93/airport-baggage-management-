@@ -626,7 +626,7 @@ List<String>qrDataList=[];
   String pdfPath='';
 
   Future<void> addStaff(
-      BuildContext context, String from, String userId, String status) async {
+      BuildContext context, String from, String userId, String status,String addedBy) async {
     bool numberStatus = await checkStaffIdExist(StaffidController.text);
     if (!numberStatus||PhoneNumberController.text==staffOldPhone) {
       showDialog(
@@ -640,6 +640,7 @@ List<String>qrDataList=[];
       //this code is genarate auto id;
       Map<String, Object> dataMap = HashMap();
       Map<String, Object> userMap = HashMap();
+      dataMap["ADDED_BY"] = addedBy;
       dataMap["NAME"] = NameController.text;
       userMap["NAME"] = NameController.text;
       dataMap["STAFF_ID"] = StaffidController.text;
