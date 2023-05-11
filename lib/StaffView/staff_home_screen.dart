@@ -11,8 +11,8 @@ import '../constant/colors.dart';
 import '../constant/my_functions.dart';
 
 class StaffHomeScreen extends StatelessWidget {
-  String designation,stfAirport;
-  StaffHomeScreen({super.key,required this.designation,required this.stfAirport});
+  String designation,stfAirport,addedBy;
+  StaffHomeScreen({super.key,required this.designation,required this.stfAirport,required this.addedBy});
 
   ValueNotifier<int> isSelected = ValueNotifier(0);
 
@@ -22,7 +22,7 @@ class StaffHomeScreen extends StatelessWidget {
     AdminProvider adminProvider = Provider.of<AdminProvider>(context, listen: false);
 
     List screens = [
-       CustomersListScreen(addedby:'',),
+       CustomersListScreen(addedby:addedBy,),
        QrScanner(designation: designation, stfAirport: stfAirport,),
       MakeQrScreen(stfAirport: stfAirport,),
       MisingLaggage(),
@@ -233,8 +233,8 @@ class StaffHomeScreen extends StatelessWidget {
                         const SizedBox(
                           height: 50,
                         ),
-                        isSelected.value==1||isSelected.value==4?const Padding(padding: EdgeInsets.only(top: 52)):const SizedBox(),
-                        isSelected.value!=1&&isSelected.value!=4?Padding(
+                        isSelected.value==1||isSelected.value==2?const Padding(padding: EdgeInsets.only(top: 52)):const SizedBox(),
+                        isSelected.value!=1&&isSelected.value!=2?Padding(
                           padding: const EdgeInsets.only(top: 15),
                           child: Container(
                             height: 40,
@@ -305,7 +305,6 @@ class StaffHomeScreen extends StatelessWidget {
                                     isSelected.value = 1;
                                   }else{
                                     adminProvider. clearQrControllers();
-
                                     isSelected.value = 2;
 
                                   }

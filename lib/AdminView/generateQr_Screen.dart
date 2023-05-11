@@ -19,9 +19,9 @@ import '../Providers/admin_provider.dart';
 import '../constant/colors.dart';
 class GenerateQrScreen extends StatelessWidget {
   List qrDatasList;
-  String qrId;
+  String qrId,name;
 
-   GenerateQrScreen({Key? key,required this.qrDatasList,required this.qrId}) : super(key: key);
+   GenerateQrScreen({Key? key,required this.qrDatasList,required this.qrId,required this.name}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +41,7 @@ class GenerateQrScreen extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: InkWell(
             onTap: (){
-              generatePDF(qrDatasList);
+              generatePDF(qrDatasList,name);
 
             },
             child: Container(
@@ -82,7 +82,7 @@ class GenerateQrScreen extends StatelessWidget {
     itemCount:qrDatasList.length,
     gridDelegate:
     const SliverGridDelegateWithFixedCrossAxisCount(
-    childAspectRatio: 0.7,
+    childAspectRatio: 0.75,
     crossAxisSpacing: 2,
     crossAxisCount: 2),
     itemBuilder: (context, index) {
@@ -115,32 +115,8 @@ class GenerateQrScreen extends StatelessWidget {
   }
 
 
-//   pw.Column makeQrcode(){
-//
-//
-//     return pw.Column(
-//       children: [
-//
-//         pw.Center(
-//           child:
-//           pw.BarcodeWidget(
-//             data:qrcode,
-//             barcode: pw.Barcode.qrCode(),
-//             width: 300,
-//             height: 300,
-//
-//           ),
-//         ),
-// pw.Text("gebdeed"),
-//         pw.SizedBox(width: 20,
-//         height: 30)
-//       ],
-//     );
-//   }
-
-  Future generatePDF(List qrDataLists) async {
+  Future generatePDF(List qrDataLists,String name) async {
     final pdf = pw.Document();
-    print("sjssjjfdwjk"+qrDataLists.toString());
     pdf.addPage(
       pw.MultiPage(
         pageFormat: PdfPageFormat.a4,
@@ -156,7 +132,10 @@ class GenerateQrScreen extends StatelessWidget {
                     mainAxisAlignment: pw.MainAxisAlignment.center,
                     crossAxisAlignment: pw.CrossAxisAlignment.center,
                     children: [
-                      pw.SizedBox(height: 70),
+                      pw.SizedBox(height: 20),
+                      pw.Text(name,style: pw.TextStyle(fontSize: 25,fontWeight:pw.FontWeight.bold)),
+                      pw.SizedBox(height: 20),
+
                       pw.Text('QR code for $qrCodeValue'),
                       pw.SizedBox(height: 20),
                       pw.Center(

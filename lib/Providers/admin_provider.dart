@@ -16,6 +16,7 @@ import 'package:luggage_tracking_app/AdminView/home_screen.dart';
 import 'package:luggage_tracking_app/constant/my_functions.dart';
 import 'package:luggage_tracking_app/model/customer_model.dart';
 import 'package:luggage_tracking_app/constant/my_functions.dart';
+import 'package:luggage_tracking_app/model/luggage_Model.dart';
 import 'package:luggage_tracking_app/model/tickets_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
@@ -31,8 +32,10 @@ import '../StaffView/add_tickets.dart';
 import '../StaffView/staff_home_screen.dart';
 import '../UserView/splash_screen.dart';
 import '../AdminView/staff_screen.dart';
+import '../UserView/tracking_screen.dart';
 import '../admin_model/add_staff_model.dart';
 import '../constant/colors.dart';
+import '../pnr_model_class.dart';
 import '../strings.dart';
 import '../update.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -56,6 +59,7 @@ List<String>qrDataList=[];
   File? fileImage;
   bool imgCheck = false;
   Reference ref = FirebaseStorage.instance.ref("PROFILE_IMAGE");
+  Reference ref2 = FirebaseStorage.instance.ref("PROFILE_IMAGE");
   String editImage = "";
   bool waitRegister = true;
   String passengerStatusForEdit = "";
@@ -67,6 +71,72 @@ List<String>qrDataList=[];
   TextEditingController userNameCT = TextEditingController();
   TextEditingController userEmailCT = TextEditingController();
   TextEditingController userDobCT = TextEditingController();
+
+  TextEditingController pnrController = TextEditingController();
+
+  List<PnrModel> checkList = [];
+  List<LuggageModel> luggageList = [];
+
+  // db.collection("USERS").where("PHONE",isEqualTo:phoneNumber ).get().
+  checkingPnr(String pnrControllerText, BuildContext context, String username) {
+
+    db.collection("LUGGAGE")
+        .where("PNR_ID", isEqualTo: pnrControllerText)
+        .get()
+        .then((value) {
+      checkList.clear();
+      if (value.docs.isNotEmpty) {
+        for (var element in value.docs) {
+          Map<dynamic, dynamic> map = element.data();
+          checkList.add(PnrModel(
+              element.id,
+              map["LUGGAGE_ID"].toString(),
+              map["NAME"].toString(),
+              map["PNR_ID"].toString(),
+              map["STATUS"].toString()));
+        }
+        checkList.sort(
+              (b, a) => b.lagagenumber.compareTo(a.lagagenumber),
+        );
+        if (checkList.length != 0) {
+          luggageTracking(checkList[0].id);
+          callNext(TrackingScreen(pnrid: pnrControllerText, username: username,), context);
+        }
+      } else {
+        final snackBar = SnackBar(
+          elevation: 6.0,
+          backgroundColor: cWhite,
+          behavior: SnackBarBehavior.floating,
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20))),
+          content: const Text(
+            "No Luggage !!!",
+            style: TextStyle(color: Colors.red),
+          ),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+    });
+  }
+
+  luggageTracking(String lid,) {
+
+    luggageList.clear();
+    print(lid.toString() + "gvhb");
+    db.collection("LUGGAGE").doc(lid).snapshots().listen((event){
+      Map<dynamic, dynamic> map = event.data() as Map;
+
+
+      luggageList.add(LuggageModel(map['LUGGAGE_ID']??"",
+        map["PNR_ID"]??"", map['CHECK_IN_AIRPORT']??"",  map['CHECK_IN_TIME']??"",
+        map['LOADING_AIRPORT']??"", map['LOADED_TIME']??"",  map['UNLOADING_AIRPORT']??"",
+        map['UNLOADED_TIME']??"",  map['CHECKOUT_AIRPORT']??"", map['CHECKOUT_TIME']??"",map['STATUS']??""));
+      print("fgjgkj" + luggageList.toString());
+      notifyListeners();
+    });
+  }
+
+
 
   String getRandomString(int length) {
     const _chars =
@@ -147,15 +217,15 @@ List<String>qrDataList=[];
     db.collection("LUGGAGE").doc(luggageId).get().then((value) {
       if (value.exists) {
         if(staffDes=="LOADING"){
-          db.collection("LUGGAGE").doc(luggageId).set({"LOADED_TIME": now, "STATUS": 'LOADING',"LOADING_AIRPORT":staffAir}, SetOptions(merge: true));
+          db.collection("LUGGAGE").doc(luggageId).set({"LOADED_TIME": milli, "STATUS": 'LOADING',"LOADING_AIRPORT":staffAir}, SetOptions(merge: true));
           String text = 'Loading completed';
                   showAlertDialog(context, text,staffDes);
         }else if(staffDes=="UNLOADING"){
-          db.collection("LUGGAGE").doc(luggageId).set({"UNLOADED_TIME": now, "STATUS": 'UNLOADING',"UNLOADING_AIRPORT":staffAir}, SetOptions(merge: true));
+          db.collection("LUGGAGE").doc(luggageId).set({"UNLOADED_TIME": milli, "STATUS": 'UNLOADING',"UNLOADING_AIRPORT":staffAir}, SetOptions(merge: true));
           String text = 'Unloading completed';
           showAlertDialog(context, text,staffDes);
         }else if(staffDes=="CHECK_OUT"){
-          db.collection("LUGGAGE").doc(luggageId).set({"CHECKOUT_TIME": now, "STATUS": 'CHECKOUT',"CHECKOUT_AIRPORT":staffAir}, SetOptions(merge: true));
+          db.collection("LUGGAGE").doc(luggageId).set({"CHECKOUT_TIME": milli, "STATUS": 'CHECK_OUT',"CHECKOUT_AIRPORT":staffAir}, SetOptions(merge: true));
           String text = 'Checkout completed';
           showAlertDialog(context, text,staffDes);
         }
@@ -272,6 +342,7 @@ List<String>qrDataList=[];
 
   Future<void> userRegistration(BuildContext context1, String addedBy,
       String userId, String from, String passengerStatus) async {
+    print("dinecedcccdcdc"+userPhoneCT.text );
     bool numberStatus = await checkNumberExist(userPhoneCT.text);
     if (!numberStatus || userPhoneCT.text == passengerOldPhone) {
       showDialog(
@@ -281,7 +352,6 @@ List<String>qrDataList=[];
               child: CircularProgressIndicator(color: themecolor),
             );
           });
-      print("jjdsmcdckdscdfegrrfe");
       HashMap<String, Object> userMap = HashMap();
       HashMap<String, Object> passengerMap = HashMap();
       HashMap<String, Object> passengerEditMap = HashMap();
@@ -303,22 +373,42 @@ List<String>qrDataList=[];
       passengerMap["REGISTRATION_TIME"] = DateTime.now();
       passengerMap["STATUS"] = passengerStatus;
       userMap["STATUS"] = passengerStatus;
+      // if (fileImage != null) {
+      //   String time = DateTime.now().millisecondsSinceEpoch.toString();
+      //   ref = FirebaseStorage.instance.ref().child(time);
+      //   await ref.putFile(fileImage!).whenComplete(() async {
+      //     await ref.getDownloadURL().then((value) {
+      //       print(value + "fcvgbh");
+      //       passengerMap['PASSENGER_IMAGE'] = value;
+      //       notifyListeners();
+      //     });
+      //     notifyListeners();
+      //   });
+      //   notifyListeners();
+      // } else {
+      //   passengerMap['PASSENGER_IMAGE'] = editImage;
+      //   passengerEditMap['PASSENGER_IMAGE'] = editImage;
+      // }
+
       if (fileImage != null) {
+        print("QWWQWQWQWQWQWQW");
+
         String time = DateTime.now().millisecondsSinceEpoch.toString();
         ref = FirebaseStorage.instance.ref().child(time);
         await ref.putFile(fileImage!).whenComplete(() async {
           await ref.getDownloadURL().then((value) {
-            print(value + "fcvgbh");
             passengerMap['PASSENGER_IMAGE'] = value;
+            passengerEditMap['PASSENGER_IMAGE'] = value;
+
             notifyListeners();
           });
           notifyListeners();
         });
         notifyListeners();
       } else {
-        passengerMap['PASSENGER_IMAGE'] = '';
+        print("dsdusssssssssss");
+        passengerEditMap['PASSENGER_IMAGE'] = editImage;
       }
-
       passengerEditMap["DOB STRING"] = userDobCT.text;
       passengerEditMap["DOB"] = birthDate;
       passengerEditMap['EMAIL'] = userEmailCT.text;
@@ -329,26 +419,10 @@ List<String>qrDataList=[];
       passengerEditMap["STATUS"] = passengerStatus;
       editMap["STATUS"] = passengerStatus;
 
-      if (fileImage != null) {
-        String time = DateTime.now().millisecondsSinceEpoch.toString();
-        ref = FirebaseStorage.instance.ref().child(time);
-        await ref.putFile(fileImage!).whenComplete(() async {
-          await ref.getDownloadURL().then((value) {
-            passengerEditMap['PASSENGER_IMAGE'] = value;
-            notifyListeners();
-          });
-          notifyListeners();
-        });
-        notifyListeners();
-      } else if (editImage != "") {
-        passengerEditMap['PASSENGER_IMAGE'] = editImage;
-      } else {
-        passengerEditMap['PASSENGER_IMAGE'] = "";
-      }
-
       if (from == "EDIT") {
         db.collection('USERS').doc(userId).update(editMap);
-        db.collection('PASSENGERS').doc(userId).update(passengerEditMap);
+        db.collection('PASSENGERS').doc(userId).set(passengerEditMap, SetOptions(merge: true));
+        // update(passengerEditMap);
       } else {
         db.collection('USERS').doc(key).set(userMap);
         db.collection('PASSENGERS').doc(key).set(passengerMap);
@@ -521,32 +595,28 @@ List<String>qrDataList=[];
 
     int luggageCount = int.parse(qrLuggageCountCT.text);
     for (int i = 0; i < luggageCount; i++) {
+      String qrID= DateTime.now().millisecondsSinceEpoch.toString();
       qrData = DateTime.now().millisecondsSinceEpoch.toString() + getRandomString(4);
-      String key = DateTime
-          .now()
-          .millisecondsSinceEpoch
-          .toString();
       DateTime now = DateTime.now();
 
       qrMap['NAME'] = qrUserNameCT.text;
       qrMap['PNR_ID'] = qrPnrCT.text;
-      qrMap['QR_ID'] = qrPnrCT.text;
+      qrMap['QR_ID'] = qrID;
       // qrMap['LUGGAGE_COUNT'] = qrLuggageCountCT.text;
       qrMap['LUGGAGE_ID'] = qrData;
-      qrMap['DATE'] = now;
+      qrMap['DATE'] = qrID;
       qrMap['STATUS'] = "CHECK_IN";
-      qrMap['CHECK_IN_TIME'] = now;
+      qrMap['CHECK_IN_TIME'] = qrID;
       qrMap['CHECK_IN_AIRPORT'] = staffAirport;
       qrMap['LOADED_TIME'] = '';
       qrMap['UNLOADED_TIME'] = '';
       qrMap['CHECKOUT_TIME'] = '';
       qrDataList.add(qrData);
       print("usuuunxeiuihjk"+qrDataList.length.toString());
-      print("trtrdrdtffffffff"+qrData.toString());
       db.collection("LUGGAGE").doc(qrData).set(qrMap);
       notifyListeners();
     }
-      callNext(GenerateQrScreen( qrDatasList: qrDataList, qrId: qrData,), context);
+      callNext(GenerateQrScreen( qrDatasList: qrDataList, qrId: qrData, name: qrUserNameCT.text,), context);
   }
 
   void fetchCustomers() {
@@ -578,12 +648,14 @@ List<String>qrDataList=[];
     db.collection("PASSENGERS").doc(userId).get().then((value) async {
       if (value.exists) {
         Map<dynamic, dynamic> map = value.data() as Map;
-        editImage = map["PASSENGER_IMAGE"].toString();
+        // editImage = map["PASSENGER_IMAGE"].toString();
         userNameCT.text = map["NAME"].toString();
         userEmailCT.text = map["EMAIL"].toString();
         userDobCT.text = map["DOB STRING"].toString();
         passengerOldPhone = userPhoneCT.text = map["MOBILE_NUMBER"].toString().replaceAll("+91", '');
         passengerStatusForEdit = map["STATUS"].toString();
+        editImage = map["PASSENGER_IMAGE"]?? "";
+
       }
       notifyListeners();
     });
@@ -669,6 +741,7 @@ List<String>qrDataList=[];
         });
         notifyListeners();
       } else {
+
         dataMap['PROFILE_IMAGE'] = staffImage;
       }
       //  dataMap["PROFILE_IMAGE"]=fileImage.toString();
@@ -735,6 +808,7 @@ List<String>qrDataList=[];
 
   String status = '';
   String staffImage = '';
+  String passengerImage = '';
 
   void editStaff(BuildContext context, String id) {
     db.collection("STAFF").doc(id).get().then((value) {
@@ -1123,7 +1197,7 @@ List<String>qrDataList=[];
   void deleteTickets(BuildContext context, String id) {
     db.collection("TICKETS").doc(id).delete();
     fetchTicketsList();
-    callNextReplacement(HomeScreen(addedBy: '',), context);
+    finish(context);
     notifyListeners();
   }
 
