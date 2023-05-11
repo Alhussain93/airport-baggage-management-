@@ -166,7 +166,7 @@ class TicketList extends StatelessWidget {
       backgroundColor: themecolor,
       scrollable: true,
       title: const Text(
-        "Do you want to delete this staff",
+        "Do you want to delete this Ticket",
         style: TextStyle(
             fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
       ),

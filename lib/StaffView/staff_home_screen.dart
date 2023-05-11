@@ -11,19 +11,20 @@ import '../constant/colors.dart';
 import '../constant/my_functions.dart';
 
 class StaffHomeScreen extends StatelessWidget {
-  String designation;
-  StaffHomeScreen({super.key,required this.designation});
+  String designation,stfAirport;
+  StaffHomeScreen({super.key,required this.designation,required this.stfAirport});
 
   ValueNotifier<int> isSelected = ValueNotifier(0);
 
   @override
   Widget build(BuildContext context) {
+    print("sjnjwndnd"+stfAirport);
     AdminProvider adminProvider = Provider.of<AdminProvider>(context, listen: false);
 
     List screens = [
       const CustomersListScreen(),
-       QrScanner(designation: designation,),
-      MakeQrScreen(),
+       QrScanner(designation: designation, stfAirport: stfAirport,),
+      MakeQrScreen(stfAirport: stfAirport,),
       MisingLaggage(),
     ];
     var height = MediaQuery.of(context).size.height;

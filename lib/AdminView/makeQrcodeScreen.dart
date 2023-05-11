@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:luggage_tracking_app/constant/my_functions.dart';
 import 'package:provider/provider.dart';
 
 import '../Providers/admin_provider.dart';
 import '../constant/colors.dart';
 
 class MakeQrScreen extends StatelessWidget {
-   MakeQrScreen({Key? key}) : super(key: key);
+  String stfAirport;
+   MakeQrScreen({Key? key,required this.stfAirport}) : super(key: key);
    static final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -179,7 +181,7 @@ class MakeQrScreen extends StatelessWidget {
                                 if (form!.validate()) {
                                   bool numberStatus = await adminProvider. checkPnrIDExist(adminProvider.qrPnrCT.text);
 if(numberStatus){
-  value1.generateQrCode(context);
+  value1.generateQrCode(context, stfAirport);
 
 } else {
   ScaffoldMessenger.of(context)

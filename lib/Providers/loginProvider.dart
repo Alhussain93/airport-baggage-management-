@@ -45,6 +45,7 @@ class LoginProvider extends ChangeNotifier {
     String loginUsertype = '';
     String loginUserid = '';
     String userStatus= '';
+    String staffAirport= '';
     try {
       var phone = phoneNumber!;
       print("ahhhhhhhhhhhhh"+phone);
@@ -76,7 +77,15 @@ class LoginProvider extends ChangeNotifier {
             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
           }else if(loginUsertype=="STAFF"){
             if(userStatus=="ACTIVE") {
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StaffHomeScreen(designation:designation,)));
+              db.collection('STAFF').doc(loginUserid).get().then((value) {
+                if (value.exists) {
+                  staffAirport = value.get('AIRPORT');
+
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StaffHomeScreen(designation:designation, stfAirport: staffAirport,)));
+
+                }
+              });
+
             }else{
 
 

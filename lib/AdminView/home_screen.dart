@@ -27,11 +27,11 @@ class HomeScreen extends StatelessWidget {
     List screens = [
       const CustomersListScreen(),
       QrScanner(
-        designation: '',
+        designation: '', stfAirport: '',
       ),
       const StaffScreen(),
       MisingLaggage(),
-      MakeQrScreen(),
+      MakeQrScreen(stfAirport: '',),
       const TicketList(),
     ];
     var height = MediaQuery.of(context).size.height;

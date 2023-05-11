@@ -9,8 +9,8 @@ import '../Providers/admin_provider.dart';
 import 'home_screen.dart';
 
 class QrScanner extends StatefulWidget {
-  String designation;
-  QrScanner({Key? key,required this.designation}) : super(key: key);
+  String designation,stfAirport;
+  QrScanner({Key? key,required this.designation,required this.stfAirport}) : super(key: key);
 
   @override
   State<QrScanner> createState() => _QrScannerState();
@@ -84,7 +84,7 @@ class _QrScannerState extends State<QrScanner> {
       print(widget.designation.toString()+'dfghtujkytjrhegsf');
 
       if(luggageId.length == 17 ){
-        adminProvider.statusUpdateQrData(luggageId,widget.designation,context);
+        adminProvider.statusUpdateQrData(luggageId,widget.designation,widget.stfAirport,context);
         // callNextReplacement(HomeScreen(), context);
         // callNextReplacement( MainHomeBottom(pName: widget.userName, pId: widget.userId, phone: widget.userPhone,), context);
         controller.pauseCamera();

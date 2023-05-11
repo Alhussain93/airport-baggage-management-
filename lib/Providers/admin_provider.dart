@@ -136,7 +136,7 @@ List<String>qrDataList=[];
     }
   }
 
-  statusUpdateQrData(String luggageId, String staffDes, BuildContext context) {
+  statusUpdateQrData(String luggageId, String staffDes,String staffAir, BuildContext context) {
     print('how many times happend 2');
 
     DateTime now = DateTime.now();
@@ -145,15 +145,15 @@ List<String>qrDataList=[];
     db.collection("LUGGAGE").doc(luggageId).get().then((value) {
       if (value.exists) {
         if(staffDes=="LOADING"){
-          db.collection("LUGGAGE").doc(luggageId).set({"LOADED_TIME": now, "STATUS": 'LOADING',}, SetOptions(merge: true));
+          db.collection("LUGGAGE").doc(luggageId).set({"LOADED_TIME": now, "STATUS": 'LOADING',"LOADING_AIRPORT":staffAir}, SetOptions(merge: true));
           String text = 'Loading completed';
                   showAlertDialog(context, text,staffDes);
         }else if(staffDes=="UNLOADING"){
-          db.collection("LUGGAGE").doc(luggageId).set({"UNLOADED_TIME": now, "STATUS": 'UNLOADING',}, SetOptions(merge: true));
+          db.collection("LUGGAGE").doc(luggageId).set({"UNLOADED_TIME": now, "STATUS": 'UNLOADING',"UNLOADING_AIRPORT":staffAir}, SetOptions(merge: true));
           String text = 'Unloading completed';
           showAlertDialog(context, text,staffDes);
         }else if(staffDes=="CHECK_OUT"){
-          db.collection("LUGGAGE").doc(luggageId).set({"CHECKOUT_TIME": now, "STATUS": 'CHECKOUT',}, SetOptions(merge: true));
+          db.collection("LUGGAGE").doc(luggageId).set({"CHECKOUT_TIME": now, "STATUS": 'CHECKOUT',"CHECKOUT_AIRPORT":staffAir}, SetOptions(merge: true));
           String text = 'Checkout completed';
           showAlertDialog(context, text,staffDes);
         }
@@ -176,11 +176,12 @@ List<String>qrDataList=[];
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
         ),
         onPressed: () {
-          callNextReplacement(
-              StaffHomeScreen(
-                designation: staffDes,
-              ),
-              context);
+          finish(context);
+          // callNextReplacement(
+          //     StaffHomeScreen(
+          //       designation: staffDes, stfAirport: '',
+          //     ),
+          //     context);
         },
       ),
     );
@@ -513,7 +514,7 @@ List<String>qrDataList=[];
     }
   }
 
-  void generateQrCode(BuildContext context) {
+  void generateQrCode(BuildContext context,String staffAirport) {
     HashMap<String, Object> qrMap = HashMap();
 
     int luggageCount = int.parse(qrLuggageCountCT.text);
@@ -533,6 +534,7 @@ List<String>qrDataList=[];
       qrMap['DATE'] = now;
       qrMap['STATUS'] = "CHECK_IN";
       qrMap['CHECK_IN_TIME'] = now;
+      qrMap['CHECK_IN_AIRPORT'] = staffAirport;
       qrMap['LOADED_TIME'] = '';
       qrMap['UNLOADED_TIME'] = '';
       qrMap['CHECKOUT_TIME'] = '';
@@ -619,71 +621,9 @@ List<String>qrDataList=[];
 
 //String ref='';
 
-  Future<bool> _requestPermission(Permission permission) async {
-    if (await permission.isGranted) {
-      return true;
-    } else {
-      var result = await permission.request();
-      if (result == PermissionStatus.granted) {
-        return true;
-      }
-    }
-    return false;
-  }
 
   String newPath = "";
   String pdfPath='';
-
-  Future<bool> saveFile(BuildContext context,String url, String fileName) async {
-    Directory? directory;
-    print("dcnefncushdcj"+fileName);
-    try {
-      if (Platform.isAndroid) {
-        if (await _requestPermission(Permission.storage)) {
-          directory = await getExternalStorageDirectory();
-          newPath = "";
-          print(directory);
-          List<String> paths = directory!.path.split("/");
-          for (int x = 1; x < paths.length; x++) {
-            String folder = paths[x];
-            if (folder != "Android") {
-              newPath += "/" + folder;
-            } else {
-              break;
-            }
-          }
-          newPath = "$newPath/Documents";
-          directory = Directory(newPath);
-        } else {
-          return false;
-        }
-
-      } else {
-        if (await _requestPermission(Permission.photos)) {
-          directory = await getTemporaryDirectory();
-        } else {
-          return false;
-        }
-      }
-      File saveFile = File(directory.path + "/$fileName");
-      pdfPath=directory.path + "/$fileName";
-      if (!await directory.exists()) {
-        await directory.create(recursive: true);
-      }
-      if (await directory.exists()) {
-        await dio.download(url, saveFile.path,
-
-        );
-
-      }
-
-      return false;
-    } catch (e) {
-      print(e);
-      return false;
-    }
-  }
-
 
   Future<void> addStaff(
       BuildContext context, String from, String userId, String status) async {
