@@ -4,11 +4,12 @@ import 'package:provider/provider.dart';
 import '../Providers/admin_provider.dart';
 import '../constant/colors.dart';
 import '../constant/my_functions.dart';
-import 'addCustomer_screen.dart';
+import 'addPassenger_screen.dart';
 import 'add_staff.dart';
 
 class CustomersListScreen extends StatelessWidget {
-  const CustomersListScreen({Key? key}) : super(key: key);
+  String addedby;
+   CustomersListScreen({Key? key,required this.addedby}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +114,7 @@ class CustomersListScreen extends StatelessWidget {
                                         style:  TextStyle(
                                             fontFamily: "Poppins-SemiBold",
                                             fontSize: 12,
-                                            color: item.passengerStatus=="BLOCKED"?Colors.red:Colors.black,
+                                            color: item.passengerStatus=="BLOCKED"?Colors.red:Colors.green,
                                             fontWeight: FontWeight.w400),
                                       )
                                     ],
@@ -125,7 +126,7 @@ class CustomersListScreen extends StatelessWidget {
                                             AddCustomerScreen(
                                               userId: item.id,
                                               from: 'EDIT',
-                                              passengerStatus:adminProvider.passengerStatusForEdit
+                                              passengerStatus:item.passengerStatus, addedBy: addedby,
                                             ),
                                             context);
                                       },
@@ -161,7 +162,7 @@ class CustomersListScreen extends StatelessWidget {
                     callNext(
                         AddCustomerScreen(
                           userId: '',
-                          from: '', passengerStatus: 'ACTIVE',
+                          from: '', passengerStatus: 'ACTIVE', addedBy: addedby,
                         ),
                         context);
                   },

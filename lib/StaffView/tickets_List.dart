@@ -5,11 +5,12 @@ import '../Providers/admin_provider.dart';
 import 'add_tickets.dart';
 import '../constant/colors.dart';
 import '../constant/my_functions.dart';
-import '../AdminView/addCustomer_screen.dart';
+import '../AdminView/addPassenger_screen.dart';
 import '../AdminView/add_staff.dart';
 
 class TicketList extends StatelessWidget {
-  const TicketList({Key? key}) : super(key: key);
+  String addedBy;
+   TicketList({Key? key,required this.addedBy}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -145,7 +146,7 @@ class TicketList extends StatelessWidget {
                   backgroundColor: themecolor,
                   onPressed: () {
                     value3.clearTicketControllers();
-                    callNext(AddTickets(from: '', userId: '',), context);
+                    callNext(AddTickets(from: '', userId: '', addedBy: addedBy,), context);
                   },
                   child: const Icon(Icons.add),
                 );

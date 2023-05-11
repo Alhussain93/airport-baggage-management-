@@ -9,13 +9,14 @@ import '../StaffView/add_tickets.dart';
 import '../constant/colors.dart';
 import '../constant/my_functions.dart';
 import 'add_staff.dart';
-import 'customersList_Screen.dart';
+import 'passengersList_Screen.dart';
 import 'generateQr_Screen.dart';
 import 'makeQrcodeScreen.dart';
 import 'missing_luggage.dart';
 
 class HomeScreen extends StatelessWidget {
-  HomeScreen({super.key});
+  String addedBy;
+  HomeScreen({super.key,required this.addedBy});
 
   ValueNotifier<int> isSelected = ValueNotifier(0);
 
@@ -25,14 +26,10 @@ class HomeScreen extends StatelessWidget {
         Provider.of<AdminProvider>(context, listen: false);
 
     List screens = [
-      const CustomersListScreen(),
-      QrScanner(
-        designation: '', stfAirport: '',
-      ),
-      const StaffScreen(),
+       CustomersListScreen(addedby: addedBy,),
+       StaffScreen(addedBy: addedBy),
       MisingLaggage(),
-      MakeQrScreen(stfAirport: '',),
-      const TicketList(),
+       TicketList(addedBy: addedBy,),
     ];
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
@@ -79,9 +76,45 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                     ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: InkWell(
+                        onTap: () {
+                          isSelected.value = 3;
+                          adminProvider.fetchTicketsList();
+                          finish(context);
+                        },
+                        child: Container(
+                          height: 40,
+                          width: width * .77,
+                          color: darkThemeColor,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: const [
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Icon(
+                                Icons.airplane_ticket_outlined,
+                                color: Colors.white,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                "Tickets",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 15),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+
                     InkWell(
                       onTap: () {
-                        isSelected.value = 2;
+                        isSelected.value = 1;
                         finish(context);
                       },
                       child: Padding(
@@ -117,7 +150,7 @@ class HomeScreen extends StatelessWidget {
                       padding: const EdgeInsets.only(top: 10),
                       child: InkWell(
                         onTap: () {
-                          isSelected.value = 3;
+                          isSelected.value = 2;
                           finish(context);
                         },
                         child: Container(
@@ -147,76 +180,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: InkWell(
-                        onTap: () {
-                          isSelected.value = 4;
-                          adminProvider.clearQrControllers();
-                          finish(context);
-                        },
-                        child: Container(
-                          height: 40,
-                          width: width * .77,
-                          color: darkThemeColor,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: const [
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Icon(
-                                Icons.qr_code_outlined,
-                                color: Colors.white,
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                "Generate Qr  ",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 15),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: InkWell(
-                        onTap: () {
-                          isSelected.value = 5;
-                          adminProvider.fetchTicketsList();
-                          finish(context);
-                        },
-                        child: Container(
-                          height: 40,
-                          width: width * .77,
-                          color: darkThemeColor,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: const [
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Icon(
-                                Icons.airplane_ticket_outlined,
-                                color: Colors.white,
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                "Tickets",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 15),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
+
                     const Spacer(),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 20),
@@ -272,12 +236,11 @@ class HomeScreen extends StatelessWidget {
                         const SizedBox(
                           height: 50,
                         ),
-                        isSelected.value == 1 || isSelected.value == 4
-                            // || isSelected.value == 5
-                            ? const Padding(padding: EdgeInsets.only(top: 52))
-                            : const SizedBox(),
-                        isSelected.value != 1 && isSelected.value != 4
-                            ? Padding(
+                        // isSelected.value == 1 || isSelected.value == 4
+                        //     // || isSelected.value == 5
+                        //     ? const Padding(padding: EdgeInsets.only(top: 52))
+                        //     : const SizedBox(),
+                        Padding(
                                 padding: const EdgeInsets.only(top: 15),
                                 child: Container(
                                   height: 40,
@@ -302,18 +265,17 @@ class HomeScreen extends StatelessWidget {
                                       if (isSelected.value == 0) {
                                         adminProvider.notifyListeners();
                                         adminProvider.filterCustomerList(text);
-                                      } else if (isSelected.value == 2) {
+                                      } else if (isSelected.value == 1) {
                                         adminProvider.notifyListeners();
                                         adminProvider.filterStaffList(text);
-                                      } else if (isSelected.value == 5) {
+                                      } else if (isSelected.value == 3) {
                                         adminProvider.notifyListeners();
                                         adminProvider.filterTickets(text);
                                       }
                                     },
                                   ),
                                 ),
-                              )
-                            : const SizedBox(),
+                              ),
                         Padding(
                           padding: const EdgeInsets.only(top: 19),
                           child: Row(
@@ -348,14 +310,14 @@ class HomeScreen extends StatelessWidget {
                               InkWell(
                                 onTap: () {
                                   //adminProvider.getTicketsList();
-                                  isSelected.value = 5;
+                                  isSelected.value = 3;
                                 },
                                 child: Container(
                                   width: 105,
                                   height: 32,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(20),
-                                    color: dIsSelected == 5
+                                    color: dIsSelected == 3
                                         ? Colors.white.withOpacity(0.2)
                                         : Textclr,
                                   ),
@@ -373,14 +335,14 @@ class HomeScreen extends StatelessWidget {
                               ),
                               InkWell(
                                 onTap: () {
-                                  isSelected.value = 2;
+                                  isSelected.value = 1;
                                 },
                                 child: Container(
                                   width: 105,
                                   height: 32,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(20),
-                                    color: dIsSelected == 2
+                                    color: dIsSelected == 1
                                         ? Colors.white.withOpacity(0.2)
                                         : Textclr,
                                   ),
@@ -390,7 +352,7 @@ class HomeScreen extends StatelessWidget {
                                     style: TextStyle(
                                         fontSize: 11,
                                         fontWeight: FontWeight.w600,
-                                        color: dIsSelected == 2
+                                        color: dIsSelected == 1
                                             ? Colors.white
                                             : Colors.black),
                                   )),

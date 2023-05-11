@@ -7,7 +7,8 @@ import '../constant/colors.dart';
 import 'add_staff.dart';
 
 class StaffScreen extends StatelessWidget {
-  const StaffScreen({Key? key}) : super(key: key);
+  String addedBy;
+   StaffScreen({Key? key,required this.addedBy}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +68,7 @@ class StaffScreen extends StatelessWidget {
                                 callNext(
                                     AddStaff(
                                       from: '',
-                                      userId: '', status:'ACTIVE',
+                                      userId: '', status:'ACTIVE', addedBy: addedBy,
                                     ),
                                     context);
                               },
@@ -193,7 +194,7 @@ class StaffScreen extends StatelessWidget {
                                             Text(
                                               item.status,
                                               style:  TextStyle(
-                                                color: item.status=="BLOCKED"?Colors.red:Colors.black,
+                                                color: item.status=="BLOCKED"?Colors.red:Colors.green,
                                                   fontFamily:
                                                   "Poppins-SemiBold",
                                                   fontSize: 12,

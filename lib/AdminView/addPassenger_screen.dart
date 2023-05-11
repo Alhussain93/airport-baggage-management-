@@ -7,9 +7,9 @@ import '../constant/colors.dart';
 import '../constant/my_functions.dart';
 
 class AddCustomerScreen extends StatelessWidget {
-  String userId, from, passengerStatus;
+  String userId, from, passengerStatus,addedBy;
 
-  AddCustomerScreen({Key? key, required this.userId, required this.from, required this.passengerStatus})
+  AddCustomerScreen({Key? key, required this.userId, required this.from, required this.passengerStatus, required this.addedBy})
       : super(key: key);
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -113,7 +113,7 @@ class AddCustomerScreen extends StatelessWidget {
                                 builder: (context, value1, child) {
                                   return InkWell(
                                     onTap: () {
-                                  blockStaff(context,userId,value1.passengerStatusForEdit);
+                                  blockStaff(context,userId,passengerStatus);
                                     },
                                     child: Container(
                                       height: 30,
@@ -283,13 +283,8 @@ class AddCustomerScreen extends StatelessWidget {
                       ),
                       hintText: 'Email',
                     ),
-                    validator: (value) {
-                      if (value!.trim().isEmpty) {
-                        return "Enter Email";
-                      } else {
-                        return null;
-                      }
-                    },
+                    validator: (value) => validateEmail(value),
+
                   ),
                 ),
                 Padding(
@@ -365,11 +360,10 @@ class AddCustomerScreen extends StatelessWidget {
                         final FormState? form = _formKey.currentState;
                         if (form!.validate()) {
                           if (from == "EDIT") {
-                            adminProvider.userRegistration(
-                                context, 'Admin', userId, from,passengerStatus);
+                            adminProvider.userRegistration(context, addedBy, userId, from,passengerStatus);
                           } else {
                             adminProvider.userRegistration(
-                                context, 'Admin', '', '',"ACTIVE");
+                                context, addedBy, '', '',"ACTIVE");
                           }
                         }
 
@@ -389,6 +383,17 @@ class AddCustomerScreen extends StatelessWidget {
       }),
     );
   }
+
+  String? validateEmail(String? value) {
+    String pattern =r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
+    RegExp regex = RegExp(pattern);
+    if (value == null || value.isEmpty || !regex.hasMatch(value)) {
+      return 'Enter a valid email address';
+    } else {
+      return null;
+    }
+  }
+
   deleteStaff(BuildContext context, String id) {
     AdminProvider adminProvider =
     Provider.of<AdminProvider>(context, listen: false);

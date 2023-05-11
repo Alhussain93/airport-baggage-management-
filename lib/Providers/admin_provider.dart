@@ -61,6 +61,8 @@ List<String>qrDataList=[];
   String passengerStatusForEdit = "";
   String passengerID = "";
 
+  String passengerOldPhone = "";
+  String staffOldPhone = "";
   TextEditingController userPhoneCT = TextEditingController();
   TextEditingController userNameCT = TextEditingController();
   TextEditingController userEmailCT = TextEditingController();
@@ -286,7 +288,7 @@ List<String>qrDataList=[];
       HashMap<String, Object> editMap = HashMap();
 
       String key = DateTime.now().millisecondsSinceEpoch.toString();
-      userMap['ADDED_BY'] = addedBy;
+      passengerMap['ADDED_BY'] = addedBy;
       userMap['NAME'] = userNameCT.text;
       passengerMap['NAME'] = userNameCT.text;
       userMap['MOBILE_NUMBER'] = "+91${userPhoneCT.text}";
@@ -571,7 +573,6 @@ List<String>qrDataList=[];
     });
   }
 
-  String passengerOldPhone = "";
 
   void fetchCustomersForEdit(String userId) {
     db.collection("PASSENGERS").doc(userId).get().then((value) async {
@@ -581,8 +582,7 @@ List<String>qrDataList=[];
         userNameCT.text = map["NAME"].toString();
         userEmailCT.text = map["EMAIL"].toString();
         userDobCT.text = map["DOB STRING"].toString();
-        passengerOldPhone = userPhoneCT.text =
-            map["MOBILE_NUMBER"].toString().replaceAll("+91", '');
+        passengerOldPhone = userPhoneCT.text = map["MOBILE_NUMBER"].toString().replaceAll("+91", '');
         passengerStatusForEdit = map["STATUS"].toString();
       }
       notifyListeners();
@@ -628,7 +628,7 @@ List<String>qrDataList=[];
   Future<void> addStaff(
       BuildContext context, String from, String userId, String status) async {
     bool numberStatus = await checkStaffIdExist(StaffidController.text);
-    if (!numberStatus) {
+    if (!numberStatus||PhoneNumberController.text==staffOldPhone) {
       showDialog(
           context: context,
           builder: (context) {
@@ -668,7 +668,7 @@ List<String>qrDataList=[];
         });
         notifyListeners();
       } else {
-        dataMap['PROFILE_IMAGE'] = '';
+        dataMap['PROFILE_IMAGE'] = staffImage;
       }
       //  dataMap["PROFILE_IMAGE"]=fileImage.toString();
       if (from == '') {
@@ -744,11 +744,10 @@ List<String>qrDataList=[];
         StaffidController.text = map['STAFF_ID'].toString();
         staffAirportName = map['AIRPORT'].toString();
         designation = map['DESIGNATION'].toString();
-        // EmailController.text = map['EMAIL'].toString();
-        PhoneNumberController.text =
-            map['MOBILE_NUMBER'].toString().substring(3);
+        staffOldPhone = PhoneNumberController.text = map["MOBILE_NUMBER"].toString().replaceAll("+91", '');
+        // PhoneNumberController.text = map['MOBILE_NUMBER'].toString().substring(3);
         status = map['STATUS'].toString();
-        staffImage = map["PROFILE_IMAGE"].toString();
+        staffImage = map["PROFILE_IMAGE"]?? "";
       }
       print("chucifhf" + status.toString());
       Navigator.push(
@@ -757,7 +756,7 @@ List<String>qrDataList=[];
               builder: (context) => AddStaff(
                     from: "edit",
                     userId: id,
-                    status: status,
+                    status: status, addedBy: '',
                   )));
     });
 
@@ -877,8 +876,7 @@ List<String>qrDataList=[];
     print("gggggggggggg666" + fileImage.toString());
   }
 
-  Future<void> addTickets(BuildContext context, String addedBy,
-      String addedName, String id, String from) async {
+  Future<void> addTickets(BuildContext context, String addedBy, String id, String from) async {
     bool numberStatus = await checkPnrIdExist(ticketPnrController.text);
     if (!numberStatus || ticketPnrController.text == previousPnrId) {
       HashMap<String, Object> ticketMap = HashMap();
@@ -892,7 +890,6 @@ List<String>qrDataList=[];
       if (from != 'edit') {
         ticketMap["ID"] = ticketId;
         ticketMap["ADDED_BY"] = addedBy;
-        ticketMap["ADDED_BY_NAME"] = addedName;
       }
       ticketMap["ADDED_TIME"] = DateTime.now();
       ticketMap["ARRIVAL"] = arrivalTime.text;
@@ -926,15 +923,19 @@ List<String>qrDataList=[];
     if (from == "Staff") {
       db.collection("STAFF").doc(id).update({'STATUS': 'BLOCKED'});
       db.collection("USERS").doc(id).update({'STATUS': 'BLOCKED'});
+
     } else {
       db.collection("PASSENGERS").doc(id).update({'STATUS': 'BLOCKED'});
       db.collection("USERS").doc(id).update({'STATUS': 'BLOCKED'});
+
     }
 
     // callNextReplacement(HomeScreen(), context);
 
     notifyListeners();
     finish(context);
+    finish(context);
+
   }
 
   void unBlockStaff(BuildContext context, String id, String from) {
@@ -947,6 +948,8 @@ List<String>qrDataList=[];
     // callNextReplacement(HomeScreen(), context);
     notifyListeners();
     finish(context);
+    finish(context);
+
 
   }
 
@@ -1119,7 +1122,7 @@ List<String>qrDataList=[];
   void deleteTickets(BuildContext context, String id) {
     db.collection("TICKETS").doc(id).delete();
     fetchTicketsList();
-    callNextReplacement(HomeScreen(), context);
+    callNextReplacement(HomeScreen(addedBy: '',), context);
     notifyListeners();
   }
 
@@ -1142,7 +1145,7 @@ List<String>qrDataList=[];
         callNext(
             AddTickets(
               from: 'edit',
-              userId: id,
+              userId: id, addedBy: '',
             ),
             context);
       }

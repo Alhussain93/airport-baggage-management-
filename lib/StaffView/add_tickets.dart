@@ -8,8 +8,8 @@ import '../Providers/admin_provider.dart';
 import '../constant/colors.dart';
 
 class AddTickets extends StatelessWidget {
-  String from,userId;
-  AddTickets({Key? key,required this.from,required this.userId}) : super(key: key);
+  String from,userId,addedBy;
+  AddTickets({Key? key,required this.from,required this.userId,required this.addedBy}) : super(key: key);
   static final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
@@ -270,9 +270,7 @@ class AddTickets extends StatelessWidget {
                               if (values.ticketPassengersController.text
                                   .trim()
                                   .isNotEmpty) {
-                                values.addPassengersName(
-                                    values.ticketPassengersController.text,
-                                    context);
+                                values.addPassengersName(values.ticketPassengersController.text, context);
                               }
                             },
                             child: Container(
@@ -364,10 +362,8 @@ class AddTickets extends StatelessWidget {
                           final FormState? form = _formKey.currentState;
 
                           if (form!.validate()) {
-                            if (values.ticketNameList.isNotEmpty &&
-                                values
-                                    .ticketPassengersController.text.isEmpty) {
-                              adminProvider.addTickets(context,"", "",userId,from);
+                            if (values.ticketNameList.isNotEmpty && values.ticketPassengersController.text.isEmpty) {
+                              adminProvider.addTickets(context,addedBy,userId,from);
 
 
                             } else {

@@ -11,13 +11,13 @@ import '../constant/colors.dart';
 import 'home_screen.dart';
 
 class AddStaff extends StatelessWidget {
-  String from, userId, status;
+  String from, userId, status,addedBy;
 
   AddStaff(
       {Key? key,
       required this.from,
       required this.userId,
-      required this.status})
+      required this.status,required this.addedBy})
       : super(key: key);
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -158,7 +158,7 @@ class AddStaff extends StatelessWidget {
                                       builder: (context, value1, child) {
                                     return InkWell(
                                       onTap: () {
-                                        blockStaff(context, value1.staffEditId,
+                                        blockStaff(context, userId,
                                             status);
                                       },
                                       child: Container(

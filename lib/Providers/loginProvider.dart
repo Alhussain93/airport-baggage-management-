@@ -74,7 +74,7 @@ class LoginProvider extends ChangeNotifier {
               auth.signOut();
             }
           }else if(loginUsertype=="ADMIN"){
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen(addedBy: loginUsername,)));
           }else if(loginUsertype=="STAFF"){
             if(userStatus=="ACTIVE") {
               db.collection('STAFF').doc(loginUserid).get().then((value) {

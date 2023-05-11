@@ -3,7 +3,7 @@ import 'package:luggage_tracking_app/AdminView/qr_Scanner_Screen.dart';
 import 'package:luggage_tracking_app/AdminView/scan_page.dart';
 import 'package:luggage_tracking_app/AdminView/staff_screen.dart';
 import 'package:provider/provider.dart';
-import '../AdminView/customersList_Screen.dart';
+import '../AdminView/passengersList_Screen.dart';
 import '../AdminView/makeQrcodeScreen.dart';
 import '../AdminView/missing_luggage.dart';
 import '../Providers/admin_provider.dart';
@@ -22,7 +22,7 @@ class StaffHomeScreen extends StatelessWidget {
     AdminProvider adminProvider = Provider.of<AdminProvider>(context, listen: false);
 
     List screens = [
-      const CustomersListScreen(),
+       CustomersListScreen(addedby:'',),
        QrScanner(designation: designation, stfAirport: stfAirport,),
       MakeQrScreen(stfAirport: stfAirport,),
       MisingLaggage(),
