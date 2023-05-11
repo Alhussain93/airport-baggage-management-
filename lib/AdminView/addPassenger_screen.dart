@@ -1,23 +1,38 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:luggage_tracking_app/Providers/admin_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../UserView/contryCodeModel.dart';
 import '../constant/colors.dart';
 import '../constant/my_functions.dart';
 
-class AddCustomerScreen extends StatelessWidget {
-  String userId, from, passengerStatus,addedBy;
+class AddCustomerScreen extends StatefulWidget {
+  String userId, from, passengerStatus, addedBy;
 
-  AddCustomerScreen({Key? key, required this.userId, required this.from, required this.passengerStatus, required this.addedBy})
+  AddCustomerScreen(
+      {Key? key,
+      required this.userId,
+      required this.from,
+      required this.passengerStatus,
+      required this.addedBy})
       : super(key: key);
+
+  @override
+  State<AddCustomerScreen> createState() => _AddCustomerScreenState();
+}
+
+class _AddCustomerScreenState extends State<AddCustomerScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final _passengerEditTextController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     AdminProvider adminProvider =
-        Provider.of<AdminProvider>(context, listen: false);
-
+    Provider.of<AdminProvider>(context, listen: false);
+    adminProvider.fetchCountryJson();
+    var width= MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: themecolor,
@@ -77,62 +92,62 @@ class AddCustomerScreen extends StatelessWidget {
                   //         color: Colors.grey.shade500,
                   //       ),
                   //     )),
-                 ),
-                  from == 'EDIT'
+                ),
+                widget.from == 'EDIT'
                     ? Padding(
-                  padding: const EdgeInsets.only(right: 30, top: 20),
-                  child: Consumer<AdminProvider>(
-                      builder: (context, value, child) {
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            StreamBuilder<Object>(
-                                stream: null,
-                                builder: (context, snapshot) {
-                                  return InkWell(
-                                    onTap: () {
-                                    deleteStaff(
-                                          context, userId);
-                                    },
-                                    child: Container(
-                                      height: 30,
-                                      width: 80,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                          BorderRadius.circular(20),
-                                          color: cnttColor),
-                                      child:
-                                      const Center(child: Text("Remove")),
-                                    ),
-                                  );
-                                }),
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            Consumer<AdminProvider>(
-                                builder: (context, value1, child) {
-                                  return InkWell(
-                                    onTap: () {
-                                  blockStaff(context,userId,passengerStatus);
-                                    },
-                                    child: Container(
-                                      height: 30,
-                                      width: 80,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                          BorderRadius.circular(20),
-                                          color: cnttColor),
-                                      child: Center(
-                                          child: value1.passengerStatusForEdit == 'ACTIVE'
-                                              ? const Text("Block")
-                                              : const Text("Unblock")),
-                                    ),
-                                  );
-                                }),
-                          ],
-                        );
-                      }),
-                )
+                        padding: const EdgeInsets.only(right: 30, top: 20),
+                        child: Consumer<AdminProvider>(
+                            builder: (context, value, child) {
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              StreamBuilder<Object>(
+                                  stream: null,
+                                  builder: (context, snapshot) {
+                                    return InkWell(
+                                      onTap: () {
+                                        deleteStaff(context, widget.userId);
+                                      },
+                                      child: Container(
+                                        height: 30,
+                                        width: 80,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            color: cnttColor),
+                                        child:
+                                            const Center(child: Text("Remove")),
+                                      ),
+                                    );
+                                  }),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Consumer<AdminProvider>(
+                                  builder: (context, value1, child) {
+                                return InkWell(
+                                  onTap: () {
+                                    blockStaff(context, widget.userId,
+                                        widget.passengerStatus);
+                                  },
+                                  child: Container(
+                                    height: 30,
+                                    width: 80,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        color: cnttColor),
+                                    child: Center(
+                                        child: value1.passengerStatusForEdit ==
+                                                'ACTIVE'
+                                            ? const Text("Block")
+                                            : const Text("Unblock")),
+                                  ),
+                                );
+                              }),
+                            ],
+                          );
+                        }),
+                      )
                     : const SizedBox(),
 
                 Padding(
@@ -189,57 +204,252 @@ class AddCustomerScreen extends StatelessWidget {
                     },
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 25, right: 25, top: 0),
-                  child: TextFormField(
-                    controller: values.userPhoneCT,
-                    style: TextStyle(
-                        color: fontColor,
-                        fontSize: 18,
-                        fontFamily: "PoppinsMedium"),
-                    autofocus: false,
-                    keyboardType: TextInputType.phone,
-                    textAlign: TextAlign.start,
-                    inputFormatters: [LengthLimitingTextInputFormatter(10)],
-                    decoration: InputDecoration(
-                      counterStyle: const TextStyle(color: Colors.grey),
-                      hintStyle:
-                          const TextStyle(color: Colors.grey, fontSize: 16),
-                      filled: true,
-                      helperText: "",
-                      fillColor: Colors.white,
-                      contentPadding: const EdgeInsets.all(11),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(
-                          color: Colors.grey.shade200,
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(
-                          color: Colors.grey.shade200,
-                        ),
-                      ),
-                      errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(color: Colors.red)),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(
-                          color: Colors.grey.shade200,
-                        ),
-                      ),
-                      hintText: 'Phone',
+                // Padding(
+                //   padding: const EdgeInsets.only(left: 25, right: 25, top: 0),
+                //   child: TextFormField(
+                //     controller: values.userPhoneCT,
+                //     style: TextStyle(
+                //         color: fontColor,
+                //         fontSize: 18,
+                //         fontFamily: "PoppinsMedium"),
+                //     autofocus: false,
+                //     keyboardType: TextInputType.phone,
+                //     textAlign: TextAlign.start,
+                //     inputFormatters: [LengthLimitingTextInputFormatter(10)],
+                //     decoration: InputDecoration(
+                //       counterStyle: const TextStyle(color: Colors.grey),
+                //       hintStyle:
+                //           const TextStyle(color: Colors.grey, fontSize: 16),
+                //       filled: true,
+                //       helperText: "",
+                //       fillColor: Colors.white,
+                //       contentPadding: const EdgeInsets.all(11),
+                //       focusedBorder: OutlineInputBorder(
+                //         borderRadius: BorderRadius.circular(10),
+                //         borderSide: BorderSide(
+                //           color: Colors.grey.shade200,
+                //         ),
+                //       ),
+                //       enabledBorder: OutlineInputBorder(
+                //         borderRadius: BorderRadius.circular(10),
+                //         borderSide: BorderSide(
+                //           color: Colors.grey.shade200,
+                //         ),
+                //       ),
+                //       errorBorder: OutlineInputBorder(
+                //           borderRadius: BorderRadius.circular(10),
+                //           borderSide: const BorderSide(color: Colors.red)),
+                //       border: OutlineInputBorder(
+                //         borderRadius: BorderRadius.circular(10),
+                //         borderSide: BorderSide(
+                //           color: Colors.grey.shade200,
+                //         ),
+                //       ),
+                //       hintText: 'Phone',
+                //     ),
+                //     validator: (value) {
+                //       if (value!.trim().isEmpty) {
+                //         return "Enter Phone";
+                //       } else {
+                //         return null;
+                //       }
+                //     },
+                //   ),
+                // ),
+                Consumer<AdminProvider>(builder: (context, value1, child) {
+                  return Container(
+                    height: 45,
+                    width: 310,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Color(0xFFffffff),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.white,
+                          blurRadius: 2.0, // soften the shadow
+                          spreadRadius: .0, //extend the shadow
+                          offset: Offset(
+                            0.0, // Move to right 5  horizontally
+                            0.0, // Move to bottom 5 Vertically
+                          ),
+                        )
+                      ],
                     ),
-                    validator: (value) {
-                      if (value!.trim().isEmpty) {
-                        return "Enter Phone";
-                      } else {
-                        return null;
-                      }
-                    },
-                  ),
+                    // border: Border.all(width: 1, color: Colors.grey),),
+                    child: TextFormField(
+                      maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                      onChanged: (value) {
+                        print("hhhhhhhhh" +
+                            value +
+                            "  " +
+                            value1.selectedValue! +
+                            "  " +
+                            value1.userPhoneCT.text);
+                        // if (value.length >= 6) {
+                        //   showTick = true;
+                        //   if (kDebugMode) {
+                        //     // print("ppppllll$showTick");
+                        //   }
+                        //   // SystemChannels.textInput
+                        //   //     .invokeMethod(
+                        //   //         'TextInput.hide');
+                        // } else {
+                        //   showTick = false;
+                        //   print("tick false$showTick");
+                        //
+                        //   currentSate =
+                        //       MobileVarificationState
+                        //           .SHOW_MOBILE_FORM_STATE;
+                        // }
+                        setState(() {});
+                      },
+                      textAlign: TextAlign.center,
+                      keyboardType: TextInputType.phone,
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(10),
+                        FilteringTextInputFormatter.digitsOnly,
+                      ],
+                      textInputAction: TextInputAction.next,
+                      decoration: InputDecoration(
+                        prefixIcon: SizedBox(
+                          width: 120,
+                          child: Consumer<AdminProvider>(
+                              builder: (context, value, child) {
+                            return DropdownSearch<CountryCode>(
+                              dropdownDecoratorProps: DropDownDecoratorProps(
+                                  dropdownSearchDecoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: Colors.transparent,
+                                      // hintText: 'Select District',
+                                      // hintStyle: regLabelStyle,
+                                      // prefix:  const SizedBox(width: 10,),
+                                      border: OutlineInputBorder(
+                                          borderSide: BorderSide.none),
+                                      enabledBorder: InputBorder.none,
+                                      disabledBorder: InputBorder.none,
+                                      focusedBorder: InputBorder.none,
+                                      errorBorder: InputBorder.none,
+                                      focusedErrorBorder: InputBorder.none)),
+
+                              selectedItem: value1.countrySlct == false
+                                  ? CountryCode("India", "IN", "+91")
+                                  : CountryCode(value.country, value.code,
+                                      value.selectedValue!),
+                              onChanged: (e) {
+                                value1.selectedValue = e?.dialCde.toString();
+                                value1.code = e!.code.toString();
+                                value.country = e!.country.toString();
+                                value1.countrySlct = true;
+                                // print("sadsasfsadf" +
+                                //     value1.selectedValue! +
+                                //     value1.values.userPhoneCT
+                                //         .text +
+                                //     "kdsjkf   " +
+                                //     _userEditTextController
+                                //         .text);
+
+                                // registrationProvider.qualificationOthers(
+                                //     e?.degree.toString());
+                                // adminProvider.getManagerWiseReport(
+                                //     context, managerID!, fromName,managerName!);
+                              },
+                              items: value.countryCodeList,
+                              // dropdownBuilder: (context, selectedItem) => selectedItem.dialCde,
+                              filterFn: (item, filter) {
+                                print("filkjkdsjf" + filter + item.country);
+                                return item.country.contains(filter) ||
+                                    item.country
+                                        .toLowerCase()
+                                        .contains(filter) ||
+                                    item.country.toUpperCase().contains(filter);
+                              },
+
+                              itemAsString: (CountryCode u) {
+                                print("akskaksdsjakd" + u.country + u.dialCde);
+                                return u.dialCde;
+                              },
+
+                              popupProps: PopupProps.menu(
+                                  searchFieldProps: TextFieldProps(
+                                    controller: _passengerEditTextController,
+                                    decoration: const InputDecoration(
+                                        label: Text(
+                                      'Search Country',
+                                      style: TextStyle(fontSize: 12),
+                                    )),
+                                  ),
+                                  showSearchBox: true,
+                                  // showSelectedItems: true,
+                                  fit: FlexFit.tight,
+                                  itemBuilder: (ctx, item, isSelected) {
+                                    return ListTile(
+                                      selected: isSelected,
+                                      title: Text(
+                                        item.country,
+                                        style: TextStyle(fontSize: 15),
+                                      ),
+                                      subtitle: Text(
+                                        item.dialCde,
+                                        style: TextStyle(fontSize: 13),
+                                      ),
+                                    );
+                                  }),
+                            );
+                          }),
+                        ),
+                        contentPadding: EdgeInsets.only(right: 100),
+
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(
+                            color: Colors.grey.shade200,
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(
+                            color: Colors.grey.shade200,
+                          ),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: BorderSide(
+                              color: Colors.black38,
+                            )),
+                        disabledBorder: InputBorder.none,
+                        // focusColor: Colors.black,
+                        //    contentPadding:
+                        //    contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                        hintText: "Phone Number",
+
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide: const BorderSide(
+                              color: Colors.grey,
+                            )),
+                        // filled: true,
+                        // fillColor: my_black,
+                      ),
+                      cursorColor: Colors.black,
+                      controller: value1.userPhoneCT,
+                      style: const TextStyle(
+                        fontFamily: 'BarlowCondensed',
+                      ),
+                      validator: (value) {
+                        if (value!.trim().isEmpty) {
+                          return "Please Enter The Mobile Number";
+                        } else if (!RegExp(r'^[0-9]+$').hasMatch(value) ||
+                            value.trim().length < 10) {
+                          return "Enter Correct Number";
+                        } else {
+                          return null;
+                        }
+                      },
+                    ),
+                  );
+                }),
+                SizedBox(
+                  height: 20,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 25, right: 25, top: 0),
@@ -284,7 +494,6 @@ class AddCustomerScreen extends StatelessWidget {
                       hintText: 'Email',
                     ),
                     validator: (value) => validateEmail(value),
-
                   ),
                 ),
                 Padding(
@@ -359,14 +568,18 @@ class AddCustomerScreen extends StatelessWidget {
                         // Navigator.pushNamed(context, newLoginScreen ,arguments: {'type': type});
                         final FormState? form = _formKey.currentState;
                         if (form!.validate()) {
-                          if (from == "EDIT") {
-                            adminProvider.userRegistration(context, addedBy, userId, from,passengerStatus);
+                          if (widget.from == "EDIT") {
+                            adminProvider.userRegistration(
+                                context,
+                                widget.addedBy,
+                                widget.userId,
+                                widget.from,
+                                widget.passengerStatus);
                           } else {
                             adminProvider.userRegistration(
-                                context, addedBy, '', '',"ACTIVE");
+                                context, widget.addedBy, '', '', "ACTIVE");
                           }
                         }
-
                       },
                       child: const Text(
                         "save",
@@ -385,7 +598,8 @@ class AddCustomerScreen extends StatelessWidget {
   }
 
   String? validateEmail(String? value) {
-    String pattern =r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
+    String pattern =
+        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
     RegExp regex = RegExp(pattern);
     if (value == null || value.isEmpty || !regex.hasMatch(value)) {
       return 'Enter a valid email address';
@@ -396,7 +610,7 @@ class AddCustomerScreen extends StatelessWidget {
 
   deleteStaff(BuildContext context, String id) {
     AdminProvider adminProvider =
-    Provider.of<AdminProvider>(context, listen: false);
+        Provider.of<AdminProvider>(context, listen: false);
 
     AlertDialog alert = AlertDialog(
       backgroundColor: themecolor,
@@ -441,7 +655,7 @@ class AddCustomerScreen extends StatelessWidget {
                           child: const Text('YES',
                               style: TextStyle(color: Colors.black)),
                           onPressed: () {
-                            adminProvider.deleteData(context, id,"Passenger");
+                            adminProvider.deleteData(context, id, "Passenger");
                           }),
                     );
                   }),
@@ -462,26 +676,26 @@ class AddCustomerScreen extends StatelessWidget {
 
   blockStaff(BuildContext context, String id, String userStatus) {
     AdminProvider adminProvider =
-    Provider.of<AdminProvider>(context, listen: false);
+        Provider.of<AdminProvider>(context, listen: false);
 
     AlertDialog alert = AlertDialog(
       backgroundColor: themecolor,
       scrollable: true,
       title: userStatus == 'ACTIVE'
           ? const Text(
-        "Do you want to block this staff",
-        style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-            color: Colors.white),
-      )
+              "Do you want to block this staff",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  color: Colors.white),
+            )
           : const Text(
-        "Do you want to unblock this staff",
-        style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-            color: Colors.white),
-      ),
+              "Do you want to unblock this staff",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  color: Colors.white),
+            ),
       content: SizedBox(
         height: 50,
         child: SingleChildScrollView(
@@ -518,9 +732,11 @@ class AddCustomerScreen extends StatelessWidget {
                               style: TextStyle(color: Colors.black)),
                           onPressed: () {
                             if (userStatus == 'ACTIVE') {
-                              adminProvider.blockStaff(context, id,"Passengers");
+                              adminProvider.blockStaff(
+                                  context, id, "Passengers");
                             } else {
-                              adminProvider.unBlockStaff(context, id,"Passengers");
+                              adminProvider.unBlockStaff(
+                                  context, id, "Passengers");
                             }
                           }),
                     );

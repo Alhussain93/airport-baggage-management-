@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
 import 'dart:math';
@@ -30,6 +31,7 @@ import '../AdminView/add_staff.dart';
 import '../AdminView/generateQr_Screen.dart';
 import '../StaffView/add_tickets.dart';
 import '../StaffView/staff_home_screen.dart';
+import '../UserView/contryCodeModel.dart';
 import '../UserView/splash_screen.dart';
 import '../AdminView/staff_screen.dart';
 import '../UserView/tracking_screen.dart';
@@ -71,6 +73,14 @@ List<String>qrDataList=[];
   TextEditingController userNameCT = TextEditingController();
   TextEditingController userEmailCT = TextEditingController();
   TextEditingController userDobCT = TextEditingController();
+
+  List<CountryCode> countryCodeList=[];
+
+  bool carouselCheck=false;
+  String? selectedValue="+91";
+  String country='';
+  String code="";
+  bool countrySlct=false;
 
   TextEditingController pnrController = TextEditingController();
 
@@ -176,7 +186,7 @@ List<String>qrDataList=[];
   Future<bool> checkNumberExist(String phone) async {
     var D = await db
         .collection("USERS")
-        .where("MOBILE_NUMBER", isEqualTo: "+91$phone")
+        .where("MOBILE_NUMBER", isEqualTo: phone)
         .get();
 
     if (D.docs.isNotEmpty) {
@@ -361,8 +371,10 @@ List<String>qrDataList=[];
       passengerMap['ADDED_BY'] = addedBy;
       userMap['NAME'] = userNameCT.text;
       passengerMap['NAME'] = userNameCT.text;
-      userMap['MOBILE_NUMBER'] = "+91${userPhoneCT.text}";
-      passengerMap['MOBILE_NUMBER'] = "+91${userPhoneCT.text}";
+      userMap['MOBILE_NUMBER'] = userPhoneCT.text;
+      userMap['COUNTRY_CODE'] = selectedValue!;
+      passengerMap['MOBILE_NUMBER'] =userPhoneCT.text;
+      passengerMap['COUNTRY_CODE'] =selectedValue.toString();
       passengerMap['EMAIL'] = userEmailCT.text;
       userMap['USER_ID'] = key;
       userMap['DESIGNATION'] = "PASSENGER";
@@ -412,8 +424,10 @@ List<String>qrDataList=[];
       passengerEditMap["DOB STRING"] = userDobCT.text;
       passengerEditMap["DOB"] = birthDate;
       passengerEditMap['EMAIL'] = userEmailCT.text;
-      editMap['MOBILE_NUMBER'] = "+91${userPhoneCT.text}";
-      passengerEditMap['MOBILE_NUMBER'] = "+91${userPhoneCT.text}";
+      passengerEditMap['COUNTRY_CODE'] = selectedValue.toString();
+      editMap['MOBILE_NUMBER'] = userPhoneCT.text;
+      passengerEditMap['MOBILE_NUMBER'] = userPhoneCT.text;
+      passengerEditMap['COUNTRY_CODE'] = selectedValue.toString();
       editMap['NAME'] = userNameCT.text;
       passengerEditMap['NAME'] = userNameCT.text;
       passengerEditMap["STATUS"] = passengerStatus;
@@ -490,6 +504,7 @@ List<String>qrDataList=[];
   TextEditingController StaffidController = TextEditingController();
   TextEditingController EmailController = TextEditingController();
   TextEditingController PhoneNumberController = TextEditingController();
+  TextEditingController _userEditTextController = TextEditingController();
   List<AddStaffModel> modellist = [];
   List<AddStaffModel> filtersStaffList = [];
 
@@ -699,6 +714,7 @@ List<String>qrDataList=[];
 
   Future<void> addStaff(
       BuildContext context, String from, String userId, String status,String addedBy) async {
+    print("adsdadsd"+selectedValue! );
     bool numberStatus = await checkStaffIdExist(StaffidController.text);
     if (!numberStatus||PhoneNumberController.text==staffOldPhone) {
       showDialog(
@@ -719,14 +735,21 @@ List<String>qrDataList=[];
       dataMap["TIME"] = DateTime.now();
       userMap["STAFF_ID"] = StaffidController.text;
       // dataMap["EMAIL"] = EmailController.text;
-      dataMap["MOBILE_NUMBER"] = "+91${PhoneNumberController.text}";
-      userMap["MOBILE_NUMBER"] = "+91${PhoneNumberController.text}";
+      dataMap["MOBILE_NUMBER"] =PhoneNumberController.text;
+      dataMap["COUNTRY_CODE"] =selectedValue.toString();
+      userMap["MOBILE_NUMBER"] = PhoneNumberController.text;
+      userMap["COUNTRY_CODE"] = selectedValue.toString();
       dataMap["AIRPORT"] = staffAirportName.toString();
       dataMap["DESIGNATION"] = designation.toString();
       userMap["DESIGNATION"] = designation.toString();
       userMap["TYPE"] = "STAFF";
-      dataMap["ID"] = id.toString();
-      userMap["ID"] = id.toString();
+      if (from == '') {
+        dataMap["ID"] = id.toString();
+        userMap["ID"] = id.toString();
+      } else {
+        dataMap["ID"] = userId;
+        userMap["ID"] = userId;
+      }
       dataMap["STATUS"] = status;
       userMap["STATUS"] = status;
       if (fileImage != null) {
@@ -818,7 +841,8 @@ List<String>qrDataList=[];
         NameController.text = map['NAME'].toString();
         StaffidController.text = map['STAFF_ID'].toString();
         staffAirportName = map['AIRPORT'].toString();
-        designation = map['DESIGNATION'].toString();
+        designation = map["DESIGNATION"].toString();
+        selectedValue=map["COUNTRY_CODE"].toString();
         staffOldPhone = PhoneNumberController.text = map["MOBILE_NUMBER"].toString().replaceAll("+91", '');
         // PhoneNumberController.text = map['MOBILE_NUMBER'].toString().substring(3);
         status = map['STATUS'].toString();
@@ -1223,6 +1247,23 @@ List<String>qrDataList=[];
               userId: id, addedBy: '',
             ),
             context);
+      }
+    });
+  }
+  Future<void> fetchCountryJson() async {
+    countryCodeList.clear();
+    var jsonText = await rootBundle.loadString('assets/countryCodes.json');
+    var jsonResponse = json.decode(jsonText.toString());
+    Map <dynamic, dynamic> map = jsonResponse as Map;
+    List<String> list=[];
+    // print('cvdbfgnhm');
+    map.forEach((key, value) {
+      // print('cvdbfgnhm');
+      if(!list.contains(value['name'].toString())){
+        list.add(value['name'].toString());
+        countryCodeList.add(CountryCode(value['name'].toString(),value['code'].toString(),value['dial_code'].toString()));
+        // print('${countryCodeList.length}fbhfjy');
+        notifyListeners();
       }
     });
   }
