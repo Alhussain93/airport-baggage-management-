@@ -8,7 +8,6 @@ import 'AdminView/makeQrcodeScreen.dart';
 import 'AdminView/testqr.dart';
 import 'Providers/admin_provider.dart';
 import 'Providers/loginProvider.dart';
-import 'Providers/pnr_provider.dart';
 import 'Users/login_Screen.dart';
 import 'Users/userRegistration_Screen.dart';
 
@@ -29,7 +28,6 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => LoginProvider(),),
         ChangeNotifierProvider(create: (context) => AdminProvider(),),
-        ChangeNotifierProvider(create: (context) => PnrProvider(),),
 
       ],
       child:   MaterialApp(
