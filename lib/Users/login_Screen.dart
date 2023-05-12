@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:sms_autofill/sms_autofill.dart';
 
 import '../Providers/admin_provider.dart';
 import '../Providers/loginProvider.dart';
+import '../UserView/contryCodeModel.dart';
 import '../constant/colors.dart';
 import '../constant/my_functions.dart';
 
@@ -27,6 +29,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   MobileVarificationState currentSate =
       MobileVarificationState.SHOW_MOBILE_FORM_STATE;
+  final _userEditTextController = TextEditingController();
 
   bool showTick = false;
   final phoneController = TextEditingController();
@@ -93,7 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget getMobileFormWidget(context) {
     AdminProvider adminProvider = Provider.of<AdminProvider>(context, listen: false);
-
+adminProvider.fetchCountryJson();
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -113,59 +116,185 @@ class _LoginScreenState extends State<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text("   Log in",style: TextStyle(color: clc00a618,fontSize: 28,fontWeight: FontWeight.w600),),
-
+                  SizedBox(
+                    height: 50,
+                  ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 20,right: 20,top: 20),
-                    child: SizedBox(
-                      height: 70,
-                      child: TextFormField(
-
-                        controller: phoneController,
-                        onChanged: (value) {
-                          if (value.length == 10) {
-                            showTick = true;
-                            SystemChannels.textInput.invokeMethod('TextInput.hide');
-                          } else {
-                            showTick = false;
-                          }
-
-                          setState(() {});
-                        },
-                        style:  TextStyle(color:fontColor, fontSize: 20),
-                        autofocus: false,
-                        keyboardType: TextInputType.number,
-                        maxLength: 10,
-
-                        decoration:  InputDecoration(
-
-                          counterStyle: const TextStyle(color: Colors.grey),
-                          hintStyle: const TextStyle(color: Colors.grey, fontSize: 15),
-                          // labelText: 'MOBILE NUMBER',
-                          hintText: 'MOBILE NUMBER',
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(
-                              color: Colors.grey.shade200,
-                            ),
+                    padding:  const EdgeInsets.only(top: 20, left: 25, right: 25),
+                    child: Consumer<AdminProvider>(
+                      builder: (context,value1,child) {
+                        return Container(
+                          height: 55,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(color:Colors.grey.shade200),
+                              borderRadius: const BorderRadius.all(Radius.circular(11))
                           ),
-                          // enabledBorder: InputBorder.none,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide:  BorderSide(
-                              color: Colors.grey.shade200,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(
-                              color: Colors.grey.shade200,
-                            ),
-                          ),
-                          filled: true,
-                          fillColor: Colors.white,
+                          child: TextFormField(
+                            controller: phoneController,
+                            onChanged: (value) {
+                              if (value.length == 10) {
+                                showTick = true;
+                                SystemChannels.textInput.invokeMethod('TextInput.hide');
+                              } else {
+                                showTick = false;
+                              }
 
-                        ),
-                      ),
+                              setState(() {});
+                            },
+                            style:  TextStyle(color:fontColor, fontSize: 20),
+                            autofocus: false,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              prefixIcon: SizedBox(
+                                width: 120,
+                                child: Consumer<AdminProvider>(
+                                    builder: (context, value, child) {
+                                      return DropdownSearch<CountryCode>(
+                                        dropdownDecoratorProps: DropDownDecoratorProps(
+                                            dropdownSearchDecoration: InputDecoration(
+                                                filled: true,
+                                                fillColor: Colors.transparent,
+                                                // hintText: 'Select District',
+                                                // hintStyle: regLabelStyle,
+                                                // prefix:  const SizedBox(width: 10,),
+                                                border: OutlineInputBorder(
+                                                    borderSide: BorderSide.none),
+                                                enabledBorder: InputBorder.none,
+                                                disabledBorder: InputBorder.none,
+                                                focusedBorder: InputBorder.none,
+                                                errorBorder: InputBorder.none,
+                                                focusedErrorBorder: InputBorder.none)),
+
+                                        selectedItem: value1.countrySlct == false
+                                            ? CountryCode("India", "IN", "+91")
+                                            : CountryCode(value.country, value.code,
+                                            value.selectedValue!),
+                                        onChanged: (e) {
+                                          value1.selectedValue = e?.dialCde.toString();
+                                          value1.code = e!.code.toString();
+                                          value.country = e!.country.toString();
+                                          value1.countrySlct = true;
+                                          // print("sadsasfsadf" +
+                                          //     value1.selectedValue! +
+                                          //     value1.values.userPhoneCT
+                                          //         .text +
+                                          //     "kdsjkf   " +
+                                          //     _userEditTextController
+                                          //         .text);
+
+                                          // registrationProvider.qualificationOthers(
+                                          //     e?.degree.toString());
+                                          // adminProvider.getManagerWiseReport(
+                                          //     context, managerID!, fromName,managerName!);
+                                        },
+                                        items: value.countryCodeList,
+                                        // dropdownBuilder: (context, selectedItem) => selectedItem.dialCde,
+                                        filterFn: (item, filter) {
+                                          print("filkjkdsjf" + filter + item.country);
+                                          return item.country.contains(filter) ||
+                                              item.country
+                                                  .toLowerCase()
+                                                  .contains(filter) ||
+                                              item.country.toUpperCase().contains(filter);
+                                        },
+
+                                        itemAsString: (CountryCode u) {
+                                          print("akskaksdsjakd" + u.country + u.dialCde);
+                                          return u.dialCde;
+                                        },
+
+                                        popupProps: PopupProps.menu(
+                                            searchFieldProps: TextFieldProps(
+                                              controller: _userEditTextController,
+                                              decoration: const InputDecoration(
+                                                  label: Text(
+                                                    'Search Country',
+                                                    style: TextStyle(fontSize: 12),
+                                                  )),
+                                            ),
+                                            showSearchBox: true,
+                                            // showSelectedItems: true,
+                                            fit: FlexFit.tight,
+                                            itemBuilder: (ctx, item, isSelected) {
+                                              return ListTile(
+                                                selected: isSelected,
+                                                title: Text(
+                                                  item.country,
+                                                  style: TextStyle(fontSize: 15),
+                                                ),
+                                                subtitle: Text(
+                                                  item.dialCde,
+                                                  style: TextStyle(fontSize: 13),
+                                                ),
+                                              );
+                                            }),
+                                      );
+                                    }),
+                              ),
+                              // contentPadding: EdgeInsets.only(right: 100),
+
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(
+                                  color: Colors.grey.shade200,
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(
+                                  color: Colors.grey.shade200,
+                                ),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                  borderSide: BorderSide(
+                                    color: Colors.black38,
+                                  )),
+                              disabledBorder: InputBorder.none,
+                              hintText: "Phone Number",
+
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                  borderSide: const BorderSide(
+                                    color: Colors.grey,
+                                  )),
+                              // filled: true,
+                              // fillColor: my_black,
+                            ),
+                            //
+                            // decoration:  InputDecoration(
+                            //
+                            //   counterStyle: const TextStyle(color: Colors.grey),
+                            //   hintStyle: const TextStyle(color: Colors.grey, fontSize: 15),
+                            //   // labelText: 'MOBILE NUMBER',
+                            //   hintText: 'MOBILE NUMBER',
+                            //   enabledBorder: OutlineInputBorder(
+                            //     borderRadius: BorderRadius.circular(10),
+                            //     borderSide: BorderSide(
+                            //       color: Colors.grey.shade200,
+                            //     ),
+                            //   ),
+                            //   // enabledBorder: InputBorder.none,
+                            //   border: OutlineInputBorder(
+                            //     borderRadius: BorderRadius.circular(10),
+                            //     borderSide:  BorderSide(
+                            //       color: Colors.grey.shade200,
+                            //     ),
+                            //   ),
+                            //   focusedBorder: OutlineInputBorder(
+                            //     borderRadius: BorderRadius.circular(10),
+                            //     borderSide: BorderSide(
+                            //       color: Colors.grey.shade200,
+                            //     ),
+                            //   ),
+                            //   filled: true,
+                            //   fillColor: Colors.white,
+                            //
+                            // ),
+                          ),
+                        );
+                      }
                     ),
                   ),
 
@@ -223,7 +352,7 @@ border: Border.all(color:Colors.grey.shade200),
     db
         .collection("USERS")
         .where("MOBILE_NUMBER",
-    isEqualTo: "+91${phoneController.text}")
+    isEqualTo: adminProvider.selectedValue!+ phoneController.text)
         .get()
         .then((userValue) async {
       if (userValue.docs.isNotEmpty) {
@@ -233,9 +362,11 @@ border: Border.all(color:Colors.grey.shade200),
             showLoading = true;
           }
         });
+        AdminProvider adminProvider =
+        Provider.of<AdminProvider>(context, listen: false);
         await auth.verifyPhoneNumber(
+            phoneNumber: adminProvider.selectedValue!+phoneController.text,
 
-            phoneNumber: "+91${phoneController.text}",
             verificationCompleted: (phoneAuthCredential) async {
               setState(() {
                   showLoading = false;

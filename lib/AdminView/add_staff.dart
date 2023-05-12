@@ -14,13 +14,14 @@ import '../constant/colors.dart';
 import 'home_screen.dart';
 
 class AddStaff extends StatefulWidget {
-  String from, userId, status,addedBy;
+  String from, userId, status, addedBy;
 
   AddStaff(
       {Key? key,
       required this.from,
       required this.userId,
-      required this.status,required this.addedBy})
+      required this.status,
+      required this.addedBy})
       : super(key: key);
 
   @override
@@ -30,8 +31,13 @@ class AddStaff extends StatefulWidget {
 class _AddStaffState extends State<AddStaff> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-
-
+  List<String> airportNameList = [
+    'Select Airport',
+    "Salalah International Airport",
+    "Duqm International Airport",
+    "Sohar International Airport",
+    'Khasab Airport'
+  ];
 
   List<String> Designation = [
     'Select Designation',
@@ -41,10 +47,11 @@ class _AddStaffState extends State<AddStaff> {
     'CHECK_OUT'
   ];
   final _userEditTextController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     AdminProvider mainProvider =
-    Provider.of<AdminProvider>(context, listen: false);
+        Provider.of<AdminProvider>(context, listen: false);
     mainProvider.fetchCountryJson();
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
@@ -90,25 +97,21 @@ class _AddStaffState extends State<AddStaff> {
                         },
                         child: value.fileImage != null
                             ? CircleAvatar(
-                          backgroundColor: cWhite,
-                          radius: 50,
+                                backgroundColor: cWhite,
+                                radius: 50,
                                 backgroundImage: FileImage(value.fileImage!),
                               )
                             : value.staffImage != ""
                                 ? CircleAvatar(
-                          backgroundColor: cWhite,
-
-                          radius: 50,
-
-                          backgroundImage:
+                                    backgroundColor: cWhite,
+                                    radius: 50,
+                                    backgroundImage:
                                         NetworkImage(value.staffImage),
                                   )
                                 : CircleAvatar(
-                          backgroundColor: cWhite,
-
-                          radius: 50,
-
-                          backgroundImage:
+                                    backgroundColor: cWhite,
+                                    radius: 50,
+                                    backgroundImage:
                                         const AssetImage("assets/user.png"),
                                   )
                         // Container(
@@ -154,8 +157,8 @@ class _AddStaffState extends State<AddStaff> {
                                                 borderRadius:
                                                     BorderRadius.circular(20),
                                                 color: cnttColor),
-                                            child:
-                                                const Center(child: Text("Remove")),
+                                            child: const Center(
+                                                child: Text("Remove")),
                                           ),
                                         );
                                       }),
@@ -265,407 +268,336 @@ class _AddStaffState extends State<AddStaff> {
                     //     ),
                     //   ),
                     // ),
-                    Consumer<AdminProvider>(
-                        builder: (context, value1, child) {
-                          return Container(
-                              height: 45,
-                              width: width / 1.1,
-                              decoration: BoxDecoration(
-                              color: Colors.transparent,),
-                              // border: Border.all(width: 1, color: Colors.grey),),
-                            child: TextFormField(
-                              maxLengthEnforcement:
-                              MaxLengthEnforcement.enforced,
-                              onChanged: (value) {
-                                print("hhhhhhhhh" +
-                                    value +
-                                    "  " +
-                                    value1.selectedValue! +
-                                    "  " +
-                                    value1.PhoneNumberController.text);
-                                // if (value.length >= 6) {
-                                //   showTick = true;
-                                //   if (kDebugMode) {
-                                //     // print("ppppllll$showTick");
-                                //   }
-                                //   // SystemChannels.textInput
-                                //   //     .invokeMethod(
-                                //   //         'TextInput.hide');
-                                // } else {
-                                //   showTick = false;
-                                //   print("tick false$showTick");
-                                //
-                                //   currentSate =
-                                //       MobileVarificationState
-                                //           .SHOW_MOBILE_FORM_STATE;
-                                // }
-                                setState(() {});
-                              },
-                              textAlign: TextAlign.center,
-                              keyboardType: TextInputType.phone,
-                              inputFormatters: [
-                                LengthLimitingTextInputFormatter(
-                                    10),
-                                FilteringTextInputFormatter
-                                    .digitsOnly,
-                              ],
-                              textInputAction: TextInputAction.next,
-                              decoration: InputDecoration(
-                                prefixIcon: SizedBox(
-                                  width: 120,
-                                  child: Consumer<AdminProvider>(
-                                      builder:
-                                          (context, value, child) {
-                                        return DropdownSearch<
-                                            CountryCode>(
-                                          dropdownDecoratorProps:
-                                          DropDownDecoratorProps(
-                                              dropdownSearchDecoration:
+                    Consumer<AdminProvider>(builder: (context, value1, child) {
+                      return Padding(
+                        padding: const EdgeInsets.only( left: 25, right: 25),
+                        child: TextFormField(
+                          maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                          onChanged: (value) {
+                            print("hhhhhhhhh" +
+                                value +
+                                "  " +
+                                value1.selectedValue! +
+                                "  " +
+                                value1.PhoneNumberController.text);
+                            // if (value.length >= 6) {
+                            //   showTick = true;
+                            //   if (kDebugMode) {
+                            //     // print("ppppllll$showTick");
+                            //   }
+                            //   // SystemChannels.textInput
+                            //   //     .invokeMethod(
+                            //   //         'TextInput.hide');
+                            // } else {
+                            //   showTick = false;
+                            //   print("tick false$showTick");
+                            //
+                            //   currentSate =
+                            //       MobileVarificationState
+                            //           .SHOW_MOBILE_FORM_STATE;
+                            // }
+                            setState(() {});
+                          },
+                          textAlign: TextAlign.center,
+                          keyboardType: TextInputType.phone,
+                          inputFormatters: [
+                            LengthLimitingTextInputFormatter(10),
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            prefixIcon: SizedBox(
+                              width: 120,
+                              child: Consumer<AdminProvider>(
+                                  builder: (context, value, child) {
+                                return DropdownSearch<CountryCode>(
+                                  dropdownDecoratorProps:
+                                      DropDownDecoratorProps(
+                                          dropdownSearchDecoration:
                                               InputDecoration(
                                                   filled: true,
-                                                  fillColor: Colors
-                                                      .transparent,
+                                                  fillColor: Colors.transparent,
                                                   // hintText: 'Select District',
                                                   // hintStyle: regLabelStyle,
                                                   // prefix:  const SizedBox(width: 10,),
                                                   border: OutlineInputBorder(
                                                       borderSide:
-                                                      BorderSide
-                                                          .none),
+                                                          BorderSide.none),
                                                   enabledBorder:
-                                                  InputBorder
-                                                      .none,
+                                                      InputBorder.none,
                                                   disabledBorder:
-                                                  InputBorder
-                                                      .none,
+                                                      InputBorder.none,
                                                   focusedBorder:
-                                                  InputBorder
-                                                      .none,
-                                                  errorBorder:
-                                                  InputBorder
-                                                      .none,
+                                                      InputBorder.none,
+                                                  errorBorder: InputBorder.none,
                                                   focusedErrorBorder:
-                                                  InputBorder
-                                                      .none)),
+                                                      InputBorder.none)),
 
-                                          selectedItem: value1
-                                              .countrySlct ==
-                                              false
-                                              ? CountryCode(
-                                              "India", "IN", "+91")
-                                              : CountryCode(
-                                              value.country,
-                                              value.code,
-                                              value.selectedValue!),
-                                          onChanged: (e) {
-                                            value1.selectedValue =
-                                                e?.dialCde.toString();
-                                            value1.code =
-                                                e!.code.toString();
-                                            value.country =
-                                                e!.country.toString();
-                                            value1.countrySlct = true;
-                                            // print("sadsasfsadf" +
-                                            //     value1.selectedValue! +
-                                            //     value1.PhoneNumberController
-                                            //         .text +
-                                            //     "kdsjkf   " +
-                                            //     _userEditTextController
-                                            //         .text);
+                                  selectedItem: value1.countrySlct == false
+                                      ? CountryCode("India", "IN", "+91")
+                                      : CountryCode(value.country, value.code,
+                                          value.selectedValue!),
+                                  onChanged: (e) {
+                                    value1.selectedValue =
+                                        e?.dialCde.toString();
+                                    value1.code = e!.code.toString();
+                                    value.country = e!.country.toString();
+                                    value1.countrySlct = true;
+                                    // print("sadsasfsadf" +
+                                    //     value1.selectedValue! +
+                                    //     value1.PhoneNumberController
+                                    //         .text +
+                                    //     "kdsjkf   " +
+                                    //     _userEditTextController
+                                    //         .text);
 
-                                            // registrationProvider.qualificationOthers(
-                                            //     e?.degree.toString());
-                                            // adminProvider.getManagerWiseReport(
-                                            //     context, managerID!, fromName,managerName!);
-                                          },
-                                          items: value.countryCodeList,
-                                          // dropdownBuilder: (context, selectedItem) => selectedItem.dialCde,
-                                          filterFn: (item, filter) {
-                                            print("filkjkdsjf" +
-                                                filter +
-                                                item.country);
-                                            return item.country
-                                                .contains(filter) ||
-                                                item.country
-                                                    .toLowerCase()
-                                                    .contains(filter) ||
-                                                item.country
-                                                    .toUpperCase()
-                                                    .contains(filter);
-                                          },
+                                    // registrationProvider.qualificationOthers(
+                                    //     e?.degree.toString());
+                                    // adminProvider.getManagerWiseReport(
+                                    //     context, managerID!, fromName,managerName!);
+                                  },
+                                  items: value.countryCodeList,
+                                  // dropdownBuilder: (context, selectedItem) => selectedItem.dialCde,
+                                  filterFn: (item, filter) {
+                                    print("filkjkdsjf" + filter + item.country);
+                                    return item.country.contains(filter) ||
+                                        item.country
+                                            .toLowerCase()
+                                            .contains(filter) ||
+                                        item.country
+                                            .toUpperCase()
+                                            .contains(filter);
+                                  },
 
-                                          itemAsString:
-                                              (CountryCode u) {
-                                            print("akskaksdsjakd" +
-                                                u.country +
-                                                u.dialCde);
-                                            return u.dialCde;
-                                          },
+                                  itemAsString: (CountryCode u) {
+                                    print("akskaksdsjakd" +
+                                        u.country +
+                                        u.dialCde);
+                                    return u.dialCde;
+                                  },
 
-                                          popupProps: PopupProps.menu(
-                                              searchFieldProps:
-                                              TextFieldProps(
-                                                controller:
-                                                _userEditTextController,
-                                                decoration:
-                                                const InputDecoration(
-                                                    label: Text(
-                                                      'Search Country',
-                                                      style: TextStyle(
-                                                          fontSize: 12),
-                                                    )),
-                                              ),
-                                              showSearchBox: true,
-                                              // showSelectedItems: true,
-                                              fit: FlexFit.tight,
-                                              itemBuilder: (ctx, item,
-                                                  isSelected) {
-                                                return ListTile(
-                                                  selected: isSelected,
-                                                  title: Text(
-                                                    item.country,
-                                                    style: TextStyle(
-                                                        fontSize: 15),
-                                                  ),
-                                                  subtitle: Text(
-                                                    item.dialCde,
-                                                    style: TextStyle(
-                                                        fontSize: 13),
-                                                  ),
-                                                );
-                                              }),
+                                  popupProps: PopupProps.menu(
+                                      searchFieldProps: TextFieldProps(
+                                        controller: _userEditTextController,
+                                        decoration: const InputDecoration(
+                                            label: Text(
+                                          'Search Country',
+                                          style: TextStyle(fontSize: 12),
+                                        )),
+                                      ),
+                                      showSearchBox: true,
+                                      // showSelectedItems: true,
+                                      fit: FlexFit.tight,
+                                      itemBuilder: (ctx, item, isSelected) {
+                                        return ListTile(
+                                          selected: isSelected,
+                                          title: Text(
+                                            item.country,
+                                            style: TextStyle(fontSize: 15),
+                                          ),
+                                          subtitle: Text(
+                                            item.dialCde,
+                                            style: TextStyle(fontSize: 13),
+                                          ),
                                         );
                                       }),
-                                ),
-                                contentPadding:
-                                EdgeInsets.only(right: 100),
-
-                                focusedBorder: OutlineInputBorder(
-                                    borderRadius:
-                                    BorderRadius.circular(30),
-                                    borderSide: BorderSide(
-                                      color: Colors.black38,
-                                    )),
-                                enabledBorder: OutlineInputBorder(
-                                    borderRadius:
-                                    BorderRadius.circular(30),
-                                    borderSide: BorderSide(
-                                      color: Colors.black38,
-                                    )),
-                                errorBorder: OutlineInputBorder(
-                                    borderRadius:
-                                    BorderRadius.circular(30),
-                                    borderSide: BorderSide(
-                                      color: Colors.black38,
-                                    )),
-                                disabledBorder: InputBorder.none,
-                                // focusColor: Colors.black,
-                                //    contentPadding:
-                                //    contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                                hintText: "Phone Number",
-
-                                border: OutlineInputBorder(
-                                    borderRadius:
-                                    BorderRadius.circular(15),
-                                    borderSide: const BorderSide(
-                                      color: Colors.grey,
-                                    )),
-                                // filled: true,
-                                // fillColor: my_black,
-                              ),
-                              cursorColor: Colors.black,
-                              controller: value1.PhoneNumberController,
-                              style: const TextStyle(
-                                fontFamily: 'BarlowCondensed',
-                              ),
-                              validator: (value) {
-                                if (value!.trim().isEmpty) {
-                                  return "Please Enter The Mobile Number";
-                                } else if (!RegExp(r'^[0-9]+$')
-                                    .hasMatch(value) ||
-                                    value.trim().length < 10) {
-                                  return "Enter Correct Number";
-                                } else {
-                                  return null;
-                                }
-                              },
+                                );
+                              }),
                             ),
-                          );
-                        }),
-                    SizedBox(height: 10,),
-                    Consumer<AdminProvider>(builder: (context1, value1, child) {
-                      return Container(
-                        height: 45,
-                        width: width / 1.1,
-                        decoration: BoxDecoration(
-                          color: Colors.transparent,
-                          border: Border.all(width: 1, color: Colors.grey),
-                          borderRadius: BorderRadius.circular(15.0),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: SizedBox(
-                            height: 40,
-                            width: width / 2,
-                            child: DropdownButtonFormField(
-                              hint: const Text(
-                                "",
-                                style: TextStyle(
-                                    color: Colors.grey,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              value: value.staffAirportName,
-                              iconSize: 30,
-                              isExpanded: true,
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                ),
-                                isCollapsed: true,
-                                filled: true,
-                                fillColor: Colors.transparent,
-                              ),
-                              onChanged: (newValue) {
-                                value1.staffAirportName = newValue.toString();
-                              },
-                              items:value1.airportNameList.map((item1) {
-                                return DropdownMenuItem(
-                                    value: item1,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 10),
-                                      child: Text(item1),
-                                    ));
-                              }).toList(),
-                              validator: (dropValue) {
-                                if (dropValue == "Select Airport") {
-                                  return "Select Airport";
-                                }
-                                return null;
-                              },
-                            ),
-                            // DropdownButtonHideUnderline(
-                            //   child: DropdownSearch<String>(
-                            //     popupProps: PopupProps.menu(
-                            //       showSelectedItems: true,
-                            //       disabledItemFn: (String s) => s.startsWith('I'),
-                            //     ),
-                            //     items: const [
-                            //       "Salalah International Airport",
-                            //       'Muscat International Airport'
-                            //       "Duqm International Airport",
-                            //       "Sohar International Airport",
-                            //       'Khasab Airport'
-                            //     ],
-                            //     dropdownDecoratorProps: const DropDownDecoratorProps(
-                            //       dropdownSearchDecoration: InputDecoration(
-                            //       enabledBorder: InputBorder.none,
-                            //         // labelText: "Select Airpote",
-                            //         hintText: "Select Airport",contentPadding: EdgeInsets.only(left: 18)
-                            //       ),
-                            //     ),
-                            //     onChanged: (value){
-                            //       value1.airportName=value.toString();
-                            //       print("rftgyhjuio"+value.toString());
-                            //     },
-                            //     // selectedItem: "Brazil",
-                            //   ),
-                            // ),
+                             contentPadding: EdgeInsets.only(right: 80),
+
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15),
+                                borderSide: BorderSide(
+                                  color: Colors.black38,
+                                )),
+                            enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15),
+                                borderSide: BorderSide(
+                                  color: Colors.black38,
+                                )),
+                            errorBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15),
+                                borderSide: BorderSide(
+                                  color: Colors.red,
+                                )),
+                            disabledBorder: InputBorder.none,
+                            // focusColor: Colors.black,
+                            //    contentPadding:
+                            //    contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                            hintText: "Phone Number",
+
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15),
+                                borderSide: const BorderSide(
+                                  color: Colors.grey,
+                                )),
+                            // filled: true,
+                            // fillColor: my_black,
                           ),
+                          cursorColor: Colors.black,
+                          controller: value1.PhoneNumberController,
+                          style: const TextStyle(
+                            fontFamily: 'BarlowCondensed',
+                          ),
+                          validator: (value) {
+                            if (value!.trim().isEmpty) {
+                              return "Please Enter The Mobile Number";
+                            } else {
+                              return null;
+                            }
+                          },
                         ),
                       );
                     }),
-                    const SizedBox(
+                    SizedBox(
                       height: 10,
                     ),
                     Consumer<AdminProvider>(builder: (context, value1, child) {
-                      return Container(
-                        height: 45,
-                        width: width / 1.1,
-                        decoration: BoxDecoration(
-                          color: Colors.transparent,
-                          border: Border.all(width: 1, color: Colors.grey),
-                          // boxShadow: [
-                          //   BoxShadow(
-                          //     color: Colors.grey.shade300,
-                          //     blurRadius: 1, // soften the shadow
-                          //     spreadRadius: 1.5, //extend the shadow
-                          //     offset: Offset(
-                          //       .2, // Move to right 5  horizontally
-                          //       .2, // Move to bottom 5 Vertically
-                          //     ),
-                          //   )
-                          // ],
-                          borderRadius: BorderRadius.circular(15.0),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: SizedBox(
-                            height: 40,
-                            width: width / 2,
-                            child: DropdownButtonFormField(
-                              hint: const Text(
-                                "",
-                                style: TextStyle(
-                                    color: Colors.grey,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              value: value.designation,
-                              iconSize: 30,
-                              isExpanded: true,
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                ),
-                                isCollapsed: true,
-                                filled: true,
-                                fillColor: Colors.transparent,
-                              ),
-                              onChanged: (newValue) {
-                                value1.designation = newValue.toString();
-                              },
-                              items: Designation.map((item1) {
-                                return DropdownMenuItem(
-                                    value: item1,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 10),
-                                      child: Text(item1),
-                                    ));
-                              }).toList(),
-                              validator: (dropValue) {
-                                if (dropValue == "Select Designation") {
-                                  return "Select Designation";
-                                }
-                                return null;
-                              },
-                            ),
-                            // DropdownButtonHideUnderline(
-                            //   child: DropdownSearch<String>(
-                            //     popupProps: PopupProps.menu(
-                            //       showSelectedItems: true,
-                            //       disabledItemFn: (String s) => s.startsWith('I'),
-                            //     ),
-                            //     items: const [
-                            //       "Salalah International Airport",
-                            //       'Muscat International Airport'
-                            //       "Duqm International Airport",
-                            //       "Sohar International Airport",
-                            //       'Khasab Airport'
-                            //     ],
-                            //     dropdownDecoratorProps: const DropDownDecoratorProps(
-                            //       dropdownSearchDecoration: InputDecoration(
-                            //       enabledBorder: InputBorder.none,
-                            //         // labelText: "Select Airpote",
-                            //         hintText: "Select Airport",contentPadding: EdgeInsets.only(left: 18)
-                            //       ),
-                            //     ),
-                            //     onChanged: (value){
-                            //       value1.airportName=value.toString();
-                            //       print("rftgyhjuio"+value.toString());
-                            //     },
-                            //     // selectedItem: "Brazil",
-                            //   ),
-                            // ),
+                      return Padding(
+                        padding:
+                            const EdgeInsets.only( left: 25, right: 25),
+                        child: DropdownButtonFormField(
+                          hint: const Text(
+                            "",
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.bold),
                           ),
+                          value: value.staffAirportName,
+                          iconSize: 30,
+                          isExpanded: true,
+                          decoration: InputDecoration(
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: const BorderSide(color: Colors.grey),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: const BorderSide(
+                                color: Colors.grey,
+                              ),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15),
+                                borderSide:
+                                    const BorderSide(color: Colors.red)),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: const BorderSide(
+                                color: Colors.grey,
+                              ),
+                            ),
+                            isCollapsed: true,
+                            helperText: '',
+                            contentPadding: const EdgeInsets.all(11),
+                          ),
+                          onChanged: (newValue) {
+                            value1.staffAirportName = newValue.toString();
+                          },
+                          items: airportNameList.map((item1) {
+                            return DropdownMenuItem(
+                                value: item1,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 10),
+                                  child: Text(item1),
+                                ));
+                          }).toList(),
+                          validator: (dropValue) {
+                            if (dropValue == "Select Airport") {
+                              return "Select Airport";
+                            }
+                            return null;
+                          },
+                        ),
+                      );
+                    }),
+                    Consumer<AdminProvider>(builder: (context, value1, child) {
+                      return Padding(
+                        padding:
+                            const EdgeInsets.only( left: 25, right: 25),
+                        child: SizedBox(
+                          child: DropdownButtonFormField(
+                            hint: const Text(
+                              "",
+                              style: TextStyle(
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            value: value.designation,
+                            iconSize: 30,
+                            isExpanded: true,
+                            decoration: InputDecoration(
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15),
+                                borderSide:
+                                    const BorderSide(color: Colors.grey),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15),
+                                borderSide: const BorderSide(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                  borderSide:
+                                      const BorderSide(color: Colors.red)),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15),
+                                borderSide: const BorderSide(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              isCollapsed: true,
+                              helperText: '',
+                              contentPadding: const EdgeInsets.all(11),
+                            ),
+                            onChanged: (newValue) {
+                              value1.designation = newValue.toString();
+                            },
+                            items: Designation.map((item1) {
+                              return DropdownMenuItem(
+                                  value: item1,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 10),
+                                    child: Text(item1),
+                                  ));
+                            }).toList(),
+                            validator: (dropValue) {
+                              if (dropValue == "Select Designation") {
+                                return "Select Designation";
+                              }
+                              return null;
+                            },
+                          ),
+                          // DropdownButtonHideUnderline(
+                          //   child: DropdownSearch<String>(
+                          //     popupProps: PopupProps.menu(
+                          //       showSelectedItems: true,
+                          //       disabledItemFn: (String s) => s.startsWith('I'),
+                          //     ),
+                          //     items: const [
+                          //       "Salalah International Airport",
+                          //       'Muscat International Airport'
+                          //       "Duqm International Airport",
+                          //       "Sohar International Airport",
+                          //       'Khasab Airport'
+                          //     ],
+                          //     dropdownDecoratorProps: const DropDownDecoratorProps(
+                          //       dropdownSearchDecoration: InputDecoration(
+                          //       enabledBorder: InputBorder.none,
+                          //         // labelText: "Select Airpote",
+                          //         hintText: "Select Airport",contentPadding: EdgeInsets.only(left: 18)
+                          //       ),
+                          //     ),
+                          //     onChanged: (value){
+                          //       value1.airportName=value.toString();
+                          //       print("rftgyhjuio"+value.toString());
+                          //     },
+                          //     // selectedItem: "Brazil",
+                          //   ),
+                          // ),
                         ),
                       );
                     }),
@@ -689,13 +621,13 @@ class _AddStaffState extends State<AddStaff> {
                     ),
                     Center(
                       child: Padding(
-                        padding: const EdgeInsets.only(top: 40),
+                        padding: const EdgeInsets.only(bottom: 20),
                         child: InkWell(
                           onTap: () {
-
                             final FormState? forme = _formKey.currentState;
                             if (forme!.validate()) {
-                              value.addStaff(context, widget.from, widget.userId, widget.status,widget.addedBy);
+                              value.addStaff(context, widget.from,
+                                  widget.userId, widget.status, widget.addedBy);
                             }
                           },
                           child: Container(
@@ -774,7 +706,7 @@ class _AddStaffState extends State<AddStaff> {
                           child: const Text('YES',
                               style: TextStyle(color: Colors.black)),
                           onPressed: () {
-                            adminProvider.deleteData(context, id,"Staff");
+                            adminProvider.deleteData(context, id, "Staff");
                           }),
                     );
                   }),
@@ -851,9 +783,9 @@ class _AddStaffState extends State<AddStaff> {
                               style: TextStyle(color: Colors.black)),
                           onPressed: () {
                             if (userStatus == 'ACTIVE') {
-                              adminProvider.blockStaff(context, id,"Staff");
+                              adminProvider.blockStaff(context, id, "Staff");
                             } else {
-                              adminProvider.unBlockStaff(context, id,"Staff");
+                              adminProvider.unBlockStaff(context, id, "Staff");
                             }
                           }),
                     );
