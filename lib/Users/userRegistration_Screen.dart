@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
 import '../Providers/loginProvider.dart';
+import '../UserView/contryCodeModel.dart';
 import '../constant/colors.dart';
 
 enum MobileVarificationState {
@@ -27,6 +29,7 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
   MobileVarificationState currentSate =
       MobileVarificationState.SHOW_MOBILE_FORM_STATE2;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
 
   final otpController = TextEditingController();
   final FocusNode _pinPutFocusNode = FocusNode();
@@ -61,12 +64,14 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
         if (loginUser != null) {
           LoginProvider newLoginProvider =
               Provider.of<LoginProvider>(context, listen: false);
+          AdminProvider adminProvider =
+          Provider.of<AdminProvider>(context, listen: false);
           print("fdgyhujik" + loginUser.phoneNumber.toString());
-          var phone = loginUser.phoneNumber!.substring(3, 13);
+          var phone = loginUser.phoneNumber;
           print("dvghjdd" + phone.toString());
           db
               .collection("USERS")
-              .where("PHONE_NUMBER", isEqualTo: "+91$phone")
+              .where("PHONE_NUMBER", isEqualTo: phone)
               .get()
               .then((value) {
             if (value.docs.isNotEmpty) {
@@ -109,15 +114,17 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
       ));
     }
   }
-
+  final _passengerEditTextController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     AdminProvider adminProvider =
         Provider.of<AdminProvider>(context, listen: false);
+    adminProvider.fetchCountryJson();
 
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
+      backgroundColor: themecolor,
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -145,10 +152,10 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                         child: TextFormField(
                           maxLengthEnforcement: MaxLengthEnforcement.enforced,
                           onChanged: (value) {
-                            if (value.trim().length == 10) {
+                            if (value.trim().length != 3) {
                               values.showTick = true;
-                              SystemChannels.textInput
-                                  .invokeMethod('TextInput.hide');
+                              // SystemChannels.textInput
+                              //     .invokeMethod('TextInput.hide');
                             } else {
                               values.showTick = false;
                               currentSate = MobileVarificationState
@@ -162,17 +169,100 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                           ],
                           textInputAction: TextInputAction.next,
                           decoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 20, horizontal: 0),
-                            prefix: const SizedBox(
-                              width: 15,
+                            // contentPadding: EdgeInsets.symmetric(
+                            //     vertical: 20, horizontal: 0),
+                            prefix: SizedBox(
+                              width: 120,
+                              child: Consumer<AdminProvider>(
+                                  builder: (context, value, child) {
+                                    return DropdownSearch<CountryCode>(
+                                      dropdownDecoratorProps: DropDownDecoratorProps(
+                                          dropdownSearchDecoration: InputDecoration(
+                                              filled: true,
+                                              fillColor: Colors.transparent,
+                                              // hintText: 'Select District',
+                                              // hintStyle: regLabelStyle,
+                                              // prefix:  const SizedBox(width: 10,),
+                                              border: OutlineInputBorder(
+                                                  borderSide: BorderSide.none),
+                                              enabledBorder: InputBorder.none,
+                                              disabledBorder: InputBorder.none,
+                                              focusedBorder: InputBorder.none,
+                                              errorBorder: InputBorder.none,
+                                              focusedErrorBorder: InputBorder.none)),
+
+                                      selectedItem: value.countrySlct == false
+                                          ? CountryCode("India", "IN", "+91")
+                                          : CountryCode(value.country, value.code,
+                                          value.selectedValue!),
+                                      onChanged: (e) {
+                                        value.selectedValue = e?.dialCde.toString();
+                                        value.code = e!.code.toString();
+                                        value.country = e!.country.toString();
+                                        value.countrySlct = true;
+                                        // print("sadsasfsadf" +
+                                        //     value1.selectedValue! +
+                                        //     value1.values.userPhoneCT
+                                        //         .text +
+                                        //     "kdsjkf   " +
+                                        //     _userEditTextController
+                                        //         .text);
+
+                                        // registrationProvider.qualificationOthers(
+                                        //     e?.degree.toString());
+                                        // adminProvider.getManagerWiseReport(
+                                        //     context, managerID!, fromName,managerName!);
+                                      },
+                                      items: value.countryCodeList,
+                                      // dropdownBuilder: (context, selectedItem) => selectedItem.dialCde,
+                                      filterFn: (item, filter) {
+                                        print("filkjkdsjf" + filter + item.country);
+                                        return item.country.contains(filter) ||
+                                            item.country
+                                                .toLowerCase()
+                                                .contains(filter) ||
+                                            item.country.toUpperCase().contains(filter);
+                                      },
+
+                                      itemAsString: (CountryCode u) {
+                                        print("akskaksdsjakd" + u.country + u.dialCde);
+                                        return u.dialCde;
+                                      },
+
+                                      popupProps: PopupProps.menu(
+                                          searchFieldProps: TextFieldProps(
+                                            controller: _passengerEditTextController,
+                                            decoration: const InputDecoration(
+                                                label: Text(
+                                                  'Search Country',
+                                                  style: TextStyle(fontSize: 12),
+                                                )),
+                                          ),
+                                          showSearchBox: true,
+                                          // showSelectedItems: true,
+                                          fit: FlexFit.tight,
+                                          itemBuilder: (ctx, item, isSelected) {
+                                            return ListTile(
+                                              selected: isSelected,
+                                              title: Text(
+                                                item.country,
+                                                style: TextStyle(fontSize: 15),
+                                              ),
+                                              subtitle: Text(
+                                                item.dialCde,
+                                                style: TextStyle(fontSize: 13),
+                                              ),
+                                            );
+                                          }),
+                                    );
+                                  }),
                             ),
 
                             suffixIcon: Padding(
                               padding: const EdgeInsets.only(
                                   right: 8.0, top: 4, bottom: 4),
                               child: Container(
-                                  width: 80,
+                                  width: 60,
                                   // height: 70,
                                   decoration: BoxDecoration(
                                     color: values.showTick == false
@@ -190,8 +280,8 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                                           onTap: () async {
                                             setState(() {
                                               if (values.userPhoneCT.text
-                                                      .length ==
-                                                  10) {
+                                                      .length!=
+                                                  3) {
                                                 showLoading = true;
                                                 print("bhsdbshs" +
                                                     values.userPhoneCT
@@ -201,7 +291,7 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
 
                                             await auth.verifyPhoneNumber(
                                                 phoneNumber:
-                                                    "+91${values.userPhoneCT.text}",
+                                                adminProvider.selectedValue!+ values.userPhoneCT.text,
                                                 verificationCompleted:
                                                     (phoneAuthCredential) async {
                                                   setState(() {
@@ -297,7 +387,7 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                                                   color: Colors.white)))),
                             ),
 
-                            hintText: 'Enter mobile number',
+                            hintText: 'Mobile number',
                             hintStyle:
                                 TextStyle(color: Colors.grey, fontSize: 16),
                             // enabled: currentSate != MobileVarificationState.SHOW_MOBILE_FORM_VERIFIED ?true:false,
@@ -326,9 +416,6 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                           validator: (value) {
                             if (value!.trim().isEmpty) {
                               return "Please Enter The Mobile Number";
-                            } else if (!RegExp(r'^[0-9]+$').hasMatch(value) ||
-                                value.trim().length < 10) {
-                              return "Enter Correct Number";
                             } else {
                               return null;
                             }

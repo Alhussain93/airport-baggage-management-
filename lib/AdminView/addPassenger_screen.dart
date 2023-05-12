@@ -170,7 +170,7 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
                           const TextStyle(color: Colors.grey, fontSize: 16),
                       filled: true,
                       helperText: "",
-                      fillColor: Colors.white,
+                      fillColor: Colors.transparent,
                       contentPadding: const EdgeInsets.all(11),
                       hintText: 'Name',
                       focusedBorder: OutlineInputBorder(
@@ -257,25 +257,8 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
                 //   ),
                 // ),
                 Consumer<AdminProvider>(builder: (context, value1, child) {
-                  return Container(
-                    height: 45,
-                    width: 310,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Color(0xFFffffff),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.white,
-                          blurRadius: 2.0, // soften the shadow
-                          spreadRadius: .0, //extend the shadow
-                          offset: Offset(
-                            0.0, // Move to right 5  horizontally
-                            0.0, // Move to bottom 5 Vertically
-                          ),
-                        )
-                      ],
-                    ),
-                    // border: Border.all(width: 1, color: Colors.grey),),
+                  return Padding(
+                    padding:  const EdgeInsets.only(left: 25, right: 25),
                     child: TextFormField(
                       maxLengthEnforcement: MaxLengthEnforcement.enforced,
                       onChanged: (value) {
@@ -306,8 +289,10 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
                       textAlign: TextAlign.center,
                       keyboardType: TextInputType.phone,
                       inputFormatters: [
-                        LengthLimitingTextInputFormatter(10),
-                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(
+                            10),
+                        FilteringTextInputFormatter
+                            .digitsOnly,
                       ],
                       textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
@@ -397,7 +382,7 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
                             );
                           }),
                         ),
-                        contentPadding: EdgeInsets.only(right: 100),
+                        contentPadding: EdgeInsets.only(right:80),
 
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -412,9 +397,9 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
                           ),
                         ),
                         errorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
+                            borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide(
-                              color: Colors.black38,
+                              color: Colors.red,
                             )),
                         disabledBorder: InputBorder.none,
                         // focusColor: Colors.black,
@@ -423,7 +408,7 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
                         hintText: "Phone Number",
 
                         border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
+                            borderRadius: BorderRadius.circular(10),
                             borderSide: const BorderSide(
                               color: Colors.grey,
                             )),
@@ -438,9 +423,6 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
                       validator: (value) {
                         if (value!.trim().isEmpty) {
                           return "Please Enter The Mobile Number";
-                        } else if (!RegExp(r'^[0-9]+$').hasMatch(value) ||
-                            value.trim().length < 10) {
-                          return "Enter Correct Number";
                         } else {
                           return null;
                         }
@@ -468,7 +450,7 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
                           const TextStyle(color: Colors.grey, fontSize: 16),
                       filled: true,
                       helperText: "",
-                      fillColor: Colors.white,
+                      fillColor: Colors.transparent,
                       contentPadding: const EdgeInsets.all(11),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -507,7 +489,7 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
                           const TextStyle(color: Colors.grey, fontSize: 16),
                       helperText: '',
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: Colors.transparent,
                       contentPadding: const EdgeInsets.all(11),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),

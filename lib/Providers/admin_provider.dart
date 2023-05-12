@@ -75,13 +75,13 @@ List<String>qrDataList=[];
   TextEditingController userEmailCT = TextEditingController();
   TextEditingController userDobCT = TextEditingController();
 
-  List<CountryCode> countryCodeList=[];
+  List<CountryCode> countryCodeList = [];
 
-  bool carouselCheck=false;
-  String? selectedValue="+91";
-  String country='';
-  String code="";
-  bool countrySlct=false;
+  bool carouselCheck = false;
+  String? selectedValue = "+91";
+  String country = '';
+  String code = "";
+  bool countrySlct = false;
 
   TextEditingController pnrController = TextEditingController();
 
@@ -98,8 +98,8 @@ List<String>qrDataList=[];
 
   // db.collection("USERS").where("PHONE",isEqualTo:phoneNumber ).get().
   checkingPnr(String pnrControllerText, BuildContext context, String username) {
-
-    db.collection("LUGGAGE")
+    db
+        .collection("LUGGAGE")
         .where("PNR_ID", isEqualTo: pnrControllerText)
         .get()
         .then((value) {
@@ -115,11 +115,16 @@ List<String>qrDataList=[];
               map["STATUS"].toString()));
         }
         checkList.sort(
-              (b, a) => b.lagagenumber.compareTo(a.lagagenumber),
+          (b, a) => b.lagagenumber.compareTo(a.lagagenumber),
         );
         if (checkList.length != 0) {
           luggageTracking(checkList[0].id);
-          callNext(TrackingScreen(pnrid: pnrControllerText, username: username,), context);
+          callNext(
+              TrackingScreen(
+                pnrid: pnrControllerText,
+                username: username,
+              ),
+              context);
         }
       } else {
         final snackBar = SnackBar(
@@ -142,7 +147,7 @@ List<String>qrDataList=[];
 
     luggageList.clear();
     print(lid.toString() + "gvhb");
-    db.collection("LUGGAGE").doc(lid).snapshots().listen((event){
+    db.collection("LUGGAGE").doc(lid).snapshots().listen((event) {
       Map<dynamic, dynamic> map = event.data() as Map;
 
 
@@ -156,8 +161,6 @@ List<String>qrDataList=[];
       notifyListeners();
     });
   }
-
-
 
   String getRandomString(int length) {
     const _chars =
@@ -189,7 +192,6 @@ List<String>qrDataList=[];
     final encrypter = enc.Encrypter(enc.AES(key));
 
     final decrypted2 = encrypter.decrypt64(cipher, iv: iv);
-
 
     return decrypted2;
   }
@@ -237,9 +239,22 @@ List<String>qrDataList=[];
 
     db.collection("LUGGAGE").doc(luggageId).get().then((value) async {
       if (value.exists) {
+        if (staffDes == "LOADING") {
+          db.collection("LUGGAGE").doc(luggageId).set({
+            "LOADED_TIME": milli,
+            "STATUS": 'LOADING',
+            "LOADING_AIRPORT": staffAir
+          ,"LOADING_STAFF_NAME":stfName,"LOADING_STATUS": "CLEARED"}, SetOptions(merge: true));
         if(staffDes=="LOADING"){
           db.collection("LUGGAGE").doc(luggageId).set({"LOADED_TIMEMILLI": milli,"LOADED_TIME": now, "STATUS": 'LOADING',"LOADING_AIRPORT":staffAir,"LOADING_STAFF_NAME":stfName,"LOADING_STATUS": "CLEARED","LAST_SCANNED_DATE":milli}, SetOptions(merge: true));
           String text = 'Loading completed';
+          showAlertDialog(context, text, staffDes,stfName,staffAir);
+        } else if (staffDes == "UNLOADING") {
+          db.collection("LUGGAGE").doc(luggageId).set({
+            "UNLOADED_TIME": milli,
+            "STATUS": 'UNLOADING',
+            "UNLOADING_AIRPORT": staffAir
+          ,"UNLOADING_STAFF_NAME":stfName,"UNLOADING_STATUS": "CLEARED"}, SetOptions(merge: true));
                   showAlertDialog(context, text,staffDes,stfName,staffAir);
         }else if(staffDes=="UNLOADING"){
           db.collection("LUGGAGE").doc(luggageId).set({"UNLOADED_TIMEMILLI": milli,"UNLOADED_TIME": now, "STATUS": 'UNLOADING',"UNLOADING_AIRPORT":staffAir,"UNLOADING_STAFF_NAME":stfName,"LAST_SCANNED_DATE":milli,"LAST_SCANNED_PLACE":staffAir}, SetOptions(merge: true));
@@ -253,7 +268,7 @@ List<String>qrDataList=[];
       }
     });
   }
-  
+
   void fetchMissingLuggage(){
     missingLuggageList.clear();
 
@@ -275,9 +290,9 @@ List<String>qrDataList=[];
 
 
     });
-    
+
   }
-  
+
   void sortMissingLuggageFlightBase(String flightName){
     missingLuggageList.clear();
 print("ddddddddddddddddd"+flightName);
@@ -490,7 +505,7 @@ if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]||map["MISSING"]!="UNLOADING"){
 
   Future<void> userRegistration(BuildContext context1, String addedBy,
       String userId, String from, String passengerStatus) async {
-    print("dinecedcccdcdc"+userPhoneCT.text );
+    print("dinecedcccdcdc" + userPhoneCT.text);
     bool numberStatus = await checkNumberExist(userPhoneCT.text);
     if (!numberStatus || userPhoneCT.text == passengerOldPhone) {
       showDialog(
@@ -511,8 +526,8 @@ if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]||map["MISSING"]!="UNLOADING"){
       passengerMap['NAME'] = userNameCT.text;
       userMap['MOBILE_NUMBER'] = userPhoneCT.text;
       userMap['COUNTRY_CODE'] = selectedValue!;
-      passengerMap['MOBILE_NUMBER'] =userPhoneCT.text;
-      passengerMap['COUNTRY_CODE'] =selectedValue.toString();
+      passengerMap['MOBILE_NUMBER'] = userPhoneCT.text;
+      passengerMap['COUNTRY_CODE'] = selectedValue.toString();
       passengerMap['EMAIL'] = userEmailCT.text;
       userMap['USER_ID'] = key;
       userMap['DESIGNATION'] = "PASSENGER";
@@ -573,7 +588,10 @@ if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]||map["MISSING"]!="UNLOADING"){
 
       if (from == "EDIT") {
         db.collection('USERS').doc(userId).update(editMap);
-        db.collection('PASSENGERS').doc(userId).set(passengerEditMap, SetOptions(merge: true));
+        db
+            .collection('PASSENGERS')
+            .doc(userId)
+            .set(passengerEditMap, SetOptions(merge: true));
         // update(passengerEditMap);
       } else {
         db.collection('USERS').doc(key).set(userMap);
@@ -776,7 +794,7 @@ if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]||map["MISSING"]!="UNLOADING"){
 
   }
 
-  void generateQrCode(BuildContext context,String staffAirport,String stfName,String arrivalPlace,String flightName) {
+  void generateQrCode(BuildContext context, String staffAirport,String stfName,String arrivalPlace,String flightName) {
     HashMap<String, Object> qrMap = HashMap();
 
     int luggageCount = int.parse(qrLuggageCountCT.text);
@@ -819,6 +837,7 @@ if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]||map["MISSING"]!="UNLOADING"){
             element.id,
             map["NAME"].toString(),
             map["MOBILE_NUMBER"].toString(),
+            map["COUNTRY_CODE"].toString(),
             map["DOB STRING"].toString(),
             map["PASSENGER_IMAGE"].toString(),
             map["STATUS"].toString(),
@@ -839,10 +858,10 @@ if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]||map["MISSING"]!="UNLOADING"){
         userNameCT.text = map["NAME"].toString();
         userEmailCT.text = map["EMAIL"].toString();
         userDobCT.text = map["DOB STRING"].toString();
-        passengerOldPhone = userPhoneCT.text = map["MOBILE_NUMBER"].toString().replaceAll("+91", '');
+        passengerOldPhone = userPhoneCT.text = map["MOBILE_NUMBER"].toString();
         passengerStatusForEdit = map["STATUS"].toString();
-        editImage = map["PASSENGER_IMAGE"]?? "";
-
+        selectedValue= map["COUNTRY_CODE"].toString();
+        editImage = map["PASSENGER_IMAGE"] ?? "";
       }
       notifyListeners();
     });
@@ -853,7 +872,11 @@ if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]||map["MISSING"]!="UNLOADING"){
     modellist.clear();
     filtersStaffList.clear();
 
-    db.collection("STAFF").where("STATUS",isNotEqualTo: "DELETED").snapshots().listen((event) {
+    db
+        .collection("STAFF")
+        .where("STATUS", isNotEqualTo: "DELETED")
+        .snapshots()
+        .listen((event) {
       modellist.clear();
       filtersStaffList.clear();
       for (var element in event.docs) {
@@ -884,11 +907,11 @@ if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]||map["MISSING"]!="UNLOADING"){
   String newPath = "";
   String pdfPath='';
 
-  Future<void> addStaff(
-      BuildContext context, String from, String userId, String status,String addedBy) async {
-    print("adsdadsd"+selectedValue! );
+  Future<void> addStaff(BuildContext context, String from, String userId,
+      String status, String addedBy) async {
+    print("adsdadsd" + selectedValue!);
     bool numberStatus = await checkStaffIdExist(StaffidController.text);
-    if (!numberStatus||PhoneNumberController.text==staffOldPhone) {
+    if (!numberStatus || PhoneNumberController.text == staffOldPhone) {
       showDialog(
           context: context,
           builder: (context) {
@@ -907,8 +930,8 @@ if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]||map["MISSING"]!="UNLOADING"){
       dataMap["TIME"] = DateTime.now();
       userMap["STAFF_ID"] = StaffidController.text;
       // dataMap["EMAIL"] = EmailController.text;
-      dataMap["MOBILE_NUMBER"] =PhoneNumberController.text;
-      dataMap["COUNTRY_CODE"] =selectedValue.toString();
+      dataMap["MOBILE_NUMBER"] = PhoneNumberController.text;
+      dataMap["COUNTRY_CODE"] = selectedValue.toString();
       userMap["MOBILE_NUMBER"] = PhoneNumberController.text;
       userMap["COUNTRY_CODE"] = selectedValue.toString();
       dataMap["AIRPORT"] = staffAirportName.toString();
@@ -982,7 +1005,7 @@ if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]||map["MISSING"]!="UNLOADING"){
 
   void deleteData(BuildContext context, String id, String from) {
     if (from == "Staff") {
-      db.collection("STAFF").doc(id).update({'STATUS':'DELETED'});
+      db.collection("STAFF").doc(id).update({'STATUS': 'DELETED'});
 
       db.collection("USERS").doc(id).delete();
 
@@ -1014,11 +1037,12 @@ if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]||map["MISSING"]!="UNLOADING"){
         StaffidController.text = map['STAFF_ID'].toString();
         staffAirportName = map['AIRPORT'].toString();
         designation = map["DESIGNATION"].toString();
-        selectedValue=map["COUNTRY_CODE"].toString();
-        staffOldPhone = PhoneNumberController.text = map["MOBILE_NUMBER"].toString().replaceAll("+91", '');
+        selectedValue = map["COUNTRY_CODE"].toString();
+        staffOldPhone = PhoneNumberController.text =
+            map["MOBILE_NUMBER"].toString().replaceAll("+91", '');
         // PhoneNumberController.text = map['MOBILE_NUMBER'].toString().substring(3);
         status = map['STATUS'].toString();
-        staffImage = map["PROFILE_IMAGE"]?? "";
+        staffImage = map["PROFILE_IMAGE"] ?? "";
       }
       print("chucifhf" + status.toString());
       Navigator.push(
@@ -1426,14 +1450,15 @@ if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]||map["MISSING"]!="UNLOADING"){
     countryCodeList.clear();
     var jsonText = await rootBundle.loadString('assets/countryCodes.json');
     var jsonResponse = json.decode(jsonText.toString());
-    Map <dynamic, dynamic> map = jsonResponse as Map;
-    List<String> list=[];
+    Map<dynamic, dynamic> map = jsonResponse as Map;
+    List<String> list = [];
     // print('cvdbfgnhm');
     map.forEach((key, value) {
       // print('cvdbfgnhm');
-      if(!list.contains(value['name'].toString())){
+      if (!list.contains(value['name'].toString())) {
         list.add(value['name'].toString());
-        countryCodeList.add(CountryCode(value['name'].toString(),value['code'].toString(),value['dial_code'].toString()));
+        countryCodeList.add(CountryCode(value['name'].toString(),
+            value['code'].toString(), value['dial_code'].toString()));
         // print('${countryCodeList.length}fbhfjy');
         notifyListeners();
       }
