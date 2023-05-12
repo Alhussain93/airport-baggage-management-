@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:luggage_tracking_app/AdminView/staff_screen.dart';
@@ -7,10 +8,12 @@ import 'package:luggage_tracking_app/constant/my_functions.dart';
 import 'package:provider/provider.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import '../Providers/admin_provider.dart';
+import '../UserView/contryCodeModel.dart';
+import '../Users/login_Screen.dart';
 import '../constant/colors.dart';
 import 'home_screen.dart';
 
-class AddStaff extends StatelessWidget {
+class AddStaff extends StatefulWidget {
   String from, userId, status,addedBy;
 
   AddStaff(
@@ -19,15 +22,17 @@ class AddStaff extends StatelessWidget {
       required this.userId,
       required this.status,required this.addedBy})
       : super(key: key);
+
+  @override
+  State<AddStaff> createState() => _AddStaffState();
+}
+
+class _AddStaffState extends State<AddStaff> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  List<String> airportNameList = [
-    'Select Airport',
-    "Salalah International Airport",
-    "Duqm International Airport",
-    "Sohar International Airport",
-    'Khasab Airport'
-  ];
+
+
+
   List<String> Designation = [
     'Select Designation',
     "CHECK_IN",
@@ -35,9 +40,12 @@ class AddStaff extends StatelessWidget {
     "UNLOADING",
     'CHECK_OUT'
   ];
-
+  final _userEditTextController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    AdminProvider mainProvider =
+    Provider.of<AdminProvider>(context, listen: false);
+    mainProvider.fetchCountryJson();
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -123,7 +131,7 @@ class AddStaff extends StatelessWidget {
                         //       ),
                         //     )),
                         ),
-                    from == 'edit'
+                    widget.from == 'edit'
                         ? Padding(
                             padding: const EdgeInsets.only(right: 30, top: 20),
                             child: Consumer<AdminProvider>(
@@ -158,8 +166,8 @@ class AddStaff extends StatelessWidget {
                                       builder: (context, value1, child) {
                                     return InkWell(
                                       onTap: () {
-                                        blockStaff(context, userId,
-                                            status);
+                                        blockStaff(context, widget.userId,
+                                            widget.status);
                                       },
                                       child: Container(
                                         height: 30,
@@ -169,7 +177,7 @@ class AddStaff extends StatelessWidget {
                                                 BorderRadius.circular(20),
                                             color: cnttColor),
                                         child: Center(
-                                            child: status == 'ACTIVE'
+                                            child: widget.status == 'ACTIVE'
                                                 ? const Text("Block")
                                                 : const Text("Unblock")),
                                       ),
@@ -228,74 +236,270 @@ class AddStaff extends StatelessWidget {
                             }
                           }),
                     ),
+
                     // Padding(
                     //   padding: const EdgeInsets.symmetric(horizontal: 17.0),
                     //   child: TextFormField(
+                    //     keyboardType: TextInputType.number,
                     //     validator: (value) {
-                    //       if (value!.trim().isEmpty) {
-                    //         return "Enter Email";
-                    //       } else {
-                    //         return null;
+                    //       if (value!.isEmpty) {
+                    //         return "Please Enter a Phone Number";
+                    //       } else if (!RegExp(
+                    //               r'^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$')
+                    //           .hasMatch(value)) {
+                    //         return "Please Enter a Valid Phone Number";
                     //       }
                     //     },
-                    //     keyboardType: TextInputType.text,
-                    //     controller: value.EmailController,
+                    //     controller: value.PhoneNumberController,
+                    //     inputFormatters: [
+                    //       LengthLimitingTextInputFormatter(10),
+                    //       FilteringTextInputFormatter.digitsOnly,
+                    //     ],
                     //     decoration: InputDecoration(
                     //       helperText: "",
                     //       fillColor: Colors.white,
                     //       contentPadding: const EdgeInsets.all(11),
-                    //       hintText: 'Email',
+                    //       hintText: 'Phone Number',
                     //       border: OutlineInputBorder(
                     //           borderRadius: BorderRadius.circular(15.0)),
                     //     ),
                     //   ),
                     // ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 17.0),
-                      child: TextFormField(
-                        keyboardType: TextInputType.number,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "Please Enter a Phone Number";
-                          } else if (!RegExp(
-                                  r'^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$')
-                              .hasMatch(value)) {
-                            return "Please Enter a Valid Phone Number";
-                          }
-                        },
-                        controller: value.PhoneNumberController,
-                        inputFormatters: [
-                          LengthLimitingTextInputFormatter(10),
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                        decoration: InputDecoration(
-                          helperText: "",
-                          fillColor: Colors.white,
-                          contentPadding: const EdgeInsets.all(11),
-                          hintText: 'Phone Number',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15.0)),
-                        ),
-                      ),
-                    ),
-                    Consumer<AdminProvider>(builder: (context, value1, child) {
+                    Consumer<AdminProvider>(
+                        builder: (context, value1, child) {
+                          return Container(
+                              height: 45,
+                              width: width / 1.1,
+                              decoration: BoxDecoration(
+                              color: Colors.transparent,),
+                              // border: Border.all(width: 1, color: Colors.grey),),
+                            child: TextFormField(
+                              maxLengthEnforcement:
+                              MaxLengthEnforcement.enforced,
+                              onChanged: (value) {
+                                print("hhhhhhhhh" +
+                                    value +
+                                    "  " +
+                                    value1.selectedValue! +
+                                    "  " +
+                                    value1.PhoneNumberController.text);
+                                // if (value.length >= 6) {
+                                //   showTick = true;
+                                //   if (kDebugMode) {
+                                //     // print("ppppllll$showTick");
+                                //   }
+                                //   // SystemChannels.textInput
+                                //   //     .invokeMethod(
+                                //   //         'TextInput.hide');
+                                // } else {
+                                //   showTick = false;
+                                //   print("tick false$showTick");
+                                //
+                                //   currentSate =
+                                //       MobileVarificationState
+                                //           .SHOW_MOBILE_FORM_STATE;
+                                // }
+                                setState(() {});
+                              },
+                              textAlign: TextAlign.center,
+                              keyboardType: TextInputType.phone,
+                              inputFormatters: [
+                                LengthLimitingTextInputFormatter(
+                                    10),
+                                FilteringTextInputFormatter
+                                    .digitsOnly,
+                              ],
+                              textInputAction: TextInputAction.next,
+                              decoration: InputDecoration(
+                                prefixIcon: SizedBox(
+                                  width: 120,
+                                  child: Consumer<AdminProvider>(
+                                      builder:
+                                          (context, value, child) {
+                                        return DropdownSearch<
+                                            CountryCode>(
+                                          dropdownDecoratorProps:
+                                          DropDownDecoratorProps(
+                                              dropdownSearchDecoration:
+                                              InputDecoration(
+                                                  filled: true,
+                                                  fillColor: Colors
+                                                      .transparent,
+                                                  // hintText: 'Select District',
+                                                  // hintStyle: regLabelStyle,
+                                                  // prefix:  const SizedBox(width: 10,),
+                                                  border: OutlineInputBorder(
+                                                      borderSide:
+                                                      BorderSide
+                                                          .none),
+                                                  enabledBorder:
+                                                  InputBorder
+                                                      .none,
+                                                  disabledBorder:
+                                                  InputBorder
+                                                      .none,
+                                                  focusedBorder:
+                                                  InputBorder
+                                                      .none,
+                                                  errorBorder:
+                                                  InputBorder
+                                                      .none,
+                                                  focusedErrorBorder:
+                                                  InputBorder
+                                                      .none)),
+
+                                          selectedItem: value1
+                                              .countrySlct ==
+                                              false
+                                              ? CountryCode(
+                                              "India", "IN", "+91")
+                                              : CountryCode(
+                                              value.country,
+                                              value.code,
+                                              value.selectedValue!),
+                                          onChanged: (e) {
+                                            value1.selectedValue =
+                                                e?.dialCde.toString();
+                                            value1.code =
+                                                e!.code.toString();
+                                            value.country =
+                                                e!.country.toString();
+                                            value1.countrySlct = true;
+                                            // print("sadsasfsadf" +
+                                            //     value1.selectedValue! +
+                                            //     value1.PhoneNumberController
+                                            //         .text +
+                                            //     "kdsjkf   " +
+                                            //     _userEditTextController
+                                            //         .text);
+
+                                            // registrationProvider.qualificationOthers(
+                                            //     e?.degree.toString());
+                                            // adminProvider.getManagerWiseReport(
+                                            //     context, managerID!, fromName,managerName!);
+                                          },
+                                          items: value.countryCodeList,
+                                          // dropdownBuilder: (context, selectedItem) => selectedItem.dialCde,
+                                          filterFn: (item, filter) {
+                                            print("filkjkdsjf" +
+                                                filter +
+                                                item.country);
+                                            return item.country
+                                                .contains(filter) ||
+                                                item.country
+                                                    .toLowerCase()
+                                                    .contains(filter) ||
+                                                item.country
+                                                    .toUpperCase()
+                                                    .contains(filter);
+                                          },
+
+                                          itemAsString:
+                                              (CountryCode u) {
+                                            print("akskaksdsjakd" +
+                                                u.country +
+                                                u.dialCde);
+                                            return u.dialCde;
+                                          },
+
+                                          popupProps: PopupProps.menu(
+                                              searchFieldProps:
+                                              TextFieldProps(
+                                                controller:
+                                                _userEditTextController,
+                                                decoration:
+                                                const InputDecoration(
+                                                    label: Text(
+                                                      'Search Country',
+                                                      style: TextStyle(
+                                                          fontSize: 12),
+                                                    )),
+                                              ),
+                                              showSearchBox: true,
+                                              // showSelectedItems: true,
+                                              fit: FlexFit.tight,
+                                              itemBuilder: (ctx, item,
+                                                  isSelected) {
+                                                return ListTile(
+                                                  selected: isSelected,
+                                                  title: Text(
+                                                    item.country,
+                                                    style: TextStyle(
+                                                        fontSize: 15),
+                                                  ),
+                                                  subtitle: Text(
+                                                    item.dialCde,
+                                                    style: TextStyle(
+                                                        fontSize: 13),
+                                                  ),
+                                                );
+                                              }),
+                                        );
+                                      }),
+                                ),
+                                contentPadding:
+                                EdgeInsets.only(right: 100),
+
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(30),
+                                    borderSide: BorderSide(
+                                      color: Colors.black38,
+                                    )),
+                                enabledBorder: OutlineInputBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(30),
+                                    borderSide: BorderSide(
+                                      color: Colors.black38,
+                                    )),
+                                errorBorder: OutlineInputBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(30),
+                                    borderSide: BorderSide(
+                                      color: Colors.black38,
+                                    )),
+                                disabledBorder: InputBorder.none,
+                                // focusColor: Colors.black,
+                                //    contentPadding:
+                                //    contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                                hintText: "Phone Number",
+
+                                border: OutlineInputBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(15),
+                                    borderSide: const BorderSide(
+                                      color: Colors.grey,
+                                    )),
+                                // filled: true,
+                                // fillColor: my_black,
+                              ),
+                              cursorColor: Colors.black,
+                              controller: value1.PhoneNumberController,
+                              style: const TextStyle(
+                                fontFamily: 'BarlowCondensed',
+                              ),
+                              validator: (value) {
+                                if (value!.trim().isEmpty) {
+                                  return "Please Enter The Mobile Number";
+                                } else if (!RegExp(r'^[0-9]+$')
+                                    .hasMatch(value) ||
+                                    value.trim().length < 10) {
+                                  return "Enter Correct Number";
+                                } else {
+                                  return null;
+                                }
+                              },
+                            ),
+                          );
+                        }),
+                    SizedBox(height: 10,),
+                    Consumer<AdminProvider>(builder: (context1, value1, child) {
                       return Container(
                         height: 45,
                         width: width / 1.1,
                         decoration: BoxDecoration(
                           color: Colors.transparent,
                           border: Border.all(width: 1, color: Colors.grey),
-                          // boxShadow: [
-                          //   BoxShadow(
-                          //     color: Colors.grey.shade300,
-                          //     blurRadius: 1, // soften the shadow
-                          //     spreadRadius: 1.5, //extend the shadow
-                          //     offset: Offset(
-                          //       .2, // Move to right 5  horizontally
-                          //       .2, // Move to bottom 5 Vertically
-                          //     ),
-                          //   )
-                          // ],
                           borderRadius: BorderRadius.circular(15.0),
                         ),
                         child: Padding(
@@ -324,7 +528,7 @@ class AddStaff extends StatelessWidget {
                               onChanged: (newValue) {
                                 value1.staffAirportName = newValue.toString();
                               },
-                              items: airportNameList.map((item1) {
+                              items:value1.airportNameList.map((item1) {
                                 return DropdownMenuItem(
                                     value: item1,
                                     child: Padding(
@@ -488,9 +692,10 @@ class AddStaff extends StatelessWidget {
                         padding: const EdgeInsets.only(top: 40),
                         child: InkWell(
                           onTap: () {
+
                             final FormState? forme = _formKey.currentState;
                             if (forme!.validate()) {
-                              value.addStaff(context, from, userId, status,addedBy);
+                              value.addStaff(context, widget.from, widget.userId, widget.status,widget.addedBy);
                             }
                           },
                           child: Container(

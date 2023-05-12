@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
 import 'dart:math';
@@ -30,6 +31,7 @@ import '../AdminView/add_staff.dart';
 import '../AdminView/generateQr_Screen.dart';
 import '../StaffView/add_tickets.dart';
 import '../StaffView/staff_home_screen.dart';
+import '../UserView/contryCodeModel.dart';
 import '../UserView/splash_screen.dart';
 import '../AdminView/staff_screen.dart';
 import '../UserView/tracking_screen.dart';
@@ -73,10 +75,25 @@ List<String>qrDataList=[];
   TextEditingController userEmailCT = TextEditingController();
   TextEditingController userDobCT = TextEditingController();
 
+  List<CountryCode> countryCodeList=[];
+
+  bool carouselCheck=false;
+  String? selectedValue="+91";
+  String country='';
+  String code="";
+  bool countrySlct=false;
+
   TextEditingController pnrController = TextEditingController();
 
   List<PnrModel> checkList = [];
   List<LuggageModel> luggageList = [];
+  List<String> airportNameList = [
+    'Select Airport',
+    "Salalah International Airport",
+    "Duqm International Airport",
+    "Sohar International Airport",
+    'Khasab Airport'
+  ];
 
   // db.collection("USERS").where("PHONE",isEqualTo:phoneNumber ).get().
   checkingPnr(String pnrControllerText, BuildContext context, String username) {
@@ -177,7 +194,7 @@ List<String>qrDataList=[];
   Future<bool> checkNumberExist(String phone) async {
     var D = await db
         .collection("USERS")
-        .where("MOBILE_NUMBER", isEqualTo: "+91$phone")
+        .where("MOBILE_NUMBER", isEqualTo: phone)
         .get();
 
     if (D.docs.isNotEmpty) {
@@ -393,8 +410,10 @@ if( map["ARRIVAL_PLACE"]==map["UNLOADING_AIRPORT"]){
       passengerMap['ADDED_BY'] = addedBy;
       userMap['NAME'] = userNameCT.text;
       passengerMap['NAME'] = userNameCT.text;
-      userMap['MOBILE_NUMBER'] = "+91${userPhoneCT.text}";
-      passengerMap['MOBILE_NUMBER'] = "+91${userPhoneCT.text}";
+      userMap['MOBILE_NUMBER'] = userPhoneCT.text;
+      userMap['COUNTRY_CODE'] = selectedValue!;
+      passengerMap['MOBILE_NUMBER'] =userPhoneCT.text;
+      passengerMap['COUNTRY_CODE'] =selectedValue.toString();
       passengerMap['EMAIL'] = userEmailCT.text;
       userMap['USER_ID'] = key;
       userMap['DESIGNATION'] = "PASSENGER";
@@ -444,8 +463,10 @@ if( map["ARRIVAL_PLACE"]==map["UNLOADING_AIRPORT"]){
       passengerEditMap["DOB STRING"] = userDobCT.text;
       passengerEditMap["DOB"] = birthDate;
       passengerEditMap['EMAIL'] = userEmailCT.text;
-      editMap['MOBILE_NUMBER'] = "+91${userPhoneCT.text}";
-      passengerEditMap['MOBILE_NUMBER'] = "+91${userPhoneCT.text}";
+      passengerEditMap['COUNTRY_CODE'] = selectedValue.toString();
+      editMap['MOBILE_NUMBER'] = userPhoneCT.text;
+      passengerEditMap['MOBILE_NUMBER'] = userPhoneCT.text;
+      passengerEditMap['COUNTRY_CODE'] = selectedValue.toString();
       editMap['NAME'] = userNameCT.text;
       passengerEditMap['NAME'] = userNameCT.text;
       passengerEditMap["STATUS"] = passengerStatus;
@@ -522,6 +543,7 @@ if( map["ARRIVAL_PLACE"]==map["UNLOADING_AIRPORT"]){
   TextEditingController StaffidController = TextEditingController();
   TextEditingController EmailController = TextEditingController();
   TextEditingController PhoneNumberController = TextEditingController();
+  TextEditingController _userEditTextController = TextEditingController();
   List<AddStaffModel> modellist = [];
   List<AddStaffModel> filtersStaffList = [];
 
@@ -530,6 +552,8 @@ if( map["ARRIVAL_PLACE"]==map["UNLOADING_AIRPORT"]){
   String flightName = 'Select Flight Name';
   String ticketFlightName = 'Select Flight Name';
   String airportName = '';
+  String fromTicket = 'Select Airport';
+  String toTicket = 'Select Airport';
   List<String> flightNameList = [
     "Select Flight Name",
     "Air Arabia Abu dhabi",
@@ -539,6 +563,24 @@ if( map["ARRIVAL_PLACE"]==map["UNLOADING_AIRPORT"]){
     'Etihad Airways'
   ];
 
+  List<String>fromList=[
+    "From",
+    "Select Flight Name",
+    "Air Arabia Abu dhabi",
+    "Vistara",
+    "Air india Express",
+    'Srilankan Airlines',
+    'Etihad Airways'
+  ];
+  List<String>toList=[
+    "To",
+    "Select Flight Name",
+    "Air Arabia Abu dhabi",
+    "Vistara",
+    "Air india Express",
+    'Srilankan Airlines',
+    'Etihad Airways'
+  ];
   Future<void> lockAdminApp() async {
     mRootReference.child("0").onValue.listen((event) {
       if (event.snapshot.value != null) {
@@ -740,6 +782,7 @@ print("fmfmefjmejm"+arrivalPlace);
 
   Future<void> addStaff(
       BuildContext context, String from, String userId, String status,String addedBy) async {
+    print("adsdadsd"+selectedValue! );
     bool numberStatus = await checkStaffIdExist(StaffidController.text);
     if (!numberStatus||PhoneNumberController.text==staffOldPhone) {
       showDialog(
@@ -760,14 +803,21 @@ print("fmfmefjmejm"+arrivalPlace);
       dataMap["TIME"] = DateTime.now();
       userMap["STAFF_ID"] = StaffidController.text;
       // dataMap["EMAIL"] = EmailController.text;
-      dataMap["MOBILE_NUMBER"] = "+91${PhoneNumberController.text}";
-      userMap["MOBILE_NUMBER"] = "+91${PhoneNumberController.text}";
+      dataMap["MOBILE_NUMBER"] =PhoneNumberController.text;
+      dataMap["COUNTRY_CODE"] =selectedValue.toString();
+      userMap["MOBILE_NUMBER"] = PhoneNumberController.text;
+      userMap["COUNTRY_CODE"] = selectedValue.toString();
       dataMap["AIRPORT"] = staffAirportName.toString();
       dataMap["DESIGNATION"] = designation.toString();
       userMap["DESIGNATION"] = designation.toString();
       userMap["TYPE"] = "STAFF";
-      dataMap["ID"] = id.toString();
-      userMap["ID"] = id.toString();
+      if (from == '') {
+        dataMap["ID"] = id.toString();
+        userMap["ID"] = id.toString();
+      } else {
+        dataMap["ID"] = userId;
+        userMap["ID"] = userId;
+      }
       dataMap["STATUS"] = status;
       userMap["STATUS"] = status;
       if (fileImage != null) {
@@ -859,7 +909,8 @@ print("fmfmefjmejm"+arrivalPlace);
         NameController.text = map['NAME'].toString();
         StaffidController.text = map['STAFF_ID'].toString();
         staffAirportName = map['AIRPORT'].toString();
-        designation = map['DESIGNATION'].toString();
+        designation = map["DESIGNATION"].toString();
+        selectedValue=map["COUNTRY_CODE"].toString();
         staffOldPhone = PhoneNumberController.text = map["MOBILE_NUMBER"].toString().replaceAll("+91", '');
         // PhoneNumberController.text = map['MOBILE_NUMBER'].toString().substring(3);
         status = map['STATUS'].toString();
@@ -1000,8 +1051,8 @@ print("fmfmefjmejm"+arrivalPlace);
 
       ticketMap["PNR_ID"] = ticketPnrController.text;
       ticketMap["FLIGHT_NAME"] = ticketFlightName;
-      ticketMap["FROM"] = ticketFromController.text;
-      ticketMap["TO"] = ticketToController.text;
+      ticketMap["FROM"] = fromTicket ;
+      ticketMap["TO"] = toTicket;
       ticketMap["PASSENGERS_NUM"] = passengerCountController.text;
       if (from != 'edit') {
         ticketMap["ID"] = ticketId;
@@ -1251,8 +1302,8 @@ print("fmfmefjmejm"+arrivalPlace);
         ticketFlightName = map['FLIGHT_NAME'].toString();
         ticketPnrController.text = map['PNR_ID'].toString();
         previousPnrId = map['PNR_ID'].toString();
-        ticketFromController.text = map['FROM'].toString();
-        ticketToController.text = map['TO'].toString();
+        fromTicket = map['FROM'].toString();
+        toTicket= map['TO'].toString();
         passengerCountController.text = map['PASSENGERS_NUM'].toString();
         arrivalTime.text = map['ARRIVAL'].toString();
         departureTime.text = map['DEPARTURE'].toString();
@@ -1264,6 +1315,23 @@ print("fmfmefjmejm"+arrivalPlace);
               userId: id, addedBy: '',
             ),
             context);
+      }
+    });
+  }
+  Future<void> fetchCountryJson() async {
+    countryCodeList.clear();
+    var jsonText = await rootBundle.loadString('assets/countryCodes.json');
+    var jsonResponse = json.decode(jsonText.toString());
+    Map <dynamic, dynamic> map = jsonResponse as Map;
+    List<String> list=[];
+    // print('cvdbfgnhm');
+    map.forEach((key, value) {
+      // print('cvdbfgnhm');
+      if(!list.contains(value['name'].toString())){
+        list.add(value['name'].toString());
+        countryCodeList.add(CountryCode(value['name'].toString(),value['code'].toString(),value['dial_code'].toString()));
+        // print('${countryCodeList.length}fbhfjy');
+        notifyListeners();
       }
     });
   }

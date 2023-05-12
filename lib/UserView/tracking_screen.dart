@@ -10,13 +10,15 @@ class TrackingScreen extends StatelessWidget {
   final String pnrid;
   final String username;
 
-  TrackingScreen({Key? key, required this.pnrid, required this.username}) : super(key: key);
+  TrackingScreen({Key? key, required this.pnrid, required this.username})
+      : super(key: key);
   int i = 0;
-  String datee='';
+  String datee = '';
 
   @override
   Widget build(BuildContext context) {
-    AdminProvider adminProvider = Provider.of<AdminProvider>(context, listen: false);
+    AdminProvider adminProvider =
+        Provider.of<AdminProvider>(context, listen: false);
 
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
@@ -45,13 +47,18 @@ class TrackingScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             IconButton(
-                                onPressed: () {finish(context);},
+                                onPressed: () {
+                                  finish(context);
+                                },
                                 icon: const Icon(
                                   Icons.arrow_back_ios_new,
                                   color: Colors.white,
                                 )),
                             const Spacer(),
-                           Image.asset("assets/Frame48.png",scale: 3,),
+                            Image.asset(
+                              "assets/Frame48.png",
+                              scale: 3,
+                            ),
                             const Spacer(),
                             const SizedBox(
                               width: 35,
@@ -171,7 +178,12 @@ class TrackingScreen extends StatelessWidget {
                                                   child: InkWell(
                                                     splashColor: Colors.blue,
                                                     onTap: () {
-                                                      adminProvider.luggageTracking(value1.checkList[index].id);
+                                                      adminProvider
+                                                          .luggageTracking(
+                                                              value1
+                                                                  .checkList[
+                                                                      index]
+                                                                  .id);
                                                       i = index;
                                                     },
                                                     child: Container(
@@ -211,7 +223,7 @@ class TrackingScreen extends StatelessWidget {
                           shrinkWrap: true,
                           itemCount: 1,
                           itemBuilder: (BuildContext context, int index) {
-                           var item = value.luggageList[index];
+                            var item = value.luggageList[index];
                             return Column(
                               children: [
                                 const Text(
@@ -240,14 +252,14 @@ class TrackingScreen extends StatelessWidget {
                                     const Spacer(),
                                     CircleAvatar(
                                         radius: 13,
-                                        backgroundColor: item.status=='CHECK_OUT'
+                                        backgroundColor: item.status ==
+                                                'CHECK_OUT'
                                             ? cl00962A
-                                            : item.status=='UNLOADING'
+                                            : item.status == 'UNLOADING'
                                                 ? cl00962A
-                                                : item.status=='LOADING'
-
+                                                : item.status == 'LOADING'
                                                     ? cl00962A
-                                                    : item.status=='CHECK_IN'
+                                                    : item.status == 'CHECK_IN'
                                                         ? cl00962A
                                                         : cl938492),
                                     const Expanded(
@@ -275,17 +287,18 @@ class TrackingScreen extends StatelessWidget {
                                           height: 30,
                                           width: 10,
                                           decoration: BoxDecoration(
+
                                               borderRadius:
                                                   const BorderRadius.vertical(
                                                       top: Radius.circular(20)),
-                                              color: item.status=='CHECK_OUT'
-
+                                              color: item.status == 'CHECK_OUT'
                                                   ? cl00962A
-                                                  :  item.status=='UNLOADING'
+                                                  : item.status == 'UNLOADING'
                                                       ? cl00962A
-                                                      : item.status=='LOADING'
-                                                  ? cl00962A
-                                                          : item.status=='CHECK_IN'
+                                                      : item.status == 'LOADING'
+                                                          ? cl00962A
+                                                          : item.status ==
+                                                                  'CHECK_IN'
                                                               ? cl00962A
                                                               : cl938492),
                                         ),
@@ -297,11 +310,11 @@ class TrackingScreen extends StatelessWidget {
                                                   const BorderRadius.vertical(
                                                       bottom:
                                                           Radius.circular(20)),
-                                              color: item.status=='CHECK_OUT'
+                                              color: item.status == 'CHECK_OUT'
                                                   ? cl00962A
-                                                  :item.status=='UNLOADING'
+                                                  : item.status == 'UNLOADING'
                                                       ? cl00962A
-                                                      : item.status=='LOADING'
+                                                      : item.status == 'LOADING'
                                                           ? cl00962A
                                                           : cl938492),
                                         ),
@@ -313,9 +326,9 @@ class TrackingScreen extends StatelessWidget {
                                           const EdgeInsets.only(left: 17.0),
                                       child: Column(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.start,
+                                            MainAxisAlignment.center,
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                            CrossAxisAlignment.center,
                                         children: [
                                           Text(
                                             item.checkInPlace,
@@ -323,15 +336,22 @@ class TrackingScreen extends StatelessWidget {
                                                 fontSize: 11,
                                                 fontWeight: FontWeight.w500,
                                                 color: cl252525),
+                                          ),Text(
+                                            "NAME",
+                                            style: TextStyle(
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.w500,
+                                                color: cl252525),
                                           ),
-                                          Text(item.checkInTime!=""
-                                              ?uploadDatee(item.checkInTime)
-                                              :"",
+                                          Text(
+                                              item.checkInTime != ""
+                                                  ? uploadDatee(
+                                                      item.checkInTime)
+                                                  : "",
                                               style: TextStyle(
                                                   fontSize: 11,
                                                   fontWeight: FontWeight.w400,
                                                   color: cl252525)),
-
                                         ],
                                       ),
                                     ))
@@ -354,13 +374,14 @@ class TrackingScreen extends StatelessWidget {
                                     ),
                                     CircleAvatar(
                                         radius: 13,
-                                        backgroundColor: item.status=='CHECK_OUT'
-                                            ? cl00962A
-                                            :  item.status=='UNLOADING'
+                                        backgroundColor:
+                                            item.status == 'CHECK_OUT'
                                                 ? cl00962A
-                                                :  item.status=='LOADING'
+                                                : item.status == 'UNLOADING'
                                                     ? cl00962A
-                                                    : cl938492),
+                                                    : item.status == 'LOADING'
+                                                        ? cl00962A
+                                                        : cl938492),
                                     const SizedBox(
                                       width: 75,
                                     ),
@@ -374,14 +395,13 @@ class TrackingScreen extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     const Spacer(),
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.only(right: 25.0),
+                                    SizedBox(
+                                      width: width / 2.1,
                                       child: Column(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.start,
+                                            MainAxisAlignment.center,
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                            CrossAxisAlignment.center,
                                         children: [
                                           Text(
                                             item.loadingPlace,
@@ -391,10 +411,17 @@ class TrackingScreen extends StatelessWidget {
                                                 color: cl252525),
                                           ),
                                           Text(
-                            item.loadingTime!=""?
-                                              uploadDatee(
-
-                                                  item.loadingTime):"",
+                                            "NAME",
+                                            style: TextStyle(
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.w500,
+                                                color: cl252525),
+                                          ),
+                                          Text(
+                                              item.loadingTime != ""
+                                                  ? uploadDatee(
+                                                      item.loadingTime)
+                                                  : "",
                                               style: TextStyle(
                                                   fontSize: 11,
                                                   fontWeight: FontWeight.w400,
@@ -411,11 +438,11 @@ class TrackingScreen extends StatelessWidget {
                                               borderRadius:
                                                   const BorderRadius.vertical(
                                                       top: Radius.circular(20)),
-                                              color: item.status=='CHECK_OUT'
+                                              color: item.status == 'CHECK_OUT'
                                                   ? cl00962A
-                                                  : item.status=='UNLOADING'
+                                                  : item.status == 'UNLOADING'
                                                       ? cl00962A
-                                                      : item.status=='LOADING'
+                                                      : item.status == 'LOADING'
                                                           ? cl00962A
                                                           : cl938492),
                                         ),
@@ -427,16 +454,16 @@ class TrackingScreen extends StatelessWidget {
                                                   const BorderRadius.vertical(
                                                       bottom:
                                                           Radius.circular(20)),
-                                              color:item.status=='CHECK_OUT'
+                                              color: item.status == 'CHECK_OUT'
                                                   ? cl00962A
-                                                  : item.status=='UNLOADING'
+                                                  : item.status == 'UNLOADING'
                                                       ? cl00962A
                                                       : cl938492),
                                         ),
                                       ],
                                     ),
-                                    const SizedBox(
-                                      width: 85,
+                                    SizedBox(
+                                      width: width / 2.1,
                                     ),
                                     const Spacer()
                                   ],
@@ -449,11 +476,12 @@ class TrackingScreen extends StatelessWidget {
                                     const Spacer(),
                                     CircleAvatar(
                                         radius: 13,
-                                        backgroundColor:item.status=='CHECK_OUT'
-                                            ? cl00962A
-                                            : item.status=='UNLOADING'
+                                        backgroundColor:
+                                            item.status == 'CHECK_OUT'
                                                 ? cl00962A
-                                                : cl938492),
+                                                : item.status == 'UNLOADING'
+                                                    ? cl00962A
+                                                    : cl938492),
                                     const Expanded(
                                       child: Padding(
                                         padding: EdgeInsets.only(left: 8.0),
@@ -483,9 +511,9 @@ class TrackingScreen extends StatelessWidget {
                                               borderRadius:
                                                   const BorderRadius.vertical(
                                                       top: Radius.circular(20)),
-                                              color: item.status=='CHECK_OUT'
+                                              color: item.status == 'CHECK_OUT'
                                                   ? cl00962A
-                                                  : item.status=='UNLOADING'
+                                                  : item.status == 'UNLOADING'
                                                       ? cl00962A
                                                       : cl938492),
                                         ),
@@ -497,7 +525,7 @@ class TrackingScreen extends StatelessWidget {
                                                   const BorderRadius.vertical(
                                                       bottom:
                                                           Radius.circular(20)),
-                                              color:item.status=='CHECK_OUT'
+                                              color: item.status == 'CHECK_OUT'
                                                   ? cl00962A
                                                   : cl938492),
                                         ),
@@ -509,9 +537,9 @@ class TrackingScreen extends StatelessWidget {
                                           const EdgeInsets.only(left: 15.0),
                                       child: Column(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.start,
+                                            MainAxisAlignment.center,
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                            CrossAxisAlignment.center,
                                         children: [
                                           Text(
                                             item.unloadingPlace,
@@ -520,12 +548,22 @@ class TrackingScreen extends StatelessWidget {
                                                 fontWeight: FontWeight.w500,
                                                 color: cl252525),
                                           ),
-                                          Text(item.unloadingTime!=""?uploadDatee(item.unloadingTime):"",
+                                          Text(
+                                            "NAME",
+                                            style: TextStyle(
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.w500,
+                                                color: cl252525),
+                                          ),
+                                          Text(
+                                              item.unloadingTime != ""
+                                                  ? uploadDatee(
+                                                      item.unloadingTime)
+                                                  : "",
                                               style: TextStyle(
                                                   fontSize: 11,
                                                   fontWeight: FontWeight.w400,
                                                   color: cl252525)),
-
                                         ],
                                       ),
                                     ))
@@ -548,9 +586,10 @@ class TrackingScreen extends StatelessWidget {
                                     ),
                                     CircleAvatar(
                                         radius: 13,
-                                        backgroundColor: item.status=='CHECK_OUT'
-                                            ? cl00962A
-                                            : cl938492),
+                                        backgroundColor:
+                                            item.status == 'CHECK_OUT'
+                                                ? cl00962A
+                                                : cl938492),
                                     const SizedBox(
                                       width: 96,
                                     ),
@@ -586,9 +625,9 @@ class TrackingScreen extends StatelessWidget {
     );
   }
 
-  String uploadDatee(String date){
+  String uploadDatee(String date) {
     var startdate = DateTime.fromMillisecondsSinceEpoch(int.parse(date));
     datee = DateFormat("dd-MM-yy hh:mm a").format(startdate);
-    return datee ;
+    return datee;
   }
 }
