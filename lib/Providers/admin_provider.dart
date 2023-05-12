@@ -595,13 +595,14 @@ if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]||map["MISSING"]!="UNLOADING"){
       editMap['MOBILE_NUMBER'] = userPhoneCT.text;
       passengerEditMap['MOBILE_NUMBER'] = userPhoneCT.text;
       passengerEditMap['COUNTRY_CODE'] = selectedValue.toString();
+      editMap['COUNTRY_CODE'] = selectedValue.toString();
       editMap['NAME'] = userNameCT.text;
       passengerEditMap['NAME'] = userNameCT.text;
       passengerEditMap["STATUS"] = passengerStatus;
       editMap["STATUS"] = passengerStatus;
 
       if (from == "EDIT") {
-        db.collection('USERS').doc(userId).update(editMap);
+        db.collection('USERS').doc(userId).set(editMap, SetOptions(merge: true));
         db
             .collection('PASSENGERS')
             .doc(userId)
