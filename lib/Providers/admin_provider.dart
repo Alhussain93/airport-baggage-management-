@@ -54,7 +54,7 @@ class AdminProvider with ChangeNotifier {
   List<TicketModel> ticketList = [];
   List<TicketModel> filterTicketLIst = [];
   String qrData = '';
-List<String>qrDataList=[];
+  List<String> qrDataList = [];
   final ImagePicker picker = ImagePicker();
   String imageUrl = "";
   String staffEditId = "";
@@ -74,13 +74,13 @@ List<String>qrDataList=[];
   TextEditingController userEmailCT = TextEditingController();
   TextEditingController userDobCT = TextEditingController();
 
-  List<CountryCode> countryCodeList=[];
+  List<CountryCode> countryCodeList = [];
 
-  bool carouselCheck=false;
-  String? selectedValue="+91";
-  String country='';
-  String code="";
-  bool countrySlct=false;
+  bool carouselCheck = false;
+  String? selectedValue = "+91";
+  String country = '';
+  String code = "";
+  bool countrySlct = false;
 
   TextEditingController pnrController = TextEditingController();
 
@@ -89,8 +89,8 @@ List<String>qrDataList=[];
 
   // db.collection("USERS").where("PHONE",isEqualTo:phoneNumber ).get().
   checkingPnr(String pnrControllerText, BuildContext context, String username) {
-
-    db.collection("LUGGAGE")
+    db
+        .collection("LUGGAGE")
         .where("PNR_ID", isEqualTo: pnrControllerText)
         .get()
         .then((value) {
@@ -106,11 +106,16 @@ List<String>qrDataList=[];
               map["STATUS"].toString()));
         }
         checkList.sort(
-              (b, a) => b.lagagenumber.compareTo(a.lagagenumber),
+          (b, a) => b.lagagenumber.compareTo(a.lagagenumber),
         );
         if (checkList.length != 0) {
           luggageTracking(checkList[0].id);
-          callNext(TrackingScreen(pnrid: pnrControllerText, username: username,), context);
+          callNext(
+              TrackingScreen(
+                pnrid: pnrControllerText,
+                username: username,
+              ),
+              context);
         }
       } else {
         final snackBar = SnackBar(
@@ -129,24 +134,30 @@ List<String>qrDataList=[];
     });
   }
 
-  luggageTracking(String lid,) {
-
+  luggageTracking(
+    String lid,
+  ) {
     luggageList.clear();
     print(lid.toString() + "gvhb");
-    db.collection("LUGGAGE").doc(lid).snapshots().listen((event){
+    db.collection("LUGGAGE").doc(lid).snapshots().listen((event) {
       Map<dynamic, dynamic> map = event.data() as Map;
 
-
-      luggageList.add(LuggageModel(map['LUGGAGE_ID']??"",
-        map["PNR_ID"]??"", map['CHECK_IN_AIRPORT']??"",  map['CHECK_IN_TIME']??"",
-        map['LOADING_AIRPORT']??"", map['LOADED_TIME']??"",  map['UNLOADING_AIRPORT']??"",
-        map['UNLOADED_TIME']??"",  map['CHECKOUT_AIRPORT']??"", map['CHECKOUT_TIME']??"",map['STATUS']??""));
+      luggageList.add(LuggageModel(
+          map['LUGGAGE_ID'] ?? "",
+          map["PNR_ID"] ?? "",
+          map['CHECK_IN_AIRPORT'] ?? "",
+          map['CHECK_IN_TIME'] ?? "",
+          map['LOADING_AIRPORT'] ?? "",
+          map['LOADED_TIME'] ?? "",
+          map['UNLOADING_AIRPORT'] ?? "",
+          map['UNLOADED_TIME'] ?? "",
+          map['CHECKOUT_AIRPORT'] ?? "",
+          map['CHECKOUT_TIME'] ?? "",
+          map['STATUS'] ?? ""));
       print("fgjgkj" + luggageList.toString());
       notifyListeners();
     });
   }
-
-
 
   String getRandomString(int length) {
     const _chars =
@@ -178,7 +189,6 @@ List<String>qrDataList=[];
     final encrypter = enc.Encrypter(enc.AES(key));
 
     final decrypted2 = encrypter.decrypt64(cipher, iv: iv);
-
 
     return decrypted2;
   }
@@ -218,7 +228,8 @@ List<String>qrDataList=[];
     }
   }
 
-  statusUpdateQrData(String luggageId, String staffDes,String staffAir, BuildContext context) {
+  statusUpdateQrData(String luggageId, String staffDes, String staffAir,
+      BuildContext context) {
     print('how many times happend 2');
 
     DateTime now = DateTime.now();
@@ -226,18 +237,30 @@ List<String>qrDataList=[];
 
     db.collection("LUGGAGE").doc(luggageId).get().then((value) {
       if (value.exists) {
-        if(staffDes=="LOADING"){
-          db.collection("LUGGAGE").doc(luggageId).set({"LOADED_TIME": milli, "STATUS": 'LOADING',"LOADING_AIRPORT":staffAir}, SetOptions(merge: true));
+        if (staffDes == "LOADING") {
+          db.collection("LUGGAGE").doc(luggageId).set({
+            "LOADED_TIME": milli,
+            "STATUS": 'LOADING',
+            "LOADING_AIRPORT": staffAir
+          }, SetOptions(merge: true));
           String text = 'Loading completed';
-                  showAlertDialog(context, text,staffDes);
-        }else if(staffDes=="UNLOADING"){
-          db.collection("LUGGAGE").doc(luggageId).set({"UNLOADED_TIME": milli, "STATUS": 'UNLOADING',"UNLOADING_AIRPORT":staffAir}, SetOptions(merge: true));
+          showAlertDialog(context, text, staffDes);
+        } else if (staffDes == "UNLOADING") {
+          db.collection("LUGGAGE").doc(luggageId).set({
+            "UNLOADED_TIME": milli,
+            "STATUS": 'UNLOADING',
+            "UNLOADING_AIRPORT": staffAir
+          }, SetOptions(merge: true));
           String text = 'Unloading completed';
-          showAlertDialog(context, text,staffDes);
-        }else if(staffDes=="CHECK_OUT"){
-          db.collection("LUGGAGE").doc(luggageId).set({"CHECKOUT_TIME": milli, "STATUS": 'CHECK_OUT',"CHECKOUT_AIRPORT":staffAir}, SetOptions(merge: true));
+          showAlertDialog(context, text, staffDes);
+        } else if (staffDes == "CHECK_OUT") {
+          db.collection("LUGGAGE").doc(luggageId).set({
+            "CHECKOUT_TIME": milli,
+            "STATUS": 'CHECK_OUT',
+            "CHECKOUT_AIRPORT": staffAir
+          }, SetOptions(merge: true));
           String text = 'Checkout completed';
-          showAlertDialog(context, text,staffDes);
+          showAlertDialog(context, text, staffDes);
         }
       }
     });
@@ -352,7 +375,7 @@ List<String>qrDataList=[];
 
   Future<void> userRegistration(BuildContext context1, String addedBy,
       String userId, String from, String passengerStatus) async {
-    print("dinecedcccdcdc"+userPhoneCT.text );
+    print("dinecedcccdcdc" + userPhoneCT.text);
     bool numberStatus = await checkNumberExist(userPhoneCT.text);
     if (!numberStatus || userPhoneCT.text == passengerOldPhone) {
       showDialog(
@@ -373,8 +396,8 @@ List<String>qrDataList=[];
       passengerMap['NAME'] = userNameCT.text;
       userMap['MOBILE_NUMBER'] = userPhoneCT.text;
       userMap['COUNTRY_CODE'] = selectedValue!;
-      passengerMap['MOBILE_NUMBER'] =userPhoneCT.text;
-      passengerMap['COUNTRY_CODE'] =selectedValue.toString();
+      passengerMap['MOBILE_NUMBER'] = userPhoneCT.text;
+      passengerMap['COUNTRY_CODE'] = selectedValue.toString();
       passengerMap['EMAIL'] = userEmailCT.text;
       userMap['USER_ID'] = key;
       userMap['DESIGNATION'] = "PASSENGER";
@@ -435,7 +458,10 @@ List<String>qrDataList=[];
 
       if (from == "EDIT") {
         db.collection('USERS').doc(userId).update(editMap);
-        db.collection('PASSENGERS').doc(userId).set(passengerEditMap, SetOptions(merge: true));
+        db
+            .collection('PASSENGERS')
+            .doc(userId)
+            .set(passengerEditMap, SetOptions(merge: true));
         // update(passengerEditMap);
       } else {
         db.collection('USERS').doc(key).set(userMap);
@@ -605,13 +631,14 @@ List<String>qrDataList=[];
     }
   }
 
-  void generateQrCode(BuildContext context,String staffAirport) {
+  void generateQrCode(BuildContext context, String staffAirport) {
     HashMap<String, Object> qrMap = HashMap();
 
     int luggageCount = int.parse(qrLuggageCountCT.text);
     for (int i = 0; i < luggageCount; i++) {
-      String qrID= DateTime.now().millisecondsSinceEpoch.toString();
-      qrData = DateTime.now().millisecondsSinceEpoch.toString() + getRandomString(4);
+      String qrID = DateTime.now().millisecondsSinceEpoch.toString();
+      qrData =
+          DateTime.now().millisecondsSinceEpoch.toString() + getRandomString(4);
       DateTime now = DateTime.now();
 
       qrMap['NAME'] = qrUserNameCT.text;
@@ -627,16 +654,26 @@ List<String>qrDataList=[];
       qrMap['UNLOADED_TIME'] = '';
       qrMap['CHECKOUT_TIME'] = '';
       qrDataList.add(qrData);
-      print("usuuunxeiuihjk"+qrDataList.length.toString());
+      print("usuuunxeiuihjk" + qrDataList.length.toString());
       db.collection("LUGGAGE").doc(qrData).set(qrMap);
       notifyListeners();
     }
-      callNext(GenerateQrScreen( qrDatasList: qrDataList, qrId: qrData, name: qrUserNameCT.text,), context);
+    callNext(
+        GenerateQrScreen(
+          qrDatasList: qrDataList,
+          qrId: qrData,
+          name: qrUserNameCT.text,
+        ),
+        context);
   }
 
   void fetchCustomers() {
     print("dshjskmdcfgf");
-    db.collection("PASSENGERS").where("STATUS",isNotEqualTo: "DELETED").snapshots().listen((value) {
+    db
+        .collection("PASSENGERS")
+        .where("STATUS", isNotEqualTo: "DELETED")
+        .snapshots()
+        .listen((value) {
       if (value.docs.isNotEmpty) {
         customersList.clear();
         filterCustomersList.clear();
@@ -647,6 +684,7 @@ List<String>qrDataList=[];
             element.id,
             map["NAME"].toString(),
             map["MOBILE_NUMBER"].toString(),
+            map["COUNTRY_CODE"].toString(),
             map["DOB STRING"].toString(),
             map["PASSENGER_IMAGE"].toString(),
             map["STATUS"].toString(),
@@ -658,7 +696,6 @@ List<String>qrDataList=[];
     });
   }
 
-
   void fetchCustomersForEdit(String userId) {
     db.collection("PASSENGERS").doc(userId).get().then((value) async {
       if (value.exists) {
@@ -667,21 +704,24 @@ List<String>qrDataList=[];
         userNameCT.text = map["NAME"].toString();
         userEmailCT.text = map["EMAIL"].toString();
         userDobCT.text = map["DOB STRING"].toString();
-        passengerOldPhone = userPhoneCT.text = map["MOBILE_NUMBER"].toString().replaceAll("+91", '');
+        passengerOldPhone = userPhoneCT.text = map["MOBILE_NUMBER"].toString();
         passengerStatusForEdit = map["STATUS"].toString();
-        editImage = map["PASSENGER_IMAGE"]?? "";
-
+        selectedValue= map["COUNTRY_CODE"].toString();
+        editImage = map["PASSENGER_IMAGE"] ?? "";
       }
       notifyListeners();
     });
   }
 
-
   void fetchStaff() {
     modellist.clear();
     filtersStaffList.clear();
 
-    db.collection("STAFF").where("STATUS",isNotEqualTo: "DELETED").snapshots().listen((event) {
+    db
+        .collection("STAFF")
+        .where("STATUS", isNotEqualTo: "DELETED")
+        .snapshots()
+        .listen((event) {
       modellist.clear();
       filtersStaffList.clear();
       for (var element in event.docs) {
@@ -708,15 +748,14 @@ List<String>qrDataList=[];
 
 //String ref='';
 
-
   String newPath = "";
-  String pdfPath='';
+  String pdfPath = '';
 
-  Future<void> addStaff(
-      BuildContext context, String from, String userId, String status,String addedBy) async {
-    print("adsdadsd"+selectedValue! );
+  Future<void> addStaff(BuildContext context, String from, String userId,
+      String status, String addedBy) async {
+    print("adsdadsd" + selectedValue!);
     bool numberStatus = await checkStaffIdExist(StaffidController.text);
-    if (!numberStatus||PhoneNumberController.text==staffOldPhone) {
+    if (!numberStatus || PhoneNumberController.text == staffOldPhone) {
       showDialog(
           context: context,
           builder: (context) {
@@ -735,8 +774,8 @@ List<String>qrDataList=[];
       dataMap["TIME"] = DateTime.now();
       userMap["STAFF_ID"] = StaffidController.text;
       // dataMap["EMAIL"] = EmailController.text;
-      dataMap["MOBILE_NUMBER"] =PhoneNumberController.text;
-      dataMap["COUNTRY_CODE"] =selectedValue.toString();
+      dataMap["MOBILE_NUMBER"] = PhoneNumberController.text;
+      dataMap["COUNTRY_CODE"] = selectedValue.toString();
       userMap["MOBILE_NUMBER"] = PhoneNumberController.text;
       userMap["COUNTRY_CODE"] = selectedValue.toString();
       dataMap["AIRPORT"] = staffAirportName.toString();
@@ -764,7 +803,6 @@ List<String>qrDataList=[];
         });
         notifyListeners();
       } else {
-
         dataMap['PROFILE_IMAGE'] = staffImage;
       }
       //  dataMap["PROFILE_IMAGE"]=fileImage.toString();
@@ -810,10 +848,9 @@ List<String>qrDataList=[];
 
   void deleteData(BuildContext context, String id, String from) {
     if (from == "Staff") {
-      db.collection("STAFF").doc(id).update({'STATUS':'DELETED'});
+      db.collection("STAFF").doc(id).update({'STATUS': 'DELETED'});
 
       db.collection("USERS").doc(id).delete();
-
 
       notifyListeners();
       finish(context);
@@ -842,11 +879,12 @@ List<String>qrDataList=[];
         StaffidController.text = map['STAFF_ID'].toString();
         staffAirportName = map['AIRPORT'].toString();
         designation = map["DESIGNATION"].toString();
-        selectedValue=map["COUNTRY_CODE"].toString();
-        staffOldPhone = PhoneNumberController.text = map["MOBILE_NUMBER"].toString().replaceAll("+91", '');
+        selectedValue = map["COUNTRY_CODE"].toString();
+        staffOldPhone = PhoneNumberController.text =
+            map["MOBILE_NUMBER"].toString().replaceAll("+91", '');
         // PhoneNumberController.text = map['MOBILE_NUMBER'].toString().substring(3);
         status = map['STATUS'].toString();
-        staffImage = map["PROFILE_IMAGE"]?? "";
+        staffImage = map["PROFILE_IMAGE"] ?? "";
       }
       print("chucifhf" + status.toString());
       Navigator.push(
@@ -855,7 +893,8 @@ List<String>qrDataList=[];
               builder: (context) => AddStaff(
                     from: "edit",
                     userId: id,
-                    status: status, addedBy: '',
+                    status: status,
+                    addedBy: '',
                   )));
     });
 
@@ -975,7 +1014,8 @@ List<String>qrDataList=[];
     print("gggggggggggg666" + fileImage.toString());
   }
 
-  Future<void> addTickets(BuildContext context, String addedBy, String id, String from) async {
+  Future<void> addTickets(
+      BuildContext context, String addedBy, String id, String from) async {
     bool numberStatus = await checkPnrIdExist(ticketPnrController.text);
     if (!numberStatus || ticketPnrController.text == previousPnrId) {
       HashMap<String, Object> ticketMap = HashMap();
@@ -1022,11 +1062,9 @@ List<String>qrDataList=[];
     if (from == "Staff") {
       db.collection("STAFF").doc(id).update({'STATUS': 'BLOCKED'});
       db.collection("USERS").doc(id).update({'STATUS': 'BLOCKED'});
-
     } else {
       db.collection("PASSENGERS").doc(id).update({'STATUS': 'BLOCKED'});
       db.collection("USERS").doc(id).update({'STATUS': 'BLOCKED'});
-
     }
 
     // callNextReplacement(HomeScreen(), context);
@@ -1034,7 +1072,6 @@ List<String>qrDataList=[];
     notifyListeners();
     finish(context);
     finish(context);
-
   }
 
   void unBlockStaff(BuildContext context, String id, String from) {
@@ -1048,8 +1085,6 @@ List<String>qrDataList=[];
     notifyListeners();
     finish(context);
     finish(context);
-
-
   }
 
   logOutAlert(BuildContext context) {
@@ -1190,8 +1225,8 @@ List<String>qrDataList=[];
   Future savePdf(String qrData) async {
     print("hai");
     final pdf = pw.Document();
-   // final font = await rootBundle.load("assets/Hind-Regular.ttf");
-   // final ttf = pw.Font.ttf(font);
+    // final font = await rootBundle.load("assets/Hind-Regular.ttf");
+    // final ttf = pw.Font.ttf(font);
     print("JNmk");
     pdf.addPage(pw.Page(
         pageFormat: PdfPageFormat.a4.portrait,
@@ -1204,8 +1239,7 @@ List<String>qrDataList=[];
                     data: qrData,
                     barcode: pw.Barcode.qrCode(),
                     width: 100,
-                    height:50
-                ),
+                    height: 50),
               ]);
         }));
     Directory documentDirectory = await getApplicationDocumentsDirectory();
@@ -1244,24 +1278,27 @@ List<String>qrDataList=[];
         callNext(
             AddTickets(
               from: 'edit',
-              userId: id, addedBy: '',
+              userId: id,
+              addedBy: '',
             ),
             context);
       }
     });
   }
+
   Future<void> fetchCountryJson() async {
     countryCodeList.clear();
     var jsonText = await rootBundle.loadString('assets/countryCodes.json');
     var jsonResponse = json.decode(jsonText.toString());
-    Map <dynamic, dynamic> map = jsonResponse as Map;
-    List<String> list=[];
+    Map<dynamic, dynamic> map = jsonResponse as Map;
+    List<String> list = [];
     // print('cvdbfgnhm');
     map.forEach((key, value) {
       // print('cvdbfgnhm');
-      if(!list.contains(value['name'].toString())){
+      if (!list.contains(value['name'].toString())) {
         list.add(value['name'].toString());
-        countryCodeList.add(CountryCode(value['name'].toString(),value['code'].toString(),value['dial_code'].toString()));
+        countryCodeList.add(CountryCode(value['name'].toString(),
+            value['code'].toString(), value['dial_code'].toString()));
         // print('${countryCodeList.length}fbhfjy');
         notifyListeners();
       }
