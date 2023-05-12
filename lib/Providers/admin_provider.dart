@@ -242,29 +242,41 @@ List<String>qrDataList=[];
       if (value.exists) {
         if (staffDes == "LOADING") {
           db.collection("LUGGAGE").doc(luggageId).set({
-            "LOADED_TIME": milli,
+            "LOADED_TIMEMILLI": milli,
+            "LOADED_TIME": now,
             "STATUS": 'LOADING',
-            "LOADING_AIRPORT": staffAir
-          ,"LOADING_STAFF_NAME":stfName,"LOADING_STATUS": "CLEARED"}, SetOptions(merge: true));
-        if(staffDes=="LOADING"){
-          db.collection("LUGGAGE").doc(luggageId).set({"LOADED_TIMEMILLI": milli,"LOADED_TIME": now, "STATUS": 'LOADING',"LOADING_AIRPORT":staffAir,"LOADING_STAFF_NAME":stfName,"LOADING_STATUS": "CLEARED","LAST_SCANNED_DATE":milli}, SetOptions(merge: true));
+            "LOADING_AIRPORT": staffAir,
+            "LOADING_STAFF_NAME": stfName,
+            "LOADING_STATUS": "CLEARED",
+            "LAST_SCANNED_DATE": milli
+          }, SetOptions(merge: true));
           String text = 'Loading completed';
-          showAlertDialog(context, text, staffDes,stfName,staffAir);
+          showAlertDialog(context, text, staffDes, stfName, staffAir);
         } else if (staffDes == "UNLOADING") {
           db.collection("LUGGAGE").doc(luggageId).set({
-            "UNLOADED_TIME": milli,
+            "UNLOADED_TIMEMILLI": milli,
+            "UNLOADED_TIME": now,
             "STATUS": 'UNLOADING',
-            "UNLOADING_AIRPORT": staffAir
-          ,"UNLOADING_STAFF_NAME":stfName,"UNLOADING_STATUS": "CLEARED"}, SetOptions(merge: true));
-                  showAlertDialog(context, text,staffDes,stfName,staffAir);
-        }else if(staffDes=="UNLOADING"){
-          db.collection("LUGGAGE").doc(luggageId).set({"UNLOADED_TIMEMILLI": milli,"UNLOADED_TIME": now, "STATUS": 'UNLOADING',"UNLOADING_AIRPORT":staffAir,"UNLOADING_STAFF_NAME":stfName,"LAST_SCANNED_DATE":milli,"LAST_SCANNED_PLACE":staffAir}, SetOptions(merge: true));
+            "UNLOADING_AIRPORT": staffAir,
+            "UNLOADING_STAFF_NAME": stfName,
+            "LAST_SCANNED_DATE": milli,
+            "LAST_SCANNED_PLACE": staffAir
+          }, SetOptions(merge: true));
 
-          await checkMissingLuggageInUnloading(context,luggageId,staffDes,stfName,staffAir);
-
-        }else if(staffDes=="CHECK_OUT"){
-          db.collection("LUGGAGE").doc(luggageId).set({"CHECKOUT_TIMEMILLI": milli,"CHECKOUT_TIME": now, "STATUS": 'CHECK_OUT',"CHECKOUT_AIRPORT":staffAir,"CHECKOUT_STAFF_NAME":stfName,"LAST_SCANNED_DATE":milli,"LAST_SCANNED_PLACE":staffAir}, SetOptions(merge: true));
-          await checkMissingLuggageInCheckout(context,luggageId,staffDes,stfName,staffAir);
+          await checkMissingLuggageInUnloading(
+              context, luggageId, staffDes, stfName, staffAir);
+        } else if (staffDes == "CHECK_OUT") {
+          db.collection("LUGGAGE").doc(luggageId).set({
+            "CHECKOUT_TIMEMILLI": milli,
+            "CHECKOUT_TIME": now,
+            "STATUS": 'CHECK_OUT',
+            "CHECKOUT_AIRPORT": staffAir,
+            "CHECKOUT_STAFF_NAME": stfName,
+            "LAST_SCANNED_DATE": milli,
+            "LAST_SCANNED_PLACE": staffAir
+          }, SetOptions(merge: true));
+          await checkMissingLuggageInCheckout(
+              context, luggageId, staffDes, stfName, staffAir);
         }
       }
     });
