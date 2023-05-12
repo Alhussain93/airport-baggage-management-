@@ -7,8 +7,8 @@ import '../Providers/admin_provider.dart';
 import '../constant/colors.dart';
 
 class MakeQrScreen extends StatelessWidget {
-  String stfAirport;
-   MakeQrScreen({Key? key,required this.stfAirport}) : super(key: key);
+  String stfAirport,stfName;
+   MakeQrScreen({Key? key,required this.stfAirport,required this.stfName}) : super(key: key);
    static final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -118,17 +118,10 @@ class MakeQrScreen extends StatelessWidget {
                               onTap: () async {
                                 var form = _formKey.currentState;
                                 if (form!.validate()) {
-                                  bool numberStatus = await adminProvider. checkPnrIDExist(adminProvider.qrPnrCT.text);
-if(numberStatus){
-  value1.generateQrCode(context, stfAirport);
+                                    adminProvider. checkPnrIDExist(adminProvider.qrPnrCT.text,context,stfAirport,stfName);
 
-} else {
-  ScaffoldMessenger.of(context)
-      .showSnackBar(const SnackBar(
-    content: Text("Sorry, No PNR ID found..."),
-    duration: Duration(milliseconds: 3000),
-  ));
-}
+  // value1.generateQrCode(context, stfAirport,stfName);
+
                                 }
                               },
                               child: Container(
