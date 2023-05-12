@@ -75,12 +75,15 @@ class LoginProvider extends ChangeNotifier {
               auth.signOut();
             }
           }else if(loginUsertype=="ADMIN"){
+            adminProvider.fetchMissingLuggage();
+
             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen(addedBy: loginUsername,)));
           }else if(loginUsertype=="STAFF"){
             if(userStatus=="ACTIVE") {
               db.collection('STAFF').doc(loginUserid).get().then((value) {
                 if (value.exists) {
                   staffAirport = value.get('AIRPORT');
+                  adminProvider.fetchMissingLuggage();
 
                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StaffHomeScreen(designation:designation, stfAirport: staffAirport, addedBy:loginUsername, stfName: loginUsername,)));
 

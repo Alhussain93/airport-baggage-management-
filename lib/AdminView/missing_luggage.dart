@@ -3,10 +3,11 @@ import 'package:provider/provider.dart';
 
 import '../Providers/admin_provider.dart';
 import '../constant/colors.dart';
+import 'package:intl/intl.dart';
 
 class MisingLaggage extends StatelessWidget {
    MisingLaggage({Key? key}) : super(key: key);
-
+   String datee = '';
   @override
   Widget build(BuildContext context) {
     AdminProvider adminProvider =
@@ -66,19 +67,21 @@ class MisingLaggage extends StatelessWidget {
                     Consumer<AdminProvider>(builder: (context, value1, child) {
                       return Container(
                         height: 40,
-                        width: width / 3,
+                        width: width / 2.5,
                         decoration: BoxDecoration(
                           color: Colors.white,
                           border: Border.all(width: 1, color: Colors.grey.shade500),
                           borderRadius: BorderRadius.circular(15.0),
                         ),
                         child: Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(4.0),
                           child: DropdownButtonFormField(
+                            style: TextStyle(fontSize: 10,color: Colors.black),
                             hint: const Text(
                               "Flight",
                               style: TextStyle(
-                                  color: Colors.grey,
+                                fontSize: 10,
+                                  color: Colors.black,
                                   fontWeight: FontWeight.bold),
                             ),
                             value: value1.flightName,
@@ -94,6 +97,7 @@ class MisingLaggage extends StatelessWidget {
                             ),
                             onChanged: (newValue) {
                               value1.flightName = newValue.toString();
+                              value1. sortMissingLuggageFlightBase( newValue.toString());
                               print("rftgyhjuio" + value1.toString());
                             },
                             items:value1.flightNameList.map((item1) {
@@ -118,6 +122,9 @@ class MisingLaggage extends StatelessWidget {
                         height: 35,
                         width: width / 4,
                         decoration: BoxDecoration(
+
+                            border: Border.all(width: 1, color: Colors.grey.shade500),
+
                             borderRadius: BorderRadius.circular(20),
                             color: Colors.white),
                         child: Row(
@@ -144,102 +151,132 @@ class MisingLaggage extends StatelessWidget {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: ListView.builder(
-                shrinkWrap: true,
-                  scrollDirection: Axis.vertical,
-                  physics: ScrollPhysics(),
-                  itemCount: 5,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Padding(
-                      padding:
-                      const EdgeInsets.only(left: 8, right: 8, bottom: 7),
-                      child: Container(
-                          height: height / 4.5,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.shade300,
-                                blurRadius: 1.0,
-                                spreadRadius: 1.0,
-                              )
-                            ],
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 10,bottom: 10,top: 10,right: 10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  "Steffy",
-                                  style: TextStyle(
-                                      fontFamily: "Poppins-SemiBold",
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                                Text(
-                                  "PNR : 45367288376",
-                                  style: TextStyle(
-                                      fontFamily: "Poppins-SemiBold",
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
-                                      color: txtgry),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                const Text(
-                                  "Last Scanned On :",
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.black),
-                                ),
-                                const Text(
-                                  "DXB to LHR",
-                                  style: TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.black),
-                                ),
-                                Text(
-                                  "Screening",
-                                  style: TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w400,
-                                      color: txtred),
-                                ),
-                                 Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "20/3/2023",
-                                      style: TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black),
+            Consumer<AdminProvider>(
+              builder: (context,value1,child) {
+                return Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: value1.missingLuggageList.isNotEmpty?Column(
+                    children: [
+                      ListView.builder(
+                        shrinkWrap: true,
+                          scrollDirection: Axis.vertical,
+                          physics: ScrollPhysics(),
+                          itemCount: value1.missingLuggageList.length,
+                          itemBuilder: (BuildContext context, int index) {
+                          var item= value1.missingLuggageList[index];
+                            return Padding(
+                              padding:
+                              const EdgeInsets.only(left: 8, right: 8, bottom: 7),
+                              child: Container(
+                                  height: height / 5.3,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.shade300,
+                                        blurRadius: 1.0,
+                                        spreadRadius: 1.0,
+                                      )
+                                    ],
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 10,bottom: 10,top: 10,right: 10),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                         Text(
+                                          item.name,
+                                          style: TextStyle(
+                                              fontFamily: "Poppins-SemiBold",
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                        Text(
+                                          item.pnrId,
+                                          style: TextStyle(
+                                              fontFamily: "Poppins-SemiBold",
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w400,
+                                              color: txtgry),
+                                        ),
+                                        const SizedBox(
+                                          height: 3,
+                                        ),
+                                        const Text(
+                                          "Last Scanned On :",
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.black),
+                                        ),
+                                        const SizedBox(
+                                          height: 2,
+                                        ),
+                                         Text(
+                                          item.missingPlace,
+                                          style: TextStyle(
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.black),
+                                        ),
+                                        const SizedBox(
+                                          height: 2,
+                                        ),
+                                        Text(
+                                          item.status,
+                                          style: TextStyle(
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.w400,
+                                              color: txtred),
+                                        ),
+                                        const SizedBox(
+                                          height: 2,
+                                        ),
+                                         Row(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                          children: [
+
+                                            Text(
+                                            uploadDatee(item.scannedDate)  ,
+                                              style: TextStyle(
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Colors.black),
+                                            ),
+                                            // Text(
+                                            //   "23.50",
+                                            //   style: TextStyle(
+                                            //       fontSize: 10,
+                                            //       fontWeight: FontWeight.w400,
+                                            //       color: Colors.black),
+                                            // ),
+                                          ],
+                                        )
+                                      ],
                                     ),
-                                    Text(
-                                      "23.50",
-                                      style: TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black),
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                          )),
-                    );
-                  }),
-            )
+                                  )),
+                            );
+                          }),
+                    ],
+                  ):SizedBox(
+                    height: 300,
+                    child: Center(child: Text(" Data not found !!!",style: TextStyle(fontSize: 15),)),
+                  ),
+                );
+              }
+            ),
+
+
+
           ],
         ),
       ),
     );
   }
+   String uploadDatee(String date) {
+     var startdate = DateTime.fromMillisecondsSinceEpoch(int.parse(date));
+     datee = DateFormat("dd-MM-yy hh:mm a").format(startdate);
+     return datee;
+   }
 }

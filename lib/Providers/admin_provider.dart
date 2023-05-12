@@ -37,6 +37,7 @@ import '../AdminView/staff_screen.dart';
 import '../UserView/tracking_screen.dart';
 import '../admin_model/add_staff_model.dart';
 import '../constant/colors.dart';
+import '../model/missing_Lagguage_Model.dart';
 import '../pnr_model_class.dart';
 import '../strings.dart';
 import '../update.dart';
@@ -86,6 +87,7 @@ List<String>qrDataList=[];
 
   List<PnrModel> checkList = [];
   List<LuggageModel> luggageList = [];
+  List<MissingLuggage> missingLuggageList = [];
   List<String> airportNameList = [
     'Select Airport',
     "Salalah International Airport",
@@ -145,9 +147,9 @@ List<String>qrDataList=[];
 
 
       luggageList.add(LuggageModel(map['LUGGAGE_ID']??"",
-        map["PNR_ID"]??"", map['CHECK_IN_AIRPORT']??"",  map['CHECK_IN_TIME']??"",
-        map['LOADING_AIRPORT']??"", map['LOADED_TIME']??"",  map['UNLOADING_AIRPORT']??"",
-        map['UNLOADED_TIME']??"",  map['CHECKOUT_AIRPORT']??"", map['CHECKOUT_TIME']??"",map['STATUS']??"",map["CHECK_IN_STAFF_NAME"]??"",
+        map["PNR_ID"]??"", map['CHECK_IN_AIRPORT']??"",  map['CHECK_IN_TIMEMILLI']??"",
+        map['LOADING_AIRPORT']??"", map['LOADED_TIMEMILLI']??"",  map['UNLOADING_AIRPORT']??"",
+        map['UNLOADED_TIMEMILLI']??"",  map['CHECKOUT_AIRPORT']??"", map['CHECKOUT_TIMEMILLI']??"",map['STATUS']??"",map["CHECK_IN_STAFF_NAME"]??"",
       map["LOADING_STAFF_NAME"]??"",map["UNLOADING_STAFF_NAME"]??"",map["CHECKOUT_STAFF_NAME"]??""
       ),);
       print("fgjgkj" + luggageList.toString());
@@ -236,16 +238,16 @@ List<String>qrDataList=[];
     db.collection("LUGGAGE").doc(luggageId).get().then((value) async {
       if (value.exists) {
         if(staffDes=="LOADING"){
-          db.collection("LUGGAGE").doc(luggageId).set({"LOADED_TIME": milli, "STATUS": 'LOADING',"LOADING_AIRPORT":staffAir,"LOADING_STAFF_NAME":stfName,"LOADING_STATUS": "CLEARED"}, SetOptions(merge: true));
+          db.collection("LUGGAGE").doc(luggageId).set({"LOADED_TIMEMILLI": milli,"LOADED_TIME": now, "STATUS": 'LOADING',"LOADING_AIRPORT":staffAir,"LOADING_STAFF_NAME":stfName,"LOADING_STATUS": "CLEARED","LAST_SCANNED_DATE":milli}, SetOptions(merge: true));
           String text = 'Loading completed';
                   showAlertDialog(context, text,staffDes,stfName,staffAir);
         }else if(staffDes=="UNLOADING"){
-          db.collection("LUGGAGE").doc(luggageId).set({"UNLOADED_TIME": milli, "STATUS": 'UNLOADING',"UNLOADING_AIRPORT":staffAir,"UNLOADING_STAFF_NAME":stfName,"UNLOADING_STATUS": "CLEARED"}, SetOptions(merge: true));
+          db.collection("LUGGAGE").doc(luggageId).set({"UNLOADED_TIMEMILLI": milli,"UNLOADED_TIME": now, "STATUS": 'UNLOADING',"UNLOADING_AIRPORT":staffAir,"UNLOADING_STAFF_NAME":stfName,"LAST_SCANNED_DATE":milli,"LAST_SCANNED_PLACE":staffAir}, SetOptions(merge: true));
 
           await checkMissingLuggageInUnloading(context,luggageId,staffDes,stfName,staffAir);
 
         }else if(staffDes=="CHECK_OUT"){
-          db.collection("LUGGAGE").doc(luggageId).set({"CHECKOUT_TIME": milli, "STATUS": 'CHECK_OUT',"CHECKOUT_AIRPORT":staffAir,"CHECKOUT_STAFF_NAME":stfName,"CHECKOUT_STATUS": "CLEARED"}, SetOptions(merge: true));
+          db.collection("LUGGAGE").doc(luggageId).set({"CHECKOUT_TIMEMILLI": milli,"CHECKOUT_TIME": now, "STATUS": 'CHECK_OUT',"CHECKOUT_AIRPORT":staffAir,"CHECKOUT_STAFF_NAME":stfName,"LAST_SCANNED_DATE":milli,"LAST_SCANNED_PLACE":staffAir}, SetOptions(merge: true));
           await checkMissingLuggageInCheckout(context,luggageId,staffDes,stfName,staffAir);
         }
       }
@@ -253,12 +255,68 @@ List<String>qrDataList=[];
   }
   
   void fetchMissingLuggage(){
-    db.collection("LUGGAGE").where("LUGGAGE_STATUS").get().then((value) {
+    missingLuggageList.clear();
+
+    db.collection("LUGGAGE")
+        .where("MISSING",isNotEqualTo: "")
+        .get().then((value) {
+      if(value.docs.isNotEmpty){
+        missingLuggageList.clear();
+        for (var element in value.docs) {
+          Map<dynamic, dynamic> map = element.data();
+
+
+          missingLuggageList.add(MissingLuggage(element.id, map["PNR_ID"].toString(), map["STATUS"].toString(), map["NAME"].toString(), map["MISSING"].toString(),  map["ARRIVAL_PLACE"].toString() ,map["FLIGHT_NAME"].toString(),map["LAST_SCANNED_DATE"].toString(),map["LAST_SCANNED_PLACE"].toString()));
+
+        }
+        notifyListeners();
+      }
 
 
 
     });
     
+  }
+  
+  void sortMissingLuggageFlightBase(String flightName){
+    missingLuggageList.clear();
+print("ddddddddddddddddd"+flightName);
+    db.collection("LUGGAGE").where("MISSING",isNotEqualTo: "").where("FLIGHT_NAME",isEqualTo:flightName ).get().then((value) {
+      if(value.docs.isNotEmpty){
+        missingLuggageList.clear();
+        for (var element in value.docs) {
+          Map<dynamic, dynamic> map = element.data();
+
+          missingLuggageList.add(MissingLuggage(element.id, map["PNR_ID"].toString(), map["STATUS"].toString(), map["NAME"].toString(), map["MISSING"].toString(),  map["ARRIVAL_PLACE"].toString() ,map["FLIGHT_NAME"].toString(),map["LAST_SCANNED_DATE"].toString(),map["LAST_SCANNED_PLACE"].toString()));
+
+
+        }
+        notifyListeners();
+      }
+      notifyListeners();
+
+    });
+  }
+
+  void sortMissingLuggageByDateWise(var firstDate,var lastDate){
+    missingLuggageList.clear();
+    db.collection("LUGGAGE").where("MISSING",isNotEqualTo:"").where("LAST_SCANNED_DATE", isGreaterThanOrEqualTo: firstDate)
+        .where("LAST_SCANNED_DATE", isLessThanOrEqualTo: lastDate).get().then((value) {
+          print("jdsjdsjasjkx");
+      if(value.docs.isNotEmpty){
+        missingLuggageList.clear();
+        for (var element in value.docs) {
+          Map<dynamic, dynamic> map = element.data();
+
+          missingLuggageList.add(MissingLuggage(element.id, map["PNR_ID"].toString(), map["STATUS"].toString(), map["NAME"].toString(), map["MISSING"].toString(),  map["ARRIVAL_PLACE"].toString() ,map["FLIGHT_NAME"].toString(),map["LAST_SCANNED_DATE"].toString(),map["LAST_SCANNED_PLACE"].toString()));
+
+
+        }
+        notifyListeners();
+      }
+      notifyListeners();
+
+    });
   }
 
  checkMissingLuggageInUnloading(BuildContext context,String luggageId,String staffDes,String staffName,String staffAirport ) async {
@@ -276,7 +334,7 @@ if( map["ARRIVAL_PLACE"]==map["UNLOADING_AIRPORT"]){
 }else{
   print("WQQWQWQWWQQQQW");
 
-  db.collection("LUGGAGE").doc(luggageId).set({"UNLOADING_STATUS": "MISSING",},SetOptions(merge: true));
+  db.collection("LUGGAGE").doc(luggageId).set({"MISSING": "UNLOADING",},SetOptions(merge: true));
   String text = 'Airport miss matched';
   showAlertDialog(context, text,staffDes,staffName,staffAirport);
   notifyListeners();
@@ -296,7 +354,7 @@ await db.collection("LUGGAGE").doc(luggageId).get().then((value) {
   print("dkwmwjmdjww"+luggageId);
   if(value.exists){
     Map<dynamic, dynamic> map = value.data() as Map;
-if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]){
+if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]||map["MISSING"]!="UNLOADING"){
   print("jjsjxsjjssssss");
   String text = 'Checkout completed';
   showAlertDialog(context, text,staffDes,staffName,staffAirport);
@@ -305,7 +363,7 @@ if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]){
 }else{
   print("WQQWQWQWWQQQQW");
 
-  db.collection("LUGGAGE").doc(luggageId).set({"CHECKOUT_STATUS": "MISSING",},SetOptions(merge: true));
+  db.collection("LUGGAGE").doc(luggageId).set({"MISSING": "CHECKOUT",},SetOptions(merge: true));
   String text = 'Airport miss matched';
   showAlertDialog(context, text,staffDes,staffName,staffAirport);
   notifyListeners();
@@ -410,9 +468,12 @@ if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]){
       birthDate = pickedDate;
       dateSetting(birthDate);
       DateTime dateNow = DateTime.now();
+      print("ZZZZZZZZZZZZ"+birthDate.toString());
+
       int k = dateNow.difference(birthDate).inDays ~/ 365;
-      // userAgeController.text = " $k";
-      // howOldAreYou = k;
+      print("YYYYYYYYYYYYY"+dateNow.toString());
+
+      sortMissingLuggageByDateWise(birthDate,dateNow);
     }
     notifyListeners();
   }
@@ -733,7 +794,8 @@ if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]){
       qrMap['DATE'] = qrID;
       qrMap['STATUS'] = "CHECK_IN";
       qrMap['CHECK_IN_STATUS'] = "CLEARED";
-      qrMap['CHECK_IN_TIME'] = qrID;
+      qrMap['CHECK_IN_TIMEMILLI'] = qrID;
+      qrMap['CHECK_IN_TIME'] = now;
       qrMap['CHECK_IN_STAFF_NAME'] = stfName;
       qrMap['CHECK_IN_AIRPORT'] = staffAirport;
       qrDataList.add(qrData);
