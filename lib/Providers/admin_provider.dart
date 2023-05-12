@@ -147,7 +147,9 @@ List<String>qrDataList=[];
       luggageList.add(LuggageModel(map['LUGGAGE_ID']??"",
         map["PNR_ID"]??"", map['CHECK_IN_AIRPORT']??"",  map['CHECK_IN_TIME']??"",
         map['LOADING_AIRPORT']??"", map['LOADED_TIME']??"",  map['UNLOADING_AIRPORT']??"",
-        map['UNLOADED_TIME']??"",  map['CHECKOUT_AIRPORT']??"", map['CHECKOUT_TIME']??"",map['STATUS']??""));
+        map['UNLOADED_TIME']??"",  map['CHECKOUT_AIRPORT']??"", map['CHECKOUT_TIME']??"",map['STATUS']??"",map["CHECK_IN_STAFF_NAME"]??"",
+      map["LOADING_STAFF_NAME"]??"",map["UNLOADING_STAFF_NAME"]??"",map["CHECKOUT_STAFF_NAME"]??""
+      ),);
       print("fgjgkj" + luggageList.toString());
       notifyListeners();
     });
