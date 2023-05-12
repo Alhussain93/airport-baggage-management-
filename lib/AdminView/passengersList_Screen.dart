@@ -142,7 +142,8 @@ class CustomersListScreen extends StatelessWidget {
                       ),
                     );
                   });
-            })
+            }),
+            const SizedBox(height: 50,)
           ],
         ),
       ),
