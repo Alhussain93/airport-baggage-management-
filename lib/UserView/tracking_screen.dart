@@ -232,9 +232,9 @@ class TrackingScreen extends StatelessWidget {
                                       fontSize: 20,
                                       fontWeight: FontWeight.w700),
                                 ),
-                                const Text(
-                                  "dfdgfwerfdg",
-                                  style: TextStyle(
+                                Text(
+                                  item.checkInPlace,
+                                  style: const TextStyle(
                                       fontSize: 11,
                                       fontWeight: FontWeight.w500),
                                 ),
@@ -287,7 +287,6 @@ class TrackingScreen extends StatelessWidget {
                                           height: 30,
                                           width: 10,
                                           decoration: BoxDecoration(
-
                                               borderRadius:
                                                   const BorderRadius.vertical(
                                                       top: Radius.circular(20)),
@@ -336,8 +335,9 @@ class TrackingScreen extends StatelessWidget {
                                                 fontSize: 11,
                                                 fontWeight: FontWeight.w500,
                                                 color: cl252525),
-                                          ),Text(
-                                            "NAME",
+                                          ),
+                                          Text(
+                                            item.checkInStaffName,
                                             style: TextStyle(
                                                 fontSize: 11,
                                                 fontWeight: FontWeight.w500,
@@ -411,7 +411,7 @@ class TrackingScreen extends StatelessWidget {
                                                 color: cl252525),
                                           ),
                                           Text(
-                                            "NAME",
+                                            item.loadingStaffName,
                                             style: TextStyle(
                                                 fontSize: 11,
                                                 fontWeight: FontWeight.w500,
@@ -549,7 +549,7 @@ class TrackingScreen extends StatelessWidget {
                                                 color: cl252525),
                                           ),
                                           Text(
-                                            "NAME",
+                                            item.unloadingStaffName,
                                             style: TextStyle(
                                                 fontSize: 11,
                                                 fontWeight: FontWeight.w500,
@@ -596,19 +596,48 @@ class TrackingScreen extends StatelessWidget {
                                     const Spacer()
                                   ],
                                 ),
-
-                                // Container(
-                                //   height: 100,
-                                //   width: 10,
-                                //   decoration: BoxDecoration(
-                                //       borderRadius: BorderRadius.circular(20),
-                                //       color: cl938492),
-                                // ),
-                                // const SizedBox(
-                                //   height: 5,
-                                // ),
-                                // CircleAvatar(
-                                //     radius: 13, backgroundColor: cl938492),
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                      width: width / 2,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            item.checkoutPlace,
+                                            style: TextStyle(
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.w500,
+                                                color: cl252525),
+                                          ),
+                                          Text(
+                                            item.checkOutStaffName,
+                                            style: TextStyle(
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.w500,
+                                                color: cl252525),
+                                          ),
+                                          Text(
+                                              item.checkoutTime != ""
+                                                  ? uploadDatee(
+                                                      item.checkoutTime)
+                                                  : "",
+                                              style: TextStyle(
+                                                  fontSize: 11,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: cl252525)),
+                                        ],
+                                      ),
+                                    ),
+                                    const Spacer()
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                )
                               ],
                             );
                           },

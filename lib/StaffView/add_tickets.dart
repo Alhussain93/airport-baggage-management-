@@ -8,8 +8,14 @@ import '../Providers/admin_provider.dart';
 import '../constant/colors.dart';
 
 class AddTickets extends StatelessWidget {
-  String from,userId,addedBy;
-  AddTickets({Key? key,required this.from,required this.userId,required this.addedBy}) : super(key: key);
+  String from, userId, addedBy;
+
+  AddTickets(
+      {Key? key,
+      required this.from,
+      required this.userId,
+      required this.addedBy})
+      : super(key: key);
   static final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
@@ -27,14 +33,15 @@ class AddTickets extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
           child: Consumer<AdminProvider>(builder: (context, values, child) {
             return Column(
               children: [
-                SizedBox(height: height/40,),
+                SizedBox(
+                  height: height / 40,
+                ),
                 Consumer<AdminProvider>(builder: (context, value1, child) {
                   return Padding(
                     padding:
@@ -87,13 +94,16 @@ class AddTickets extends StatelessWidget {
                               padding: const EdgeInsets.only(left: 10),
                               child: Text(
                                 item1,
-                                style: TextStyle(color: fontColor),
+                                style: item1 != "Select Flight Name"
+                                    ? const TextStyle(color: Colors.black)
+                                    : TextStyle(color: fontColor),
                               ),
                             ));
                       }).toList(),
                     ),
                   );
                 }),
+
                 Padding(
                   padding: const EdgeInsets.only(left: 25, right: 25),
                   child: TextFormField(
@@ -118,48 +128,168 @@ class AddTickets extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 25, right: 25),
-                  child: TextFormField(
-                    keyboardType: TextInputType.text,
-                    controller: values.ticketFromController,
+                  child: DropdownButtonFormField(
+                    hint: const Text(
+                      "From",
+                      style: TextStyle(
+                          color: Colors.grey, fontWeight: FontWeight.bold),
+                    ),
+                    value: values.fromTicket,
+                    iconSize: 30,
+                    isExpanded: true,
                     decoration: InputDecoration(
-                      labelText: 'From',
-                      hintText: 'From',
+                      labelText: "From",
+                      labelStyle: TextStyle(color: themecolor),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(color: Colors.grey),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(
+                          color: Colors.grey,
+                        ),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: const BorderSide(color: Colors.red)),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(
+                          color: Colors.grey,
+                        ),
+                      ),
+                      isCollapsed: true,
                       helperText: '',
                       contentPadding: const EdgeInsets.all(11),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0)),
                     ),
+                    onChanged: (newValue) {
+                      values.fromTicket = newValue.toString();
+                    },
                     validator: (value) {
-                      if (value!.trim().isEmpty) {
-                        return "Enter from";
-                      } else {
-                        return null;
+                      if (value == 'Select Airport') {
+                        return 'Select Airport';
                       }
                     },
+                    items: values.airportNameList.map((item3) {
+                      return DropdownMenuItem(
+                          value: item3,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 10),
+                            child: Text(
+                              item3,
+                              style: item3 != "Select Airport"
+                                  ? const TextStyle(color: Colors.black)
+                                  : TextStyle(color: fontColor),
+                            ),
+                          ));
+                    }).toList(),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 25, right: 25),
-                  child: TextFormField(
-                    keyboardType: TextInputType.text,
-                    controller: values.ticketToController,
+                  child: DropdownButtonFormField(
+                    hint: const Text(
+                      "To",
+                      style: TextStyle(
+                          color: Colors.grey, fontWeight: FontWeight.bold),
+                    ),
+                    value: values.toTicket,
+                    iconSize: 30,
+                    isExpanded: true,
                     decoration: InputDecoration(
-                      labelText: 'To',
-                      hintText: 'To',
+                      labelText: "To",
+                      labelStyle: TextStyle(color: themecolor),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(color: Colors.grey),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(
+                          color: Colors.grey,
+                        ),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: const BorderSide(color: Colors.red)),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(
+                          color: Colors.grey,
+                        ),
+                      ),
+                      isCollapsed: true,
                       helperText: '',
                       contentPadding: const EdgeInsets.all(11),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0)),
                     ),
+                    onChanged: (newValue) {
+                      values.toTicket = newValue.toString();
+                    },
                     validator: (value) {
-                      if (value!.trim().isEmpty) {
-                        return "Enter where to";
-                      } else {
-                        return null;
+                      if (value == 'Select Airport') {
+                        return 'Select Airport';
                       }
                     },
+                    items: values.airportNameList.map((item4) {
+                      return DropdownMenuItem(
+                          value: item4,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 10),
+                            child: Text(
+                              item4,
+                              style: item4 != "Select Airport"
+                                  ? const TextStyle(color: Colors.black)
+                                  : TextStyle(color: fontColor),
+                            ),
+                          ));
+                    }).toList(),
                   ),
                 ),
+                // Padding(
+                //   padding: const EdgeInsets.only(left: 25, right: 25),
+                //   child: TextFormField(
+                //     keyboardType: TextInputType.text,
+                //     controller: values.ticketFromController,
+                //     decoration: InputDecoration(
+                //       labelText: 'From',
+                //       hintText: 'From',
+                //       helperText: '',
+                //       contentPadding: const EdgeInsets.all(11),
+                //       border: OutlineInputBorder(
+                //           borderRadius: BorderRadius.circular(15.0)),
+                //     ),
+                //     validator: (value) {
+                //       if (value!.trim().isEmpty) {
+                //         return "Enter from";
+                //       } else {
+                //         return null;
+                //       }
+                //     },
+                //   ),
+                // ),
+                // Padding(
+                //   padding: const EdgeInsets.only(left: 25, right: 25),
+                //   child: TextFormField(
+                //     keyboardType: TextInputType.text,
+                //     controller: values.ticketToController,
+                //     decoration: InputDecoration(
+                //       labelText: 'To',
+                //       hintText: 'To',
+                //       helperText: '',
+                //       contentPadding: const EdgeInsets.all(11),
+                //       border: OutlineInputBorder(
+                //           borderRadius: BorderRadius.circular(15.0)),
+                //     ),
+                //     validator: (value) {
+                //       if (value!.trim().isEmpty) {
+                //         return "Enter where to";
+                //       } else {
+                //         return null;
+                //       }
+                //     },
+                //   ),
+                // ),
                 Padding(
                   padding: const EdgeInsets.only(left: 25, right: 25),
                   child: TextFormField(
@@ -270,7 +400,9 @@ class AddTickets extends StatelessWidget {
                               if (values.ticketPassengersController.text
                                   .trim()
                                   .isNotEmpty) {
-                                values.addPassengersName(values.ticketPassengersController.text, context);
+                                values.addPassengersName(
+                                    values.ticketPassengersController.text,
+                                    context);
                               }
                             },
                             child: Container(
@@ -281,10 +413,11 @@ class AddTickets extends StatelessWidget {
                                       Radius.circular(25)),
                                   color: themecolor,
                                 ),
-                                child:  Center(
+                                child: Center(
                                   child: Text(
                                     'Add',
-                                    style: TextStyle(color: cWhite,
+                                    style: TextStyle(
+                                      color: cWhite,
                                       fontFamily: 'BarlowCondensed',
                                       fontWeight: FontWeight.w500,
                                       fontSize: 14,
@@ -362,27 +495,31 @@ class AddTickets extends StatelessWidget {
                           final FormState? form = _formKey.currentState;
 
                           if (form!.validate()) {
-                            if (values.ticketNameList.isNotEmpty && values.ticketPassengersController.text.isEmpty) {
-                              adminProvider.addTickets(context,addedBy,userId,from);
-
-
+                            if (values.ticketNameList.isNotEmpty &&
+                                values
+                                    .ticketPassengersController.text.isEmpty) {
+                              adminProvider.addTickets(
+                                  context, addedBy, userId, from);
                             } else {
                               final snackBar = SnackBar(
                                 elevation: 6.0,
                                 backgroundColor: cWhite,
                                 behavior: SnackBarBehavior.floating,
                                 shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(20))),
-                                content:  Text(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20))),
+                                content: Text(
                                   values.ticketNameList.isEmpty
-                                  ?"No Passengers Found"
-                                  :values.ticketPassengersController.text.isNotEmpty
-                                  ?"Please Add Passenger":"",
-                                  style: TextStyle(color: Colors.red),
+                                      ? "No Passengers Found"
+                                      : values.ticketPassengersController.text
+                                              .isNotEmpty
+                                          ? "Please Add Passenger"
+                                          : "",
+                                  style: const TextStyle(color: Colors.red),
                                 ),
                               );
-                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar);
                             }
                           }
                         },
@@ -392,20 +529,24 @@ class AddTickets extends StatelessWidget {
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
                               color: themecolor),
-                          child:  Center(
-                              child:from!='edit'? Text(
-                            "Add Ticket",
-                            style: TextStyle(color: cWhite,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                                fontFamily: 'Poppins-SemiBold'),
-                          ):Text(
-                                "Update Ticket",
-                                style: TextStyle(color: cWhite,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w600,
-                                    fontFamily: 'Poppins-SemiBold'),
-                              )),
+                          child: Center(
+                              child: from != 'edit'
+                                  ? Text(
+                                      "Add Ticket",
+                                      style: TextStyle(
+                                          color: cWhite,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w600,
+                                          fontFamily: 'Poppins-SemiBold'),
+                                    )
+                                  : Text(
+                                      "Update Ticket",
+                                      style: TextStyle(
+                                          color: cWhite,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w600,
+                                          fontFamily: 'Poppins-SemiBold'),
+                                    )),
                         ),
                       );
                     }),

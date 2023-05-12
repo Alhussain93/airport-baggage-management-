@@ -82,7 +82,7 @@ class LoginProvider extends ChangeNotifier {
                 if (value.exists) {
                   staffAirport = value.get('AIRPORT');
 
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StaffHomeScreen(designation:designation, stfAirport: staffAirport, addedBy:loginUsername,)));
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StaffHomeScreen(designation:designation, stfAirport: staffAirport, addedBy:loginUsername, stfName: loginUsername,)));
 
                 }
               });
