@@ -452,6 +452,7 @@ if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]){
       String userId, String from, String passengerStatus) async {
     print("dinecedcccdcdc" + userPhoneCT.text);
     bool numberStatus = await checkNumberExist(userPhoneCT.text);
+
     if (!numberStatus || userPhoneCT.text == passengerOldPhone) {
       showDialog(
           context: context1,
@@ -864,72 +865,93 @@ if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]){
   Future<void> addStaff(BuildContext context, String from, String userId,
       String status, String addedBy) async {
     print("adsdadsd" + selectedValue!);
-    bool numberStatus = await checkStaffIdExist(StaffidController.text);
-    if (!numberStatus || PhoneNumberController.text == staffOldPhone) {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return const Center(
-              child: CircularProgressIndicator(color: Colors.green),
-            );
-          });
-      String id = DateTime.now().millisecondsSinceEpoch.toString();
-      //this code is genarate auto id;
-      Map<String, Object> dataMap = HashMap();
-      Map<String, Object> userMap = HashMap();
-      dataMap["ADDED_BY"] = addedBy;
-      dataMap["NAME"] = NameController.text;
-      userMap["NAME"] = NameController.text;
-      dataMap["STAFF_ID"] = StaffidController.text;
-      dataMap["TIME"] = DateTime.now();
-      userMap["STAFF_ID"] = StaffidController.text;
-      // dataMap["EMAIL"] = EmailController.text;
-      dataMap["MOBILE_NUMBER"] = PhoneNumberController.text;
-      dataMap["COUNTRY_CODE"] = selectedValue.toString();
-      userMap["MOBILE_NUMBER"] = PhoneNumberController.text;
-      userMap["COUNTRY_CODE"] = selectedValue.toString();
-      dataMap["AIRPORT"] = staffAirportName.toString();
-      dataMap["DESIGNATION"] = designation.toString();
-      userMap["DESIGNATION"] = designation.toString();
-      userMap["TYPE"] = "STAFF";
-      if (from == '') {
-        dataMap["ID"] = id.toString();
-        userMap["ID"] = id.toString();
-      } else {
-        dataMap["ID"] = userId;
-        userMap["ID"] = userId;
-      }
-      dataMap["STATUS"] = status;
-      userMap["STATUS"] = status;
-      if (fileImage != null) {
-        String time = DateTime.now().millisecondsSinceEpoch.toString();
-        ref = FirebaseStorage.instance.ref().child(time);
-        await ref.putFile(fileImage!).whenComplete(() async {
-          await ref.getDownloadURL().then((value) {
-            dataMap['PROFILE_IMAGE'] = value;
+    
+    db.collection("USERS").where("MOBILE_NUMBER",isEqualTo:PhoneNumberController.text);
+    bool numberStatus = await checkNumberExist(PhoneNumberController.text);
+    bool idStatus = await checkStaffIdExist(StaffidController.text);
+    if (!idStatus){
+      if (!numberStatus || PhoneNumberController.text == staffOldPhone) {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return const Center(
+                child: CircularProgressIndicator(color: Colors.green),
+              );
+            });
+        String id = DateTime.now().millisecondsSinceEpoch.toString();
+        //this code is genarate auto id;
+        Map<String, Object> dataMap = HashMap();
+        Map<String, Object> userMap = HashMap();
+        dataMap["ADDED_BY"] = addedBy;
+        dataMap["NAME"] = NameController.text;
+        userMap["NAME"] = NameController.text;
+        dataMap["STAFF_ID"] = StaffidController.text;
+        dataMap["TIME"] = DateTime.now();
+        userMap["STAFF_ID"] = StaffidController.text;
+        // dataMap["EMAIL"] = EmailController.text;
+        dataMap["MOBILE_NUMBER"] = PhoneNumberController.text;
+        dataMap["COUNTRY_CODE"] = selectedValue.toString();
+        userMap["MOBILE_NUMBER"] = PhoneNumberController.text;
+        userMap["COUNTRY_CODE"] = selectedValue.toString();
+        dataMap["AIRPORT"] = staffAirportName.toString();
+        dataMap["DESIGNATION"] = designation.toString();
+        userMap["DESIGNATION"] = designation.toString();
+        userMap["TYPE"] = "STAFF";
+        if (from == '') {
+          dataMap["ID"] = id.toString();
+          userMap["ID"] = id.toString();
+        } else {
+          dataMap["ID"] = userId;
+          userMap["ID"] = userId;
+        }
+        dataMap["STATUS"] = status;
+        userMap["STATUS"] = status;
+        if (fileImage != null) {
+          String time = DateTime.now().millisecondsSinceEpoch.toString();
+          ref = FirebaseStorage.instance.ref().child(time);
+          await ref.putFile(fileImage!).whenComplete(() async {
+            await ref.getDownloadURL().then((value) {
+              dataMap['PROFILE_IMAGE'] = value;
+              notifyListeners();
+            });
             notifyListeners();
           });
           notifyListeners();
-        });
+        } else {
+          dataMap['PROFILE_IMAGE'] = staffImage;
+        }
+        //  dataMap["PROFILE_IMAGE"]=fileImage.toString();
+        if (from == '') {
+          db.collection("STAFF").doc(id).set(dataMap);
+          db.collection("USERS").doc(id).set(userMap);
+        } else {
+          db.collection("STAFF").doc(userId).update(dataMap);
+          db.collection("USERS").doc(userId).update(userMap);
+        }
         notifyListeners();
-      } else {
-        dataMap['PROFILE_IMAGE'] = staffImage;
-      }
-      //  dataMap["PROFILE_IMAGE"]=fileImage.toString();
-      if (from == '') {
-        db.collection("STAFF").doc(id).set(dataMap);
-        db.collection("USERS").doc(id).set(userMap);
-      } else {
-        db.collection("STAFF").doc(userId).update(dataMap);
-        db.collection("USERS").doc(userId).update(userMap);
-      }
-      notifyListeners();
 
-      finish(context);
-      finish(context);
-      notifyListeners();
-      notifyListeners();
-    } else {
+        finish(context);
+        finish(context);
+        notifyListeners();
+        notifyListeners();
+      }
+      else {
+        final snackBar = SnackBar(
+          elevation: 6.0,
+          backgroundColor: themecolor,
+          behavior: SnackBarBehavior.floating,
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20))),
+          content: Text(
+            "Phone Number Already Exist...",
+            style: TextStyle(color: cWhite),
+          ),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+    }
+
+    else {
       final snackBar = SnackBar(
         elevation: 6.0,
         backgroundColor: themecolor,
