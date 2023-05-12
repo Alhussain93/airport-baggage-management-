@@ -148,7 +148,8 @@ List<String>qrDataList=[];
         map["PNR_ID"]??"", map['CHECK_IN_AIRPORT']??"",  map['CHECK_IN_TIME']??"",
         map['LOADING_AIRPORT']??"", map['LOADED_TIME']??"",  map['UNLOADING_AIRPORT']??"",
         map['UNLOADED_TIME']??"",  map['CHECKOUT_AIRPORT']??"", map['CHECKOUT_TIME']??"",map['STATUS']??"",map["CHECK_IN_STAFF_NAME"]??"",
-      map["LOADING_STAFF_NAME"]??"",map["UNLOADING_STAFF_NAME"]??"",map["CHECKOUT_STAFF_NAME"]??""
+      map["LOADING_STAFF_NAME"]??"",map["UNLOADING_STAFF_NAME"]??"",map["CHECKOUT_STAFF_NAME"]??"",map["CHECK_IN_STATUS"]??"",map["LOADING_STATUS"]??"",
+        map["UNLOADING_STATUS"]??"",map["CHECKOUT_STATUS"]??""
       ),);
       print("fgjgkj" + luggageList.toString());
       notifyListeners();
@@ -575,6 +576,8 @@ if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]){
     departureTime.clear();
     ticketPassengersController.clear();
     ticketNameList.clear();
+    fromTicket="Select Airport";
+    toTicket="Select Airport";
   }
 
   TextEditingController NameController = TextEditingController();

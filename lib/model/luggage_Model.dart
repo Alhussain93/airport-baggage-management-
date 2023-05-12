@@ -14,22 +14,29 @@ class LuggageModel {
   String loadingStaffName;
   String unloadingStaffName;
   String checkOutStaffName;
+  String checkInStatus;
+  String loadingStatus;
+  String unloadingStatus;
+  String checkOutStatus;
 
   LuggageModel(
-    this.id,
-    this.pnrId,
-    this.checkInPlace,
-    this.checkInTime,
-    this.loadingPlace,
-    this.loadingTime,
-    this.unloadingPlace,
-    this.unloadingTime,
-    this.checkoutPlace,
-    this.checkoutTime,
-    this.status,
-    this.checkInStaffName,
-    this.loadingStaffName,
-    this.unloadingStaffName,
-    this.checkOutStaffName,
-  );
+      this.id,
+      this.pnrId,
+      this.checkInPlace,
+      this.checkInTime,
+      this.loadingPlace,
+      this.loadingTime,
+      this.unloadingPlace,
+      this.unloadingTime,
+      this.checkoutPlace,
+      this.checkoutTime,
+      this.status,
+      this.checkInStaffName,
+      this.loadingStaffName,
+      this.unloadingStaffName,
+      this.checkOutStaffName,
+      this.checkInStatus,
+      this.loadingStatus,
+      this.unloadingStatus,
+      this.checkOutStatus);
 }
