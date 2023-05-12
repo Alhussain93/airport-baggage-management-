@@ -239,32 +239,47 @@ List<String>qrDataList=[];
 
     db.collection("LUGGAGE").doc(luggageId).get().then((value) async {
       if (value.exists) {
-        if (staffDes == "LOADING") {
-          db.collection("LUGGAGE").doc(luggageId).set({
-            "LOADED_TIME": milli,
-            "STATUS": 'LOADING',
-            "LOADING_AIRPORT": staffAir
-          ,"LOADING_STAFF_NAME":stfName,"LOADING_STATUS": "CLEARED"}, SetOptions(merge: true));
-        if(staffDes=="LOADING"){
-          db.collection("LUGGAGE").doc(luggageId).set({"LOADED_TIMEMILLI": milli,"LOADED_TIME": now, "STATUS": 'LOADING',"LOADING_AIRPORT":staffAir,"LOADING_STAFF_NAME":stfName,"LOADING_STATUS": "CLEARED","LAST_SCANNED_DATE":milli}, SetOptions(merge: true));
-          String text = 'Loading completed';
-          showAlertDialog(context, text, staffDes,stfName,staffAir);
-        } else if (staffDes == "UNLOADING") {
-          db.collection("LUGGAGE").doc(luggageId).set({
-            "UNLOADED_TIME": milli,
-            "STATUS": 'UNLOADING',
-            "UNLOADING_AIRPORT": staffAir
-          ,"UNLOADING_STAFF_NAME":stfName,"UNLOADING_STATUS": "CLEARED"}, SetOptions(merge: true));
-                  showAlertDialog(context, text,staffDes,stfName,staffAir);
-        }else if(staffDes=="UNLOADING"){
-          db.collection("LUGGAGE").doc(luggageId).set({"UNLOADED_TIMEMILLI": milli,"UNLOADED_TIME": now, "STATUS": 'UNLOADING',"UNLOADING_AIRPORT":staffAir,"UNLOADING_STAFF_NAME":stfName,"LAST_SCANNED_DATE":milli,"LAST_SCANNED_PLACE":staffAir}, SetOptions(merge: true));
+          if (staffDes == "LOADING") {
+            db.collection("LUGGAGE").doc(luggageId).set({
+              "LOADED_TIMEMILLI": milli,
+              "LOADED_TIME": now,
+              "STATUS": 'LOADING',
+              "LOADING_AIRPORT": staffAir,
+              "LOADING_STAFF_NAME": stfName,
+              "LOADING_STATUS": "CLEARED",
+              "LAST_SCANNED_DATEMILLI": milli,
+              "LAST_SCANNED_DATE": now,
+            }, SetOptions(merge: true));
+            String text = 'Loading completed';
+            showAlertDialog(context, text, staffDes, stfName, staffAir);
+          } else if (staffDes == "UNLOADING") {
+            db.collection("LUGGAGE").doc(luggageId).set({
+              "UNLOADED_TIMEMILLI": milli,
+              "UNLOADED_TIME": now,
+              "STATUS": 'UNLOADING',
+              "UNLOADING_AIRPORT": staffAir,
+              "UNLOADING_STAFF_NAME": stfName,
+              "LAST_SCANNED_DATE": now,
+              "LAST_SCANNED_DATEMILLI": milli,
+              "LAST_SCANNED_PLACE": staffAir
+            }, SetOptions(merge: true));
 
-          await checkMissingLuggageInUnloading(context,luggageId,staffDes,stfName,staffAir);
+            await checkMissingLuggageInUnloading(
+                context, luggageId, staffDes, stfName, staffAir);
+          } else if (staffDes == "CHECK_OUT") {
+            db.collection("LUGGAGE").doc(luggageId).set({
+              "CHECKOUT_TIMEMILLI": milli,
+              "CHECKOUT_TIME": now,
+              "STATUS": 'CHECK_OUT',
+              "CHECKOUT_AIRPORT": staffAir,
+              "CHECKOUT_STAFF_NAME": stfName,
+              "LAST_SCANNED_DATE": now,
+              "LAST_SCANNED_DATEMILLI": milli,
+              "LAST_SCANNED_PLACE": staffAir
+            }, SetOptions(merge: true));
+            await checkMissingLuggageInCheckout(context, luggageId, staffDes, stfName, staffAir);
+          }
 
-        }else if(staffDes=="CHECK_OUT"){
-          db.collection("LUGGAGE").doc(luggageId).set({"CHECKOUT_TIMEMILLI": milli,"CHECKOUT_TIME": now, "STATUS": 'CHECK_OUT',"CHECKOUT_AIRPORT":staffAir,"CHECKOUT_STAFF_NAME":stfName,"LAST_SCANNED_DATE":milli,"LAST_SCANNED_PLACE":staffAir}, SetOptions(merge: true));
-          await checkMissingLuggageInCheckout(context,luggageId,staffDes,stfName,staffAir);
-        }
       }
     });
   }
@@ -281,7 +296,7 @@ List<String>qrDataList=[];
           Map<dynamic, dynamic> map = element.data();
 
 
-          missingLuggageList.add(MissingLuggage(element.id, map["PNR_ID"].toString(), map["STATUS"].toString(), map["NAME"].toString(), map["MISSING"].toString(),  map["ARRIVAL_PLACE"].toString() ,map["FLIGHT_NAME"].toString(),map["LAST_SCANNED_DATE"].toString(),map["LAST_SCANNED_PLACE"].toString()));
+          missingLuggageList.add(MissingLuggage(element.id, map["PNR_ID"].toString(), map["STATUS"].toString(), map["NAME"].toString(), map["MISSING"].toString(),  map["ARRIVAL_PLACE"].toString() ,map["FLIGHT_NAME"].toString(),map["LAST_SCANNED_DATEMILLI"].toString(),map["LAST_SCANNED_PLACE"].toString()));
 
         }
         notifyListeners();
@@ -302,7 +317,7 @@ print("ddddddddddddddddd"+flightName);
         for (var element in value.docs) {
           Map<dynamic, dynamic> map = element.data();
 
-          missingLuggageList.add(MissingLuggage(element.id, map["PNR_ID"].toString(), map["STATUS"].toString(), map["NAME"].toString(), map["MISSING"].toString(),  map["ARRIVAL_PLACE"].toString() ,map["FLIGHT_NAME"].toString(),map["LAST_SCANNED_DATE"].toString(),map["LAST_SCANNED_PLACE"].toString()));
+          missingLuggageList.add(MissingLuggage(element.id, map["PNR_ID"].toString(), map["STATUS"].toString(), map["NAME"].toString(), map["MISSING"].toString(),  map["ARRIVAL_PLACE"].toString() ,map["FLIGHT_NAME"].toString(),map["LAST_SCANNED_DATEMILLI"].toString(),map["LAST_SCANNED_PLACE"].toString()));
 
 
         }
@@ -315,15 +330,20 @@ print("ddddddddddddddddd"+flightName);
 
   void sortMissingLuggageByDateWise(var firstDate,var lastDate){
     missingLuggageList.clear();
-    db.collection("LUGGAGE").where("MISSING",isNotEqualTo:"").where("LAST_SCANNED_DATE", isGreaterThanOrEqualTo: firstDate)
+    print("hdsshdchdc"+firstDate.toString());
+    print("WWWWWWWWWW"+lastDate.toString());
+    db.collection("LUGGAGE")
+        .where("MISSING",isEqualTo: "YES")
+        .where("LAST_SCANNED_DATE", isGreaterThanOrEqualTo: firstDate)
         .where("LAST_SCANNED_DATE", isLessThanOrEqualTo: lastDate).get().then((value) {
+          print("hbbuyyyyyyyyy"+value.docs.length.toString());
           print("jdsjdsjasjkx");
       if(value.docs.isNotEmpty){
         missingLuggageList.clear();
         for (var element in value.docs) {
           Map<dynamic, dynamic> map = element.data();
 
-          missingLuggageList.add(MissingLuggage(element.id, map["PNR_ID"].toString(), map["STATUS"].toString(), map["NAME"].toString(), map["MISSING"].toString(),  map["ARRIVAL_PLACE"].toString() ,map["FLIGHT_NAME"].toString(),map["LAST_SCANNED_DATE"].toString(),map["LAST_SCANNED_PLACE"].toString()));
+          missingLuggageList.add(MissingLuggage(element.id, map["PNR_ID"].toString(), map["STATUS"].toString(), map["NAME"].toString(), map["MISSING"].toString(),  map["ARRIVAL_PLACE"].toString() ,map["FLIGHT_NAME"].toString(),map["LAST_SCANNED_DATEMILLI"].toString(),map["LAST_SCANNED_PLACE"].toString()));
 
 
         }
@@ -349,7 +369,7 @@ if( map["ARRIVAL_PLACE"]==map["UNLOADING_AIRPORT"]){
 }else{
   print("WQQWQWQWWQQQQW");
 
-  db.collection("LUGGAGE").doc(luggageId).set({"MISSING": "UNLOADING",},SetOptions(merge: true));
+  db.collection("LUGGAGE").doc(luggageId).set({"MISSING": "YES","MISSING_PLACE": "UNLOADING",},SetOptions(merge: true));
   String text = 'Airport miss matched';
   showAlertDialog(context, text,staffDes,staffName,staffAirport);
   notifyListeners();
@@ -369,7 +389,7 @@ await db.collection("LUGGAGE").doc(luggageId).get().then((value) {
   print("dkwmwjmdjww"+luggageId);
   if(value.exists){
     Map<dynamic, dynamic> map = value.data() as Map;
-if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]||map["MISSING"]!="UNLOADING"){
+if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]){
   print("jjsjxsjjssssss");
   String text = 'Checkout completed';
   showAlertDialog(context, text,staffDes,staffName,staffAirport);
@@ -378,7 +398,7 @@ if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]||map["MISSING"]!="UNLOADING"){
 }else{
   print("WQQWQWQWWQQQQW");
 
-  db.collection("LUGGAGE").doc(luggageId).set({"MISSING": "CHECKOUT",},SetOptions(merge: true));
+  db.collection("LUGGAGE").doc(luggageId).set({"MISSING": "YES","MISSING_PLACE": "CHECKOUT",},SetOptions(merge: true));
   String text = 'Airport miss matched';
   showAlertDialog(context, text,staffDes,staffName,staffAirport);
   notifyListeners();
