@@ -45,6 +45,7 @@ import 'package:pdf/widgets.dart' as pw;
 class AdminProvider with ChangeNotifier {
   final DatabaseReference mRootReference = FirebaseDatabase.instance.ref();
   final FirebaseFirestore db = FirebaseFirestore.instance;
+  String arrivalPlace='';
 
   bool showTick = false;
   DateTime birthDate = DateTime.now();
@@ -225,29 +226,60 @@ List<String>qrDataList=[];
     }
   }
 
-  statusUpdateQrData(String luggageId, String staffDes,String staffAir, BuildContext context) {
+  statusUpdateQrData(String luggageId, String staffDes,String staffAir,String stfName, BuildContext context) {
     print('how many times happend 2');
 
     DateTime now = DateTime.now();
     String milli = now.millisecondsSinceEpoch.toString();
 
-    db.collection("LUGGAGE").doc(luggageId).get().then((value) {
+    db.collection("LUGGAGE").doc(luggageId).get().then((value) async {
       if (value.exists) {
         if(staffDes=="LOADING"){
-          db.collection("LUGGAGE").doc(luggageId).set({"LOADED_TIME": milli, "STATUS": 'LOADING',"LOADING_AIRPORT":staffAir}, SetOptions(merge: true));
+          db.collection("LUGGAGE").doc(luggageId).set({"LOADED_TIME": milli, "STATUS": 'LOADING',"LOADING_AIRPORT":staffAir,"LOADING_STAFF_NAME":stfName}, SetOptions(merge: true));
           String text = 'Loading completed';
                   showAlertDialog(context, text,staffDes);
         }else if(staffDes=="UNLOADING"){
-          db.collection("LUGGAGE").doc(luggageId).set({"UNLOADED_TIME": milli, "STATUS": 'UNLOADING',"UNLOADING_AIRPORT":staffAir}, SetOptions(merge: true));
-          String text = 'Unloading completed';
-          showAlertDialog(context, text,staffDes);
+          db.collection("LUGGAGE").doc(luggageId).set({"UNLOADED_TIME": milli, "STATUS": 'UNLOADING',"UNLOADING_AIRPORT":staffAir,"UNLOADING_STAFF_NAME":stfName}, SetOptions(merge: true));
+
+          await checkMissingLuggage(context,luggageId,staffDes);
+
         }else if(staffDes=="CHECK_OUT"){
-          db.collection("LUGGAGE").doc(luggageId).set({"CHECKOUT_TIME": milli, "STATUS": 'CHECK_OUT',"CHECKOUT_AIRPORT":staffAir}, SetOptions(merge: true));
+          db.collection("LUGGAGE").doc(luggageId).set({"CHECKOUT": milli, "STATUS": 'CHECK_OUT',"CHECKOUT_AIRPORT":staffAir,"CHECKOUT_STAFF_NAME":stfName}, SetOptions(merge: true));
           String text = 'Checkout completed';
           showAlertDialog(context, text,staffDes);
         }
       }
     });
+  }
+
+ checkMissingLuggage(BuildContext context,String luggageId,String staffDes ) async {
+
+await db.collection("LUGGAGE").doc(luggageId).get().then((value) {
+  print("dkwmwjmdjww"+luggageId);
+  if(value.exists){
+    Map<dynamic, dynamic> map = value.data() as Map;
+if( map["ARRIVAL_PLACE"]==map["UNLOADING_AIRPORT"]){
+  print("jjsjxsjjssssss");
+  String text = 'Unloading completed';
+  showAlertDialog(context, text,staffDes);
+  notifyListeners();
+
+}else{
+  print("WQQWQWQWWQQQQW");
+
+  db.collection("LUGGAGE").doc(luggageId).set({"LUGGAGE_STATUS": "MISSING",},SetOptions(merge: true));
+  String text = 'Airport miss matched';
+  showAlertDialog(context, text,staffDes);
+  notifyListeners();
+
+}
+
+  }
+
+
+});
+
+
   }
 
   showAlertDialog(BuildContext context, String text, String staffDes) {
@@ -257,12 +289,12 @@ List<String>qrDataList=[];
       width: 90,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: Textclr,
+        color:text!="Airport miss matched" ?Textclr:txtred,
       ),
       child: TextButton(
-        child: const Text(
+        child:  Text(
           "OK",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
+          style: TextStyle(color:text!="Airport miss matched" ? Colors.black:Colors.white, fontWeight: FontWeight.w600),
         ),
         onPressed: () {
           finish(context);
@@ -618,21 +650,31 @@ List<String>qrDataList=[];
       }
     });
   }
+   checkPnrIDExist(String pnrId,BuildContext context,String staffAirport,String stfName) async {
 
-  Future<bool> checkPnrIDExist(String pnrId) async {
-    var D =
-        await db.collection("TICKETS").where("PNR_ID", isEqualTo: pnrId).get();
-    if (D.docs.isNotEmpty) {
-      print("sjsjmmssmsl");
-      return true;
-    } else {
-      print("HHHHHHHHHHHHHHHHH");
+     db.collection("TICKETS").where("PNR_ID", isEqualTo: pnrId).get().then((value) {
+       if (value.docs.isNotEmpty) {
+         print("sjsjmmssmsl");
+         for (var element in value.docs) {
+           Map<dynamic, dynamic> map = element.data();
+           arrivalPlace= map["TO"].toString();
+           notifyListeners();
+           print("jdjdsjddddddddddd"+arrivalPlace);
+           generateQrCode(context,staffAirport,stfName);
+         }
+       }
+       else {
+         ScaffoldMessenger.of(context)
+             .showSnackBar(const SnackBar(
+           content: Text("Sorry, No PNR ID found..."),
+           duration: Duration(milliseconds: 3000),
+         ));
+       }
+     });
 
-      return false;
-    }
   }
 
-  void generateQrCode(BuildContext context,String staffAirport) {
+  void generateQrCode(BuildContext context,String staffAirport,String stfName) {
     HashMap<String, Object> qrMap = HashMap();
 
     int luggageCount = int.parse(qrLuggageCountCT.text);
@@ -640,19 +682,18 @@ List<String>qrDataList=[];
       String qrID= DateTime.now().millisecondsSinceEpoch.toString();
       qrData = DateTime.now().millisecondsSinceEpoch.toString() + getRandomString(4);
       DateTime now = DateTime.now();
-
+print("fmfmefjmejm"+arrivalPlace);
       qrMap['NAME'] = qrUserNameCT.text;
       qrMap['PNR_ID'] = qrPnrCT.text;
       qrMap['QR_ID'] = qrID;
+      qrMap['ARRIVAL_PLACE'] = arrivalPlace.toString();
       // qrMap['LUGGAGE_COUNT'] = qrLuggageCountCT.text;
       qrMap['LUGGAGE_ID'] = qrData;
       qrMap['DATE'] = qrID;
       qrMap['STATUS'] = "CHECK_IN";
       qrMap['CHECK_IN_TIME'] = qrID;
+      qrMap['CHECK_IN_STAFF_NAME'] = stfName;
       qrMap['CHECK_IN_AIRPORT'] = staffAirport;
-      qrMap['LOADED_TIME'] = '';
-      qrMap['UNLOADED_TIME'] = '';
-      qrMap['CHECKOUT_TIME'] = '';
       qrDataList.add(qrData);
       print("usuuunxeiuihjk"+qrDataList.length.toString());
       db.collection("LUGGAGE").doc(qrData).set(qrMap);
