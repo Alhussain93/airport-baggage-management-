@@ -152,12 +152,12 @@ List<String>qrDataList=[];
 
 
       luggageList.add(LuggageModel(map['LUGGAGE_ID']??"",
-        map["PNR_ID"]??"", map['CHECK_IN_AIRPORT']??"",  map['CHECK_IN_TIMEMILLI']??"",
-        map['LOADING_AIRPORT']??"", map['LOADED_TIMEMILLI']??"",  map['UNLOADING_AIRPORT']??"",
-        map['UNLOADED_TIMEMILLI']??"",  map['CHECKOUT_AIRPORT']??"", map['CHECKOUT_TIMEMILLI']??"",map['STATUS']??"",map["CHECK_IN_STAFF_NAME"]??"",
-      map["LOADING_STAFF_NAME"]??"",map["UNLOADING_STAFF_NAME"]??"",map["CHECKOUT_STAFF_NAME"]??"",map["CHECK_IN_STATUS"]??"",map["LOADING_STATUS"]??"",
-        map["UNLOADING_STATUS"]??"",map["CHECKOUT_STATUS"]??""
-      ),);
+          map["PNR_ID"]??"", map['CHECK_IN_AIRPORT']??"",  map['CHECK_IN_TIMEMILLI']??"",
+          map['LOADING_AIRPORT']??"", map['LOADED_TIMEMILLI']??"",  map['UNLOADING_AIRPORT']??"",
+          map['UNLOADED_TIMEMILLI']??"",  map['CHECKOUT_AIRPORT']??"", map['CHECKOUT_TIMEMILLI']??"",map['STATUS']??"",map["CHECK_IN_STAFF_NAME"]??"",
+          map["LOADING_STAFF_NAME"]??"",map["UNLOADING_STAFF_NAME"]??"",map["CHECKOUT_STAFF_NAME"]??"",map["CHECK_IN_STATUS"]??"",map["LOADING_STATUS"]??"",
+          map["UNLOADING_STATUS"]??"",map["CHECKOUT_STATUS"]??""
+      ));
       print("fgjgkj" + luggageList.toString());
       notifyListeners();
     });
@@ -240,44 +240,47 @@ List<String>qrDataList=[];
 
     db.collection("LUGGAGE").doc(luggageId).get().then((value) async {
       if (value.exists) {
-        if (staffDes == "LOADING") {
-          db.collection("LUGGAGE").doc(luggageId).set({
-            "LOADED_TIMEMILLI": milli,
-            "LOADED_TIME": now,
-            "STATUS": 'LOADING',
-            "LOADING_AIRPORT": staffAir,
-            "LOADING_STAFF_NAME": stfName,
-            "LOADING_STATUS": "CLEARED",
-            "LAST_SCANNED_DATE": milli
-          }, SetOptions(merge: true));
-          String text = 'Loading completed';
-          showAlertDialog(context, text, staffDes, stfName, staffAir);
-        } else if (staffDes == "UNLOADING") {
-          db.collection("LUGGAGE").doc(luggageId).set({
-            "UNLOADED_TIMEMILLI": milli,
-            "UNLOADED_TIME": now,
-            "STATUS": 'UNLOADING',
-            "UNLOADING_AIRPORT": staffAir,
-            "UNLOADING_STAFF_NAME": stfName,
-            "LAST_SCANNED_DATE": milli,
-            "LAST_SCANNED_PLACE": staffAir
-          }, SetOptions(merge: true));
+          if (staffDes == "LOADING") {
+            db.collection("LUGGAGE").doc(luggageId).set({
+              "LOADED_TIMEMILLI": milli,
+              "LOADED_TIME": now,
+              "STATUS": 'LOADING',
+              "LOADING_AIRPORT": staffAir,
+              "LOADING_STAFF_NAME": stfName,
+              "LOADING_STATUS": "CLEARED",
+              "LAST_SCANNED_DATEMILLI": milli,
+              "LAST_SCANNED_DATE": now,
+            }, SetOptions(merge: true));
+            String text = 'Loading completed';
+            showAlertDialog(context, text, staffDes, stfName, staffAir);
+          } else if (staffDes == "UNLOADING") {
+            db.collection("LUGGAGE").doc(luggageId).set({
+              "UNLOADED_TIMEMILLI": milli,
+              "UNLOADED_TIME": now,
+              "STATUS": 'UNLOADING',
+              "UNLOADING_AIRPORT": staffAir,
+              "UNLOADING_STAFF_NAME": stfName,
+              "LAST_SCANNED_DATE": now,
+              "LAST_SCANNED_DATEMILLI": milli,
+              "LAST_SCANNED_PLACE": staffAir
+            }, SetOptions(merge: true));
 
-          await checkMissingLuggageInUnloading(
-              context, luggageId, staffDes, stfName, staffAir);
-        } else if (staffDes == "CHECK_OUT") {
-          db.collection("LUGGAGE").doc(luggageId).set({
-            "CHECKOUT_TIMEMILLI": milli,
-            "CHECKOUT_TIME": now,
-            "STATUS": 'CHECK_OUT',
-            "CHECKOUT_AIRPORT": staffAir,
-            "CHECKOUT_STAFF_NAME": stfName,
-            "LAST_SCANNED_DATE": milli,
-            "LAST_SCANNED_PLACE": staffAir
-          }, SetOptions(merge: true));
-          await checkMissingLuggageInCheckout(
-              context, luggageId, staffDes, stfName, staffAir);
-        }
+            await checkMissingLuggageInUnloading(
+                context, luggageId, staffDes, stfName, staffAir);
+          } else if (staffDes == "CHECK_OUT") {
+            db.collection("LUGGAGE").doc(luggageId).set({
+              "CHECKOUT_TIMEMILLI": milli,
+              "CHECKOUT_TIME": now,
+              "STATUS": 'CHECK_OUT',
+              "CHECKOUT_AIRPORT": staffAir,
+              "CHECKOUT_STAFF_NAME": stfName,
+              "LAST_SCANNED_DATE": now,
+              "LAST_SCANNED_DATEMILLI": milli,
+              "LAST_SCANNED_PLACE": staffAir
+            }, SetOptions(merge: true));
+            await checkMissingLuggageInCheckout(context, luggageId, staffDes, stfName, staffAir);
+          }
+
       }
     });
   }
@@ -294,7 +297,7 @@ List<String>qrDataList=[];
           Map<dynamic, dynamic> map = element.data();
 
 
-          missingLuggageList.add(MissingLuggage(element.id, map["PNR_ID"].toString(), map["STATUS"].toString(), map["NAME"].toString(), map["MISSING"].toString(),  map["ARRIVAL_PLACE"].toString() ,map["FLIGHT_NAME"].toString(),map["LAST_SCANNED_DATE"].toString(),map["LAST_SCANNED_PLACE"].toString()));
+          missingLuggageList.add(MissingLuggage(element.id, map["PNR_ID"].toString(), map["STATUS"].toString(), map["NAME"].toString(), map["MISSING"].toString(),  map["ARRIVAL_PLACE"].toString() ,map["FLIGHT_NAME"].toString(),map["LAST_SCANNED_DATEMILLI"].toString(),map["LAST_SCANNED_PLACE"].toString()));
 
         }
         notifyListeners();
@@ -315,7 +318,7 @@ print("ddddddddddddddddd"+flightName);
         for (var element in value.docs) {
           Map<dynamic, dynamic> map = element.data();
 
-          missingLuggageList.add(MissingLuggage(element.id, map["PNR_ID"].toString(), map["STATUS"].toString(), map["NAME"].toString(), map["MISSING"].toString(),  map["ARRIVAL_PLACE"].toString() ,map["FLIGHT_NAME"].toString(),map["LAST_SCANNED_DATE"].toString(),map["LAST_SCANNED_PLACE"].toString()));
+          missingLuggageList.add(MissingLuggage(element.id, map["PNR_ID"].toString(), map["STATUS"].toString(), map["NAME"].toString(), map["MISSING"].toString(),  map["ARRIVAL_PLACE"].toString() ,map["FLIGHT_NAME"].toString(),map["LAST_SCANNED_DATEMILLI"].toString(),map["LAST_SCANNED_PLACE"].toString()));
 
 
         }
@@ -328,15 +331,20 @@ print("ddddddddddddddddd"+flightName);
 
   void sortMissingLuggageByDateWise(var firstDate,var lastDate){
     missingLuggageList.clear();
-    db.collection("LUGGAGE").where("MISSING",isNotEqualTo:"").where("LAST_SCANNED_DATE", isGreaterThanOrEqualTo: firstDate)
+    print("hdsshdchdc"+firstDate.toString());
+    print("WWWWWWWWWW"+lastDate.toString());
+    db.collection("LUGGAGE")
+        .where("MISSING",isEqualTo:"YES")
+        .where("LAST_SCANNED_DATE", isGreaterThanOrEqualTo: firstDate)
         .where("LAST_SCANNED_DATE", isLessThanOrEqualTo: lastDate).get().then((value) {
+          print("hbbuyyyyyyyyy"+value.docs.length.toString());
           print("jdsjdsjasjkx");
       if(value.docs.isNotEmpty){
         missingLuggageList.clear();
         for (var element in value.docs) {
           Map<dynamic, dynamic> map = element.data();
 
-          missingLuggageList.add(MissingLuggage(element.id, map["PNR_ID"].toString(), map["STATUS"].toString(), map["NAME"].toString(), map["MISSING"].toString(),  map["ARRIVAL_PLACE"].toString() ,map["FLIGHT_NAME"].toString(),map["LAST_SCANNED_DATE"].toString(),map["LAST_SCANNED_PLACE"].toString()));
+          missingLuggageList.add(MissingLuggage(element.id, map["PNR_ID"].toString(), map["STATUS"].toString(), map["NAME"].toString(), map["MISSING"].toString(),  map["ARRIVAL_PLACE"].toString() ,map["FLIGHT_NAME"].toString(),map["LAST_SCANNED_DATEMILLI"].toString(),map["LAST_SCANNED_PLACE"].toString()));
 
 
         }
@@ -362,7 +370,7 @@ if( map["ARRIVAL_PLACE"]==map["UNLOADING_AIRPORT"]){
 }else{
   print("WQQWQWQWWQQQQW");
 
-  db.collection("LUGGAGE").doc(luggageId).set({"MISSING": "UNLOADING",},SetOptions(merge: true));
+  db.collection("LUGGAGE").doc(luggageId).set({"MISSING": "YES","MISSING_PLACE": "UNLOADING",},SetOptions(merge: true));
   String text = 'Airport miss matched';
   showAlertDialog(context, text,staffDes,staffName,staffAirport);
   notifyListeners();
@@ -382,7 +390,7 @@ await db.collection("LUGGAGE").doc(luggageId).get().then((value) {
   print("dkwmwjmdjww"+luggageId);
   if(value.exists){
     Map<dynamic, dynamic> map = value.data() as Map;
-if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]||map["MISSING"]!="UNLOADING"){
+if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]){
   print("jjsjxsjjssssss");
   String text = 'Checkout completed';
   showAlertDialog(context, text,staffDes,staffName,staffAirport);
@@ -391,7 +399,7 @@ if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]||map["MISSING"]!="UNLOADING"){
 }else{
   print("WQQWQWQWWQQQQW");
 
-  db.collection("LUGGAGE").doc(luggageId).set({"MISSING": "CHECKOUT",},SetOptions(merge: true));
+  db.collection("LUGGAGE").doc(luggageId).set({"MISSING": "YES","MISSING_PLACE": "CHECKOUT",},SetOptions(merge: true));
   String text = 'Airport miss matched';
   showAlertDialog(context, text,staffDes,staffName,staffAirport);
   notifyListeners();
@@ -520,7 +528,6 @@ if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]||map["MISSING"]!="UNLOADING"){
       String userId, String from, String passengerStatus) async {
     print("dinecedcccdcdc" + userPhoneCT.text);
     bool numberStatus = await checkNumberExist(userPhoneCT.text);
-
     if (!numberStatus || userPhoneCT.text == passengerOldPhone) {
       showDialog(
           context: context1,
@@ -669,8 +676,6 @@ if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]||map["MISSING"]!="UNLOADING"){
     departureTime.clear();
     ticketPassengersController.clear();
     ticketNameList.clear();
-    fromTicket="Select Airport";
-    toTicket="Select Airport";
   }
 
   TextEditingController NameController = TextEditingController();
@@ -927,93 +932,73 @@ if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]||map["MISSING"]!="UNLOADING"){
   Future<void> addStaff(BuildContext context, String from, String userId,
       String status, String addedBy) async {
     print("adsdadsd" + selectedValue!);
-
-    db.collection("USERS").where("MOBILE_NUMBER",isEqualTo:PhoneNumberController.text);
-    bool numberStatus = await checkNumberExist(PhoneNumberController.text);
-    bool idStatus = await checkStaffIdExist(StaffidController.text);
-    if (!idStatus){
-      if (!numberStatus || PhoneNumberController.text == staffOldPhone) {
-        showDialog(
-            context: context,
-            builder: (context) {
-              return const Center(
-                child: CircularProgressIndicator(color: Colors.green),
-              );
-            });
-        String id = DateTime.now().millisecondsSinceEpoch.toString();
-        //this code is genarate auto id;
-        Map<String, Object> dataMap = HashMap();
-        Map<String, Object> userMap = HashMap();
-        dataMap["ADDED_BY"] = addedBy;
-        dataMap["NAME"] = NameController.text;
-        userMap["NAME"] = NameController.text;
-        dataMap["STAFF_ID"] = StaffidController.text;
-        dataMap["TIME"] = DateTime.now();
-        userMap["STAFF_ID"] = StaffidController.text;
-        // dataMap["EMAIL"] = EmailController.text;
-        dataMap["MOBILE_NUMBER"] = PhoneNumberController.text;
-        dataMap["COUNTRY_CODE"] = selectedValue.toString();
-        userMap["MOBILE_NUMBER"] = PhoneNumberController.text;
-        userMap["COUNTRY_CODE"] = selectedValue.toString();
-        dataMap["AIRPORT"] = staffAirportName.toString();
-        dataMap["DESIGNATION"] = designation.toString();
-        userMap["DESIGNATION"] = designation.toString();
-        userMap["TYPE"] = "STAFF";
-        if (from == '') {
-          dataMap["ID"] = id.toString();
-          userMap["ID"] = id.toString();
-        } else {
-          dataMap["ID"] = userId;
-          userMap["ID"] = userId;
-        }
-        dataMap["STATUS"] = status;
-        userMap["STATUS"] = status;
-        if (fileImage != null) {
-          String time = DateTime.now().millisecondsSinceEpoch.toString();
-          ref = FirebaseStorage.instance.ref().child(time);
-          await ref.putFile(fileImage!).whenComplete(() async {
-            await ref.getDownloadURL().then((value) {
-              dataMap['PROFILE_IMAGE'] = value;
-              notifyListeners();
-            });
+    bool numberStatus = await checkStaffIdExist(StaffidController.text);
+    if (!numberStatus || PhoneNumberController.text == staffOldPhone) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return const Center(
+              child: CircularProgressIndicator(color: Colors.green),
+            );
+          });
+      String id = DateTime.now().millisecondsSinceEpoch.toString();
+      //this code is genarate auto id;
+      Map<String, Object> dataMap = HashMap();
+      Map<String, Object> userMap = HashMap();
+      dataMap["ADDED_BY"] = addedBy;
+      dataMap["NAME"] = NameController.text;
+      userMap["NAME"] = NameController.text;
+      dataMap["STAFF_ID"] = StaffidController.text;
+      dataMap["TIME"] = DateTime.now();
+      userMap["STAFF_ID"] = StaffidController.text;
+      // dataMap["EMAIL"] = EmailController.text;
+      dataMap["MOBILE_NUMBER"] = PhoneNumberController.text;
+      dataMap["COUNTRY_CODE"] = selectedValue.toString();
+      userMap["MOBILE_NUMBER"] = PhoneNumberController.text;
+      userMap["COUNTRY_CODE"] = selectedValue.toString();
+      dataMap["AIRPORT"] = staffAirportName.toString();
+      dataMap["DESIGNATION"] = designation.toString();
+      userMap["DESIGNATION"] = designation.toString();
+      userMap["TYPE"] = "STAFF";
+      if (from == '') {
+        dataMap["ID"] = id.toString();
+        userMap["ID"] = id.toString();
+      } else {
+        dataMap["ID"] = userId;
+        userMap["ID"] = userId;
+      }
+      dataMap["STATUS"] = status;
+      userMap["STATUS"] = status;
+      if (fileImage != null) {
+        String time = DateTime.now().millisecondsSinceEpoch.toString();
+        ref = FirebaseStorage.instance.ref().child(time);
+        await ref.putFile(fileImage!).whenComplete(() async {
+          await ref.getDownloadURL().then((value) {
+            dataMap['PROFILE_IMAGE'] = value;
             notifyListeners();
           });
           notifyListeners();
-        } else {
-          dataMap['PROFILE_IMAGE'] = staffImage;
-        }
-        //  dataMap["PROFILE_IMAGE"]=fileImage.toString();
-        if (from == '') {
-          db.collection("STAFF").doc(id).set(dataMap);
-          db.collection("USERS").doc(id).set(userMap);
-        } else {
-          db.collection("STAFF").doc(userId).update(dataMap);
-          db.collection("USERS").doc(userId).update(userMap);
-        }
+        });
         notifyListeners();
+      } else {
 
-        finish(context);
-        finish(context);
-        notifyListeners();
-        notifyListeners();
+        dataMap['PROFILE_IMAGE'] = staffImage;
       }
-      else {
-        final snackBar = SnackBar(
-          elevation: 6.0,
-          backgroundColor: themecolor,
-          behavior: SnackBarBehavior.floating,
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20))),
-          content: Text(
-            "Phone Number Already Exist...",
-            style: TextStyle(color: cWhite),
-          ),
-        );
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      //  dataMap["PROFILE_IMAGE"]=fileImage.toString();
+      if (from == '') {
+        db.collection("STAFF").doc(id).set(dataMap);
+        db.collection("USERS").doc(id).set(userMap);
+      } else {
+        db.collection("STAFF").doc(userId).update(dataMap);
+        db.collection("USERS").doc(userId).update(userMap);
       }
-    }
+      notifyListeners();
 
-    else {
+      finish(context);
+      finish(context);
+      notifyListeners();
+      notifyListeners();
+    } else {
       final snackBar = SnackBar(
         elevation: 6.0,
         backgroundColor: themecolor,
