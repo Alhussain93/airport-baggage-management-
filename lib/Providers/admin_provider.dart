@@ -152,11 +152,12 @@ List<String>qrDataList=[];
 
 
       luggageList.add(LuggageModel(map['LUGGAGE_ID']??"",
-        map["PNR_ID"]??"", map['CHECK_IN_AIRPORT']??"",  map['CHECK_IN_TIMEMILLI']??"",
-        map['LOADING_AIRPORT']??"", map['LOADED_TIMEMILLI']??"",  map['UNLOADING_AIRPORT']??"",
-        map['UNLOADED_TIMEMILLI']??"",  map['CHECKOUT_AIRPORT']??"", map['CHECKOUT_TIMEMILLI']??"",map['STATUS']??"",map["CHECK_IN_STAFF_NAME"]??"",
-      map["LOADING_STAFF_NAME"]??"",map["UNLOADING_STAFF_NAME"]??"",map["CHECKOUT_STAFF_NAME"]??""
-      ),);
+          map["PNR_ID"]??"", map['CHECK_IN_AIRPORT']??"",  map['CHECK_IN_TIMEMILLI']??"",
+          map['LOADING_AIRPORT']??"", map['LOADED_TIMEMILLI']??"",  map['UNLOADING_AIRPORT']??"",
+          map['UNLOADED_TIMEMILLI']??"",  map['CHECKOUT_AIRPORT']??"", map['CHECKOUT_TIMEMILLI']??"",map['STATUS']??"",map["CHECK_IN_STAFF_NAME"]??"",
+          map["LOADING_STAFF_NAME"]??"",map["UNLOADING_STAFF_NAME"]??"",map["CHECKOUT_STAFF_NAME"]??"",map["CHECK_IN_STATUS"]??"",map["LOADING_STATUS"]??"",
+          map["UNLOADING_STATUS"]??"",map["CHECKOUT_STATUS"]??""
+      ));
       print("fgjgkj" + luggageList.toString());
       notifyListeners();
     });
@@ -333,7 +334,7 @@ print("ddddddddddddddddd"+flightName);
     print("hdsshdchdc"+firstDate.toString());
     print("WWWWWWWWWW"+lastDate.toString());
     db.collection("LUGGAGE")
-        .where("MISSING",isEqualTo: "YES")
+        .where("MISSING",isEqualTo:"YES")
         .where("LAST_SCANNED_DATE", isGreaterThanOrEqualTo: firstDate)
         .where("LAST_SCANNED_DATE", isLessThanOrEqualTo: lastDate).get().then((value) {
           print("hbbuyyyyyyyyy"+value.docs.length.toString());
