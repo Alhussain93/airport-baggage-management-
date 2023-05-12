@@ -258,7 +258,7 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
                 // ),
                 Consumer<AdminProvider>(builder: (context, value1, child) {
                   return Padding(
-                    padding:  const EdgeInsets.only(top: 20, left: 25, right: 25),
+                    padding:  const EdgeInsets.only(left: 25, right: 25),
                     child: TextFormField(
                       maxLengthEnforcement: MaxLengthEnforcement.enforced,
                       onChanged: (value) {
