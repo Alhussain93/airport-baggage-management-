@@ -31,13 +31,7 @@ class _AddStaffState extends State<AddStaff> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
 
-  List<String> airportNameList = [
-    'Select Airport',
-    "Salalah International Airport",
-    "Duqm International Airport",
-    "Sohar International Airport",
-    'Khasab Airport'
-  ];
+
 
   List<String> Designation = [
     'Select Designation',
@@ -499,7 +493,7 @@ class _AddStaffState extends State<AddStaff> {
                           );
                         }),
                     SizedBox(height: 10,),
-                    Consumer<AdminProvider>(builder: (context, value1, child) {
+                    Consumer<AdminProvider>(builder: (context1, value1, child) {
                       return Container(
                         height: 45,
                         width: width / 1.1,
@@ -534,7 +528,7 @@ class _AddStaffState extends State<AddStaff> {
                               onChanged: (newValue) {
                                 value1.staffAirportName = newValue.toString();
                               },
-                              items: airportNameList.map((item1) {
+                              items:value1.airportNameList.map((item1) {
                                 return DropdownMenuItem(
                                     value: item1,
                                     child: Padding(

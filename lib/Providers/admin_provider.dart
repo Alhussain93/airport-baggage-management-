@@ -86,6 +86,13 @@ List<String>qrDataList=[];
 
   List<PnrModel> checkList = [];
   List<LuggageModel> luggageList = [];
+  List<String> airportNameList = [
+    'Select Airport',
+    "Salalah International Airport",
+    "Duqm International Airport",
+    "Sohar International Airport",
+    'Khasab Airport'
+  ];
 
   // db.collection("USERS").where("PHONE",isEqualTo:phoneNumber ).get().
   checkingPnr(String pnrControllerText, BuildContext context, String username) {
@@ -513,6 +520,8 @@ List<String>qrDataList=[];
   String flightName = 'Select Flight Name';
   String ticketFlightName = 'Select Flight Name';
   String airportName = '';
+  String fromTicket = 'Select Airport';
+  String toTicket = 'Select Airport';
   List<String> flightNameList = [
     "Select Flight Name",
     "Air Arabia Abu dhabi",
@@ -522,6 +531,24 @@ List<String>qrDataList=[];
     'Etihad Airways'
   ];
 
+  List<String>fromList=[
+    "From",
+    "Select Flight Name",
+    "Air Arabia Abu dhabi",
+    "Vistara",
+    "Air india Express",
+    'Srilankan Airlines',
+    'Etihad Airways'
+  ];
+  List<String>toList=[
+    "To",
+    "Select Flight Name",
+    "Air Arabia Abu dhabi",
+    "Vistara",
+    "Air india Express",
+    'Srilankan Airlines',
+    'Etihad Airways'
+  ];
   Future<void> lockAdminApp() async {
     mRootReference.child("0").onValue.listen((event) {
       if (event.snapshot.value != null) {
@@ -983,8 +1010,8 @@ List<String>qrDataList=[];
 
       ticketMap["PNR_ID"] = ticketPnrController.text;
       ticketMap["FLIGHT_NAME"] = ticketFlightName;
-      ticketMap["FROM"] = ticketFromController.text;
-      ticketMap["TO"] = ticketToController.text;
+      ticketMap["FROM"] = fromTicket ;
+      ticketMap["TO"] = toTicket;
       ticketMap["PASSENGERS_NUM"] = passengerCountController.text;
       if (from != 'edit') {
         ticketMap["ID"] = ticketId;
@@ -1234,8 +1261,8 @@ List<String>qrDataList=[];
         ticketFlightName = map['FLIGHT_NAME'].toString();
         ticketPnrController.text = map['PNR_ID'].toString();
         previousPnrId = map['PNR_ID'].toString();
-        ticketFromController.text = map['FROM'].toString();
-        ticketToController.text = map['TO'].toString();
+        fromTicket = map['FROM'].toString();
+        toTicket= map['TO'].toString();
         passengerCountController.text = map['PASSENGERS_NUM'].toString();
         arrivalTime.text = map['ARRIVAL'].toString();
         departureTime.text = map['DEPARTURE'].toString();
