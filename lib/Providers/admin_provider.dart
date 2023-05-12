@@ -45,7 +45,6 @@ import 'package:pdf/widgets.dart' as pw;
 class AdminProvider with ChangeNotifier {
   final DatabaseReference mRootReference = FirebaseDatabase.instance.ref();
   final FirebaseFirestore db = FirebaseFirestore.instance;
-  String arrivalPlace='';
 
   bool showTick = false;
   DateTime birthDate = DateTime.now();
@@ -235,24 +234,32 @@ List<String>qrDataList=[];
     db.collection("LUGGAGE").doc(luggageId).get().then((value) async {
       if (value.exists) {
         if(staffDes=="LOADING"){
-          db.collection("LUGGAGE").doc(luggageId).set({"LOADED_TIME": milli, "STATUS": 'LOADING',"LOADING_AIRPORT":staffAir,"LOADING_STAFF_NAME":stfName}, SetOptions(merge: true));
+          db.collection("LUGGAGE").doc(luggageId).set({"LOADED_TIME": milli, "STATUS": 'LOADING',"LOADING_AIRPORT":staffAir,"LOADING_STAFF_NAME":stfName,"LOADING_STATUS": "CLEARED"}, SetOptions(merge: true));
           String text = 'Loading completed';
                   showAlertDialog(context, text,staffDes,stfName,staffAir);
         }else if(staffDes=="UNLOADING"){
-          db.collection("LUGGAGE").doc(luggageId).set({"UNLOADED_TIME": milli, "STATUS": 'UNLOADING',"UNLOADING_AIRPORT":staffAir,"UNLOADING_STAFF_NAME":stfName}, SetOptions(merge: true));
+          db.collection("LUGGAGE").doc(luggageId).set({"UNLOADED_TIME": milli, "STATUS": 'UNLOADING',"UNLOADING_AIRPORT":staffAir,"UNLOADING_STAFF_NAME":stfName,"UNLOADING_STATUS": "CLEARED"}, SetOptions(merge: true));
 
-          await checkMissingLuggage(context,luggageId,staffDes,stfName,staffAir);
+          await checkMissingLuggageInUnloading(context,luggageId,staffDes,stfName,staffAir);
 
         }else if(staffDes=="CHECK_OUT"){
-          db.collection("LUGGAGE").doc(luggageId).set({"CHECKOUT": milli, "STATUS": 'CHECK_OUT',"CHECKOUT_AIRPORT":staffAir,"CHECKOUT_STAFF_NAME":stfName}, SetOptions(merge: true));
-          String text = 'Checkout completed';
-          showAlertDialog(context, text,staffDes,stfName,staffAir);
+          db.collection("LUGGAGE").doc(luggageId).set({"CHECKOUT_TIME": milli, "STATUS": 'CHECK_OUT',"CHECKOUT_AIRPORT":staffAir,"CHECKOUT_STAFF_NAME":stfName,"CHECKOUT_STATUS": "CLEARED"}, SetOptions(merge: true));
+          await checkMissingLuggageInCheckout(context,luggageId,staffDes,stfName,staffAir);
         }
       }
     });
   }
+  
+  void fetchMissingLuggage(){
+    db.collection("LUGGAGE").where("LUGGAGE_STATUS").get().then((value) {
 
- checkMissingLuggage(BuildContext context,String luggageId,String staffDes,String staffName,String staffAirport ) async {
+
+
+    });
+    
+  }
+
+ checkMissingLuggageInUnloading(BuildContext context,String luggageId,String staffDes,String staffName,String staffAirport ) async {
 
 await db.collection("LUGGAGE").doc(luggageId).get().then((value) {
   print("dkwmwjmdjww"+luggageId);
@@ -267,7 +274,36 @@ if( map["ARRIVAL_PLACE"]==map["UNLOADING_AIRPORT"]){
 }else{
   print("WQQWQWQWWQQQQW");
 
-  db.collection("LUGGAGE").doc(luggageId).set({"LUGGAGE_STATUS": "MISSING",},SetOptions(merge: true));
+  db.collection("LUGGAGE").doc(luggageId).set({"UNLOADING_STATUS": "MISSING",},SetOptions(merge: true));
+  String text = 'Airport miss matched';
+  showAlertDialog(context, text,staffDes,staffName,staffAirport);
+  notifyListeners();
+
+}
+
+  }
+
+
+});
+
+
+  }
+ checkMissingLuggageInCheckout(BuildContext context,String luggageId,String staffDes,String staffName,String staffAirport ) async {
+
+await db.collection("LUGGAGE").doc(luggageId).get().then((value) {
+  print("dkwmwjmdjww"+luggageId);
+  if(value.exists){
+    Map<dynamic, dynamic> map = value.data() as Map;
+if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]){
+  print("jjsjxsjjssssss");
+  String text = 'Checkout completed';
+  showAlertDialog(context, text,staffDes,staffName,staffAirport);
+  notifyListeners();
+
+}else{
+  print("WQQWQWQWWQQQQW");
+
+  db.collection("LUGGAGE").doc(luggageId).set({"CHECKOUT_STATUS": "MISSING",},SetOptions(merge: true));
   String text = 'Airport miss matched';
   showAlertDialog(context, text,staffDes,staffName,staffAirport);
   notifyListeners();
@@ -651,6 +687,8 @@ if( map["ARRIVAL_PLACE"]==map["UNLOADING_AIRPORT"]){
     });
   }
    checkPnrIDExist(String pnrId,BuildContext context,String staffAirport,String stfName) async {
+     String arrivalPlace='';
+     String flightName='';
 
      db.collection("TICKETS").where("PNR_ID", isEqualTo: pnrId).get().then((value) {
        if (value.docs.isNotEmpty) {
@@ -658,9 +696,10 @@ if( map["ARRIVAL_PLACE"]==map["UNLOADING_AIRPORT"]){
          for (var element in value.docs) {
            Map<dynamic, dynamic> map = element.data();
            arrivalPlace= map["TO"].toString();
+           flightName= map["FLIGHT_NAME"].toString();
            notifyListeners();
            print("jdjdsjddddddddddd"+arrivalPlace);
-           generateQrCode(context,staffAirport,stfName);
+           generateQrCode(context,staffAirport,stfName,arrivalPlace,flightName);
          }
        }
        else {
@@ -674,7 +713,7 @@ if( map["ARRIVAL_PLACE"]==map["UNLOADING_AIRPORT"]){
 
   }
 
-  void generateQrCode(BuildContext context,String staffAirport,String stfName) {
+  void generateQrCode(BuildContext context,String staffAirport,String stfName,String arrivalPlace,String flightName) {
     HashMap<String, Object> qrMap = HashMap();
 
     int luggageCount = int.parse(qrLuggageCountCT.text);
@@ -682,15 +721,16 @@ if( map["ARRIVAL_PLACE"]==map["UNLOADING_AIRPORT"]){
       String qrID= DateTime.now().millisecondsSinceEpoch.toString();
       qrData = DateTime.now().millisecondsSinceEpoch.toString() + getRandomString(4);
       DateTime now = DateTime.now();
-print("fmfmefjmejm"+arrivalPlace);
       qrMap['NAME'] = qrUserNameCT.text;
       qrMap['PNR_ID'] = qrPnrCT.text;
       qrMap['QR_ID'] = qrID;
-      qrMap['ARRIVAL_PLACE'] = arrivalPlace.toString();
+      qrMap['ARRIVAL_PLACE'] = arrivalPlace;
       // qrMap['LUGGAGE_COUNT'] = qrLuggageCountCT.text;
+      qrMap['FLIGHT_NAME'] = flightName;
       qrMap['LUGGAGE_ID'] = qrData;
       qrMap['DATE'] = qrID;
       qrMap['STATUS'] = "CHECK_IN";
+      qrMap['CHECK_IN_STATUS'] = "CLEARED";
       qrMap['CHECK_IN_TIME'] = qrID;
       qrMap['CHECK_IN_STAFF_NAME'] = stfName;
       qrMap['CHECK_IN_AIRPORT'] = staffAirport;
