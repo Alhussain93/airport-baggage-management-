@@ -232,9 +232,9 @@ class TrackingScreen extends StatelessWidget {
                                       fontSize: 20,
                                       fontWeight: FontWeight.w700),
                                 ),
-                                const Text(
-                                  "dfdgfwerfdg",
-                                  style: TextStyle(
+                                Text(
+                                  item.checkInPlace,
+                                  style: const TextStyle(
                                       fontSize: 11,
                                       fontWeight: FontWeight.w500),
                                 ),
@@ -337,7 +337,7 @@ class TrackingScreen extends StatelessWidget {
                                                 color: cl252525),
                                           ),
                                           Text(
-                                            "NAME",
+                                            item.checkInStaffName,
                                             style: TextStyle(
                                                 fontSize: 11,
                                                 fontWeight: FontWeight.w500,
@@ -411,7 +411,7 @@ class TrackingScreen extends StatelessWidget {
                                                 color: cl252525),
                                           ),
                                           Text(
-                                            "NAME",
+                                            item.loadingStaffName,
                                             style: TextStyle(
                                                 fontSize: 11,
                                                 fontWeight: FontWeight.w500,
@@ -549,7 +549,7 @@ class TrackingScreen extends StatelessWidget {
                                                 color: cl252525),
                                           ),
                                           Text(
-                                            "NAME",
+                                            item.unloadingStaffName,
                                             style: TextStyle(
                                                 fontSize: 11,
                                                 fontWeight: FontWeight.w500,
@@ -599,12 +599,12 @@ class TrackingScreen extends StatelessWidget {
                                 Row(
                                   children: [
                                     SizedBox(
-                                      width: width/2,
-                                      child:Column(
+                                      width: width / 2,
+                                      child: Column(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.center,
+                                            MainAxisAlignment.center,
                                         crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                            CrossAxisAlignment.center,
                                         children: [
                                           Text(
                                             item.checkoutPlace,
@@ -614,7 +614,7 @@ class TrackingScreen extends StatelessWidget {
                                                 color: cl252525),
                                           ),
                                           Text(
-                                            "name",
+                                            item.checkOutStaffName,
                                             style: TextStyle(
                                                 fontSize: 11,
                                                 fontWeight: FontWeight.w500,
@@ -623,7 +623,7 @@ class TrackingScreen extends StatelessWidget {
                                           Text(
                                               item.checkoutTime != ""
                                                   ? uploadDatee(
-                                                  item.checkoutTime)
+                                                      item.checkoutTime)
                                                   : "",
                                               style: TextStyle(
                                                   fontSize: 11,
@@ -634,6 +634,9 @@ class TrackingScreen extends StatelessWidget {
                                     ),
                                     const Spacer()
                                   ],
+                                ),
+                                const SizedBox(
+                                  height: 10,
                                 )
                               ],
                             );

@@ -1,4 +1,4 @@
-class LuggageModel{
+class LuggageModel {
   String id;
   String pnrId;
   String checkInPlace;
@@ -10,5 +10,26 @@ class LuggageModel{
   String checkoutPlace;
   String checkoutTime;
   String status;
-  LuggageModel(this.id,this.pnrId,this.checkInPlace,this.checkInTime,this.loadingPlace,this.loadingTime,this.unloadingPlace,this.unloadingTime,this.checkoutPlace,this.checkoutTime,this.status);
+  String checkInStaffName;
+  String loadingStaffName;
+  String unloadingStaffName;
+  String checkOutStaffName;
+
+  LuggageModel(
+    this.id,
+    this.pnrId,
+    this.checkInPlace,
+    this.checkInTime,
+    this.loadingPlace,
+    this.loadingTime,
+    this.unloadingPlace,
+    this.unloadingTime,
+    this.checkoutPlace,
+    this.checkoutTime,
+    this.status,
+    this.checkInStaffName,
+    this.loadingStaffName,
+    this.unloadingStaffName,
+    this.checkOutStaffName,
+  );
 }
