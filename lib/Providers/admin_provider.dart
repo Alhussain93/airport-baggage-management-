@@ -237,22 +237,22 @@ List<String>qrDataList=[];
         if(staffDes=="LOADING"){
           db.collection("LUGGAGE").doc(luggageId).set({"LOADED_TIME": milli, "STATUS": 'LOADING',"LOADING_AIRPORT":staffAir,"LOADING_STAFF_NAME":stfName}, SetOptions(merge: true));
           String text = 'Loading completed';
-                  showAlertDialog(context, text,staffDes);
+                  showAlertDialog(context, text,staffDes,stfName,staffAir);
         }else if(staffDes=="UNLOADING"){
           db.collection("LUGGAGE").doc(luggageId).set({"UNLOADED_TIME": milli, "STATUS": 'UNLOADING',"UNLOADING_AIRPORT":staffAir,"UNLOADING_STAFF_NAME":stfName}, SetOptions(merge: true));
 
-          await checkMissingLuggage(context,luggageId,staffDes);
+          await checkMissingLuggage(context,luggageId,staffDes,stfName,staffAir);
 
         }else if(staffDes=="CHECK_OUT"){
           db.collection("LUGGAGE").doc(luggageId).set({"CHECKOUT": milli, "STATUS": 'CHECK_OUT',"CHECKOUT_AIRPORT":staffAir,"CHECKOUT_STAFF_NAME":stfName}, SetOptions(merge: true));
           String text = 'Checkout completed';
-          showAlertDialog(context, text,staffDes);
+          showAlertDialog(context, text,staffDes,stfName,staffAir);
         }
       }
     });
   }
 
- checkMissingLuggage(BuildContext context,String luggageId,String staffDes ) async {
+ checkMissingLuggage(BuildContext context,String luggageId,String staffDes,String staffName,String staffAirport ) async {
 
 await db.collection("LUGGAGE").doc(luggageId).get().then((value) {
   print("dkwmwjmdjww"+luggageId);
@@ -261,7 +261,7 @@ await db.collection("LUGGAGE").doc(luggageId).get().then((value) {
 if( map["ARRIVAL_PLACE"]==map["UNLOADING_AIRPORT"]){
   print("jjsjxsjjssssss");
   String text = 'Unloading completed';
-  showAlertDialog(context, text,staffDes);
+  showAlertDialog(context, text,staffDes,staffName,staffAirport);
   notifyListeners();
 
 }else{
@@ -269,7 +269,7 @@ if( map["ARRIVAL_PLACE"]==map["UNLOADING_AIRPORT"]){
 
   db.collection("LUGGAGE").doc(luggageId).set({"LUGGAGE_STATUS": "MISSING",},SetOptions(merge: true));
   String text = 'Airport miss matched';
-  showAlertDialog(context, text,staffDes);
+  showAlertDialog(context, text,staffDes,staffName,staffAirport);
   notifyListeners();
 
 }
@@ -282,7 +282,7 @@ if( map["ARRIVAL_PLACE"]==map["UNLOADING_AIRPORT"]){
 
   }
 
-  showAlertDialog(BuildContext context, String text, String staffDes) {
+  showAlertDialog(BuildContext context, String text, String staffDes,String staffName,String stsAirport) {
     // set up the button
     Widget okButton = Container(
       height: 38,
@@ -298,11 +298,11 @@ if( map["ARRIVAL_PLACE"]==map["UNLOADING_AIRPORT"]){
         ),
         onPressed: () {
           finish(context);
-          // callNextReplacement(
-          //     StaffHomeScreen(
-          //       designation: staffDes, stfAirport: '',
-          //     ),
-          //     context);
+          callNextReplacement(
+              StaffHomeScreen(
+                designation: staffDes, stfAirport:stsAirport, addedBy: '', stfName: staffName,
+              ),
+              context);
         },
       ),
     );
