@@ -65,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
         var LoginUser = authCredential.user;
         if (LoginUser != null) {
           LoginProvider loginProvider = LoginProvider();
-          loginProvider.userAuthorized(phoneController.text, context);
+          loginProvider.userAuthorized(LoginUser.phoneNumber, context);
 
           if (kDebugMode) {
             print("Login SUccess");
