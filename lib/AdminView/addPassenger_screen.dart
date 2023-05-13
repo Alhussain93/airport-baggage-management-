@@ -226,6 +226,10 @@ class AddCustomerScreen extends StatelessWidget {
                               },
                               popupProps: PopupProps.menu(
                                   searchFieldProps: TextFieldProps(
+                                    style: TextStyle(
+                                      color: fontColor,
+                                      fontSize: 18,
+                                      fontFamily: "PoppinsMedium"),
                                     controller: _passengerEditTextController,
                                     decoration: const InputDecoration(
                                         label: Text(
@@ -280,9 +284,10 @@ class AddCustomerScreen extends StatelessWidget {
                       ),
                       cursorColor: Colors.black,
                       controller: value1.userPhoneCT,
-                      style: const TextStyle(
-                        fontFamily: 'BarlowCondensed',
-                      ),
+                      style: TextStyle(
+                          color: fontColor,
+                          fontSize: 18,
+                          fontFamily: "PoppinsMedium"),
                       validator: (value) {
                         if (value!.trim().isEmpty) {
                           return "Please Enter The Mobile Number";
