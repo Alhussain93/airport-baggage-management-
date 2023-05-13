@@ -1,22 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:luggage_tracking_app/AdminView/qr_Scanner_Screen.dart';
-import 'package:luggage_tracking_app/AdminView/scan_page.dart';
 import 'package:luggage_tracking_app/AdminView/staff_screen.dart';
 import 'package:luggage_tracking_app/StaffView/tickets_List.dart';
 import 'package:provider/provider.dart';
 import '../Providers/admin_provider.dart';
-import '../StaffView/add_tickets.dart';
 import '../constant/colors.dart';
 import '../constant/my_functions.dart';
-import 'add_staff.dart';
 import 'passengersList_Screen.dart';
-import 'generateQr_Screen.dart';
-import 'makeQrcodeScreen.dart';
 import 'missing_luggage.dart';
 
 class HomeScreen extends StatelessWidget {
   String addedBy;
-  HomeScreen({super.key,required this.addedBy});
+
+  HomeScreen({super.key, required this.addedBy});
 
   ValueNotifier<int> isSelected = ValueNotifier(0);
 
@@ -26,10 +21,14 @@ class HomeScreen extends StatelessWidget {
         Provider.of<AdminProvider>(context, listen: false);
 
     List screens = [
-       CustomersListScreen(addedby: addedBy,),
-       StaffScreen(addedBy: addedBy),
-      MisingLaggage(),
-       TicketList(addedBy: addedBy,),
+      CustomersListScreen(
+        addedby: addedBy,
+      ),
+      StaffScreen(addedBy: addedBy),
+      MissingLuggage(),
+      TicketList(
+        addedBy: addedBy,
+      ),
     ];
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
@@ -111,7 +110,6 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-
                     InkWell(
                       onTap: () {
                         isSelected.value = 1;
@@ -180,7 +178,6 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-
                     const Spacer(),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 20),
@@ -225,7 +222,8 @@ class HomeScreen extends StatelessWidget {
                   backgroundColor: themecolor,
                   centerTitle: false,
                   title: Image.asset(
-                    "assets/Frame48.png",scale: 3.5,
+                    "assets/Frame48.png",
+                    scale: 3.5,
                   ),
                   flexibleSpace: Container(
                     height: height / 3,
@@ -236,13 +234,11 @@ class HomeScreen extends StatelessWidget {
                         const SizedBox(
                           height: 50,
                         ),
-                        isSelected.value==2?const Padding(padding: EdgeInsets.only(top: 52)):const SizedBox(),
-
-                        isSelected.value !=2?
-                        //     // || isSelected.value == 5
-                        //     ? const Padding(padding: EdgeInsets.only(top: 52))
-                        //     : const SizedBox(),
-                        Padding(
+                        isSelected.value == 2
+                            ? const Padding(padding: EdgeInsets.only(top: 52))
+                            : const SizedBox(),
+                        isSelected.value != 2
+                            ? Padding(
                                 padding: const EdgeInsets.only(top: 15),
                                 child: Container(
                                   height: 40,
@@ -253,7 +249,6 @@ class HomeScreen extends StatelessWidget {
                                           BorderRadius.circular(32.0)),
                                   child: TextFormField(
                                     autofocus: false,
-                                    // obscureText: _obscureText,
                                     keyboardType: TextInputType.text,
                                     decoration: InputDecoration(
                                       hintText: 'Search',
@@ -277,7 +272,8 @@ class HomeScreen extends StatelessWidget {
                                     },
                                   ),
                                 ),
-                              ):SizedBox(),
+                              )
+                            : SizedBox(),
                         Padding(
                           padding: const EdgeInsets.only(top: 19),
                           child: Row(
@@ -311,7 +307,6 @@ class HomeScreen extends StatelessWidget {
                               ),
                               InkWell(
                                 onTap: () {
-                                  //adminProvider.getTicketsList();
                                   isSelected.value = 3;
                                 },
                                 child: Container(
