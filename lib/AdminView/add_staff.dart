@@ -94,7 +94,7 @@ class AddStaff extends StatelessWidget {
                                     backgroundImage:
                                         const AssetImage("assets/user.png"),
                                   )),
-                    from == 'edit'
+                    from == 'EDIT'
                         ? Padding(
                             padding: const EdgeInsets.only(right: 30, top: 20),
                             child: Consumer<AdminProvider>(
@@ -230,9 +230,8 @@ class AddStaff extends StatelessWidget {
                                                       InputBorder.none,
                                                   errorBorder: InputBorder.none,
                                                   focusedErrorBorder:
-                                                      InputBorder.none)),
-                                  selectedItem: CountryCode(value.country, value.code,
-                                          value.selectedValue!),
+                                                      InputBorder.none)), selectedItem: from !="EDIT"
+                                    ? CountryCode("Oman", "OM", "+968"):CountryCode(value.country, value.code, value.selectedValue!),
                                   onChanged: (e) {
                                     value1.selectedValue =
                                         e?.dialCde.toString();
@@ -363,6 +362,7 @@ class AddStaff extends StatelessWidget {
                             helperText: '',
                             contentPadding: const EdgeInsets.all(11),
                           ),
+
                           onChanged: (newValue) {
                             value1.staffAirportName = newValue.toString();
                           },

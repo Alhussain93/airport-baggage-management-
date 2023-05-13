@@ -6,6 +6,7 @@ import 'package:luggage_tracking_app/Providers/admin_provider.dart';
 import 'package:provider/provider.dart';
 import '../AdminView/home_screen.dart';
 import '../StaffView/staff_home_screen.dart';
+import '../UserView/contryCodeModel.dart';
 import '../UserView/pnrsearching_screen.dart';
 import '../Users/login_Screen.dart';
 import '../constant/my_functions.dart';
@@ -64,6 +65,8 @@ class LoginProvider extends ChangeNotifier {
                   PnrSearching(username: loginUsername), context);
             } else {
               ScaffoldMessenger.of(context).showSnackBar(snackBar2);
+              CountryCode("Oman", "OM", "+968");
+
               Navigator.pushReplacement(context,
                   MaterialPageRoute(builder: (context) => const LoginScreen()));
               FirebaseAuth auth = FirebaseAuth.instance;
@@ -98,6 +101,8 @@ class LoginProvider extends ChangeNotifier {
               });
             } else {
               ScaffoldMessenger.of(context).showSnackBar(snackBar2);
+              CountryCode("Oman", "OM", "+968");
+
               Navigator.pushReplacement(context,
                   MaterialPageRoute(builder: (context) => const LoginScreen()));
               FirebaseAuth auth = FirebaseAuth.instance;

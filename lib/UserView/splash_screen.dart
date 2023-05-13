@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../Providers/loginProvider.dart';
 import '../Users/login_Screen.dart';
 import '../constant/colors.dart';
+import 'contryCodeModel.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -35,6 +36,7 @@ class _SplashScreenState extends State<SplashScreen> {
       var user = auth.currentUser;
 
       if (user == null) {
+        CountryCode("Oman", "OM", "+968");
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) => const LoginScreen()));
       } else {

@@ -205,7 +205,8 @@ class AddCustomerScreen extends StatelessWidget {
                                           errorBorder: InputBorder.none,
                                           focusedErrorBorder:
                                               InputBorder.none)),
-                              selectedItem:  CountryCode(value.country, value.code, value.selectedValue!),
+                              selectedItem: from !="EDIT"
+                                  ? CountryCode("Oman", "OM", "+968"):CountryCode(value.country, value.code, value.selectedValue!),
                               onChanged: (e) {
                                 value1.selectedValue = e?.dialCde.toString();
                                 value1.code = e!.code.toString();
