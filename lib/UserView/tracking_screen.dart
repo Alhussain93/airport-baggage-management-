@@ -350,11 +350,11 @@ class TrackingScreen extends StatelessWidget {
                                                   borderRadius:
                                                       const BorderRadius
                                                           .vertical(
-                                                    top: Radius.circular(
+                                                    bottom: Radius.circular(
                                                       20,
                                                     ),
                                                   ),
-                                                  color: cl938492,
+                                                  color: cl00962A,
                                                 ),
                                         ),
                                       ],
@@ -516,11 +516,11 @@ class TrackingScreen extends StatelessWidget {
                                             borderRadius:
                                             const BorderRadius
                                                 .vertical(
-                                              top: Radius.circular(
+                                              bottom: Radius.circular(
                                                 20,
                                               ),
                                             ),
-                                            color: cl938492,
+                                            color: cl00962A,
                                           ),
                                         ),
                                       ],
@@ -608,11 +608,11 @@ class TrackingScreen extends StatelessWidget {
                                             borderRadius:
                                             const BorderRadius
                                                 .vertical(
-                                              top: Radius.circular(
+                                              bottom: Radius.circular(
                                                 20,
                                               ),
                                             ),
-                                            color: cl938492,
+                                            color: cl00962A,
                                           ),
                                         ),
                                       ],
