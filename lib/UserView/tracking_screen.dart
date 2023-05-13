@@ -262,7 +262,7 @@ class TrackingScreen extends StatelessWidget {
                                                     : item.status == 'CHECK_IN'
                                                         ? cl00962A
                                                         : cl938492),
-                                    Expanded(
+                                    const Expanded(
                                         child: Padding(
                                       padding: EdgeInsets.only(left: 8.0),
                                       child: Text(
@@ -434,21 +434,21 @@ class TrackingScreen extends StatelessWidget {
                                     Column(
                                       children: [
                                         Container(
-                                            height: 30,
-                                            width: 10,
-                                            decoration: BoxDecoration(
-                                                borderRadius: const BorderRadius
-                                                        .vertical(
+                                          height: 30,
+                                          width: 10,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                const BorderRadius.vertical(
                                                     top: Radius.circular(20)),
-                                                color: item.status ==
-                                                        'CHECK_OUT'
+                                            color: item.status == 'CHECK_OUT'
+                                                ? cl00962A
+                                                : item.status == 'UNLOADING'
                                                     ? cl00962A
-                                                    : item.status == 'UNLOADING'
+                                                    : item.status == 'LOADING'
                                                         ? cl00962A
-                                                        : item.status ==
-                                                                'LOADING'
-                                                            ? cl00962A
-                                                            : cl938492)),
+                                                        : cl938492,
+                                          ),
+                                        ),
                                         Container(
                                           height: 70,
                                           width: 10,

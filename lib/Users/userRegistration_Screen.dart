@@ -19,7 +19,7 @@ enum MobileVarificationState {
 }
 
 class UserRegistrationScreen extends StatefulWidget {
-  UserRegistrationScreen({Key? key}) : super(key: key);
+  const UserRegistrationScreen({Key? key}) : super(key: key);
 
   @override
   State<UserRegistrationScreen> createState() => _UserRegistrationScreen();
@@ -29,7 +29,6 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
   MobileVarificationState currentSate =
       MobileVarificationState.SHOW_MOBILE_FORM_STATE2;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
 
   final otpController = TextEditingController();
   final FocusNode _pinPutFocusNode = FocusNode();
@@ -64,11 +63,8 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
         if (loginUser != null) {
           LoginProvider newLoginProvider =
               Provider.of<LoginProvider>(context, listen: false);
-          AdminProvider adminProvider =
-          Provider.of<AdminProvider>(context, listen: false);
-          print("fdgyhujik" + loginUser.phoneNumber.toString());
+
           var phone = loginUser.phoneNumber;
-          print("dvghjdd" + phone.toString());
           db
               .collection("USERS")
               .where("PHONE_NUMBER", isEqualTo: phone)
@@ -88,9 +84,7 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
             }
           });
 
-          if (kDebugMode) {
-            print("Login Success");
-          }
+          if (kDebugMode) {}
         }
       } catch (e) {
         const snackBar = SnackBar(
@@ -114,7 +108,9 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
       ));
     }
   }
+
   final _passengerEditTextController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     AdminProvider adminProvider =
@@ -128,14 +124,15 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
-          child: Container(
+          child: SizedBox(
             height: height,
             width: width,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Image(image: AssetImage("assets/topLayer.png"), height: 150),
+                const Image(
+                    image: AssetImage("assets/topLayer.png"), height: 150),
 
                 Text(
                   "   Registration",
@@ -154,8 +151,6 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                           onChanged: (value) {
                             if (value.trim().length != 3) {
                               values.showTick = true;
-                              // SystemChannels.textInput
-                              //     .invokeMethod('TextInput.hide');
                             } else {
                               values.showTick = false;
                               currentSate = MobileVarificationState
@@ -169,131 +164,103 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                           ],
                           textInputAction: TextInputAction.next,
                           decoration: InputDecoration(
-
-                            // contentPadding: EdgeInsets.symmetric(
-                            //     vertical: 20, horizontal: 0),
                             prefix: SizedBox(
                               width: 120,
                               child: Consumer<AdminProvider>(
                                   builder: (context, value, child) {
-                                    return DropdownSearch<CountryCode>(
-                                      dropdownDecoratorProps: DropDownDecoratorProps(
+                                return DropdownSearch<CountryCode>(
+                                  dropdownDecoratorProps:
+                                      DropDownDecoratorProps(
                                           dropdownSearchDecoration:
-                                          InputDecoration(
-                                              filled: true,
-                                              fillColor: Colors.transparent,
-                                              // hintText: 'Select District',
-                                              // hintStyle: regLabelStyle,
-                                              // prefix:  const SizedBox(width: 10,),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderRadius: BorderRadius.circular(10),
-                                              borderSide: BorderSide(
-                                                color: Colors.grey.shade200,
-                                              ),
-                                            ),
-                                            enabledBorder: OutlineInputBorder(
-                                              borderRadius: BorderRadius.circular(10),
-                                              borderSide: BorderSide(
-                                                color: Colors.grey.shade200,
-                                              ),
-                                            ),
-                                            errorBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.circular(30),
-                                                borderSide: BorderSide(
-                                                  color: Colors.black38,
-                                                )),
-                                            disabledBorder: InputBorder.none,
-                                            hintText: "Phone Number",
-
-                                            border: OutlineInputBorder(
-                                                borderRadius: BorderRadius.circular(15),
-                                                borderSide: const BorderSide(
-                                                  color: Colors.grey,
-                                                )),
-
-
-
-                                          )
-
-
+                                              InputDecoration(
+                                    filled: true,
+                                    fillColor: Colors.transparent,
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(
+                                        color: Colors.grey.shade200,
                                       ),
-
-                                      selectedItem: value.countrySlct == false
-                                          ? CountryCode("India", "IN", "+91")
-                                          : CountryCode(value.country, value.code,
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(
+                                        color: Colors.grey.shade200,
+                                      ),
+                                    ),
+                                    errorBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(30),
+                                        borderSide: const BorderSide(
+                                          color: Colors.black38,
+                                        )),
+                                    disabledBorder: InputBorder.none,
+                                    hintText: "Phone Number",
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(15),
+                                        borderSide: const BorderSide(
+                                          color: Colors.grey,
+                                        )),
+                                  )),
+                                  selectedItem: value.countrySlct == false
+                                      ? CountryCode("India", "IN", "+91")
+                                      : CountryCode(value.country, value.code,
                                           value.selectedValue!),
-                                      onChanged: (e) {
-                                        value.selectedValue = e?.dialCde.toString();
-                                        value.code = e!.code.toString();
-                                        value.country = e!.country.toString();
-                                        value.countrySlct = true;
-                                        // print("sadsasfsadf" +
-                                        //     value1.selectedValue! +
-                                        //     value1.values.userPhoneCT
-                                        //         .text +
-                                        //     "kdsjkf   " +
-                                        //     _userEditTextController
-                                        //         .text);
-
-                                        // registrationProvider.qualificationOthers(
-                                        //     e?.degree.toString());
-                                        // adminProvider.getManagerWiseReport(
-                                        //     context, managerID!, fromName,managerName!);
-                                      },
-                                      items: value.countryCodeList,
-                                      // dropdownBuilder: (context, selectedItem) => selectedItem.dialCde,
-                                      filterFn: (item, filter) {
-
-                                        return item.country.contains(filter) ||
-                                            item.country
-                                                .toLowerCase()
-                                                .contains(filter) ||
-                                            item.country.toUpperCase().contains(filter);
-                                      },
-
-                                      itemAsString: (CountryCode u) {
-                                        print("akskaksdsjakd" + u.country + u.dialCde);
-                                        return u.dialCde;
-                                      },
-
-                                      popupProps: PopupProps.menu(
-                                          searchFieldProps: TextFieldProps(
-                                            controller: _passengerEditTextController,
-                                            decoration: const InputDecoration(
-                                                label: Text(
-                                                  'Search Country',
-                                                  style: TextStyle(fontSize: 12),
-                                                )),
+                                  onChanged: (e) {
+                                    value.selectedValue = e?.dialCde.toString();
+                                    value.code = e!.code.toString();
+                                    value.country = e!.country.toString();
+                                    value.countrySlct = true;
+                                  },
+                                  items: value.countryCodeList,
+                                  filterFn: (item, filter) {
+                                    return item.country.contains(filter) ||
+                                        item.country
+                                            .toLowerCase()
+                                            .contains(filter) ||
+                                        item.country
+                                            .toUpperCase()
+                                            .contains(filter);
+                                  },
+                                  itemAsString: (CountryCode u) {
+                                    return u.dialCde;
+                                  },
+                                  popupProps: PopupProps.menu(
+                                      searchFieldProps: TextFieldProps(
+                                        controller:
+                                            _passengerEditTextController,
+                                        decoration: const InputDecoration(
+                                            label: Text(
+                                          'Search Country',
+                                          style: TextStyle(fontSize: 12),
+                                        )),
+                                      ),
+                                      showSearchBox: true,
+                                      fit: FlexFit.tight,
+                                      itemBuilder: (ctx, item, isSelected) {
+                                        return ListTile(
+                                          selected: isSelected,
+                                          title: Text(
+                                            item.country,
+                                            style:
+                                                const TextStyle(fontSize: 15),
                                           ),
-                                          showSearchBox: true,
-                                          // showSelectedItems: true,
-                                          fit: FlexFit.tight,
-                                          itemBuilder: (ctx, item, isSelected) {
-                                            return ListTile(
-                                              selected: isSelected,
-                                              title: Text(
-                                                item.country,
-                                                style: TextStyle(fontSize: 15),
-                                              ),
-                                              subtitle: Text(
-                                                item.dialCde,
-                                                style: TextStyle(fontSize: 13),
-                                              ),
-                                            );
-                                          }),
-                                    );
-                                  }),
+                                          subtitle: Text(
+                                            item.dialCde,
+                                            style:
+                                                const TextStyle(fontSize: 13),
+                                          ),
+                                        );
+                                      }),
+                                );
+                              }),
                             ),
-
                             suffixIcon: Padding(
                               padding: const EdgeInsets.only(
                                   right: 8.0, top: 4, bottom: 4),
                               child: Container(
                                   width: 60,
-                                  // height: 70,
                                   decoration: BoxDecoration(
                                     color: values.showTick == false
-                                        ? Color(0xff838282)
+                                        ? const Color(0xff838282)
                                         : currentSate !=
                                                 MobileVarificationState
                                                     .SHOW_MOBILE_FORM_VERIFIED2
@@ -307,27 +274,22 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                                           onTap: () async {
                                             setState(() {
                                               if (values.userPhoneCT.text
-                                                      .length!=
+                                                      .length !=
                                                   3) {
                                                 showLoading = true;
-                                                print("bhsdbshs" +
-                                                    values.userPhoneCT
-                                                        .toString());
                                               }
                                             });
 
                                             await auth.verifyPhoneNumber(
-                                                phoneNumber:
-                                                adminProvider.selectedValue!+ values.userPhoneCT.text,
+                                                phoneNumber: adminProvider
+                                                        .selectedValue! +
+                                                    values.userPhoneCT.text,
                                                 verificationCompleted:
                                                     (phoneAuthCredential) async {
                                                   setState(() {
                                                     showLoading = false;
                                                   });
-                                                  print("fhuijdji");
-                                                  print("bhsdbshs" +
-                                                      values.userPhoneCT
-                                                          .toString());
+
                                                   ScaffoldMessenger.of(context)
                                                       .showSnackBar(
                                                           const SnackBar(
@@ -336,13 +298,10 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                                                     duration: Duration(
                                                         milliseconds: 3000),
                                                   ));
-                                                  if (kDebugMode) {
-                                                    print("fhuijdji");
-                                                  }
+                                                  if (kDebugMode) {}
                                                 },
                                                 verificationFailed:
                                                     (verificationFailed) async {
-                                                  print("dhudhufud");
                                                   setState(() {
                                                     showLoading = false;
                                                   });
@@ -380,9 +339,7 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                                                           milliseconds: 3000),
                                                     ));
 
-                                                    if (kDebugMode) {
-                                                      print("");
-                                                    }
+                                                    if (kDebugMode) {}
                                                   });
                                                 },
                                                 codeAutoRetrievalTimeout:
@@ -390,12 +347,11 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                                           },
                                           child: Center(
                                               child: showLoading
-                                                  ? Padding(
+                                                  ? const Padding(
                                                       padding:
-                                                          const EdgeInsets.all(
-                                                              4),
+                                                          EdgeInsets.all(4),
                                                       child:
-                                                          const CircularProgressIndicator(
+                                                          CircularProgressIndicator(
                                                         color: Colors.white,
                                                       ),
                                                     )
@@ -413,14 +369,10 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                                               style: TextStyle(
                                                   color: Colors.white)))),
                             ),
-
                             hintText: 'Mobile number',
-                            hintStyle:
-                            TextStyle(color: Colors.grey, fontSize: 16),
-                            // enabled: currentSate != MobileVarificationState.SHOW_MOBILE_FORM_VERIFIED ?true:false,
-                            // filled: true,
+                            hintStyle: const TextStyle(
+                                color: Colors.grey, fontSize: 16),
                             helperText: "",
-                            // fillColor: Colors.white,
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: BorderSide(
@@ -436,7 +388,7 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                             errorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(30),
                                 borderSide: BorderSide(
-                                  color:  Colors.grey.shade200,
+                                  color: Colors.grey.shade200,
                                 )),
                             disabledBorder: InputBorder.none,
                             border: OutlineInputBorder(
@@ -474,8 +426,8 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                           currentCode: "",
                           decoration: BoxLooseDecoration(
                             strokeWidth: 3,
-                            textStyle: TextStyle(color: Colors.black),
-                            radius: Radius.circular(10),
+                            textStyle: const TextStyle(color: Colors.black),
+                            radius: const Radius.circular(10),
                             strokeColorBuilder:
                                 FixedColorBuilder(Colors.grey.shade300),
                           ),
@@ -515,13 +467,10 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                                     autofocus: false,
                                     keyboardType: TextInputType.text,
                                     textAlign: TextAlign.start,
-                                    // inputFormatters: [
-                                    //   LengthLimitingTextInputFormatter(10)
-                                    // ],
                                     decoration: InputDecoration(
                                       counterStyle:
                                           const TextStyle(color: Colors.grey),
-                                      hintStyle: TextStyle(
+                                      hintStyle: const TextStyle(
                                           color: Colors.grey, fontSize: 16),
                                       filled: true,
                                       helperText: "",
@@ -574,7 +523,7 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                                     decoration: InputDecoration(
                                       counterStyle:
                                           const TextStyle(color: Colors.grey),
-                                      hintStyle: TextStyle(
+                                      hintStyle: const TextStyle(
                                           color: Colors.grey, fontSize: 16),
                                       filled: true,
                                       helperText: "",
@@ -622,7 +571,7 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                                       textInputAction: TextInputAction.next,
                                       decoration: InputDecoration(
                                         hintText: 'Select dob',
-                                        hintStyle: TextStyle(
+                                        hintStyle: const TextStyle(
                                             color: Colors.grey, fontSize: 16),
                                         helperText: '',
                                         filled: true,
@@ -674,7 +623,7 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                               ],
                             );
                           })
-                        : SizedBox(),
+                        : const SizedBox(),
                   ],
                 ),
 
@@ -699,21 +648,19 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                                   ),
                                 ),
                                 backgroundColor: MaterialStateProperty.all(
-                                    Color(0xff432244))),
+                                    const Color(0xff432244))),
                             onPressed: () {
-                              // Navigator.pushNamed(context, newLoginScreen ,arguments: {'type': type});
-
                               final FormState? form = _formKey.currentState;
                               if (form!.validate()) {
                                 if (currentSate ==
                                     MobileVarificationState
                                         .SHOW_MOBILE_FORM_VERIFIED2) {
-                                  adminProvider.userRegistration(
-                                      context, 'Self Registration', '', '', 'ACTIVE');
+                                  adminProvider.userRegistration(context,
+                                      'Self Registration', '', '', 'ACTIVE');
                                 }
                               }
                             },
-                            child: Text(
+                            child: const Text(
                               "Register",
                               style: TextStyle(
                                   fontSize: 20, fontWeight: FontWeight.w600),
@@ -721,9 +668,9 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                           ),
                         ),
                       )
-                    : SizedBox(),
+                    : const SizedBox(),
                 // SizedBox(height: height*.4),
-                Align(
+                const Align(
                     alignment: Alignment.bottomLeft,
                     child: Image(
                       image: AssetImage("assets/downLayer.png"),
