@@ -1094,7 +1094,7 @@ class AdminProvider with ChangeNotifier {
 
   void deleteData(BuildContext context, String id, String from) {
     if (from == "Staff") {
-      db.collection("STAFF").doc(id).update({'STATUS': 'DELETED'});
+      db.collection("STAFF").doc(id).set({'STATUS':'DELETED'},SetOptions(merge: true));
 
       db.collection("USERS").doc(id).delete();
 
