@@ -250,7 +250,7 @@ class TrackingScreen extends StatelessWidget {
                                 Row(
                                   children: [
                                     const Spacer(),
-                                    item.missingPlase != "CHECK_IN"
+                                    item.missingPlace != "CHECK_IN"
                                         ? CircleAvatar(
                                             radius: 13,
                                             backgroundColor: item.status ==
@@ -292,7 +292,7 @@ class TrackingScreen extends StatelessWidget {
                                         Container(
                                           height: 30,
                                           width: 10,
-                                          decoration: item.missingPlase !=
+                                          decoration: item.missingPlace !=
                                                   "CHECK_IN"
                                               ? BoxDecoration(
                                                   borderRadius:
@@ -327,7 +327,7 @@ class TrackingScreen extends StatelessWidget {
                                         Container(
                                           height: 70,
                                           width: 10,
-                                          decoration: item.missingPlase !=
+                                          decoration: item.missingPlace !=
                                                   "LOADING"
                                               ? BoxDecoration(
                                                   borderRadius:
@@ -412,7 +412,7 @@ class TrackingScreen extends StatelessWidget {
                                             fontSize: 16),
                                       ),
                                     ),
-                                    item.missingPlase != "LOADING"
+                                    item.missingPlace != "LOADING"
                                         ? CircleAvatar(
                                             radius: 13,
                                             backgroundColor: item.status ==
@@ -479,7 +479,7 @@ class TrackingScreen extends StatelessWidget {
                                         Container(
                                           height: 30,
                                           width: 10,
-                                          decoration: item.missingPlase != "LOADING"? BoxDecoration(
+                                          decoration: item.missingPlace != "LOADING"? BoxDecoration(
                                               borderRadius:
                                                   const BorderRadius.vertical(
                                                       top: Radius.circular(20)),
@@ -503,7 +503,7 @@ class TrackingScreen extends StatelessWidget {
                                         Container(
                                           height: 70,
                                           width: 10,
-                                          decoration: item.missingPlase != "UNLOADING"? BoxDecoration(
+                                          decoration: item.missingPlace != "UNLOADING"? BoxDecoration(
                                               borderRadius:
                                                   const BorderRadius.vertical(
                                                       bottom:
@@ -537,7 +537,7 @@ class TrackingScreen extends StatelessWidget {
                                 Row(
                                   children: [
                                     const Spacer(),
-                                    item.missingPlase != "UNLOADING"
+                                    item.missingPlace != "UNLOADING"
                                         ? CircleAvatar(
                                             radius: 13,
                                             backgroundColor:
@@ -575,7 +575,7 @@ class TrackingScreen extends StatelessWidget {
                                         Container(
                                           height: 30,
                                           width: 10,
-                                          decoration:item.missingPlase != "UNLOADING"?  BoxDecoration(
+                                          decoration:item.missingPlace != "UNLOADING"?  BoxDecoration(
                                               borderRadius:
                                                   const BorderRadius.vertical(
                                                       top: Radius.circular(20)),
@@ -597,7 +597,7 @@ class TrackingScreen extends StatelessWidget {
                                         Container(
                                           height: 70,
                                           width: 10,
-                                          decoration: item.missingPlase != "CHECK_OUT"? BoxDecoration(
+                                          decoration: item.missingPlace != "CHECK_OUT"? BoxDecoration(
                                               borderRadius:
                                                   const BorderRadius.vertical(
                                                       bottom:
@@ -670,7 +670,7 @@ class TrackingScreen extends StatelessWidget {
                                             fontSize: 16),
                                       ),
                                     ),
-                                    item.missingPlase != "CHECK_OUT"
+                                    item.missingPlace != "CHECK_OUT"
                                         ? CircleAvatar(
                                             radius: 13,
                                             backgroundColor:
