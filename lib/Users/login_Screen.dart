@@ -160,9 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                               InputDecoration(
                                                   filled: true,
                                                   fillColor: Colors.transparent,
-                                                  border: OutlineInputBorder(
-                                                      borderSide:
-                                                          BorderSide.none),
+                                                  border: OutlineInputBorder(),
                                                   enabledBorder:
                                                       InputBorder.none,
                                                   disabledBorder:
@@ -172,8 +170,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                                   errorBorder: InputBorder.none,
                                                   focusedErrorBorder:
                                                       InputBorder.none)),
-                                  selectedItem:  CountryCode(value.country, value.code,
-                                          value.selectedValue!),
+                                  selectedItem: CountryCode(value.country,
+                                      value.code, value.selectedValue!),
                                   onChanged: (e) {
                                     value1.selectedValue =
                                         e?.dialCde.toString();
@@ -197,11 +195,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                   popupProps: PopupProps.menu(
                                       searchFieldProps: TextFieldProps(
                                         controller: _userEditTextController,
-                                        decoration: const InputDecoration(
-                                            label: Text(
-                                          'Search Country',
-                                          style: TextStyle(fontSize: 12),
-                                        )),
+                                        decoration: InputDecoration(
+                                            border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                            label: const Text(
+                                              'Search Country',
+                                              style: TextStyle(fontSize: 12),
+                                            )),
                                       ),
                                       showSearchBox: true,
                                       fit: FlexFit.tight,

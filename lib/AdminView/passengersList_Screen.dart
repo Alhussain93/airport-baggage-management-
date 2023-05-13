@@ -38,7 +38,7 @@ class CustomersListScreen extends StatelessWidget {
               ),
             ),
             Consumer<AdminProvider>(builder: (context, value2, child) {
-              return ListView.builder(
+              return value2.filterCustomersList.isNotEmpty? ListView.builder(
                   itemCount: value2.filterCustomersList.length,
                   shrinkWrap: true,
                   scrollDirection: Axis.vertical,
@@ -141,7 +141,14 @@ class CustomersListScreen extends StatelessWidget {
                         ),
                       ),
                     );
-                  });
+                  }):const SizedBox(
+                height: 300,
+                child: Center(
+                    child: Text(
+                      " No Passengers Found !!!",
+                      style: TextStyle(fontSize: 15),
+                    )),
+              );
             }),
             const SizedBox(
               height: 50,

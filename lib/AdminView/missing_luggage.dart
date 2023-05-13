@@ -248,7 +248,7 @@ class MissingLuggage extends StatelessWidget {
                         height: 300,
                         child: Center(
                             child: Text(
-                          " Data not found !!!",
+                          " No Missing Report so far !!!",
                           style: TextStyle(fontSize: 15),
                         )),
                       ),
