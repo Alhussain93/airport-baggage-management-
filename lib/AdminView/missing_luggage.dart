@@ -141,7 +141,7 @@ class MissingLuggage extends StatelessWidget {
                                   padding: const EdgeInsets.only(
                                       left: 8, right: 8, bottom: 7),
                                   child: Container(
-                                      height: height / 5.3,
+                                      height: height / 5,
                                       decoration: BoxDecoration(
                                         color: Colors.white,
                                         boxShadow: [

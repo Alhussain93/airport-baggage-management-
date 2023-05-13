@@ -172,9 +172,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                                   errorBorder: InputBorder.none,
                                                   focusedErrorBorder:
                                                       InputBorder.none)),
-                                  selectedItem: value1.countrySlct == false
-                                      ? CountryCode("India", "IN", "+91")
-                                      : CountryCode(value.country, value.code,
+                                  selectedItem:  CountryCode(value.country, value.code,
                                           value.selectedValue!),
                                   onChanged: (e) {
                                     value1.selectedValue =

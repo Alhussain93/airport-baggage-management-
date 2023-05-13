@@ -246,10 +246,10 @@ class StaffHomeScreen extends StatelessWidget {
                         const SizedBox(
                           height: 50,
                         ),
-                        isSelected.value == 1 || isSelected.value == 2
+                        isSelected.value != 0
                             ? const Padding(padding: EdgeInsets.only(top: 52))
                             : const SizedBox(),
-                        isSelected.value != 1 && isSelected.value != 2
+                        isSelected.value == 0
                             ? Padding(
                                 padding: const EdgeInsets.only(top: 15),
                                 child: Container(
