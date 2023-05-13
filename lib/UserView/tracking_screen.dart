@@ -250,7 +250,7 @@ class TrackingScreen extends StatelessWidget {
                                 Row(
                                   children: [
                                     const Spacer(),
-                                    item.checkInStatus == "CLEARED"
+                                    item.missingPlace != "CHECK_IN"
                                         ? CircleAvatar(
                                             radius: 13,
                                             backgroundColor: item.status ==
@@ -292,8 +292,8 @@ class TrackingScreen extends StatelessWidget {
                                         Container(
                                           height: 30,
                                           width: 10,
-                                          decoration: item.checkInStatus ==
-                                                  "CLEARED"
+                                          decoration: item.missingPlace !=
+                                                  "CHECK_IN"
                                               ? BoxDecoration(
                                                   borderRadius:
                                                       const BorderRadius
@@ -327,18 +327,35 @@ class TrackingScreen extends StatelessWidget {
                                         Container(
                                           height: 70,
                                           width: 10,
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  const BorderRadius.vertical(
-                                                      bottom:
-                                                          Radius.circular(20)),
-                                              color: item.status == 'CHECK_OUT'
-                                                  ? cl00962A
-                                                  : item.status == 'UNLOADING'
-                                                      ? cl00962A
-                                                      : item.status == 'LOADING'
+                                          decoration: item.missingPlace !=
+                                                  "LOADING"
+                                              ? BoxDecoration(
+                                                  borderRadius:
+                                                      const BorderRadius
+                                                              .vertical(
+                                                          bottom:
+                                                              Radius.circular(
+                                                                  20)),
+                                                  color:
+                                                      item.status == 'CHECK_OUT'
                                                           ? cl00962A
-                                                          : cl938492),
+                                                          : item.status ==
+                                                                  'UNLOADING'
+                                                              ? cl00962A
+                                                              : item.status ==
+                                                                      'LOADING'
+                                                                  ? cl00962A
+                                                                  : cl938492)
+                                              : BoxDecoration(
+                                                  borderRadius:
+                                                      const BorderRadius
+                                                          .vertical(
+                                                    bottom: Radius.circular(
+                                                      20,
+                                                    ),
+                                                  ),
+                                                  color: cl00962A,
+                                                ),
                                         ),
                                       ],
                                     ),
@@ -395,7 +412,7 @@ class TrackingScreen extends StatelessWidget {
                                             fontSize: 16),
                                       ),
                                     ),
-                                    item.loadingStatus == "CLEARED"
+                                    item.missingPlace != "LOADING"
                                         ? CircleAvatar(
                                             radius: 13,
                                             backgroundColor: item.status ==
@@ -462,7 +479,7 @@ class TrackingScreen extends StatelessWidget {
                                         Container(
                                           height: 30,
                                           width: 10,
-                                          decoration: BoxDecoration(
+                                          decoration: item.missingPlace != "LOADING"? BoxDecoration(
                                               borderRadius:
                                                   const BorderRadius.vertical(
                                                       top: Radius.circular(20)),
@@ -472,12 +489,21 @@ class TrackingScreen extends StatelessWidget {
                                                       ? cl00962A
                                                       : item.status == 'LOADING'
                                                           ? cl00962A
-                                                          : cl938492),
+                                                          : cl938492):BoxDecoration(
+                                            borderRadius:
+                                            const BorderRadius
+                                                .vertical(
+                                              top: Radius.circular(
+                                                20,
+                                              ),
+                                            ),
+                                            color: cl938492,
+                                          ),
                                         ),
                                         Container(
                                           height: 70,
                                           width: 10,
-                                          decoration: BoxDecoration(
+                                          decoration: item.missingPlace != "UNLOADING"? BoxDecoration(
                                               borderRadius:
                                                   const BorderRadius.vertical(
                                                       bottom:
@@ -486,7 +512,16 @@ class TrackingScreen extends StatelessWidget {
                                                   ? cl00962A
                                                   : item.status == 'UNLOADING'
                                                       ? cl00962A
-                                                      : cl938492),
+                                                      : cl938492):BoxDecoration(
+                                            borderRadius:
+                                            const BorderRadius
+                                                .vertical(
+                                              bottom: Radius.circular(
+                                                20,
+                                              ),
+                                            ),
+                                            color: cl00962A,
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -502,14 +537,19 @@ class TrackingScreen extends StatelessWidget {
                                 Row(
                                   children: [
                                     const Spacer(),
-                                    CircleAvatar(
-                                        radius: 13,
-                                        backgroundColor:
-                                            item.status == 'CHECK_OUT'
-                                                ? cl00962A
-                                                : item.status == 'UNLOADING'
+                                    item.missingPlace != "UNLOADING"
+                                        ? CircleAvatar(
+                                            radius: 13,
+                                            backgroundColor:
+                                                item.status == 'CHECK_OUT'
                                                     ? cl00962A
-                                                    : cl938492),
+                                                    : item.status == 'UNLOADING'
+                                                        ? cl00962A
+                                                        : cl938492)
+                                        : const CircleAvatar(
+                                            radius: 13,
+                                            backgroundColor: Colors.red,
+                                          ),
                                     const Expanded(
                                       child: Padding(
                                         padding: EdgeInsets.only(left: 8.0),
@@ -535,7 +575,7 @@ class TrackingScreen extends StatelessWidget {
                                         Container(
                                           height: 30,
                                           width: 10,
-                                          decoration: BoxDecoration(
+                                          decoration:item.missingPlace != "UNLOADING"?  BoxDecoration(
                                               borderRadius:
                                                   const BorderRadius.vertical(
                                                       top: Radius.circular(20)),
@@ -543,19 +583,37 @@ class TrackingScreen extends StatelessWidget {
                                                   ? cl00962A
                                                   : item.status == 'UNLOADING'
                                                       ? cl00962A
-                                                      : cl938492),
+                                                      : cl938492):BoxDecoration(
+                                            borderRadius:
+                                            const BorderRadius
+                                                .vertical(
+                                              top: Radius.circular(
+                                                20,
+                                              ),
+                                            ),
+                                            color: cl938492,
+                                          ),
                                         ),
                                         Container(
                                           height: 70,
                                           width: 10,
-                                          decoration: BoxDecoration(
+                                          decoration: item.missingPlace != "CHECK_OUT"? BoxDecoration(
                                               borderRadius:
                                                   const BorderRadius.vertical(
                                                       bottom:
                                                           Radius.circular(20)),
                                               color: item.status == 'CHECK_OUT'
                                                   ? cl00962A
-                                                  : cl938492),
+                                                  : cl938492):BoxDecoration(
+                                            borderRadius:
+                                            const BorderRadius
+                                                .vertical(
+                                              bottom: Radius.circular(
+                                                20,
+                                              ),
+                                            ),
+                                            color: cl00962A,
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -612,12 +670,17 @@ class TrackingScreen extends StatelessWidget {
                                             fontSize: 16),
                                       ),
                                     ),
-                                    CircleAvatar(
-                                        radius: 13,
-                                        backgroundColor:
-                                            item.status == 'CHECK_OUT'
-                                                ? cl00962A
-                                                : cl938492),
+                                    item.missingPlace != "CHECK_OUT"
+                                        ? CircleAvatar(
+                                            radius: 13,
+                                            backgroundColor:
+                                                item.status == 'CHECK_OUT'
+                                                    ? cl00962A
+                                                    : cl938492)
+                                        : const CircleAvatar(
+                                            radius: 13,
+                                            backgroundColor: Colors.red,
+                                          ),
                                     const SizedBox(
                                       width: 96,
                                     ),

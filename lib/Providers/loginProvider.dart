@@ -46,6 +46,7 @@ class LoginProvider extends ChangeNotifier {
     String loginUserid = '';
     String userStatus= '';
     String staffAirport= '';
+    String countryCode= '';
     try {
       var phone = phoneNumber!;
       // var phone = phoneNumber!.substring(3, 13);
