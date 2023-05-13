@@ -389,7 +389,7 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
 
                             hintText: 'Mobile number',
                             hintStyle:
-                                TextStyle(color: Colors.grey, fontSize: 16),
+                                const TextStyle(color: Colors.grey, fontSize: 16),
                             // enabled: currentSate != MobileVarificationState.SHOW_MOBILE_FORM_VERIFIED ?true:false,
                             filled: true,
                             helperText: "",
