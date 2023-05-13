@@ -629,8 +629,8 @@ if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]){
       passengerMap['ADDED_BY'] = addedBy;
       userMap['NAME'] = userNameCT.text;
       passengerMap['NAME'] = userNameCT.text;
-      userMap['MOBILE_NUMBER'] = userPhoneCT.text;
-      userMap['COUNTRY_CODE'] = selectedValue!;
+      userMap['MOBILE_NUMBER'] =  selectedValue!+userPhoneCT.text;
+      passengerMap['COUNTRY_CODE'] = selectedValue!;
       passengerMap['MOBILE_NUMBER'] = userPhoneCT.text;
       passengerMap['COUNTRY_CODE'] = selectedValue.toString();
       passengerMap['EMAIL'] = userEmailCT.text;
@@ -1038,8 +1038,7 @@ if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]){
       // dataMap["EMAIL"] = EmailController.text;
       dataMap["MOBILE_NUMBER"] = PhoneNumberController.text;
       dataMap["COUNTRY_CODE"] = selectedValue.toString();
-      userMap["MOBILE_NUMBER"] = PhoneNumberController.text;
-      userMap["COUNTRY_CODE"] = selectedValue.toString();
+      userMap["MOBILE_NUMBER"] = selectedValue!+PhoneNumberController.text;
       dataMap["AIRPORT"] = staffAirportName.toString();
       dataMap["DESIGNATION"] = designation.toString();
       userMap["DESIGNATION"] = designation.toString();
