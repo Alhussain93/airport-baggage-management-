@@ -157,9 +157,8 @@ List<String>qrDataList=[];
           map['LOADING_AIRPORT']??"", map['LOADED_TIMEMILLI']??"",  map['UNLOADING_AIRPORT']??"",
           map['UNLOADED_TIMEMILLI']??"",  map['CHECKOUT_AIRPORT']??"", map['CHECKOUT_TIMEMILLI']??"",map['STATUS']??"",map["CHECK_IN_STAFF_NAME"]??"",
           map["LOADING_STAFF_NAME"]??"",map["UNLOADING_STAFF_NAME"]??"",map["CHECKOUT_STAFF_NAME"]??"",map["CHECK_IN_STATUS"]??"",map["LOADING_STATUS"]??"",
-          map["UNLOADING_STATUS"]??"",map["CHECKOUT_STATUS"]??"",map["MISSING_PLACE"]
+          map["UNLOADING_STATUS"]??"",map["CHECKOUT_STATUS"]??"",map["MISSING_PLACE"]??""
       ));
-      print("fgjgkj" + luggageList.toString());
       notifyListeners();
     });
   }
