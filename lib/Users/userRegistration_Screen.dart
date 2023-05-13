@@ -112,7 +112,7 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: themecolor,
+      // backgroundColor: themecolor,
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -138,268 +138,254 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                     Consumer<AdminProvider>(builder: (context, values, child) {
                       return Padding(
                         padding: const EdgeInsets.only(left: 25, right: 25),
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(color: Colors.grey.shade200),
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(11))),
-                          child: TextFormField(
-                            maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                            onChanged: (value) {
-                              if (value.trim().length != 3) {
-                                values.showTick = true;
-                              } else {
-                                values.showTick = false;
-                                currentSate = MobileVarificationState
-                                    .SHOW_MOBILE_FORM_STATE2;
-                              }
-                              setState(() {});
-                            },
-                            keyboardType: TextInputType.phone,
-                            inputFormatters: [
-                              LengthLimitingTextInputFormatter(10)
-                            ],
-                            textInputAction: TextInputAction.next,
-                            decoration: InputDecoration(
-                              prefixIcon: SizedBox(
-                                width: 120,
-                                child: Consumer<AdminProvider>(
-                                    builder: (context, value, child) {
-                                  return DropdownSearch<CountryCode>(
-                                    dropdownDecoratorProps:
-                                        const DropDownDecoratorProps(
-                                            dropdownSearchDecoration:
-                                                InputDecoration(
-                                                    filled: true,
-                                                    fillColor:
-                                                        Colors.transparent,
-                                                    border: OutlineInputBorder(
-                                                        borderSide:
-                                                            BorderSide.none),
-                                                    enabledBorder:
-                                                        InputBorder.none,
-                                                    disabledBorder:
-                                                        InputBorder.none,
-                                                    focusedBorder:
-                                                        InputBorder.none,
-                                                    errorBorder:
-                                                        InputBorder.none,
-                                                    focusedErrorBorder:
-                                                        InputBorder.none)),
-                                    selectedItem: value.countrySlct == false
-                                        ? CountryCode("India", "IN", "+91")
-                                        : CountryCode(value.country, value.code,
-                                            value.selectedValue!),
-                                    onChanged: (e) {
-                                      value.selectedValue =
-                                          e?.dialCde.toString();
-                                      value.code = e!.code.toString();
-                                      value.country = e!.country.toString();
-                                      value.countrySlct = true;
-                                    },
-                                    items: value.countryCodeList,
-                                    filterFn: (item, filter) {
-                                      return item.country.contains(filter) ||
-                                          item.country
-                                              .toLowerCase()
-                                              .contains(filter) ||
-                                          item.country
-                                              .toUpperCase()
-                                              .contains(filter);
-                                    },
-                                    itemAsString: (CountryCode u) {
-                                      return u.dialCde;
-                                    },
-                                    popupProps: PopupProps.menu(
-                                        searchFieldProps: const TextFieldProps(
-                                          decoration: InputDecoration(
-                                              label: Text(
-                                            'Search Country',
-                                            style: TextStyle(fontSize: 12),
-                                          )),
-                                        ),
-                                        showSearchBox: true,
-                                        // showSelectedItems: true,
-                                        fit: FlexFit.tight,
-                                        itemBuilder: (ctx, item, isSelected) {
-                                          return ListTile(
-                                            selected: isSelected,
-                                            title: Text(
-                                              item.country,
-                                              style:
-                                                  const TextStyle(fontSize: 15),
-                                            ),
-                                            subtitle: Text(
-                                              item.dialCde,
-                                              style:
-                                                  const TextStyle(fontSize: 13),
-                                            ),
-                                          );
-                                        }),
-                                  );
-                                }),
-                              ),
-                              suffixIcon: Padding(
-                                padding: const EdgeInsets.only(
-                                    right: 8.0, top: 4, bottom: 4),
-                                child: Container(
-                                    width: 60,
-                                    decoration: BoxDecoration(
-                                      color: values.showTick == false
-                                          ? const Color(0xff838282)
-                                          : currentSate !=
-                                                  MobileVarificationState
-                                                      .SHOW_MOBILE_FORM_VERIFIED2
-                                              ? grapeColor
-                                              : cl00cf18,
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(15)),
-                                    ),
-                                    child: values.showTick
-                                        ? InkWell(
-                                            onTap: () async {
-                                              setState(() {
-                                                if (values.userPhoneCT.text
-                                                        .length !=
-                                                    3) {
-                                                  showLoading = true;
-                                                }
-                                              });
+                        child: TextFormField(
+                          maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                          onChanged: (value) {
+                            if (value.trim().length != 3) {
+                              values.showTick = true;
+                            } else {
+                              values.showTick = false;
+                              currentSate = MobileVarificationState
+                                  .SHOW_MOBILE_FORM_STATE2;
+                            }
+                            setState(() {});
+                          },
+                          keyboardType: TextInputType.phone,
 
-                                              await auth.verifyPhoneNumber(
-                                                  phoneNumber: adminProvider
-                                                          .selectedValue! +
-                                                      values.userPhoneCT.text,
-                                                  verificationCompleted:
-                                                      (phoneAuthCredential) async {
-                                                    setState(() {
-                                                      showLoading = false;
-                                                    });
-
-                                                    ScaffoldMessenger.of(
-                                                            context)
-                                                        .showSnackBar(
-                                                            const SnackBar(
-                                                      content: Text(
-                                                          "Verification Completed"),
-                                                      duration: Duration(
-                                                          milliseconds: 3000),
-                                                    ));
-                                                    if (kDebugMode) {}
-                                                  },
-                                                  verificationFailed:
-                                                      (verificationFailed) async {
-                                                    setState(() {
-                                                      showLoading = false;
-                                                    });
-                                                    ScaffoldMessenger.of(
-                                                            context)
-                                                        .showSnackBar(
-                                                            const SnackBar(
-                                                      content: Text(
-                                                          "Sorry, Verification Failed"),
-                                                      duration: Duration(
-                                                          milliseconds: 3000),
-                                                    ));
-                                                    if (kDebugMode) {
-                                                      print(verificationFailed
-                                                          .message
-                                                          .toString());
-                                                    }
-                                                  },
-                                                  codeSent: (verificationId,
-                                                      resendingToken) async {
-                                                    setState(() {
-                                                      showLoading = false;
-                                                      currentSate =
-                                                          MobileVarificationState
-                                                              .SHOW_OTP_FORM_STATE2;
-                                                      this.verificationId =
-                                                          verificationId;
-
-                                                      ScaffoldMessenger.of(
-                                                              context)
-                                                          .showSnackBar(
-                                                              const SnackBar(
-                                                        content: Text(
-                                                            "OTP sent to phone successfully"),
-                                                        duration: Duration(
-                                                            milliseconds: 3000),
-                                                      ));
-
-                                                      if (kDebugMode) {}
-                                                    });
-                                                  },
-                                                  codeAutoRetrievalTimeout:
-                                                      (verificationId) async {});
-                                            },
-                                            child: Center(
-                                                child: showLoading
-                                                    ? const Padding(
-                                                        padding:
-                                                            EdgeInsets.all(4),
-                                                        child:
-                                                            CircularProgressIndicator(
-                                                          color: Colors.white,
-                                                        ),
-                                                      )
-                                                    : Text(
-                                                        currentSate !=
-                                                                MobileVarificationState
-                                                                    .SHOW_MOBILE_FORM_VERIFIED2
-                                                            ? "Verify"
-                                                            : "Verified",
-                                                        style: const TextStyle(
-                                                            color:
-                                                                Colors.white),
-                                                      )))
-                                        : const Center(
-                                            child: Text("Verify",
-                                                style: TextStyle(
-                                                    color: Colors.white)))),
-                              ),
-                              hintText: 'Mobile number',
-                              hintStyle: const TextStyle(
-                                  color: Colors.grey, fontSize: 16),
-                              helperText: "",
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide(
-                                  color: Colors.grey.shade200,
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide(
-                                  color: Colors.grey.shade200,
-                                ),
-                              ),
-                              errorBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(30),
-                                  borderSide: BorderSide(
-                                    color: Colors.grey.shade200,
-                                  )),
-                              disabledBorder: InputBorder.none,
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                  borderSide: const BorderSide(
-                                    color: Colors.grey,
-                                  )),
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.all(8),
+                            prefixIcon: SizedBox(
+                              width: 110,
+                              child: Consumer<AdminProvider>(
+                                  builder: (context, value, child) {
+                                return DropdownSearch<CountryCode>(
+                                  dropdownDecoratorProps:
+                                      const DropDownDecoratorProps(
+                                          dropdownSearchDecoration:
+                                              InputDecoration(
+                                                  filled: true,
+                                                  fillColor:
+                                                      Colors.transparent,
+                                                  border: OutlineInputBorder(
+                                                      borderSide:
+                                                          BorderSide.none),
+                                                  enabledBorder:
+                                                      InputBorder.none,
+                                                  disabledBorder:
+                                                      InputBorder.none,
+                                                  focusedBorder:
+                                                      InputBorder.none,
+                                                  errorBorder:
+                                                      InputBorder.none,
+                                                  focusedErrorBorder:
+                                                      InputBorder.none)),
+                                  selectedItem:  CountryCode(value.country, value.code,
+                                          value.selectedValue!),
+                                  onChanged: (e) {
+                                    value.selectedValue =
+                                        e?.dialCde.toString();
+                                    value.code = e!.code.toString();
+                                    value.country = e!.country.toString();
+                                    value.countrySlct = true;
+                                  },
+                                  items: value.countryCodeList,
+                                  filterFn: (item, filter) {
+                                    return item.country.contains(filter) ||
+                                        item.country
+                                            .toLowerCase()
+                                            .contains(filter) ||
+                                        item.country
+                                            .toUpperCase()
+                                            .contains(filter);
+                                  },
+                                  itemAsString: (CountryCode u) {
+                                    return u.dialCde;
+                                  },
+                                  popupProps: PopupProps.menu(
+                                      searchFieldProps: const TextFieldProps(
+                                        decoration: InputDecoration(
+                                            label: Text(
+                                          'Search Country',
+                                          style: TextStyle(fontSize: 12),
+                                        )),
+                                      ),
+                                      showSearchBox: true,
+                                      // showSelectedItems: true,
+                                      fit: FlexFit.tight,
+                                      itemBuilder: (ctx, item, isSelected) {
+                                        return ListTile(
+                                          selected: isSelected,
+                                          title: Text(
+                                            item.country,
+                                            style:
+                                                const TextStyle(fontSize: 15),
+                                          ),
+                                          subtitle: Text(
+                                            item.dialCde,
+                                            style:
+                                                const TextStyle(fontSize: 13),
+                                          ),
+                                        );
+                                      }),
+                                );
+                              }),
                             ),
-                            controller: values.userPhoneCT,
-                            style: TextStyle(
-                                color: fontColor,
-                                fontSize: 18,
-                                fontFamily: "PoppinsMedium"),
-                            validator: (value) {
-                              if (value!.trim().isEmpty) {
-                                return "Please Enter The Mobile Number";
-                              } else {
-                                return null;
-                              }
-                            },
+                            suffixIcon: Padding(
+                              padding: const EdgeInsets.only(
+                                  right: 8.0, top: 4, bottom: 4),
+                              child: Container(
+                                  width: 60,
+                                  decoration: BoxDecoration(
+                                    color: values.showTick == false
+                                        ? const Color(0xff838282)
+                                        : currentSate !=
+                                                MobileVarificationState
+                                                    .SHOW_MOBILE_FORM_VERIFIED2
+                                            ? grapeColor
+                                            : cl00cf18,
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(15)),
+                                  ),
+                                  child: values.showTick
+                                      ? InkWell(
+                                          onTap: () async {
+                                            setState(() {
+                                                showLoading = true;
+
+                                            });
+
+                                            await auth.verifyPhoneNumber(
+                                                phoneNumber: adminProvider.selectedValue! +
+                                                    values.userPhoneCT.text,
+                                                verificationCompleted:
+                                                    (phoneAuthCredential) async {
+                                                  setState(() {
+                                                    showLoading = false;
+                                                  });
+
+                                                  ScaffoldMessenger.of(
+                                                          context)
+                                                      .showSnackBar(
+                                                          const SnackBar(
+                                                    content: Text(
+                                                        "Verification Completed"),
+                                                    duration: Duration(
+                                                        milliseconds: 3000),
+                                                  ));
+                                                  if (kDebugMode) {}
+                                                },
+                                                verificationFailed:
+                                                    (verificationFailed) async {
+                                                  setState(() {
+                                                    showLoading = false;
+                                                  });
+                                                  ScaffoldMessenger.of(
+                                                          context)
+                                                      .showSnackBar(
+                                                          const SnackBar(
+                                                    content: Text(
+                                                        "Sorry, Verification Failed"),
+                                                    duration: Duration(
+                                                        milliseconds: 3000),
+                                                  ));
+                                                  if (kDebugMode) {
+                                                    print(verificationFailed
+                                                        .message
+                                                        .toString());
+                                                  }
+                                                },
+                                                codeSent: (verificationId,
+                                                    resendingToken) async {
+                                                  setState(() {
+                                                    showLoading = false;
+                                                    currentSate =
+                                                        MobileVarificationState
+                                                            .SHOW_OTP_FORM_STATE2;
+                                                    this.verificationId =
+                                                        verificationId;
+
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .showSnackBar(
+                                                            const SnackBar(
+                                                      content: Text(
+                                                          "OTP sent to phone successfully"),
+                                                      duration: Duration(
+                                                          milliseconds: 3000),
+                                                    ));
+
+                                                    if (kDebugMode) {}
+                                                  });
+                                                },
+                                                codeAutoRetrievalTimeout:
+                                                    (verificationId) async {});
+                                          },
+                                          child: Center(
+                                              child: showLoading
+                                                  ? const Padding(
+                                                      padding:
+                                                          EdgeInsets.all(4),
+                                                      child:
+                                                          CircularProgressIndicator(
+                                                        color: Colors.white,
+                                                      ),
+                                                    )
+                                                  : Text(
+                                                      currentSate !=
+                                                              MobileVarificationState
+                                                                  .SHOW_MOBILE_FORM_VERIFIED2
+                                                          ? "Verify"
+                                                          : "Verified",
+                                                      style: const TextStyle(
+                                                          color:
+                                                              Colors.white),
+                                                    )))
+                                      : const Center(
+                                          child: Text("Verify",
+                                              style: TextStyle(
+                                                  color: Colors.white)))),
+                            ),
+                            hintText: 'Mobile number',
+                            hintStyle: const TextStyle(
+                                color: Colors.grey, fontSize: 16),
+                            helperText: "",
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(
+                                color: Colors.grey.shade200,
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(
+                                color: Colors.grey.shade200,
+                              ),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                                borderSide: BorderSide(
+                                  color: Colors.grey.shade200,
+                                )),
+                            disabledBorder: InputBorder.none,
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15),
+                                borderSide: const BorderSide(
+                                  color: Colors.grey,
+                                )),
                           ),
+                          controller: values.userPhoneCT,
+                          style: TextStyle(
+                              color: fontColor,
+                              fontSize: 18,
+                              fontFamily: "PoppinsMedium"),
+                          validator: (value) {
+                            if (value!.trim().isEmpty) {
+                              return "Please Enter The Mobile Number";
+                            } else {
+                              return null;
+                            }
+                          },
                         ),
                       );
                     }),
@@ -448,7 +434,7 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.only(
-                                      left: 25, right: 25, top: 0),
+                                      left: 25, right: 25, top: 10),
                                   child: TextFormField(
                                     controller: values.userNameCT,
                                     style: TextStyle(
@@ -555,60 +541,58 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                                 Padding(
                                   padding: const EdgeInsets.only(
                                       left: 25, right: 25),
-                                  child: SizedBox(
-                                    height: 50,
-                                    child: TextFormField(
-                                      textAlign: TextAlign.start,
-                                      textInputAction: TextInputAction.next,
-                                      decoration: InputDecoration(
-                                        hintText: 'Select dob',
-                                        hintStyle: const TextStyle(
-                                            color: Colors.grey, fontSize: 16),
-                                        helperText: '',
-                                        filled: true,
-                                        fillColor: Colors.white,
-                                        focusedBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          borderSide: BorderSide(
-                                            color: Colors.grey.shade200,
-                                          ),
-                                        ),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          borderSide: BorderSide(
-                                            color: Colors.grey.shade200,
-                                          ),
-                                        ),
-                                        errorBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          borderSide: BorderSide(
-                                            color: Colors.grey.shade200,
-                                          ),
+                                  child: TextFormField(
+                                    textAlign: TextAlign.start,
+                                    textInputAction: TextInputAction.next,
+                                    decoration: InputDecoration(
+                                      contentPadding: EdgeInsets.all(5),
+                                      hintText: 'Select dob',
+                                      hintStyle: const TextStyle(
+                                          color: Colors.grey, fontSize: 16),
+                                      helperText: '',
+                                      filled: true,
+                                      fillColor: Colors.white,
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10),
+                                        borderSide: BorderSide(
+                                          color: Colors.grey.shade200,
                                         ),
                                       ),
-                                      readOnly: true,
-                                      controller: values.userDobCT,
-                                      style: TextStyle(
-                                          color: fontColor,
-                                          fontSize: 18,
-                                          fontFamily: "PoppinsMedium"),
-                                      onTap: () {
-                                        values.selectDOB(context);
-                                      },
-                                      validator: (value) {
-                                        if (value!.trim().isEmpty) {
-                                          return "Please Select dob";
-                                        } else {
-                                          return null;
-                                        }
-                                      },
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10),
+                                        borderSide: BorderSide(
+                                          color: Colors.grey.shade200,
+                                        ),
+                                      ),
+                                      errorBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10),
+                                        borderSide: BorderSide(
+                                          color: Colors.grey.shade200,
+                                        ),
+                                      ),
                                     ),
+                                    readOnly: true,
+                                    controller: values.userDobCT,
+                                    style: TextStyle(
+                                        color: fontColor,
+                                        fontSize: 18,
+                                        fontFamily: "PoppinsMedium"),
+                                    onTap: () {
+                                      values.selectDOB(context);
+                                    },
+                                    validator: (value) {
+                                      if (value!.trim().isEmpty) {
+                                        return "Please Select dob";
+                                      } else {
+                                        return null;
+                                      }
+                                    },
                                   ),
                                 ),
                               ],

@@ -89,6 +89,53 @@ class AdminProvider with ChangeNotifier {
     'Khasab Airport'
   ];
 
+
+  Future<bool> showExitPopup(context) async {
+    return await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: SizedBox(
+              height: 95,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text("Do you want to exit?"),
+                  const SizedBox(height: 19),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            SystemNavigator.pop();
+                          },
+                          style: ElevatedButton.styleFrom(
+                              primary: Colors.red.shade800),
+                          child: const Text("Yes"),
+                        ),
+                      ),
+                      const SizedBox(width: 15),
+                      Expanded(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.white,
+                            ),
+                            child: const Text("No",
+                                style: TextStyle(color: Colors.black)),
+                          ))
+                    ],
+                  )
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+
   checkingPnr(String pnrControllerText, BuildContext context, String username) {
     db
         .collection("LUGGAGE")
@@ -872,14 +919,13 @@ class AdminProvider with ChangeNotifier {
         .get()
         .then((value) {
       if (value.docs.isNotEmpty) {
-        for (var element in value.docs) {
-          Map<dynamic, dynamic> map = element.data();
-          arrivalPlace = map["TO"].toString();
-          flightName = map["FLIGHT_NAME"].toString();
-          notifyListeners();
-          generateQrCode(
-              context, staffAirport, stfName, arrivalPlace, flightName);
-        }
+        Map<dynamic, dynamic> map = value.docs.first.data();
+        arrivalPlace = map["TO"].toString();
+        flightName = map["FLIGHT_NAME"].toString();
+        notifyListeners();
+        generateQrCode(
+            context, staffAirport, stfName, arrivalPlace, flightName);
+        clearQrControllers();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("Sorry, No PNR ID found..."),
@@ -892,7 +938,7 @@ class AdminProvider with ChangeNotifier {
   void generateQrCode(BuildContext context, String staffAirport, String stfName,
       String arrivalPlace, String flightName) {
     HashMap<String, Object> qrMap = HashMap();
-
+    qrDataList.clear();
     int luggageCount = int.parse(qrLuggageCountCT.text);
     for (int i = 0; i < luggageCount; i++) {
       String qrID = DateTime.now().millisecondsSinceEpoch.toString();
@@ -1114,7 +1160,7 @@ class AdminProvider with ChangeNotifier {
 
   void deleteData(BuildContext context, String id, String from) {
     if (from == "Staff") {
-      db.collection("STAFF").doc(id).update({'STATUS': 'DELETED'});
+      db.collection("STAFF").doc(id).set({'STATUS':'DELETED'},SetOptions(merge: true));
 
       db.collection("USERS").doc(id).delete();
 
@@ -1555,4 +1601,5 @@ class AdminProvider with ChangeNotifier {
       }
     });
   }
+
 }

@@ -202,10 +202,10 @@ class AddStaff extends StatelessWidget {
                           maxLengthEnforcement: MaxLengthEnforcement.enforced,
                           textAlign: TextAlign.center,
                           keyboardType: TextInputType.phone,
-                          inputFormatters: [
-                            LengthLimitingTextInputFormatter(10),
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
+                          // inputFormatters: [
+                          //   LengthLimitingTextInputFormatter(10),
+                          //   FilteringTextInputFormatter.digitsOnly,
+                          // ],
                           textInputAction: TextInputAction.next,
                           decoration: InputDecoration(
                             prefixIcon: SizedBox(

@@ -259,6 +259,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   InkWell(
                     onTap: () {
                       adminProvider.clearUserControllers();
+                      CountryCode("Oman", "OM", "+968");
+
                       callNext(UserRegistrationScreen(), context);
                     },
                     child: Center(
