@@ -351,16 +351,12 @@ border: Border.all(color:Colors.grey.shade200),
 
     db
         .collection("USERS")
-        .where("MOBILE_NUMBER",
-    isEqualTo: phoneController.text)
+        .where("MOBILE_NUMBER", isEqualTo:adminProvider.selectedValue!+ phoneController.text)
         .get()
         .then((userValue) async {
       if (userValue.docs.isNotEmpty) {
         setState(() {
-          print(phoneController.text.toString()+"fgefegh9h8w");
-          if (phoneController.text.length == 10) {
-            showLoading = true;
-          }
+          showLoading = true;
         });
         AdminProvider adminProvider =
         Provider.of<AdminProvider>(context, listen: false);
