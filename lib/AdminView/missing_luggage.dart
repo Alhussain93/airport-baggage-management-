@@ -38,32 +38,6 @@ class MisingLaggage extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Container(
-                    //   height: 35,
-                    //   width: width / 2,
-                    //   decoration: BoxDecoration(
-                    //       borderRadius: BorderRadius.circular(20),
-                    //       color: Colors.white),
-                    //   child: Row(
-                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //     children: [
-                    //       const Padding(
-                    //         padding: EdgeInsets.only(left: 10),
-                    //         child: Text(
-                    //           "Flight",
-                    //           style: TextStyle(
-                    //               fontWeight: FontWeight.w400,
-                    //               fontSize: 11,
-                    //               fontFamily: "Poppins-SemiBold"),
-                    //         ),
-                    //       ),
-                    //       IconButton(
-                    //           onPressed: () {},
-                    //           icon: const Icon(Icons.arrow_drop_down))
-                    //     ],
-                    //   ),
-                    // ),
-
                     Consumer<AdminProvider>(builder: (context, value1, child) {
                       return Container(
                         height: 40,
@@ -76,7 +50,7 @@ class MisingLaggage extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: DropdownButtonFormField(
-                            style: TextStyle(fontSize: 10,color: Colors.black),
+                            style: const TextStyle(fontSize: 10,color: Colors.black),
                             hint: const Text(
                               "Flight",
                               style: TextStyle(
@@ -105,7 +79,7 @@ class MisingLaggage extends StatelessWidget {
                                   value: item1,
                                   child: Padding(
                                     padding: const EdgeInsets.only(left: 10),
-                                    child: Text(item1,style: TextStyle(fontSize: 11),),
+                                    child: Text(item1,style: const TextStyle(fontSize: 11),),
                                   ));
                             }).toList(),
                           ),
@@ -129,8 +103,8 @@ class MisingLaggage extends StatelessWidget {
                             color: Colors.white),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Padding(
+                          children: const [
+                            Padding(
                               padding: EdgeInsets.only(left: 10),
                               child: Text(
                                 "Date",
@@ -160,7 +134,7 @@ class MisingLaggage extends StatelessWidget {
                       ListView.builder(
                         shrinkWrap: true,
                           scrollDirection: Axis.vertical,
-                          physics: ScrollPhysics(),
+                          physics: const ScrollPhysics(),
                           itemCount: value1.missingLuggageList.length,
                           itemBuilder: (BuildContext context, int index) {
                           var item= value1.missingLuggageList[index];
@@ -168,7 +142,7 @@ class MisingLaggage extends StatelessWidget {
                               padding:
                               const EdgeInsets.only(left: 8, right: 8, bottom: 7),
                               child: Container(
-                                  height: height / 5.3,
+                                  height: height / 5,
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     boxShadow: [
@@ -186,7 +160,7 @@ class MisingLaggage extends StatelessWidget {
                                       children: [
                                          Text(
                                           item.name,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               fontFamily: "Poppins-SemiBold",
                                               fontSize: 18,
                                               fontWeight: FontWeight.w500),
@@ -214,7 +188,17 @@ class MisingLaggage extends StatelessWidget {
                                         ),
                                          Text(
                                           item.missingPlace,
-                                          style: TextStyle(
+                                          style: const TextStyle(
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.black),
+                                        ),
+                                        const SizedBox(
+                                          height: 2,
+                                        ),
+                                        Text(
+                                          item.flightName,
+                                          style: const TextStyle(
                                               fontSize: 10,
                                               fontWeight: FontWeight.w400,
                                               color: Colors.black),
@@ -239,18 +223,11 @@ class MisingLaggage extends StatelessWidget {
 
                                             Text(
                                             uploadDatee(item.scannedDate)  ,
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                   fontSize: 10,
                                                   fontWeight: FontWeight.w400,
                                                   color: Colors.black),
                                             ),
-                                            // Text(
-                                            //   "23.50",
-                                            //   style: TextStyle(
-                                            //       fontSize: 10,
-                                            //       fontWeight: FontWeight.w400,
-                                            //       color: Colors.black),
-                                            // ),
                                           ],
                                         )
                                       ],
@@ -259,7 +236,7 @@ class MisingLaggage extends StatelessWidget {
                             );
                           }),
                     ],
-                  ):SizedBox(
+                  ):const SizedBox(
                     height: 300,
                     child: Center(child: Text(" Data not found !!!",style: TextStyle(fontSize: 15),)),
                   ),

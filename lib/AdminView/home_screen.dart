@@ -236,7 +236,9 @@ class HomeScreen extends StatelessWidget {
                         const SizedBox(
                           height: 50,
                         ),
-                        // isSelected.value == 1 || isSelected.value == 4
+                        isSelected.value==2?const Padding(padding: EdgeInsets.only(top: 52)):const SizedBox(),
+
+                        isSelected.value !=2?
                         //     // || isSelected.value == 5
                         //     ? const Padding(padding: EdgeInsets.only(top: 52))
                         //     : const SizedBox(),
@@ -275,7 +277,7 @@ class HomeScreen extends StatelessWidget {
                                     },
                                   ),
                                 ),
-                              ),
+                              ):SizedBox(),
                         Padding(
                           padding: const EdgeInsets.only(top: 19),
                           child: Row(
