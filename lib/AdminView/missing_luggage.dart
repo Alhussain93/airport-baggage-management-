@@ -98,7 +98,7 @@ class MisingLaggage extends StatelessWidget {
                             onChanged: (newValue) {
                               value1.flightName = newValue.toString();
                               value1. sortMissingLuggageFlightBase( newValue.toString());
-                              print("rftgyhjuio" + value1.toString());
+
                             },
                             items:value1.flightNameList.map((item1) {
                               return DropdownMenuItem(
@@ -115,7 +115,7 @@ class MisingLaggage extends StatelessWidget {
                     InkWell(
                       onTap: (){
 
-                        adminProvider.selectDOB(context);
+                        adminProvider.showCalendarDialog(context);
 
                       },
                       child: Container(

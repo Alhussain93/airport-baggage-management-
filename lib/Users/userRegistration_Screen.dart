@@ -216,7 +216,7 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                                       items: value.countryCodeList,
                                       // dropdownBuilder: (context, selectedItem) => selectedItem.dialCde,
                                       filterFn: (item, filter) {
-                                        print("filkjkdsjf" + filter + item.country);
+
                                         return item.country.contains(filter) ||
                                             item.country
                                                 .toLowerCase()
