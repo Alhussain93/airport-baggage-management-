@@ -38,7 +38,7 @@ class TicketList extends StatelessWidget {
               ),
             ),
             Consumer<AdminProvider>(builder: (context, value2, child) {
-              return ListView.builder(
+              return value2.filterTicketLIst.isNotEmpty? ListView.builder(
                   itemCount: value2.filterTicketLIst.length,
                   shrinkWrap: true,
                   scrollDirection: Axis.vertical,
@@ -122,7 +122,14 @@ class TicketList extends StatelessWidget {
                         ),
                       );
                     });
-                  });
+                  }):const SizedBox(
+                height: 300,
+                child: Center(
+                    child: Text(
+                      " No Tickets Found !!!",
+                      style: TextStyle(fontSize: 15),
+                    )),
+              );
             })
           ],
         ),

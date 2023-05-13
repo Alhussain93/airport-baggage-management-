@@ -94,7 +94,7 @@ class StaffScreen extends StatelessWidget {
               ),
             ),
             Consumer<AdminProvider>(builder: (context, value, child) {
-              return ListView.builder(
+              return value.filtersStaffList.isNotEmpty? ListView.builder(
                   itemCount: value.filtersStaffList.length,
                   shrinkWrap: true,
                   scrollDirection: Axis.vertical,
@@ -107,7 +107,7 @@ class StaffScreen extends StatelessWidget {
                         padding:
                             const EdgeInsets.only(left: 8, right: 8, bottom: 2),
                         child: Container(
-                          height: 85,
+                          height: 90,
                           decoration: BoxDecoration(
                             color: Colors.white,
                             boxShadow: [
@@ -148,12 +148,18 @@ class StaffScreen extends StatelessWidget {
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
-                                        Text(
-                                          item.Name,
-                                          style: const TextStyle(
-                                              fontFamily: "Poppins-SemiBold",
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w600),
+                                        SizedBox(height: 22,
+
+                                          child: FittedBox(
+                                            fit: BoxFit.fill,
+                                            child: Text(
+                                              item.Name,
+                                              style: const TextStyle(
+                                                  fontFamily: "Poppins-SemiBold",
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
                                         ),
                                         Row(
                                           children: [
@@ -218,7 +224,14 @@ class StaffScreen extends StatelessWidget {
                         ),
                       ),
                     );
-                  });
+                  }):const SizedBox(
+                height: 300,
+                child: Center(
+                    child: Text(
+                      " No Staff Found !!!",
+                      style: TextStyle(fontSize: 15),
+                    )),
+              );
             })
           ],
         ),
