@@ -436,7 +436,7 @@ class AdminProvider with ChangeNotifier {
 
           db.collection("LUGGAGE").doc(luggageId).set({
             "MISSING": "YES",
-            "MISSING_PLACE": "CHECKOUT",
+            "MISSING_PLACE": "CHECK_OUT",
           }, SetOptions(merge: true));
           String text = 'Airport miss matched';
           showAlertDialog(context, text, staffDes, staffName, staffAirport);
