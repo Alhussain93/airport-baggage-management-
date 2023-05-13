@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../Providers/admin_provider.dart';
 import 'add_tickets.dart';
 import '../constant/colors.dart';
 import '../constant/my_functions.dart';
-import '../AdminView/addPassenger_screen.dart';
-import '../AdminView/add_staff.dart';
 
 class TicketList extends StatelessWidget {
   String addedBy;
-   TicketList({Key? key,required this.addedBy}) : super(key: key);
+
+  TicketList({Key? key, required this.addedBy}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
       body: SingleChildScrollView(
@@ -106,17 +103,14 @@ class TicketList extends StatelessWidget {
                                 ],
                               ),
                               Column(
-                                // crossAxisAlignment: CrossAxisAlignment.end,
-                                // mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   Consumer<AdminProvider>(
                                       builder: (context, value2, child) {
                                     return IconButton(
                                         onPressed: () {
-                                          value2.editTickets(context,ID.id);
-
+                                          value2.editTickets(context, ID.id);
                                         },
-                                        icon: Icon(
+                                        icon: const Icon(
                                           Icons.edit_calendar,
                                           size: 20,
                                         ));
@@ -146,7 +140,13 @@ class TicketList extends StatelessWidget {
                   backgroundColor: themecolor,
                   onPressed: () {
                     value3.clearTicketControllers();
-                    callNext(AddTickets(from: '', userId: '', addedBy: addedBy,), context);
+                    callNext(
+                        AddTickets(
+                          from: '',
+                          userId: '',
+                          addedBy: addedBy,
+                        ),
+                        context);
                   },
                   child: const Icon(Icons.add),
                 );

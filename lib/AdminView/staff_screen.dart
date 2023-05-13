@@ -1,22 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:luggage_tracking_app/constant/my_functions.dart';
 import 'package:provider/provider.dart';
-
 import '../Providers/admin_provider.dart';
 import '../constant/colors.dart';
 import 'add_staff.dart';
 
 class StaffScreen extends StatelessWidget {
   String addedBy;
-   StaffScreen({Key? key,required this.addedBy}) : super(key: key);
+
+  StaffScreen({Key? key, required this.addedBy}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-
-    AdminProvider get = Provider.of<AdminProvider>(context, listen: false);
-
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -51,10 +47,6 @@ class StaffScreen extends StatelessWidget {
                               color: Colors.grey.shade300,
                               blurRadius: 1.0, // soften the shadow
                               spreadRadius: 1.0, //extend the shadow
-                              // offset: Offset(
-                              //   1.0, // Move to right 5  horizontally
-                              //   1.0, // Move to bottom 5 Vertically
-                              // ),
                             )
                           ],
                         ),
@@ -68,7 +60,9 @@ class StaffScreen extends StatelessWidget {
                                 callNext(
                                     AddStaff(
                                       from: '',
-                                      userId: '', status:'ACTIVE', addedBy: addedBy,
+                                      userId: '',
+                                      status: 'ACTIVE',
+                                      addedBy: addedBy,
                                     ),
                                     context);
                               },
@@ -128,19 +122,20 @@ class StaffScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Padding(
-                                  padding: EdgeInsets.only(left: 10),
-                                  child: item.profileImage != ""
-                                      ? CircleAvatar(
-                                      backgroundColor: cWhite,
-                                      radius: 25,
-                                      backgroundImage:
-                                      NetworkImage(item.profileImage))
-                                      : CircleAvatar(
-                                    backgroundColor: cWhite,
-                                    radius: 25,
-                                    backgroundImage:
-                                    const AssetImage("assets/user.png"),
-                                  ),),
+                                padding: const EdgeInsets.only(left: 10),
+                                child: item.profileImage != ""
+                                    ? CircleAvatar(
+                                        backgroundColor: cWhite,
+                                        radius: 25,
+                                        backgroundImage:
+                                            NetworkImage(item.profileImage))
+                                    : CircleAvatar(
+                                        backgroundColor: cWhite,
+                                        radius: 25,
+                                        backgroundImage:
+                                            const AssetImage("assets/user.png"),
+                                      ),
+                              ),
                               SizedBox(
                                 width: width / 1.3,
                                 child: Row(
@@ -178,7 +173,6 @@ class StaffScreen extends StatelessWidget {
                                                   fontSize: 12,
                                                   fontWeight: FontWeight.w400),
                                             ),
-
                                           ],
                                         ),
                                         Row(
@@ -187,30 +181,30 @@ class StaffScreen extends StatelessWidget {
                                               "STATUS : ",
                                               style: TextStyle(
                                                   fontFamily:
-                                                  "Poppins-SemiBold",
+                                                      "Poppins-SemiBold",
                                                   fontSize: 12,
                                                   fontWeight: FontWeight.w400),
                                             ),
                                             Text(
                                               item.status,
-                                              style:  TextStyle(
-                                                color: item.status=="BLOCKED"?Colors.red:Colors.green,
+                                              style: TextStyle(
+                                                  color:
+                                                      item.status == "BLOCKED"
+                                                          ? Colors.red
+                                                          : Colors.green,
                                                   fontFamily:
-                                                  "Poppins-SemiBold",
+                                                      "Poppins-SemiBold",
                                                   fontSize: 12,
                                                   fontWeight: FontWeight.w400),
                                             ),
-
                                           ],
                                         ),
                                       ],
                                     ),
                                     IconButton(
                                         onPressed: () {
-                                          value.fileImage=null;
-                                          // value. storing(item.Name,item.StaffId,item.Email);
-                                          value.editStaff(context,item.id);
-
+                                          value.fileImage = null;
+                                          value.editStaff(context, item.id);
                                         },
                                         icon: const Icon(
                                           Icons.edit_calendar_outlined,
@@ -231,6 +225,4 @@ class StaffScreen extends StatelessWidget {
       ),
     );
   }
-
-
 }

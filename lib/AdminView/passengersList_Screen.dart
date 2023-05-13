@@ -1,22 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../Providers/admin_provider.dart';
 import '../constant/colors.dart';
 import '../constant/my_functions.dart';
 import 'addPassenger_screen.dart';
-import 'add_staff.dart';
 
 class CustomersListScreen extends StatelessWidget {
   String addedby;
-   CustomersListScreen({Key? key,required this.addedby}) : super(key: key);
+
+  CustomersListScreen({Key? key, required this.addedby}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-    AdminProvider adminProvider =
-    Provider.of<AdminProvider>(context, listen: false);
     return Scaffold(
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
@@ -92,8 +88,7 @@ class CustomersListScreen extends StatelessWidget {
                                   Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
                                         item.name,
@@ -111,10 +106,13 @@ class CustomersListScreen extends StatelessWidget {
                                       ),
                                       Text(
                                         item.passengerStatus,
-                                        style:  TextStyle(
+                                        style: TextStyle(
                                             fontFamily: "Poppins-SemiBold",
                                             fontSize: 12,
-                                            color: item.passengerStatus=="BLOCKED"?Colors.red:Colors.green,
+                                            color: item.passengerStatus ==
+                                                    "BLOCKED"
+                                                ? Colors.red
+                                                : Colors.green,
                                             fontWeight: FontWeight.w400),
                                       )
                                     ],
@@ -126,7 +124,9 @@ class CustomersListScreen extends StatelessWidget {
                                             AddCustomerScreen(
                                               userId: item.id,
                                               from: 'EDIT',
-                                              passengerStatus:item.passengerStatus, addedBy: addedby,
+                                              passengerStatus:
+                                                  item.passengerStatus,
+                                              addedBy: addedby,
                                             ),
                                             context);
                                       },
@@ -143,7 +143,9 @@ class CustomersListScreen extends StatelessWidget {
                     );
                   });
             }),
-            const SizedBox(height: 50,)
+            const SizedBox(
+              height: 50,
+            )
           ],
         ),
       ),
@@ -163,7 +165,9 @@ class CustomersListScreen extends StatelessWidget {
                     callNext(
                         AddCustomerScreen(
                           userId: '',
-                          from: '', passengerStatus: 'ACTIVE', addedBy: addedby,
+                          from: '',
+                          passengerStatus: 'ACTIVE',
+                          addedBy: addedby,
                         ),
                         context);
                   },
@@ -177,5 +181,4 @@ class CustomersListScreen extends StatelessWidget {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
-
 }
