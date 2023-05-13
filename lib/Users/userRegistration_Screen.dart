@@ -169,6 +169,7 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                           ],
                           textInputAction: TextInputAction.next,
                           decoration: InputDecoration(
+
                             // contentPadding: EdgeInsets.symmetric(
                             //     vertical: 20, horizontal: 0),
                             prefix: SizedBox(
@@ -177,19 +178,45 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                                   builder: (context, value, child) {
                                     return DropdownSearch<CountryCode>(
                                       dropdownDecoratorProps: DropDownDecoratorProps(
-                                          dropdownSearchDecoration: InputDecoration(
+                                          dropdownSearchDecoration:
+                                          InputDecoration(
                                               filled: true,
                                               fillColor: Colors.transparent,
                                               // hintText: 'Select District',
                                               // hintStyle: regLabelStyle,
                                               // prefix:  const SizedBox(width: 10,),
-                                              border: OutlineInputBorder(
-                                                  borderSide: BorderSide.none),
-                                              enabledBorder: InputBorder.none,
-                                              disabledBorder: InputBorder.none,
-                                              focusedBorder: InputBorder.none,
-                                              errorBorder: InputBorder.none,
-                                              focusedErrorBorder: InputBorder.none)),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(10),
+                                              borderSide: BorderSide(
+                                                color: Colors.grey.shade200,
+                                              ),
+                                            ),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(10),
+                                              borderSide: BorderSide(
+                                                color: Colors.grey.shade200,
+                                              ),
+                                            ),
+                                            errorBorder: OutlineInputBorder(
+                                                borderRadius: BorderRadius.circular(30),
+                                                borderSide: BorderSide(
+                                                  color: Colors.black38,
+                                                )),
+                                            disabledBorder: InputBorder.none,
+                                            hintText: "Phone Number",
+
+                                            border: OutlineInputBorder(
+                                                borderRadius: BorderRadius.circular(15),
+                                                borderSide: const BorderSide(
+                                                  color: Colors.grey,
+                                                )),
+
+
+
+                                          )
+
+
+                                      ),
 
                                       selectedItem: value.countrySlct == false
                                           ? CountryCode("India", "IN", "+91")
@@ -389,24 +416,34 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
 
                             hintText: 'Mobile number',
                             hintStyle:
-                                TextStyle(color: Colors.grey, fontSize: 16),
+                            TextStyle(color: Colors.grey, fontSize: 16),
                             // enabled: currentSate != MobileVarificationState.SHOW_MOBILE_FORM_VERIFIED ?true:false,
-                            filled: true,
+                            // filled: true,
                             helperText: "",
-                            fillColor: Colors.white,
+                            // fillColor: Colors.white,
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: BorderSide(
                                 color: Colors.grey.shade200,
                               ),
                             ),
-                            border: const OutlineInputBorder(),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: BorderSide(
                                 color: Colors.grey.shade200,
                               ),
                             ),
+                            errorBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                                borderSide: BorderSide(
+                                  color:  Colors.grey.shade200,
+                                )),
+                            disabledBorder: InputBorder.none,
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15),
+                                borderSide: const BorderSide(
+                                  color: Colors.grey,
+                                )),
                           ),
                           controller: values.userPhoneCT,
                           style: TextStyle(
