@@ -18,6 +18,7 @@ class LuggageModel {
   String loadingStatus;
   String unloadingStatus;
   String checkOutStatus;
+  String missingPlase;
 
   LuggageModel(
       this.id,
@@ -38,5 +39,7 @@ class LuggageModel {
       this.checkInStatus,
       this.loadingStatus,
       this.unloadingStatus,
-      this.checkOutStatus);
+      this.checkOutStatus,
+      this.missingPlase,
+      );
 }
