@@ -146,280 +146,293 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                 ),
                 Column(
                   children: [
+
                     Consumer<AdminProvider>(builder: (context, values, child) {
                       return Padding(
                         padding: const EdgeInsets.only(left: 25, right: 25),
-                        child: TextFormField(
-                          maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                          onChanged: (value) {
-                            if (value.trim().length != 3) {
-                              values.showTick = true;
-                              // SystemChannels.textInput
-                              //     .invokeMethod('TextInput.hide');
-                            } else {
-                              values.showTick = false;
-                              currentSate = MobileVarificationState
-                                  .SHOW_MOBILE_FORM_STATE2;
-                            }
-                            setState(() {});
-                          },
-                          keyboardType: TextInputType.phone,
-                          inputFormatters: [
-                            LengthLimitingTextInputFormatter(10)
-                          ],
-                          textInputAction: TextInputAction.next,
-                          decoration: InputDecoration(
-                            // contentPadding: EdgeInsets.symmetric(
-                            //     vertical: 20, horizontal: 0),
-                            prefix: SizedBox(
-                              width: 120,
-                              child: Consumer<AdminProvider>(
-                                  builder: (context, value, child) {
-                                    return DropdownSearch<CountryCode>(
-                                      dropdownDecoratorProps: DropDownDecoratorProps(
-                                          dropdownSearchDecoration: InputDecoration(
-                                              filled: true,
-                                              fillColor: Colors.transparent,
-                                              // hintText: 'Select District',
-                                              // hintStyle: regLabelStyle,
-                                              // prefix:  const SizedBox(width: 10,),
-                                              border: OutlineInputBorder(
-                                                  borderSide: BorderSide.none),
-                                              enabledBorder: InputBorder.none,
-                                              disabledBorder: InputBorder.none,
-                                              focusedBorder: InputBorder.none,
-                                              errorBorder: InputBorder.none,
-                                              focusedErrorBorder: InputBorder.none)),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(color:Colors.grey.shade200),
+                              borderRadius: const BorderRadius.all(Radius.circular(11))
+                          ),
+                          child: TextFormField(
+                            maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                            onChanged: (value) {
+                              if (value.trim().length != 3) {
+                                values.showTick = true;
+                                // SystemChannels.textInput
+                                //     .invokeMethod('TextInput.hide');
+                              } else {
+                                values.showTick = false;
+                                currentSate = MobileVarificationState
+                                    .SHOW_MOBILE_FORM_STATE2;
+                              }
+                              setState(() {});
+                            },
+                            keyboardType: TextInputType.phone,
+                            inputFormatters: [
+                              LengthLimitingTextInputFormatter(10)
+                            ],
+                            textInputAction: TextInputAction.next,
+                            decoration: InputDecoration(
+                              prefixIcon: SizedBox(
+                                width: 120,
+                                child: Consumer<AdminProvider>(
+                                    builder: (context, value, child) {
+                                      return DropdownSearch<CountryCode>(
+                                        dropdownDecoratorProps: DropDownDecoratorProps(
+                                            dropdownSearchDecoration: InputDecoration(
+                                                filled: true,
+                                                fillColor: Colors.transparent,
+                                                border: OutlineInputBorder(
+                                                    borderSide: BorderSide.none),
+                                                enabledBorder: InputBorder.none,
+                                                disabledBorder: InputBorder.none,
+                                                focusedBorder: InputBorder.none,
+                                                errorBorder: InputBorder.none,
+                                                focusedErrorBorder: InputBorder.none)),
 
-                                      selectedItem: value.countrySlct == false
-                                          ? CountryCode("India", "IN", "+91")
-                                          : CountryCode(value.country, value.code,
-                                          value.selectedValue!),
-                                      onChanged: (e) {
-                                        value.selectedValue = e?.dialCde.toString();
-                                        value.code = e!.code.toString();
-                                        value.country = e!.country.toString();
-                                        value.countrySlct = true;
-                                        // print("sadsasfsadf" +
-                                        //     value1.selectedValue! +
-                                        //     value1.values.userPhoneCT
-                                        //         .text +
-                                        //     "kdsjkf   " +
-                                        //     _userEditTextController
-                                        //         .text);
+                                        selectedItem: value.countrySlct == false
+                                            ? CountryCode("India", "IN", "+91")
+                                            : CountryCode(value.country, value.code,
+                                            value.selectedValue!),
+                                        onChanged: (e) {
+                                          value.selectedValue = e?.dialCde.toString();
+                                          value.code = e!.code.toString();
+                                          value.country = e!.country.toString();
+                                          value.countrySlct = true;
+                                          // print("sadsasfsadf" +
+                                          //     value1.selectedValue! +
+                                          //     value1.values.userPhoneCT
+                                          //         .text +
+                                          //     "kdsjkf   " +
+                                          //     _userEditTextController
+                                          //         .text);
 
-                                        // registrationProvider.qualificationOthers(
-                                        //     e?.degree.toString());
-                                        // adminProvider.getManagerWiseReport(
-                                        //     context, managerID!, fromName,managerName!);
-                                      },
-                                      items: value.countryCodeList,
-                                      // dropdownBuilder: (context, selectedItem) => selectedItem.dialCde,
-                                      filterFn: (item, filter) {
+                                          // registrationProvider.qualificationOthers(
+                                          //     e?.degree.toString());
+                                          // adminProvider.getManagerWiseReport(
+                                          //     context, managerID!, fromName,managerName!);
+                                        },
+                                        items: value.countryCodeList,
+                                        // dropdownBuilder: (context, selectedItem) => selectedItem.dialCde,
+                                        filterFn: (item, filter) {
 
-                                        return item.country.contains(filter) ||
-                                            item.country
-                                                .toLowerCase()
-                                                .contains(filter) ||
-                                            item.country.toUpperCase().contains(filter);
-                                      },
+                                          return item.country.contains(filter) ||
+                                              item.country
+                                                  .toLowerCase()
+                                                  .contains(filter) ||
+                                              item.country.toUpperCase().contains(filter);
+                                        },
 
-                                      itemAsString: (CountryCode u) {
-                                        print("akskaksdsjakd" + u.country + u.dialCde);
-                                        return u.dialCde;
-                                      },
+                                        itemAsString: (CountryCode u) {
+                                          print("akskaksdsjakd" + u.country + u.dialCde);
+                                          return u.dialCde;
+                                        },
 
-                                      popupProps: PopupProps.menu(
-                                          searchFieldProps: TextFieldProps(
-                                            controller: _passengerEditTextController,
-                                            decoration: const InputDecoration(
-                                                label: Text(
-                                                  'Search Country',
-                                                  style: TextStyle(fontSize: 12),
-                                                )),
-                                          ),
-                                          showSearchBox: true,
-                                          // showSelectedItems: true,
-                                          fit: FlexFit.tight,
-                                          itemBuilder: (ctx, item, isSelected) {
-                                            return ListTile(
-                                              selected: isSelected,
-                                              title: Text(
-                                                item.country,
-                                                style: TextStyle(fontSize: 15),
-                                              ),
-                                              subtitle: Text(
-                                                item.dialCde,
-                                                style: TextStyle(fontSize: 13),
-                                              ),
-                                            );
-                                          }),
-                                    );
-                                  }),
-                            ),
+                                        popupProps: PopupProps.menu(
+                                            searchFieldProps: TextFieldProps(
+                                              // controller: _userEditTextController,
+                                              decoration: const InputDecoration(
+                                                  label: Text(
+                                                    'Search Country',
+                                                    style: TextStyle(fontSize: 12),
+                                                  )),
+                                            ),
+                                            showSearchBox: true,
+                                            // showSelectedItems: true,
+                                            fit: FlexFit.tight,
+                                            itemBuilder: (ctx, item, isSelected) {
+                                              return ListTile(
+                                                selected: isSelected,
+                                                title: Text(
+                                                  item.country,
+                                                  style: TextStyle(fontSize: 15),
+                                                ),
+                                                subtitle: Text(
+                                                  item.dialCde,
+                                                  style: TextStyle(fontSize: 13),
+                                                ),
+                                              );
+                                            }),
+                                      );
+                                    }),
+                              ),
 
-                            suffixIcon: Padding(
-                              padding: const EdgeInsets.only(
-                                  right: 8.0, top: 4, bottom: 4),
-                              child: Container(
-                                  width: 60,
-                                  // height: 70,
-                                  decoration: BoxDecoration(
-                                    color: values.showTick == false
-                                        ? Color(0xff838282)
-                                        : currentSate !=
-                                                MobileVarificationState
-                                                    .SHOW_MOBILE_FORM_VERIFIED2
-                                            ? grapeColor
-                                            : cl00cf18,
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(15)),
-                                  ),
-                                  child: values.showTick
-                                      ? InkWell(
-                                          onTap: () async {
-                                            setState(() {
-                                              if (values.userPhoneCT.text
-                                                      .length!=
-                                                  3) {
-                                                showLoading = true;
-                                                print("bhsdbshs" +
-                                                    values.userPhoneCT
-                                                        .toString());
-                                              }
-                                            });
-
-                                            await auth.verifyPhoneNumber(
-                                                phoneNumber:
-                                                adminProvider.selectedValue!+ values.userPhoneCT.text,
-                                                verificationCompleted:
-                                                    (phoneAuthCredential) async {
-                                                  setState(() {
-                                                    showLoading = false;
-                                                  });
-                                                  print("fhuijdji");
+                              suffixIcon: Padding(
+                                padding: const EdgeInsets.only(
+                                    right: 8.0, top: 4, bottom: 4),
+                                child: Container(
+                                    width: 60,
+                                    // height: 70,
+                                    decoration: BoxDecoration(
+                                      color: values.showTick == false
+                                          ? Color(0xff838282)
+                                          : currentSate !=
+                                                  MobileVarificationState
+                                                      .SHOW_MOBILE_FORM_VERIFIED2
+                                              ? grapeColor
+                                              : cl00cf18,
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(15)),
+                                    ),
+                                    child: values.showTick
+                                        ? InkWell(
+                                            onTap: () async {
+                                              setState(() {
+                                                if (values.userPhoneCT.text
+                                                        .length!=
+                                                    3) {
+                                                  showLoading = true;
                                                   print("bhsdbshs" +
                                                       values.userPhoneCT
                                                           .toString());
-                                                  ScaffoldMessenger.of(context)
-                                                      .showSnackBar(
-                                                          const SnackBar(
-                                                    content: Text(
-                                                        "Verification Completed"),
-                                                    duration: Duration(
-                                                        milliseconds: 3000),
-                                                  ));
-                                                  if (kDebugMode) {
-                                                    print("fhuijdji");
-                                                  }
-                                                },
-                                                verificationFailed:
-                                                    (verificationFailed) async {
-                                                  print("dhudhufud");
-                                                  setState(() {
-                                                    showLoading = false;
-                                                  });
-                                                  ScaffoldMessenger.of(context)
-                                                      .showSnackBar(
-                                                          const SnackBar(
-                                                    content: Text(
-                                                        "Sorry, Verification Failed"),
-                                                    duration: Duration(
-                                                        milliseconds: 3000),
-                                                  ));
-                                                  if (kDebugMode) {
-                                                    print(verificationFailed
-                                                        .message
-                                                        .toString());
-                                                  }
-                                                },
-                                                codeSent: (verificationId,
-                                                    resendingToken) async {
-                                                  setState(() {
-                                                    showLoading = false;
-                                                    currentSate =
-                                                        MobileVarificationState
-                                                            .SHOW_OTP_FORM_STATE2;
-                                                    this.verificationId =
-                                                        verificationId;
+                                                }
+                                              });
 
-                                                    ScaffoldMessenger.of(
-                                                            context)
+                                              await auth.verifyPhoneNumber(
+                                                  phoneNumber:
+                                                  adminProvider.selectedValue!+ values.userPhoneCT.text,
+                                                  verificationCompleted:
+                                                      (phoneAuthCredential) async {
+                                                    setState(() {
+                                                      showLoading = false;
+                                                    });
+                                                    print("fhuijdji");
+                                                    print("bhsdbshs" +
+                                                        values.userPhoneCT
+                                                            .toString());
+                                                    ScaffoldMessenger.of(context)
                                                         .showSnackBar(
                                                             const SnackBar(
                                                       content: Text(
-                                                          "OTP sent to phone successfully"),
+                                                          "Verification Completed"),
                                                       duration: Duration(
                                                           milliseconds: 3000),
                                                     ));
-
                                                     if (kDebugMode) {
-                                                      print("");
+                                                      print("fhuijdji");
                                                     }
-                                                  });
-                                                },
-                                                codeAutoRetrievalTimeout:
-                                                    (verificationId) async {});
-                                          },
-                                          child: Center(
-                                              child: showLoading
-                                                  ? Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              4),
-                                                      child:
-                                                          const CircularProgressIndicator(
-                                                        color: Colors.white,
-                                                      ),
-                                                    )
-                                                  : Text(
-                                                      currentSate !=
-                                                              MobileVarificationState
-                                                                  .SHOW_MOBILE_FORM_VERIFIED2
-                                                          ? "Verify"
-                                                          : "Verified",
-                                                      style: const TextStyle(
-                                                          color: Colors.white),
-                                                    )))
-                                      : const Center(
-                                          child: Text("Verify",
-                                              style: TextStyle(
-                                                  color: Colors.white)))),
-                            ),
+                                                  },
+                                                  verificationFailed:
+                                                      (verificationFailed) async {
+                                                    print("dhudhufud");
+                                                    setState(() {
+                                                      showLoading = false;
+                                                    });
+                                                    ScaffoldMessenger.of(context)
+                                                        .showSnackBar(
+                                                            const SnackBar(
+                                                      content: Text(
+                                                          "Sorry, Verification Failed"),
+                                                      duration: Duration(
+                                                          milliseconds: 3000),
+                                                    ));
+                                                    if (kDebugMode) {
+                                                      print(verificationFailed
+                                                          .message
+                                                          .toString());
+                                                    }
+                                                  },
+                                                  codeSent: (verificationId,
+                                                      resendingToken) async {
+                                                    setState(() {
+                                                      showLoading = false;
+                                                      currentSate =
+                                                          MobileVarificationState
+                                                              .SHOW_OTP_FORM_STATE2;
+                                                      this.verificationId =
+                                                          verificationId;
 
-                            hintText: 'Mobile number',
-                            hintStyle:
-                                const TextStyle(color: Colors.grey, fontSize: 16),
-                            // enabled: currentSate != MobileVarificationState.SHOW_MOBILE_FORM_VERIFIED ?true:false,
-                            filled: true,
-                            helperText: "",
-                            fillColor: Colors.white,
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(
-                                color: Colors.grey.shade200,
+                                                      ScaffoldMessenger.of(
+                                                              context)
+                                                          .showSnackBar(
+                                                              const SnackBar(
+                                                        content: Text(
+                                                            "OTP sent to phone successfully"),
+                                                        duration: Duration(
+                                                            milliseconds: 3000),
+                                                      ));
+
+                                                      if (kDebugMode) {
+                                                        print("");
+                                                      }
+                                                    });
+                                                  },
+                                                  codeAutoRetrievalTimeout:
+                                                      (verificationId) async {});
+                                            },
+                                            child: Center(
+                                                child: showLoading
+                                                    ? Padding(
+                                                        padding:
+                                                            const EdgeInsets.all(
+                                                                4),
+                                                        child:
+                                                            const CircularProgressIndicator(
+                                                          color: Colors.white,
+                                                        ),
+                                                      )
+                                                    : Text(
+                                                        currentSate !=
+                                                                MobileVarificationState
+                                                                    .SHOW_MOBILE_FORM_VERIFIED2
+                                                            ? "Verify"
+                                                            : "Verified",
+                                                        style: const TextStyle(
+                                                            color: Colors.white),
+                                                      )))
+                                        : const Center(
+                                            child: Text("Verify",
+                                                style: TextStyle(
+                                                    color: Colors.white)))),
                               ),
-                            ),
-                            border: const OutlineInputBorder(),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(
-                                color: Colors.grey.shade200,
+
+                              hintText: 'Mobile number',
+                              hintStyle:
+                              TextStyle(color: Colors.grey, fontSize: 16),
+                              // enabled: currentSate != MobileVarificationState.SHOW_MOBILE_FORM_VERIFIED ?true:false,
+                              // filled: true,
+                              helperText: "",
+                              // fillColor: Colors.white,
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(
+                                  color: Colors.grey.shade200,
+                                ),
                               ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(
+                                  color: Colors.grey.shade200,
+                                ),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                  borderSide: BorderSide(
+                                    color:  Colors.grey.shade200,
+                                  )),
+                              disabledBorder: InputBorder.none,
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                  borderSide: const BorderSide(
+                                    color: Colors.grey,
+                                  )),
                             ),
+                            controller: values.userPhoneCT,
+                            style: TextStyle(
+                                color: fontColor,
+                                fontSize: 18,
+                                fontFamily: "PoppinsMedium"),
+                            validator: (value) {
+                              if (value!.trim().isEmpty) {
+                                return "Please Enter The Mobile Number";
+                              } else {
+                                return null;
+                              }
+                            },
                           ),
-                          controller: values.userPhoneCT,
-                          style: TextStyle(
-                              color: fontColor,
-                              fontSize: 18,
-                              fontFamily: "PoppinsMedium"),
-                          validator: (value) {
-                            if (value!.trim().isEmpty) {
-                              return "Please Enter The Mobile Number";
-                            } else {
-                              return null;
-                            }
-                          },
                         ),
                       );
                     }),
