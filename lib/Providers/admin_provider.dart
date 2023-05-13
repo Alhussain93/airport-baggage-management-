@@ -79,7 +79,7 @@ List<String>qrDataList=[];
   List<CountryCode> countryCodeList = [];
 
   bool carouselCheck = false;
-  String? selectedValue = "+91";
+  String? selectedValue = "+968";
   String country = '';
   String code = "";
   bool countrySlct = false;
