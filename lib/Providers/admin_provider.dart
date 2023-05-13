@@ -937,7 +937,7 @@ class AdminProvider with ChangeNotifier {
   void generateQrCode(BuildContext context, String staffAirport, String stfName,
       String arrivalPlace, String flightName) {
     HashMap<String, Object> qrMap = HashMap();
-
+    qrDataList.clear();
     int luggageCount = int.parse(qrLuggageCountCT.text);
     for (int i = 0; i < luggageCount; i++) {
       String qrID = DateTime.now().millisecondsSinceEpoch.toString();
