@@ -26,6 +26,7 @@ import 'package:intl/intl.dart';
 import 'package:encrypt/encrypt.dart' as enc;
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 import '../AdminView/add_staff.dart';
 import '../AdminView/generateQr_Screen.dart';
@@ -311,7 +312,6 @@ List<String>qrDataList=[];
 
   void sortMissingLuggageFlightBase(String flightName){
     missingLuggageList.clear();
-print("ddddddddddddddddd"+flightName);
     db.collection("LUGGAGE").where("MISSING",isNotEqualTo: "").where("FLIGHT_NAME",isEqualTo:flightName ).get().then((value) {
       if(value.docs.isNotEmpty){
         missingLuggageList.clear();
@@ -343,10 +343,9 @@ print("ddddddddddddddddd"+flightName);
         missingLuggageList.clear();
         for (var element in value.docs) {
           Map<dynamic, dynamic> map = element.data();
-
-          missingLuggageList.add(MissingLuggage(element.id, map["PNR_ID"].toString(), map["STATUS"].toString(), map["NAME"].toString(), map["MISSING"].toString(),  map["ARRIVAL_PLACE"].toString() ,map["FLIGHT_NAME"].toString(),map["LAST_SCANNED_DATEMILLI"].toString(),map["LAST_SCANNED_PLACE"].toString()));
-
-
+          missingLuggageList.add(MissingLuggage(element.id, map["PNR_ID"].toString(), map["STATUS"].toString(),
+              map["NAME"].toString(), map["MISSING"].toString(),  map["ARRIVAL_PLACE"].toString() ,
+              map["FLIGHT_NAME"].toString(),map["LAST_SCANNED_DATEMILLI"].toString(),map["LAST_SCANNED_PLACE"].toString()));
         }
         notifyListeners();
       }
@@ -513,6 +512,92 @@ if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]){
     }
     notifyListeners();
   }
+  DateRangePickerController _dateRangePickerController = DateRangePickerController();
+  DateTime _startDate = DateTime.now();
+  DateTime _endDate = DateTime.now();
+  DateTime firstDate = DateTime.now();
+  DateTime secondDate = DateTime.now();
+  DateTime endDate2 = DateTime.now();
+  String startdateformat = '';
+  String enddateformat = '';
+  void showCalendarDialog(BuildContext context) {
+    Widget calendarWidget() {
+      return SizedBox(
+        width: 300,
+        height: 300,
+        child: SfDateRangePicker(
+          selectionMode: DateRangePickerSelectionMode.range,
+          controller: _dateRangePickerController,
+          initialSelectedRange: PickerDateRange(_startDate, _endDate),
+          allowViewNavigation: true,
+          headerHeight: 20.0,
+          showTodayButton: true,
+          headerStyle: const DateRangePickerHeaderStyle(
+            textAlign: TextAlign.center,
+          ),
+          initialSelectedDate: DateTime.now(),
+          navigationMode: DateRangePickerNavigationMode.snap,
+          monthCellStyle: const DateRangePickerMonthCellStyle(
+              todayTextStyle: TextStyle(fontWeight: FontWeight.bold)),
+          showActionButtons: true,
+          onSubmit: (Object? val) {
+            _dateRangePickerController.selectedRange = val as PickerDateRange?;
+            if (_dateRangePickerController.selectedRange!.endDate == null) {
+              firstDate = _dateRangePickerController.selectedRange!.startDate!;
+              secondDate = _dateRangePickerController.selectedRange!.startDate!;
+              endDate2 = secondDate.add(const Duration(hours: 24));
+              DateTime firstDate2 = firstDate.subtract(Duration(
+                  hours: firstDate.hour,
+                  minutes: firstDate.minute,
+                  seconds: firstDate.second));
+              sortMissingLuggageByDateWise(firstDate2,endDate2);
+              notifyListeners();
+            } else {
+              firstDate = _dateRangePickerController.selectedRange!.startDate!;
+              secondDate = _dateRangePickerController.selectedRange!.endDate!;
+              endDate2 = secondDate.add(const Duration(hours: 24));
+              DateTime firstDate2 = firstDate.subtract(Duration(
+                  hours: firstDate.hour,
+                  minutes: firstDate.minute,
+                  seconds: firstDate.second));
+
+              sortMissingLuggageByDateWise(firstDate2,endDate2);
+
+
+              final formatter = DateFormat('dd/MM/yyyy');
+              startdateformat = formatter.format(firstDate);
+              enddateformat = formatter.format(secondDate);
+
+              notifyListeners();
+            }
+            finish(context);
+          },
+          onCancel: () {
+            _dateRangePickerController.selectedDate = null;
+            finish(context);
+          },
+        ),
+      );
+    }
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12.0))),
+            contentPadding: const EdgeInsets.only(
+              top: 10.0,
+            ),
+            // title: Container(
+            //     child: Text('Printers', style: TextStyle(color: my_white))),
+            content: calendarWidget(),
+          );
+        });
+    notifyListeners();
+  }
+
+
 
   void clearUserControllers() {
     userPhoneCT.clear();
