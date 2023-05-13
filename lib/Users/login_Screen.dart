@@ -352,7 +352,7 @@ border: Border.all(color:Colors.grey.shade200),
     db
         .collection("USERS")
         .where("MOBILE_NUMBER",
-    isEqualTo: adminProvider.selectedValue!+ phoneController.text)
+    isEqualTo: phoneController.text)
         .get()
         .then((userValue) async {
       if (userValue.docs.isNotEmpty) {

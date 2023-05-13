@@ -358,7 +358,7 @@ if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]){
   showAlertDialog(context, text,staffDes,staffName,staffAirport);
   notifyListeners();
 }else{
-  db.collection("LUGGAGE").doc(luggageId).set({"MISSING": "YES","MISSING_PLACE": "CHECKOUT",},SetOptions(merge: true));
+  db.collection("LUGGAGE").doc(luggageId).set({"MISSING": "YES","MISSING_PLACE": "CHECK_OUT",},SetOptions(merge: true));
   String text = 'Airport miss matched';
   showAlertDialog(context, text,staffDes,staffName,staffAirport);
   notifyListeners();
