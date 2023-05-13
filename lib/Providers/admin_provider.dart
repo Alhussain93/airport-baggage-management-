@@ -1154,7 +1154,7 @@ if( map["ARRIVAL_PLACE"]==map["CHECKOUT_AIRPORT"]){
           context,
           MaterialPageRoute(
               builder: (context) => AddStaff(
-                    from: "edit",
+                    from: "EDIT",
                     userId: id,
                     status: status, addedBy: '',
                   )));

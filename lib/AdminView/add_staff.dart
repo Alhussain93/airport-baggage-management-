@@ -333,8 +333,8 @@ class _AddStaffState extends State<AddStaff> {
                                                   focusedErrorBorder:
                                                       InputBorder.none)),
 
-                                  selectedItem: CountryCode(value.country, value.code,
-                                          value.selectedValue!),
+                                  selectedItem: widget.from !="EDIT"
+                                      ? CountryCode("Oman", "OM", "+968"):CountryCode(value.country, value.code, value.selectedValue!),
                                   onChanged: (e) {
                                     value1.selectedValue =
                                         e?.dialCde.toString();
@@ -624,8 +624,7 @@ class _AddStaffState extends State<AddStaff> {
                           onTap: () {
                             final FormState? forme = _formKey.currentState;
                             if (forme!.validate()) {
-                              value.addStaff(context, widget.from,
-                                  widget.userId, widget.status, widget.addedBy);
+                              value.addStaff(context, widget.from, widget.userId, widget.status, widget.addedBy);
                             }
                           },
                           child: Container(

@@ -301,6 +301,7 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
                           child: Consumer<AdminProvider>(
                               builder: (context, value, child) {
                             return DropdownSearch<CountryCode>(
+
                               dropdownDecoratorProps: DropDownDecoratorProps(
 
                                   dropdownSearchDecoration: InputDecoration(
@@ -317,8 +318,8 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
                                       focusedBorder: InputBorder.none,
                                       errorBorder: InputBorder.none,
                                       focusedErrorBorder: InputBorder.none)),
-
-                              selectedItem:  CountryCode(value.country, value.code, value.selectedValue!),
+                              selectedItem:  widget.from !="EDIT"
+                                  ? CountryCode("Oman", "OM", "+968"):CountryCode(value.country, value.code, value.selectedValue!),
                               onChanged: (e) {
                                 value1.selectedValue = e?.dialCde.toString();
                                 value1.code = e!.code.toString();
@@ -337,6 +338,7 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
                                 // adminProvider.getManagerWiseReport(
                                 //     context, managerID!, fromName,managerName!);
                               },
+
                               items: value.countryCodeList,
                               // dropdownBuilder: (context, selectedItem) => selectedItem.dialCde,
                               filterFn: (item, filter) {

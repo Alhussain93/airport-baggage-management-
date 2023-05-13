@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:luggage_tracking_app/Providers/admin_provider.dart';
+import 'package:luggage_tracking_app/UserView/contryCodeModel.dart';
 import 'package:luggage_tracking_app/UserView/tracking_screen.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
@@ -38,6 +39,7 @@ class _SplashScreenState extends State<SplashScreen> {
       var user = auth.currentUser;
 
         if (user == null) {
+          CountryCode("Oman", "OM", "+968");
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => const LoginScreen()));
         } else {
