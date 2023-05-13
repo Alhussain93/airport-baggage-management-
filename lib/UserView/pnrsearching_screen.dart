@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:luggage_tracking_app/UserView/tracking_screen.dart';
 import 'package:luggage_tracking_app/constant/colors.dart';
-import 'package:luggage_tracking_app/constant/my_functions.dart';
 import 'package:provider/provider.dart';
 
 import '../Providers/admin_provider.dart';
 
 class PnrSearching extends StatelessWidget {
   final String username;
+
   const PnrSearching({Key? key, required this.username}) : super(key: key);
 
   @override
@@ -92,7 +91,6 @@ class PnrSearching extends StatelessWidget {
                   child: TextFormField(
                       autofocus: false,
                       controller: adminProvider.pnrController,
-                      // obscureText: _obscureText,
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
                         hintText: 'Enter PNR',
@@ -110,7 +108,8 @@ class PnrSearching extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 37),
                   child: InkWell(
                     onTap: () {
-                      adminProvider.checkingPnr(adminProvider.pnrController.text, context,username);
+                      adminProvider.checkingPnr(
+                          adminProvider.pnrController.text, context, username);
                     },
                     child: Container(
                         height: 40,

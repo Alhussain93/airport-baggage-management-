@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:luggage_tracking_app/Providers/admin_provider.dart';
 import 'package:provider/provider.dart';
-
 import '../UserView/contryCodeModel.dart';
 import '../constant/colors.dart';
 import '../constant/my_functions.dart';
 
-class AddCustomerScreen extends StatefulWidget {
+class AddCustomerScreen extends StatelessWidget {
   String userId, from, passengerStatus, addedBy;
 
   AddCustomerScreen(
@@ -19,20 +18,15 @@ class AddCustomerScreen extends StatefulWidget {
       required this.addedBy})
       : super(key: key);
 
-  @override
-  State<AddCustomerScreen> createState() => _AddCustomerScreenState();
-}
-
-class _AddCustomerScreenState extends State<AddCustomerScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   final _passengerEditTextController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     AdminProvider adminProvider =
-    Provider.of<AdminProvider>(context, listen: false);
+        Provider.of<AdminProvider>(context, listen: false);
     adminProvider.fetchCountryJson();
-    var width= MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: themecolor,
@@ -72,28 +66,8 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
                               backgroundImage:
                                   const AssetImage("assets/user.png"),
                             ),
-
-                  // child: Container(
-                  //     height: 90,
-                  //     decoration: BoxDecoration(
-                  //       color: cWhite,
-                  //       shape: BoxShape.circle,
-                  //       image: values.fileImage != null
-                  //           ?  DecorationImage(
-                  //           image: FileImage(values.fileImage!),fit: BoxFit.fill)
-                  //           : values.editImage!=""? DecorationImage(
-                  //           image: NetworkImage(values.editImage),fit: BoxFit.fill,
-                  //           scale: 15):
-                  //       const DecorationImage(
-                  //           image: AssetImage("assets/user.png"),
-                  //           scale: 10),
-                  //       border: Border.all(
-                  //         width: 1.5,
-                  //         color: Colors.grey.shade500,
-                  //       ),
-                  //     )),
                 ),
-                widget.from == 'EDIT'
+                from == 'EDIT'
                     ? Padding(
                         padding: const EdgeInsets.only(right: 30, top: 20),
                         child: Consumer<AdminProvider>(
@@ -106,7 +80,7 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
                                   builder: (context, snapshot) {
                                     return InkWell(
                                       onTap: () {
-                                        deleteStaff(context, widget.userId);
+                                        deleteStaff(context, userId);
                                       },
                                       child: Container(
                                         height: 30,
@@ -127,8 +101,8 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
                                   builder: (context, value1, child) {
                                 return InkWell(
                                   onTap: () {
-                                    blockStaff(context, widget.userId,
-                                        widget.passengerStatus);
+                                    blockStaff(
+                                        context, userId, passengerStatus);
                                   },
                                   child: Container(
                                     height: 30,
@@ -149,7 +123,6 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
                         }),
                       )
                     : const SizedBox(),
-
                 Padding(
                   padding: const EdgeInsets.only(left: 25, right: 25, top: 30),
                   child: TextFormField(
@@ -161,9 +134,6 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
                     autofocus: false,
                     keyboardType: TextInputType.text,
                     textAlign: TextAlign.start,
-                    // inputFormatters: [
-                    //   LengthLimitingTextInputFormatter(10)
-                    // ],
                     decoration: InputDecoration(
                       counterStyle: const TextStyle(color: Colors.grey),
                       hintStyle:
@@ -204,96 +174,17 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
                     },
                   ),
                 ),
-                // Padding(
-                //   padding: const EdgeInsets.only(left: 25, right: 25, top: 0),
-                //   child: TextFormField(
-                //     controller: values.userPhoneCT,
-                //     style: TextStyle(
-                //         color: fontColor,
-                //         fontSize: 18,
-                //         fontFamily: "PoppinsMedium"),
-                //     autofocus: false,
-                //     keyboardType: TextInputType.phone,
-                //     textAlign: TextAlign.start,
-                //     inputFormatters: [LengthLimitingTextInputFormatter(10)],
-                //     decoration: InputDecoration(
-                //       counterStyle: const TextStyle(color: Colors.grey),
-                //       hintStyle:
-                //           const TextStyle(color: Colors.grey, fontSize: 16),
-                //       filled: true,
-                //       helperText: "",
-                //       fillColor: Colors.white,
-                //       contentPadding: const EdgeInsets.all(11),
-                //       focusedBorder: OutlineInputBorder(
-                //         borderRadius: BorderRadius.circular(10),
-                //         borderSide: BorderSide(
-                //           color: Colors.grey.shade200,
-                //         ),
-                //       ),
-                //       enabledBorder: OutlineInputBorder(
-                //         borderRadius: BorderRadius.circular(10),
-                //         borderSide: BorderSide(
-                //           color: Colors.grey.shade200,
-                //         ),
-                //       ),
-                //       errorBorder: OutlineInputBorder(
-                //           borderRadius: BorderRadius.circular(10),
-                //           borderSide: const BorderSide(color: Colors.red)),
-                //       border: OutlineInputBorder(
-                //         borderRadius: BorderRadius.circular(10),
-                //         borderSide: BorderSide(
-                //           color: Colors.grey.shade200,
-                //         ),
-                //       ),
-                //       hintText: 'Phone',
-                //     ),
-                //     validator: (value) {
-                //       if (value!.trim().isEmpty) {
-                //         return "Enter Phone";
-                //       } else {
-                //         return null;
-                //       }
-                //     },
-                //   ),
-                // ),
                 Consumer<AdminProvider>(builder: (context, value1, child) {
                   return Padding(
-                    padding:  const EdgeInsets.only(left: 25, right: 25),
+                    padding: const EdgeInsets.only(left: 25, right: 25),
                     child: TextFormField(
                       maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                      onChanged: (value) {
-                        print("hhhhhhhhh" +
-                            value +
-                            "  " +
-                            value1.selectedValue! +
-                            "  " +
-                            value1.userPhoneCT.text);
-                        // if (value.length >= 6) {
-                        //   showTick = true;
-                        //   if (kDebugMode) {
-                        //     // print("ppppllll$showTick");
-                        //   }
-                        //   // SystemChannels.textInput
-                        //   //     .invokeMethod(
-                        //   //         'TextInput.hide');
-                        // } else {
-                        //   showTick = false;
-                        //   print("tick false$showTick");
-                        //
-                        //   currentSate =
-                        //       MobileVarificationState
-                        //           .SHOW_MOBILE_FORM_STATE;
-                        // }
-                        setState(() {});
-                      },
                       textAlign: TextAlign.center,
                       keyboardType: TextInputType.phone,
-                      inputFormatters: [
-                        LengthLimitingTextInputFormatter(
-                            10),
-                        FilteringTextInputFormatter
-                            .digitsOnly,
-                      ],
+                      // inputFormatters: [
+                      //   LengthLimitingTextInputFormatter(10),
+                      //   FilteringTextInputFormatter.digitsOnly,
+                      // ],
                       textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
                         prefixIcon: SizedBox(
@@ -301,60 +192,44 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
                           child: Consumer<AdminProvider>(
                               builder: (context, value, child) {
                             return DropdownSearch<CountryCode>(
-                              dropdownDecoratorProps: DropDownDecoratorProps(
-
-                                  dropdownSearchDecoration: InputDecoration(
-                                      filled: true,
-
-                                      fillColor: Colors.transparent,
-                                      // hintText: 'Select District',
-                                      // hintStyle: regLabelStyle,
-                                      // prefix:  const SizedBox(width: 10,),
-                                      border: OutlineInputBorder(
-                                          borderSide: BorderSide.none),
-                                      enabledBorder: InputBorder.none,
-                                      disabledBorder: InputBorder.none,
-                                      focusedBorder: InputBorder.none,
-                                      errorBorder: InputBorder.none,
-                                      focusedErrorBorder: InputBorder.none)),
-
-                              selectedItem:  CountryCode(value.country, value.code, value.selectedValue!),
+                              dropdownDecoratorProps:
+                                  const DropDownDecoratorProps(
+                                      dropdownSearchDecoration: InputDecoration(
+                                          filled: true,
+                                          fillColor: Colors.transparent,
+                                          border: OutlineInputBorder(
+                                              borderSide: BorderSide.none),
+                                          enabledBorder: InputBorder.none,
+                                          disabledBorder: InputBorder.none,
+                                          focusedBorder: InputBorder.none,
+                                          errorBorder: InputBorder.none,
+                                          focusedErrorBorder:
+                                              InputBorder.none)),
+                              selectedItem: from !="EDIT"
+                                  ? CountryCode("Oman", "OM", "+968"):CountryCode(value.country, value.code, value.selectedValue!),
                               onChanged: (e) {
                                 value1.selectedValue = e?.dialCde.toString();
                                 value1.code = e!.code.toString();
                                 value.country = e!.country.toString();
                                 value1.countrySlct = true;
-                                // print("sadsasfsadf" +
-                                //     value1.selectedValue! +
-                                //     value1.values.userPhoneCT
-                                //         .text +
-                                //     "kdsjkf   " +
-                                //     _userEditTextController
-                                //         .text);
-
-                                // registrationProvider.qualificationOthers(
-                                //     e?.degree.toString());
-                                // adminProvider.getManagerWiseReport(
-                                //     context, managerID!, fromName,managerName!);
                               },
                               items: value.countryCodeList,
-                              // dropdownBuilder: (context, selectedItem) => selectedItem.dialCde,
                               filterFn: (item, filter) {
-
                                 return item.country.contains(filter) ||
                                     item.country
                                         .toLowerCase()
                                         .contains(filter) ||
                                     item.country.toUpperCase().contains(filter);
                               },
-
                               itemAsString: (CountryCode u) {
-                                print("akskaksdsjakd" + u.country + u.dialCde);
                                 return u.dialCde;
                               },
-
                               popupProps: PopupProps.menu(
                                   searchFieldProps: TextFieldProps(
+                                    style: TextStyle(
+                                      color: fontColor,
+                                      fontSize: 18,
+                                      fontFamily: "PoppinsMedium"),
                                     controller: _passengerEditTextController,
                                     decoration: const InputDecoration(
                                         label: Text(
@@ -370,19 +245,18 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
                                       selected: isSelected,
                                       title: Text(
                                         item.country,
-                                        style: TextStyle(fontSize: 15),
+                                        style: const TextStyle(fontSize: 15),
                                       ),
                                       subtitle: Text(
                                         item.dialCde,
-                                        style: TextStyle(fontSize: 13),
+                                        style: const TextStyle(fontSize: 13),
                                       ),
                                     );
                                   }),
                             );
                           }),
                         ),
-                        contentPadding: EdgeInsets.only(right:80),
-
+                        contentPadding: const EdgeInsets.only(right: 80),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide(
@@ -397,28 +271,23 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
                         ),
                         errorBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(
+                            borderSide: const BorderSide(
                               color: Colors.red,
                             )),
                         disabledBorder: InputBorder.none,
-                        // focusColor: Colors.black,
-                        //    contentPadding:
-                        //    contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
                         hintText: "Phone Number",
-
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                             borderSide: const BorderSide(
                               color: Colors.grey,
                             )),
-                        // filled: true,
-                        // fillColor: my_black,
                       ),
                       cursorColor: Colors.black,
                       controller: value1.userPhoneCT,
-                      style: const TextStyle(
-                        fontFamily: 'BarlowCondensed',
-                      ),
+                      style: TextStyle(
+                          color: fontColor,
+                          fontSize: 18,
+                          fontFamily: "PoppinsMedium"),
                       validator: (value) {
                         if (value!.trim().isEmpty) {
                           return "Please Enter The Mobile Number";
@@ -429,7 +298,7 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
                     ),
                   );
                 }),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Padding(
@@ -512,7 +381,6 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
                         ),
                       ),
                     ),
-                    // readOnly: true,
                     controller: values.userDobCT,
                     style: TextStyle(
                         color: fontColor,
@@ -521,7 +389,6 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
                     onTap: () {
                       adminProvider.selectDOB(context);
                     },
-
                     validator: (value) {
                       if (value!.trim().isEmpty) {
                         return "Please Select dob";
@@ -546,19 +413,14 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
                           backgroundColor: MaterialStateProperty.all(
                               const Color(0xff432244))),
                       onPressed: () {
-                        // Navigator.pushNamed(context, newLoginScreen ,arguments: {'type': type});
                         final FormState? form = _formKey.currentState;
                         if (form!.validate()) {
-                          if (widget.from == "EDIT") {
-                            adminProvider.userRegistration(
-                                context,
-                                widget.addedBy,
-                                widget.userId,
-                                widget.from,
-                                widget.passengerStatus);
+                          if (from == "EDIT") {
+                            adminProvider.userRegistration(context, addedBy,
+                                userId, from, passengerStatus);
                           } else {
                             adminProvider.userRegistration(
-                                context, widget.addedBy, '', '', "ACTIVE");
+                                context, addedBy, '', '', "ACTIVE");
                           }
                         }
                       },

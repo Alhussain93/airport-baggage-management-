@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'package:luggage_tracking_app/constant/my_functions.dart';
 import 'package:provider/provider.dart';
-
 import '../Providers/admin_provider.dart';
 import '../constant/colors.dart';
 
@@ -86,6 +83,7 @@ class AddTickets extends StatelessWidget {
                         if (value == 'Select Flight Name') {
                           return 'Flight is required';
                         }
+                        return null;
                       },
                       items: value1.flightNameList.map((item1) {
                         return DropdownMenuItem(
@@ -103,7 +101,6 @@ class AddTickets extends StatelessWidget {
                     ),
                   );
                 }),
-
                 Padding(
                   padding: const EdgeInsets.only(left: 25, right: 25),
                   child: TextFormField(
@@ -170,6 +167,7 @@ class AddTickets extends StatelessWidget {
                       if (value == 'Select Airport') {
                         return 'Select Airport';
                       }
+                      return null;
                     },
                     items: values.airportNameList.map((item3) {
                       return DropdownMenuItem(
@@ -230,6 +228,7 @@ class AddTickets extends StatelessWidget {
                       if (value == 'Select Airport') {
                         return 'Select Airport';
                       }
+                      return null;
                     },
                     items: values.airportNameList.map((item4) {
                       return DropdownMenuItem(
@@ -246,50 +245,6 @@ class AddTickets extends StatelessWidget {
                     }).toList(),
                   ),
                 ),
-                // Padding(
-                //   padding: const EdgeInsets.only(left: 25, right: 25),
-                //   child: TextFormField(
-                //     keyboardType: TextInputType.text,
-                //     controller: values.ticketFromController,
-                //     decoration: InputDecoration(
-                //       labelText: 'From',
-                //       hintText: 'From',
-                //       helperText: '',
-                //       contentPadding: const EdgeInsets.all(11),
-                //       border: OutlineInputBorder(
-                //           borderRadius: BorderRadius.circular(15.0)),
-                //     ),
-                //     validator: (value) {
-                //       if (value!.trim().isEmpty) {
-                //         return "Enter from";
-                //       } else {
-                //         return null;
-                //       }
-                //     },
-                //   ),
-                // ),
-                // Padding(
-                //   padding: const EdgeInsets.only(left: 25, right: 25),
-                //   child: TextFormField(
-                //     keyboardType: TextInputType.text,
-                //     controller: values.ticketToController,
-                //     decoration: InputDecoration(
-                //       labelText: 'To',
-                //       hintText: 'To',
-                //       helperText: '',
-                //       contentPadding: const EdgeInsets.all(11),
-                //       border: OutlineInputBorder(
-                //           borderRadius: BorderRadius.circular(15.0)),
-                //     ),
-                //     validator: (value) {
-                //       if (value!.trim().isEmpty) {
-                //         return "Enter where to";
-                //       } else {
-                //         return null;
-                //       }
-                //     },
-                //   ),
-                // ),
                 Padding(
                   padding: const EdgeInsets.only(left: 25, right: 25),
                   child: TextFormField(
@@ -378,18 +333,12 @@ class AddTickets extends StatelessWidget {
                         SizedBox(
                           width: width - 150,
                           child: TextFormField(
-                            // autofocus: false,
-                            // obscureText: _obscureText,
                             keyboardType: TextInputType.text,
                             controller: values.ticketPassengersController,
                             decoration: InputDecoration(
                               alignLabelWithHint: true,
                               hintText: 'Add Passengers Name',
                               helperText: '',
-
-                              // isDense: true, // important line
-                              // contentPadding: EdgeInsets.fromLTRB(10, 50, 50, 0),
-
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(15.0)),
                             ),
@@ -438,8 +387,6 @@ class AddTickets extends StatelessWidget {
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
                             alignment: Alignment.centerLeft,
-                            //  color: Colors.red,
-                            // height: 50,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
