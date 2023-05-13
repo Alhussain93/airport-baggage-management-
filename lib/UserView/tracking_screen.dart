@@ -250,25 +250,19 @@ class TrackingScreen extends StatelessWidget {
                                 Row(
                                   children: [
                                     const Spacer(),
-                                    item.missingPlace != "CHECK_IN"
-                                        ? CircleAvatar(
-                                            radius: 13,
-                                            backgroundColor: item.status ==
-                                                    'CHECK_OUT'
+                                    CircleAvatar(
+                                        radius: 13,
+                                        backgroundColor: item.status ==
+                                                'CHECK_OUT'
+                                            ? cl00962A
+                                            : item.status == 'UNLOADING'
                                                 ? cl00962A
-                                                : item.status == 'UNLOADING'
+                                                : item.status == 'LOADING'
                                                     ? cl00962A
-                                                    : item.status == 'LOADING'
+                                                    : item.status == 'CHECK_IN'
                                                         ? cl00962A
-                                                        : item.status ==
-                                                                'CHECK_IN'
-                                                            ? cl00962A
-                                                            : cl938492)
-                                        : const CircleAvatar(
-                                            radius: 13,
-                                            backgroundColor: Colors.red,
-                                          ),
-                                    const Expanded(
+                                                        : cl938492),
+                                    Expanded(
                                         child: Padding(
                                       padding: EdgeInsets.only(left: 8.0),
                                       child: Text(
@@ -290,73 +284,41 @@ class TrackingScreen extends StatelessWidget {
                                     Column(
                                       children: [
                                         Container(
-                                          height: 30,
-                                          width: 10,
-                                          decoration: item.missingPlace !=
-                                                  "CHECK_IN"
-                                              ? BoxDecoration(
-                                                  borderRadius:
-                                                      const BorderRadius
-                                                              .vertical(
-                                                          top: Radius.circular(
-                                                              20)),
-                                                  color: item.status ==
-                                                          'CHECK_OUT'
-                                                      ? cl00962A
-                                                      : item.status ==
-                                                              'UNLOADING'
-                                                          ? cl00962A
-                                                          : item.status ==
-                                                                  'LOADING'
-                                                              ? cl00962A
-                                                              : item.status ==
-                                                                      'CHECK_IN'
-                                                                  ? cl00962A
-                                                                  : cl938492)
-                                              : BoxDecoration(
-                                                  borderRadius:
-                                                      const BorderRadius
-                                                          .vertical(
-                                                    top: Radius.circular(
-                                                      20,
-                                                    ),
-                                                  ),
-                                                  color: cl938492,
-                                                ),
-                                        ),
+                                            height: 30,
+                                            width: 10,
+                                            decoration: BoxDecoration(
+                                                borderRadius: const BorderRadius
+                                                        .vertical(
+                                                    top: Radius.circular(20)),
+                                                color: item.status ==
+                                                        'CHECK_OUT'
+                                                    ? cl00962A
+                                                    : item.status == 'UNLOADING'
+                                                        ? cl00962A
+                                                        : item.status ==
+                                                                'LOADING'
+                                                            ? cl00962A
+                                                            : item.status ==
+                                                                    'CHECK_IN'
+                                                                ? cl00962A
+                                                                : cl938492)),
                                         Container(
-                                          height: 70,
-                                          width: 10,
-                                          decoration: item.missingPlace !=
-                                                  "LOADING"
-                                              ? BoxDecoration(
-                                                  borderRadius:
-                                                      const BorderRadius
-                                                              .vertical(
-                                                          bottom:
-                                                              Radius.circular(
-                                                                  20)),
-                                                  color:
-                                                      item.status == 'CHECK_OUT'
-                                                          ? cl00962A
-                                                          : item.status ==
-                                                                  'UNLOADING'
-                                                              ? cl00962A
-                                                              : item.status ==
-                                                                      'LOADING'
-                                                                  ? cl00962A
-                                                                  : cl938492)
-                                              : BoxDecoration(
-                                                  borderRadius:
-                                                      const BorderRadius
-                                                          .vertical(
-                                                    bottom: Radius.circular(
-                                                      20,
-                                                    ),
-                                                  ),
-                                                  color: cl00962A,
-                                                ),
-                                        ),
+                                            height: 70,
+                                            width: 10,
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    const BorderRadius.vertical(
+                                                        bottom: Radius.circular(
+                                                            20)),
+                                                color: item.status ==
+                                                        'CHECK_OUT'
+                                                    ? cl00962A
+                                                    : item.status == 'UNLOADING'
+                                                        ? cl00962A
+                                                        : item.status ==
+                                                                'LOADING'
+                                                            ? cl00962A
+                                                            : cl938492)),
                                       ],
                                     ),
                                     Expanded(
@@ -412,21 +374,16 @@ class TrackingScreen extends StatelessWidget {
                                             fontSize: 16),
                                       ),
                                     ),
-                                    item.missingPlace != "LOADING"
-                                        ? CircleAvatar(
-                                            radius: 13,
-                                            backgroundColor: item.status ==
-                                                    'CHECK_OUT'
+                                    CircleAvatar(
+                                        radius: 13,
+                                        backgroundColor:
+                                            item.status == 'CHECK_OUT'
                                                 ? cl00962A
                                                 : item.status == 'UNLOADING'
                                                     ? cl00962A
                                                     : item.status == 'LOADING'
                                                         ? cl00962A
-                                                        : cl938492)
-                                        : const CircleAvatar(
-                                            radius: 13,
-                                            backgroundColor: Colors.red,
-                                          ),
+                                                        : cl938492),
                                     const SizedBox(
                                       width: 75,
                                     ),
@@ -477,51 +434,50 @@ class TrackingScreen extends StatelessWidget {
                                     Column(
                                       children: [
                                         Container(
-                                          height: 30,
-                                          width: 10,
-                                          decoration: item.missingPlace != "LOADING"? BoxDecoration(
-                                              borderRadius:
-                                                  const BorderRadius.vertical(
-                                                      top: Radius.circular(20)),
-                                              color: item.status == 'CHECK_OUT'
-                                                  ? cl00962A
-                                                  : item.status == 'UNLOADING'
-                                                      ? cl00962A
-                                                      : item.status == 'LOADING'
-                                                          ? cl00962A
-                                                          : cl938492):BoxDecoration(
-                                            borderRadius:
-                                            const BorderRadius
-                                                .vertical(
-                                              top: Radius.circular(
-                                                20,
-                                              ),
-                                            ),
-                                            color: cl938492,
-                                          ),
-                                        ),
+                                            height: 30,
+                                            width: 10,
+                                            decoration: BoxDecoration(
+                                                borderRadius: const BorderRadius
+                                                        .vertical(
+                                                    top: Radius.circular(20)),
+                                                color: item.status ==
+                                                        'CHECK_OUT'
+                                                    ? cl00962A
+                                                    : item.status == 'UNLOADING'
+                                                        ? cl00962A
+                                                        : item.status ==
+                                                                'LOADING'
+                                                            ? cl00962A
+                                                            : cl938492)),
                                         Container(
                                           height: 70,
                                           width: 10,
-                                          decoration: item.missingPlace != "UNLOADING"? BoxDecoration(
-                                              borderRadius:
-                                                  const BorderRadius.vertical(
-                                                      bottom:
-                                                          Radius.circular(20)),
-                                              color: item.status == 'CHECK_OUT'
-                                                  ? cl00962A
-                                                  : item.status == 'UNLOADING'
-                                                      ? cl00962A
-                                                      : cl938492):BoxDecoration(
-                                            borderRadius:
-                                            const BorderRadius
-                                                .vertical(
-                                              bottom: Radius.circular(
-                                                20,
-                                              ),
-                                            ),
-                                            color: cl00962A,
-                                          ),
+                                          decoration: item.missingPlace !=
+                                                  "UNLOADING"
+                                              ? BoxDecoration(
+                                                  borderRadius:
+                                                      const BorderRadius
+                                                              .vertical(
+                                                          bottom:
+                                                              Radius.circular(
+                                                                  20)),
+                                                  color:
+                                                      item.status == 'CHECK_OUT'
+                                                          ? cl00962A
+                                                          : item.status ==
+                                                                  'UNLOADING'
+                                                              ? cl00962A
+                                                              : cl938492)
+                                              : BoxDecoration(
+                                                  borderRadius:
+                                                      const BorderRadius
+                                                          .vertical(
+                                                    bottom: Radius.circular(
+                                                      20,
+                                                    ),
+                                                  ),
+                                                  color: cl00962A,
+                                                ),
                                         ),
                                       ],
                                     ),
@@ -550,14 +506,20 @@ class TrackingScreen extends StatelessWidget {
                                             radius: 13,
                                             backgroundColor: Colors.red,
                                           ),
-                                    const Expanded(
+                                    Expanded(
                                       child: Padding(
-                                        padding: EdgeInsets.only(left: 8.0),
+                                        padding:
+                                            const EdgeInsets.only(left: 8.0),
                                         child: Text(
                                           "UNLOADING",
                                           style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 16),
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 16,
+                                            color:
+                                                item.missingPlace == "UNLOADING"
+                                                    ? Colors.red
+                                                    : Colors.black,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -575,45 +537,58 @@ class TrackingScreen extends StatelessWidget {
                                         Container(
                                           height: 30,
                                           width: 10,
-                                          decoration:item.missingPlace != "UNLOADING"?  BoxDecoration(
-                                              borderRadius:
-                                                  const BorderRadius.vertical(
-                                                      top: Radius.circular(20)),
-                                              color: item.status == 'CHECK_OUT'
-                                                  ? cl00962A
-                                                  : item.status == 'UNLOADING'
-                                                      ? cl00962A
-                                                      : cl938492):BoxDecoration(
-                                            borderRadius:
-                                            const BorderRadius
-                                                .vertical(
-                                              top: Radius.circular(
-                                                20,
-                                              ),
-                                            ),
-                                            color: cl938492,
-                                          ),
+                                          decoration: item.missingPlace !=
+                                                  "UNLOADING"
+                                              ? BoxDecoration(
+                                                  borderRadius:
+                                                      const BorderRadius
+                                                              .vertical(
+                                                          top: Radius.circular(
+                                                              20)),
+                                                  color:
+                                                      item.status == 'CHECK_OUT'
+                                                          ? cl00962A
+                                                          : item.status ==
+                                                                  'UNLOADING'
+                                                              ? cl00962A
+                                                              : cl938492)
+                                              : BoxDecoration(
+                                                  borderRadius:
+                                                      const BorderRadius
+                                                          .vertical(
+                                                    top: Radius.circular(
+                                                      20,
+                                                    ),
+                                                  ),
+                                                  color: cl938492,
+                                                ),
                                         ),
                                         Container(
                                           height: 70,
                                           width: 10,
-                                          decoration: item.missingPlace != "CHECK_OUT"? BoxDecoration(
-                                              borderRadius:
-                                                  const BorderRadius.vertical(
-                                                      bottom:
-                                                          Radius.circular(20)),
-                                              color: item.status == 'CHECK_OUT'
-                                                  ? cl00962A
-                                                  : cl938492):BoxDecoration(
-                                            borderRadius:
-                                            const BorderRadius
-                                                .vertical(
-                                              bottom: Radius.circular(
-                                                20,
-                                              ),
-                                            ),
-                                            color: cl00962A,
-                                          ),
+                                          decoration: item.missingPlace !=
+                                                  "CHECK_OUT"
+                                              ? BoxDecoration(
+                                                  borderRadius:
+                                                      const BorderRadius
+                                                              .vertical(
+                                                          bottom:
+                                                              Radius.circular(
+                                                                  20)),
+                                                  color:
+                                                      item.status == 'CHECK_OUT'
+                                                          ? cl00962A
+                                                          : cl938492)
+                                              : BoxDecoration(
+                                                  borderRadius:
+                                                      const BorderRadius
+                                                          .vertical(
+                                                    bottom: Radius.circular(
+                                                      20,
+                                                    ),
+                                                  ),
+                                                  color: cl00962A,
+                                                ),
                                         ),
                                       ],
                                     ),
@@ -627,6 +602,15 @@ class TrackingScreen extends StatelessWidget {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
+                                          item.missingPlace == "UNLOADING"
+                                              ? const Text(
+                                                  "Missing",
+                                                  style: TextStyle(
+                                                      color: Colors.red,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                )
+                                              : const SizedBox(),
                                           Text(
                                             item.unloadingPlace,
                                             style: TextStyle(
@@ -661,13 +645,19 @@ class TrackingScreen extends StatelessWidget {
                                 Row(
                                   children: [
                                     const Spacer(),
-                                    const Padding(
-                                      padding: EdgeInsets.only(right: 8.0),
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 8.0),
                                       child: Text(
                                         "CHECK_OUT",
                                         style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 16),
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 16,
+                                          color:
+                                              item.missingPlace == "CHECK_OUT"
+                                                  ? Colors.red
+                                                  : Colors.black,
+                                        ),
                                       ),
                                     ),
                                     item.missingPlace != "CHECK_OUT"
@@ -697,6 +687,15 @@ class TrackingScreen extends StatelessWidget {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
+                                          item.missingPlace == "CHECK_OUT"
+                                              ? const Text(
+                                                  "Missing",
+                                                  style: TextStyle(
+                                                      color: Colors.red,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                )
+                                              : const SizedBox(),
                                           Text(
                                             item.checkoutPlace,
                                             style: TextStyle(
