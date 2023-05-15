@@ -223,21 +223,23 @@ class TrackingScreen extends StatelessWidget {
                           shrinkWrap: true,
                           itemCount: 1,
                           itemBuilder: (BuildContext context, int index) {
-                            var item = value.luggageList[index];
+                            var item = value.luggageList.[index];
                             return Column(
                               children: [
-                                const Text(
-                                  "Departure",
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w700),
-                                ),
                                 Text(
                                   item.checkInPlace,
                                   style: const TextStyle(
-                                      fontSize: 11,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700),
+
+                                ),
+                                const Text(
+                                  "Departure",
+                                  style: TextStyle(
+                                      fontSize: 13,
                                       fontWeight: FontWeight.w500),
                                 ),
+
                                 Divider(
                                   color: Colors.black,
                                   thickness: 2,
@@ -262,14 +264,14 @@ class TrackingScreen extends StatelessWidget {
                                                     : item.status == 'CHECK_IN'
                                                         ? cl00962A
                                                         : cl938492),
-                                    const Expanded(
+                                     Expanded(
                                         child: Padding(
-                                      padding: EdgeInsets.only(left: 8.0),
+                                      padding: const EdgeInsets.only(left: 8.0),
                                       child: Text(
-                                        "CHECK_IN",
-                                        style: TextStyle(
+                                        item.checkInPlace,
+                                        style: const TextStyle(
                                             fontWeight: FontWeight.w600,
-                                            fontSize: 16),
+                                            fontSize: 13),
                                       ),
                                     ))
                                   ],
@@ -331,27 +333,27 @@ class TrackingScreen extends StatelessWidget {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
-                                          Text(
-                                            item.checkInPlace,
+                                          // Text(
+                                          //   item.checkInPlace,
+                                          //   style: TextStyle(
+                                          //       fontSize: 11,
+                                          //       fontWeight: FontWeight.w500,
+                                          //       color: cl252525),
+                                          // ),
+                            item.checkInStatus=="CLEARED"?Text(
+                                            "Checked IN",
                                             style: TextStyle(
-                                                fontSize: 11,
+                                                fontSize: 13,
                                                 fontWeight: FontWeight.w500,
                                                 color: cl252525),
-                                          ),
-                                          Text(
-                                            item.checkInStaffName,
-                                            style: TextStyle(
-                                                fontSize: 11,
-                                                fontWeight: FontWeight.w500,
-                                                color: cl252525),
-                                          ),
+                                          ):const SizedBox(),
                                           Text(
                                               item.checkInTime != ""
                                                   ? uploadDatee(
                                                       item.checkInTime)
                                                   : "",
                                               style: TextStyle(
-                                                  fontSize: 11,
+                                                  fontSize: 13,
                                                   fontWeight: FontWeight.w400,
                                                   color: cl252525)),
                                         ],
@@ -363,17 +365,23 @@ class TrackingScreen extends StatelessWidget {
                                   height: 5,
                                 ),
                                 Row(
+
                                   children: [
-                                    const Spacer(),
-                                    const Padding(
-                                      padding: EdgeInsets.only(right: 8.0),
-                                      child: Text(
-                                        "LOADING",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 16),
-                                      ),
+                                    //const Spacer(),
+                                     Expanded(
+                                       child: Padding(
+                                        padding: const EdgeInsets.only(right: 8.0),
+                                        child: Align(
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            item.loadingPlace,
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 13),
+                                          ),
+                                        ),
                                     ),
+                                     ),
                                     CircleAvatar(
                                         radius: 13,
                                         backgroundColor:
@@ -384,9 +392,7 @@ class TrackingScreen extends StatelessWidget {
                                                     : item.status == 'LOADING'
                                                         ? cl00962A
                                                         : cl938492),
-                                    const SizedBox(
-                                      width: 75,
-                                    ),
+
                                     const Spacer()
                                   ],
                                 ),
@@ -405,27 +411,27 @@ class TrackingScreen extends StatelessWidget {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
-                                          Text(
-                                            item.loadingPlace,
+                                          // Text(
+                                          //   item.loadingPlace,
+                                          //   style: TextStyle(
+                                          //       fontSize: 11,
+                                          //       fontWeight: FontWeight.w500,
+                                          //       color: cl252525),
+                                          // ),
+                                          item.loadingStatus=="CLEARED"?Text(
+                                            "Loaded",
                                             style: TextStyle(
-                                                fontSize: 11,
+                                                fontSize: 13,
                                                 fontWeight: FontWeight.w500,
                                                 color: cl252525),
-                                          ),
-                                          Text(
-                                            item.loadingStaffName,
-                                            style: TextStyle(
-                                                fontSize: 11,
-                                                fontWeight: FontWeight.w500,
-                                                color: cl252525),
-                                          ),
+                                          ):const SizedBox(),
                                           Text(
                                               item.loadingTime != ""
                                                   ? uploadDatee(
                                                       item.loadingTime)
                                                   : "",
                                               style: TextStyle(
-                                                  fontSize: 11,
+                                                  fontSize: 13,
                                                   fontWeight: FontWeight.w400,
                                                   color: cl252525)),
                                         ],
@@ -511,10 +517,10 @@ class TrackingScreen extends StatelessWidget {
                                         padding:
                                             const EdgeInsets.only(left: 8.0),
                                         child: Text(
-                                          "UNLOADING",
+                                          item.unloadingPlace,
                                           style: TextStyle(
                                             fontWeight: FontWeight.w600,
-                                            fontSize: 16,
+                                            fontSize: 13,
                                             color:
                                                 item.missingPlace == "UNLOADING"
                                                     ? Colors.red
@@ -611,27 +617,27 @@ class TrackingScreen extends StatelessWidget {
                                                           FontWeight.bold),
                                                 )
                                               : const SizedBox(),
-                                          Text(
-                                            item.unloadingPlace,
+                                          // Text(
+                                          //   item.unloadingPlace,
+                                          //   style: TextStyle(
+                                          //       fontSize: 11,
+                                          //       fontWeight: FontWeight.w500,
+                                          //       color: cl252525),
+                                          // ),
+                                          item.unloadingStatus=="CLEARED"?   Text(
+                                            "Unloaded",
                                             style: TextStyle(
                                                 fontSize: 11,
                                                 fontWeight: FontWeight.w500,
                                                 color: cl252525),
-                                          ),
-                                          Text(
-                                            item.unloadingStaffName,
-                                            style: TextStyle(
-                                                fontSize: 11,
-                                                fontWeight: FontWeight.w500,
-                                                color: cl252525),
-                                          ),
+                                          ):const SizedBox(),
                                           Text(
                                               item.unloadingTime != ""
                                                   ? uploadDatee(
                                                       item.unloadingTime)
                                                   : "",
                                               style: TextStyle(
-                                                  fontSize: 11,
+                                                  fontSize: 13,
                                                   fontWeight: FontWeight.w400,
                                                   color: cl252525)),
                                         ],
@@ -644,19 +650,23 @@ class TrackingScreen extends StatelessWidget {
                                 ),
                                 Row(
                                   children: [
-                                    const Spacer(),
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.only(right: 8.0),
-                                      child: Text(
-                                        "CHECK_OUT",
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 16,
-                                          color:
-                                              item.missingPlace == "CHECK_OUT"
-                                                  ? Colors.red
-                                                  : Colors.black,
+                                    Expanded(
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 8.0),
+                                        child: Align(
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            item.checkoutPlace,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 13,
+                                              color:
+                                                  item.missingPlace == "CHECK_OUT"
+                                                      ? Colors.red
+                                                      : Colors.black,
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -671,9 +681,7 @@ class TrackingScreen extends StatelessWidget {
                                             radius: 13,
                                             backgroundColor: Colors.red,
                                           ),
-                                    const SizedBox(
-                                      width: 96,
-                                    ),
+
                                     const Spacer()
                                   ],
                                 ),
@@ -696,27 +704,27 @@ class TrackingScreen extends StatelessWidget {
                                                           FontWeight.bold),
                                                 )
                                               : const SizedBox(),
-                                          Text(
-                                            item.checkoutPlace,
+                                          // Text(
+                                          //   item.checkoutPlace,
+                                          //   style: TextStyle(
+                                          //       fontSize: 11,
+                                          //       fontWeight: FontWeight.w500,
+                                          //       color: cl252525),
+                                          // ),
+                                          item.checkOutStatus=="CLEARED"?  Text(
+                                            "Checked OUT",
                                             style: TextStyle(
                                                 fontSize: 11,
                                                 fontWeight: FontWeight.w500,
                                                 color: cl252525),
-                                          ),
-                                          Text(
-                                            item.checkOutStaffName,
-                                            style: TextStyle(
-                                                fontSize: 11,
-                                                fontWeight: FontWeight.w500,
-                                                color: cl252525),
-                                          ),
+                                          ):const SizedBox(),
                                           Text(
                                               item.checkoutTime != ""
                                                   ? uploadDatee(
                                                       item.checkoutTime)
                                                   : "",
                                               style: TextStyle(
-                                                  fontSize: 11,
+                                                  fontSize: 13,
                                                   fontWeight: FontWeight.w400,
                                                   color: cl252525)),
                                         ],
