@@ -10,6 +10,7 @@ import 'package:sms_autofill/sms_autofill.dart';
 
 import '../Providers/admin_provider.dart';
 import '../Providers/loginProvider.dart';
+import '../StaffView/staff_login_page.dart';
 import '../UserView/contryCodeModel.dart';
 import '../constant/colors.dart';
 import '../constant/my_functions.dart';
@@ -105,8 +106,36 @@ class _LoginScreenState extends State<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Image(
-                  image: AssetImage("assets/topLayer.png"), height: 150),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Image(
+                      image: AssetImage("assets/topLayer.png"), height: 150),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: InkWell(
+                      onTap: () {
+                        callNext(const StaffLogin(), context);
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        height: 43,
+                        width: width/3,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: Colors.grey.shade200),
+                            borderRadius:
+                            const BorderRadius.all(Radius.circular(10))),
+                        child: const Text(
+                          "STAFF LOGIN",
+                          style:
+                          TextStyle(color: Colors.blue, fontSize: 15),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

@@ -121,4 +121,96 @@ class LoginProvider extends ChangeNotifier {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
+
+
+  TextEditingController staffLoginIdController = TextEditingController();
+  TextEditingController staffLoginPasswordController = TextEditingController();
+
+
+  Future<void> staffAuthorized(String? userId, String? userPassword, BuildContext context) async {
+    const snackBar1 = SnackBar(
+        backgroundColor: Colors.white,
+        duration: Duration(milliseconds: 2000),
+        content: Text(
+          "Wrong password...\n Contact admin for password management.",
+          textAlign: TextAlign.center,
+          softWrap: true,
+          style: TextStyle(
+              fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold),
+        ));
+    const snackBar2 = SnackBar(
+        backgroundColor: Colors.white,
+        duration: Duration(milliseconds: 2000),
+        content: Text(
+          "Sorry , You don't have any access",
+          textAlign: TextAlign.center,
+          softWrap: true,
+          style: TextStyle(
+              fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold),
+        ));
+
+    AdminProvider adminProvider =
+        Provider.of<AdminProvider>(context, listen: false);
+
+    String loginUsername = '';
+    String loginUserPassword = '';
+    String designation = '';
+    String loginUserPhone = '';
+    String loginUserid = '';
+    String userStatus = '';
+    String staffAirport = '';
+    try {
+      db
+          .collection("USERS")
+          .where("USER_ID", isEqualTo: userId)
+          .get()
+          .then((value22) {
+        if (value22.docs.isNotEmpty) {
+          Map<dynamic, dynamic> staffMap = value22.docs.first.data();
+
+            loginUsername = staffMap['NAME'].toString();
+            designation = staffMap['DESIGNATION'].toString();
+          loginUserPassword = staffMap['PASSWORD'].toString();
+          loginUserPhone = staffMap['MOBILE_NUMBER'].toString();
+            userStatus = staffMap['STATUS'].toString();
+            loginUserid = value22.docs.first.id;
+
+            if (userStatus == "ACTIVE") {
+              if(loginUserPassword==userPassword) {
+                db.collection('STAFF').doc(loginUserid).get().then((value) {
+                if (value.exists) {
+                  staffAirport = value.get('AIRPORT');
+                  adminProvider.fetchMissingLuggage();
+
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => StaffHomeScreen(
+                                designation: designation,
+                                stfAirport: staffAirport,
+                                addedBy: loginUsername,
+                                stfName: loginUsername, staffId: loginUserid, phone:loginUserPhone,
+                              )));
+                }
+              });
+              }else {
+                ScaffoldMessenger.of(context).showSnackBar(snackBar1);
+              }
+            }
+            else {
+              ScaffoldMessenger.of(context).showSnackBar(snackBar2);
+            }
+
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(snackBar2);
+        }
+      });
+    } catch (e) {
+      const snackBar = SnackBar(
+        content: Text('Sorry , Some Error Occurred'),
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
 }
