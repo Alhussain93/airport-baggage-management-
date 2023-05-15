@@ -181,13 +181,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   },
                                   items: value.countryCodeList,
                                   filterFn: (item, filter) {
-                                    return item.country.contains(filter) ||
-                                        item.country
-                                            .toLowerCase()
-                                            .contains(filter) ||
-                                        item.country
-                                            .toUpperCase()
-                                            .contains(filter);
+                                    return item.country.contains(filter) || item.country.toLowerCase().contains(filter) || item.country.toUpperCase().contains(filter)||item.dialCde.toUpperCase().contains(filter)||item.code.toUpperCase().contains(filter);
+
                                   },
                                   itemAsString: (CountryCode u) {
                                     return u.dialCde;
@@ -200,7 +195,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                                 borderRadius:
                                                     BorderRadius.circular(10)),
                                             label: const Text(
-                                              'Search Country',
+                                              'Search',
                                               style: TextStyle(fontSize: 12),
                                             )),
                                       ),

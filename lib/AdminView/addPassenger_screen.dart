@@ -197,6 +197,7 @@ class AddCustomerScreen extends StatelessWidget {
                                       dropdownSearchDecoration: InputDecoration(
                                           filled: true,
                                           fillColor: Colors.transparent,
+
                                           border: OutlineInputBorder(
                                               borderSide: BorderSide.none),
                                           enabledBorder: InputBorder.none,
@@ -215,11 +216,7 @@ class AddCustomerScreen extends StatelessWidget {
                               },
                               items: value.countryCodeList,
                               filterFn: (item, filter) {
-                                return item.country.contains(filter) ||
-                                    item.country
-                                        .toLowerCase()
-                                        .contains(filter) ||
-                                    item.country.toUpperCase().contains(filter);
+                                return item.country.contains(filter) || item.country.toLowerCase().contains(filter) || item.country.toUpperCase().contains(filter)||item.dialCde.toUpperCase().contains(filter)||item.code.toUpperCase().contains(filter);
                               },
                               itemAsString: (CountryCode u) {
                                 return u.dialCde;
@@ -233,7 +230,7 @@ class AddCustomerScreen extends StatelessWidget {
                                     controller: _passengerEditTextController,
                                     decoration: const InputDecoration(
                                         label: Text(
-                                      'Search Country',
+                                      'Search',
                                       style: TextStyle(fontSize: 12),
                                     )),
                                   ),

@@ -156,7 +156,7 @@ class AdminProvider with ChangeNotifier {
         checkList.sort(
           (b, a) => b.lagagenumber.compareTo(a.lagagenumber),
         );
-        if (checkList.length != 0) {
+        if (checkList.isNotEmpty) {
           luggageTracking(checkList[0].id);
           callNext(
               TrackingScreen(
@@ -173,7 +173,7 @@ class AdminProvider with ChangeNotifier {
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(20))),
           content: const Text(
-            "No Luggage !!!",
+            "Not Checked In !!!",
             style: TextStyle(color: Colors.red),
           ),
         );
@@ -212,6 +212,8 @@ class AdminProvider with ChangeNotifier {
           map["MISSING_PLACE"] ?? ""));
       notifyListeners();
     });
+    notifyListeners();
+
   }
 
   String getRandomString(int length) {

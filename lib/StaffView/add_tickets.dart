@@ -107,8 +107,8 @@ class AddTickets extends StatelessWidget {
                     keyboardType: TextInputType.phone,
                     controller: values.ticketPnrController,
                     decoration: InputDecoration(
-                      labelText: 'PNR ID',
-                      hintText: 'PNR ID',
+                      labelText: 'PNR Number',
+                      hintText: 'PNR Number',
                       helperText: '',
                       contentPadding: const EdgeInsets.all(11),
                       border: OutlineInputBorder(
@@ -116,7 +116,7 @@ class AddTickets extends StatelessWidget {
                     ),
                     validator: (value) {
                       if (value!.trim().isEmpty) {
-                        return "Enter PNR ID";
+                        return "Enter PNR Number";
                       } else {
                         return null;
                       }

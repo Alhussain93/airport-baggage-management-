@@ -202,10 +202,7 @@ class AddStaff extends StatelessWidget {
                           maxLengthEnforcement: MaxLengthEnforcement.enforced,
                           textAlign: TextAlign.center,
                           keyboardType: TextInputType.phone,
-                          // inputFormatters: [
-                          //   LengthLimitingTextInputFormatter(10),
-                          //   FilteringTextInputFormatter.digitsOnly,
-                          // ],
+
                           textInputAction: TextInputAction.next,
                           decoration: InputDecoration(
                             prefixIcon: SizedBox(
@@ -230,7 +227,8 @@ class AddStaff extends StatelessWidget {
                                                       InputBorder.none,
                                                   errorBorder: InputBorder.none,
                                                   focusedErrorBorder:
-                                                      InputBorder.none)), selectedItem: from !="EDIT"
+                                                      InputBorder.none)),
+                                  selectedItem: from !="EDIT"
                                     ? CountryCode("Oman", "OM", "+968"):CountryCode(value.country, value.code, value.selectedValue!),
                                   onChanged: (e) {
                                     value1.selectedValue =
@@ -241,13 +239,7 @@ class AddStaff extends StatelessWidget {
                                   },
                                   items: value.countryCodeList,
                                   filterFn: (item, filter) {
-                                    return item.country.contains(filter) ||
-                                        item.country
-                                            .toLowerCase()
-                                            .contains(filter) ||
-                                        item.country
-                                            .toUpperCase()
-                                            .contains(filter);
+                                    return item.country.contains(filter) || item.country.toLowerCase().contains(filter) || item.country.toUpperCase().contains(filter)||item.dialCde.toUpperCase().contains(filter)||item.code.toUpperCase().contains(filter);
                                   },
                                   itemAsString: (CountryCode u) {
                                     return u.dialCde;

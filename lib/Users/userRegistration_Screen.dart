@@ -191,14 +191,8 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                                   },
                                   items: value.countryCodeList,
                                   filterFn: (item, filter) {
-                                    return item.country.contains(filter) ||
-                                        item.country
-                                            .toLowerCase()
-                                            .contains(filter) ||
-                                        item.country
-                                            .toUpperCase()
-                                            .contains(filter);
-                                  },
+                                    return item.country.contains(filter) || item.country.toLowerCase().contains(filter) || item.country.toUpperCase().contains(filter)||item.dialCde.toUpperCase().contains(filter)||item.code.toUpperCase().contains(filter);
+                                    },
                                   itemAsString: (CountryCode u) {
                                     return u.dialCde;
                                   },
@@ -297,7 +291,7 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                                                 },
                                                 codeSent: (verificationId,
                                                     resendingToken) async {
-                                                  setState(() {
+                                                  setState(() async {
                                                     showLoading = false;
                                                     currentSate =
                                                         MobileVarificationState
@@ -400,7 +394,7 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                           keyboardType: TextInputType.number,
                           autoFocus: true,
                           controller: otpController,
-                          currentCode: "",
+                          currentCode: code,
                           decoration: BoxLooseDecoration(
                             strokeWidth: 3,
                             textStyle: const TextStyle(color: Colors.black),
@@ -410,6 +404,8 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                           ),
                           onCodeChanged: (pin) {
                             if (pin!.length == 6) {
+                              FocusScope.of(context).requestFocus(FocusNode());
+
                               PhoneAuthCredential phoneAuthCredential =
                                   PhoneAuthProvider.credential(
                                       verificationId: verificationId,
@@ -421,6 +417,7 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                                 code = pin;
                               });
                             }
+
                           },
                         ),
                       )
