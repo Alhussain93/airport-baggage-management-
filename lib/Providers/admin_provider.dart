@@ -181,11 +181,7 @@ class AdminProvider with ChangeNotifier {
 
 
   checkingPnr(String pnrControllerText, BuildContext context, String username) {
-    db
-        .collection("LUGGAGE")
-        .where("PNR_ID", isEqualTo: pnrControllerText)
-        .get()
-        .then((value) {
+    db.collection("LUGGAGE").where("PNR_ID", isEqualTo: pnrControllerText).get().then((value) {
       checkList.clear();
       if (value.docs.isNotEmpty) {
         for (var element in value.docs) {
@@ -197,17 +193,12 @@ class AdminProvider with ChangeNotifier {
               map["PNR_ID"].toString(),
               map["STATUS"].toString()));
         }
-        checkList.sort(
-          (b, a) => b.lagagenumber.compareTo(a.lagagenumber),
-        );
-        if (checkList.isNotEmpty) {
+        // checkList.sort(
+        //   (b, a) => b.lagagenumber.compareTo(a.lagagenumber),
+        // );
+        if (checkList.length!=0) {
           luggageTracking(checkList[0].id);
-          callNext(
-              TrackingScreen(
-                pnrid: pnrControllerText,
-                username: username,
-              ),
-              context);
+          callNext(TrackingScreen(pnrid: pnrControllerText, username: username,), context);
         }
       } else {
         final snackBar = SnackBar(
@@ -226,9 +217,7 @@ class AdminProvider with ChangeNotifier {
     });
   }
 
-  luggageTracking(
-    String lid,
-  ) {
+  luggageTracking(String lid,) {
     luggageList.clear();
     db.collection("LUGGAGE").doc(lid).snapshots().listen((event) {
       Map<dynamic, dynamic> map = event.data() as Map;

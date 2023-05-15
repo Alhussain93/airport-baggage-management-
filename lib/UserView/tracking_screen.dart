@@ -178,12 +178,7 @@ class TrackingScreen extends StatelessWidget {
                                                   child: InkWell(
                                                     splashColor: Colors.blue,
                                                     onTap: () {
-                                                      adminProvider
-                                                          .luggageTracking(
-                                                              value1
-                                                                  .checkList[
-                                                                      index]
-                                                                  .id);
+                                                      adminProvider.luggageTracking(value1.checkList[index].id);
                                                       i = index;
                                                     },
                                                     child: Container(
@@ -223,7 +218,7 @@ class TrackingScreen extends StatelessWidget {
                           shrinkWrap: true,
                           itemCount: 1,
                           itemBuilder: (BuildContext context, int index) {
-                            var item = value.luggageList.[index];
+                            var item = value.luggageList[index];
                             return Column(
                               children: [
                                 Text(

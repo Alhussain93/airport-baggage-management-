@@ -204,7 +204,7 @@ class StaffHomeScreen extends StatelessWidget {
                       Consumer<AdminProvider>(builder: (context, value1, child) {
                         return Container(
                           height: 40,
-                          width: width / 1.5,
+                          width: width / 1.35,
                           decoration: BoxDecoration(
                             color: Colors.white,
                             border:
@@ -437,6 +437,18 @@ class StaffHomeScreen extends StatelessWidget {
                                     )),
                                   ),
                                 )
+                              ],
+                            ),
+                          ),
+
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8.0,top: 15),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text("Designation :",style: TextStyle(fontSize: 12,color: Colors.white),),
+                                Text(designation,style: TextStyle(fontSize: 13,color: Colors.white),),
                               ],
                             ),
                           ),
