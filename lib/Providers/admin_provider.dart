@@ -89,6 +89,50 @@ class AdminProvider with ChangeNotifier {
     'Khasab Airport'
   ];
 
+  void changeStaffStatus(String staffId,String designation,String phone,BuildContext context){
+    String loginUsername = '';
+    String stfDesignation = '';
+    String userStatus = '';
+    String staffAirport = '';
+    db.collection("USERS").doc(staffId).set({"DESIGNATION": designation,}, SetOptions(merge: true));
+    db.collection("STAFF").doc(staffId).set({"DESIGNATION": designation,}, SetOptions(merge: true));
+    notifyListeners();
+    db.collection("USERS")
+        .where("MOBILE_NUMBER", isEqualTo: phone)
+        .get()
+        .then((value) {
+      if (value.docs.isNotEmpty) {
+        Map<dynamic, dynamic> map = value.docs.first.data();
+        loginUsername = map['NAME'].toString();
+        userStatus = map['STATUS'].toString();
+        stfDesignation = map['DESIGNATION'].toString();
+
+        if (userStatus == "ACTIVE") {
+          db.collection('STAFF').doc(staffId).get().then((value) {
+            if (value.exists) {
+              staffAirport = value.get('AIRPORT');
+             fetchMissingLuggage();
+
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => StaffHomeScreen(
+                        designation: stfDesignation,
+                        stfAirport: staffAirport,
+                        addedBy: loginUsername,
+                        stfName: loginUsername, staffId: staffId, phone:phone,
+                      )));
+            }
+          });
+        }
+
+
+      }
+        });
+    
+    
+  }
+  
 
   Future<bool> showExitPopup(context) async {
     return await showDialog(
@@ -284,7 +328,7 @@ class AdminProvider with ChangeNotifier {
   }
 
   statusUpdateQrData(String luggageId, String staffDes, String staffAir,
-      String stfName, BuildContext context) {
+      String stfName, BuildContext context2) {
     DateTime now = DateTime.now();
     String milli = now.millisecondsSinceEpoch.toString();
 
@@ -302,7 +346,7 @@ class AdminProvider with ChangeNotifier {
             "LAST_SCANNED_DATE": now,
           }, SetOptions(merge: true));
           String text = 'Loading completed';
-          showAlertDialog(context, text, staffDes, stfName, staffAir);
+          showAlertDialog(context2, text, staffDes, stfName, staffAir);
         } else if (staffDes == "UNLOADING") {
           db.collection("LUGGAGE").doc(luggageId).set({
             "UNLOADED_TIMEMILLI": milli,
@@ -312,11 +356,13 @@ class AdminProvider with ChangeNotifier {
             "UNLOADING_STAFF_NAME": stfName,
             "LAST_SCANNED_DATE": now,
             "LAST_SCANNED_DATEMILLI": milli,
-            "LAST_SCANNED_PLACE": staffAir
+            "LAST_SCANNED_PLACE": staffAir,
+            "UNLOADING_STATUS": "CLEARED",
+
           }, SetOptions(merge: true));
 
           await checkMissingLuggageInUnloading(
-              context, luggageId, staffDes, stfName, staffAir);
+              context2, luggageId, staffDes, stfName, staffAir);
         } else if (staffDes == "CHECK_OUT") {
           db.collection("LUGGAGE").doc(luggageId).set({
             "CHECKOUT_TIMEMILLI": milli,
@@ -326,10 +372,12 @@ class AdminProvider with ChangeNotifier {
             "CHECKOUT_STAFF_NAME": stfName,
             "LAST_SCANNED_DATE": now,
             "LAST_SCANNED_DATEMILLI": milli,
-            "LAST_SCANNED_PLACE": staffAir
+            "LAST_SCANNED_PLACE": staffAir,
+            "CHECKOUT_STATUS": "CLEARED",
+
           }, SetOptions(merge: true));
           await checkMissingLuggageInCheckout(
-              context, luggageId, staffDes, stfName, staffAir);
+              context2, luggageId, staffDes, stfName, staffAir);
         }
       }
     });
@@ -424,22 +472,24 @@ class AdminProvider with ChangeNotifier {
     });
   }
 
-  checkMissingLuggageInUnloading(BuildContext context, String luggageId,
+  checkMissingLuggageInUnloading(BuildContext context1, String luggageId,
       String staffDes, String staffName, String staffAirport) async {
     await db.collection("LUGGAGE").doc(luggageId).get().then((value) {
       if (value.exists) {
         Map<dynamic, dynamic> map = value.data() as Map;
         if (map["ARRIVAL_PLACE"] == map["UNLOADING_AIRPORT"]) {
           String text = 'Unloading completed';
-          showAlertDialog(context, text, staffDes, staffName, staffAirport);
+          showAlertDialog(context1, text, staffDes, staffName, staffAirport);
           notifyListeners();
         } else {
           db.collection("LUGGAGE").doc(luggageId).set({
             "MISSING": "YES",
             "MISSING_PLACE": "UNLOADING",
+            "UNLOADING_STATUS": "NOT",
+
           }, SetOptions(merge: true));
           String text = 'Airport miss matched';
-          showAlertDialog(context, text, staffDes, staffName, staffAirport);
+          showAlertDialog(context1, text, staffDes, staffName, staffAirport);
           notifyListeners();
         }
       }
@@ -459,6 +509,8 @@ class AdminProvider with ChangeNotifier {
           db.collection("LUGGAGE").doc(luggageId).set({
             "MISSING": "YES",
             "MISSING_PLACE": "CHECK_OUT",
+            "CHECKOUT_STATUS": "NOT",
+
           }, SetOptions(merge: true));
           String text = 'Airport miss matched';
           showAlertDialog(context, text, staffDes, staffName, staffAirport);
@@ -493,7 +545,7 @@ class AdminProvider with ChangeNotifier {
                 designation: staffDes,
                 stfAirport: stsAirport,
                 addedBy: '',
-                stfName: staffName,
+                stfName: staffName, staffId: '', phone: '',
               ),
               context);
         },
@@ -712,10 +764,10 @@ class AdminProvider with ChangeNotifier {
 
             notifyListeners();
           });
-          notifyListeners();
         });
         notifyListeners();
       } else {
+        passengerMap['PASSENGER_IMAGE'] = "";
         passengerEditMap['PASSENGER_IMAGE'] = editImage;
       }
       passengerEditMap["DOB STRING"] = userDobCT.text;
@@ -814,6 +866,7 @@ class AdminProvider with ChangeNotifier {
   String staffAirportName = 'Select Airport';
   String designation = 'Select Designation';
   String flightName = 'Select Flight Name';
+  String staffDesignation = 'CHECK_IN';
   String ticketFlightName = 'Select Flight Name';
   String airportName = '';
   String fromTicket = 'Select Airport';
@@ -825,6 +878,12 @@ class AdminProvider with ChangeNotifier {
     "Air india Express",
     'Srilankan Airlines',
     'Etihad Airways'
+  ];
+  List<String> staffDesignationList = [
+    "CHECK_IN",
+    "LOADING",
+    "UNLOADING",
+    "CHECK_OUT",
   ];
 
   List<String> fromList = [
@@ -991,7 +1050,7 @@ class AdminProvider with ChangeNotifier {
             map["MOBILE_NUMBER"].toString(),
             map["COUNTRY_CODE"].toString(),
             map["DOB STRING"].toString(),
-            map["PASSENGER_IMAGE"].toString(),
+            map["PASSENGER_IMAGE"]??"",
             map["STATUS"].toString(),
           ));
         }
@@ -1035,7 +1094,7 @@ class AdminProvider with ChangeNotifier {
               element.id.toString(),
               map["NAME"].toString(),
               map["STAFF_ID"].toString(),
-              map["PROFILE_IMAGE"].toString(),
+              map["PROFILE_IMAGE"]??"",
               map["MOBILE_NUMBER"].toString(),
               map["STATUS"].toString()),
         );

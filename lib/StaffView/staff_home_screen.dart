@@ -9,7 +9,7 @@ import '../constant/colors.dart';
 import '../constant/my_functions.dart';
 
 class StaffHomeScreen extends StatelessWidget {
-  String designation, stfAirport, addedBy, stfName;
+  String designation, stfAirport, addedBy, stfName,staffId,phone;
 
   StaffHomeScreen({
     super.key,
@@ -17,6 +17,8 @@ class StaffHomeScreen extends StatelessWidget {
     required this.stfAirport,
     required this.addedBy,
     required this.stfName,
+    required this.staffId,
+    required this.phone,
   });
 
   ValueNotifier<int> isSelected = ValueNotifier(0);
@@ -192,6 +194,68 @@ class StaffHomeScreen extends StatelessWidget {
                           ),
                         ),
                       ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10,bottom: 8,left: 25),
+                        child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text("Select designation",style: TextStyle(color: Colors.white,fontWeight: FontWeight.w500,fontSize: 11),)),
+                      ),
+
+                      Consumer<AdminProvider>(builder: (context, value1, child) {
+                        return Container(
+                          height: 40,
+                          width: width / 1.5,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border:
+                            Border.all(width: 1, color: Colors.grey.shade500),
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: DropdownButtonFormField(
+                              style: const TextStyle(
+                                  fontSize: 10, color: Colors.black),
+
+                              hint: const Text(
+                                "Designation",
+                                style: TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              value: value1.staffDesignation,
+                              iconSize: 30,
+                              isExpanded: true,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                ),
+                                isCollapsed: true,
+                                filled: true,
+                                fillColor: Colors.white,
+                              ),
+                              onChanged: (newValue) {
+                                value1.staffDesignation = newValue.toString();
+                                value1.changeStaffStatus(staffId,newValue.toString(),phone,context);
+                              },
+                              items: value1.staffDesignationList.map((item1) {
+                                return DropdownMenuItem(
+                                    value: item1,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 10),
+                                      child: Text(
+                                        item1,
+                                        style: const TextStyle(fontSize: 11),
+                                      ),
+                                    ));
+                              }).toList(),
+                            ),
+                          ),
+                        );
+                      }),
+
+
                       const Spacer(),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 20),

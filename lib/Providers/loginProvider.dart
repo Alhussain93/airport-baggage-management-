@@ -95,7 +95,7 @@ class LoginProvider extends ChangeNotifier {
                                 designation: designation,
                                 stfAirport: staffAirport,
                                 addedBy: loginUsername,
-                                stfName: loginUsername,
+                                stfName: loginUsername, staffId: loginUserid, phone:phone,
                               )));
                 }
               });
