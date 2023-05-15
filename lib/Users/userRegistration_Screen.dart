@@ -107,7 +107,6 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
   Widget build(BuildContext context) {
     AdminProvider adminProvider =
         Provider.of<AdminProvider>(context, listen: false);
-    adminProvider.fetchCountryJson();
 
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;

@@ -11,13 +11,12 @@ import '../constant/colors.dart';
 
 class GenerateQrScreen extends StatelessWidget {
   List qrDatasList;
-  String qrId, name;
+  String qrId;
 
   GenerateQrScreen(
       {Key? key,
       required this.qrDatasList,
-      required this.qrId,
-      required this.name})
+      required this.qrId,})
       : super(key: key);
 
   @override
@@ -37,7 +36,7 @@ class GenerateQrScreen extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: InkWell(
               onTap: () {
-                generatePDF(qrDatasList, name);
+                generatePDF(qrDatasList);
               },
               child: Container(
                 alignment: Alignment.center,
@@ -114,7 +113,7 @@ class GenerateQrScreen extends StatelessWidget {
     );
   }
 
-  Future generatePDF(List qrDataLists, String name) async {
+  Future generatePDF(List qrDataLists) async {
     final pdf = pw.Document();
     pdf.addPage(
       pw.MultiPage(
@@ -130,10 +129,10 @@ class GenerateQrScreen extends StatelessWidget {
                     mainAxisAlignment: pw.MainAxisAlignment.center,
                     crossAxisAlignment: pw.CrossAxisAlignment.center,
                     children: [
-                      pw.SizedBox(height: 20),
-                      pw.Text(name,
-                          style: pw.TextStyle(
-                              fontSize: 25, fontWeight: pw.FontWeight.bold)),
+                      // pw.SizedBox(height: 20),
+                      // pw.Text(name,
+                      //     style: pw.TextStyle(
+                      //         fontSize: 25, fontWeight: pw.FontWeight.bold)),
                       pw.SizedBox(height: 20),
                       pw.Text('QR code for $qrCodeValue'),
                       pw.SizedBox(height: 20),

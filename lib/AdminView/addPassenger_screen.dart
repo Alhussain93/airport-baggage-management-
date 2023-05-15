@@ -27,6 +27,7 @@ class AddCustomerScreen extends StatelessWidget {
     AdminProvider adminProvider =
         Provider.of<AdminProvider>(context, listen: false);
     adminProvider.fetchCountryJson();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: themecolor,

@@ -612,13 +612,7 @@ class TrackingScreen extends StatelessWidget {
                                                           FontWeight.bold),
                                                 )
                                               : const SizedBox(),
-                                          // Text(
-                                          //   item.unloadingPlace,
-                                          //   style: TextStyle(
-                                          //       fontSize: 11,
-                                          //       fontWeight: FontWeight.w500,
-                                          //       color: cl252525),
-                                          // ),
+
                                           item.unloadingStatus=="CLEARED"?   Text(
                                             "Unloaded",
                                             style: TextStyle(
@@ -626,6 +620,18 @@ class TrackingScreen extends StatelessWidget {
                                                 fontWeight: FontWeight.w500,
                                                 color: cl252525),
                                           ):const SizedBox(),
+
+
+                                          item.unloadingStatus=="CLEARED"? Text("Expected Time:",style: TextStyle(fontSize: 9),):SizedBox(),
+                                          item.unloadingStatus=="CLEARED"?
+                            Text(
+                            uploadDatee(
+                            item.arrivalTime)  ,
+                            style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                            color: cl252525),
+                            ):const SizedBox(),
                                           Text(
                                               item.unloadingTime != ""
                                                   ? uploadDatee(

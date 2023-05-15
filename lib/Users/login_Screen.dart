@@ -94,6 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
     AdminProvider adminProvider =
         Provider.of<AdminProvider>(context, listen: false);
     adminProvider.fetchCountryJson();
+
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -254,6 +255,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   InkWell(
                     onTap: () {
                       adminProvider.clearUserControllers();
+
                       CountryCode("Oman", "OM", "+968");
 
                       callNext(UserRegistrationScreen(), context);

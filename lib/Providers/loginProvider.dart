@@ -65,6 +65,7 @@ class LoginProvider extends ChangeNotifier {
                   PnrSearching(username: loginUsername), context);
             } else {
               ScaffoldMessenger.of(context).showSnackBar(snackBar2);
+
               CountryCode("Oman", "OM", "+968");
 
               Navigator.pushReplacement(context,
@@ -101,6 +102,7 @@ class LoginProvider extends ChangeNotifier {
               });
             } else {
               ScaffoldMessenger.of(context).showSnackBar(snackBar2);
+
               CountryCode("Oman", "OM", "+968");
 
               Navigator.pushReplacement(context,

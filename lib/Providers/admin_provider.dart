@@ -27,6 +27,7 @@ import '../StaffView/staff_home_screen.dart';
 import '../UserView/contryCodeModel.dart';
 import '../UserView/splash_screen.dart';
 import '../UserView/tracking_screen.dart';
+import '../Users/login_Screen.dart';
 import '../admin_model/add_staff_model.dart';
 import '../constant/colors.dart';
 import '../model/missing_Lagguage_Model.dart';
@@ -242,7 +243,10 @@ class AdminProvider with ChangeNotifier {
           map["LOADING_STATUS"] ?? "",
           map["UNLOADING_STATUS"] ?? "",
           map["CHECKOUT_STATUS"] ?? "",
-          map["MISSING_PLACE"] ?? ""));
+          map["MISSING_PLACE"] ?? "",
+          map["ARRIVAL_TIME_MILLI"] ?? "",
+
+      ));
       notifyListeners();
     });
     notifyListeners();
@@ -323,50 +327,79 @@ class AdminProvider with ChangeNotifier {
 
     db.collection("LUGGAGE").doc(luggageId).get().then((value) async {
       if (value.exists) {
+        Map<dynamic, dynamic> map = value.data() as Map;
+
         if (staffDes == "LOADING") {
-          db.collection("LUGGAGE").doc(luggageId).set({
-            "LOADED_TIMEMILLI": milli,
-            "LOADED_TIME": now,
-            "STATUS": 'LOADING',
-            "LOADING_AIRPORT": staffAir,
-            "LOADING_STAFF_NAME": stfName,
-            "LOADING_STATUS": "CLEARED",
-            "LAST_SCANNED_DATEMILLI": milli,
-            "LAST_SCANNED_DATE": now,
-          }, SetOptions(merge: true));
-          String text = 'Loading completed';
-          showAlertDialog(context2, text, staffDes, stfName, staffAir);
+          if(map["CHECK_IN_STATUS"]=="CLEARED"){
+            db.collection("LUGGAGE").doc(luggageId).set({
+              "LOADED_TIMEMILLI": milli,
+              "LOADED_TIME": now,
+              "STATUS": 'LOADING',
+              "LOADING_AIRPORT": staffAir,
+              "LOADING_STAFF_NAME": stfName,
+              "LOADING_STATUS": "CLEARED",
+              "LAST_SCANNED_DATEMILLI": milli,
+              "LAST_SCANNED_DATE": now,
+            }, SetOptions(merge: true));
+
+            String text = 'Loading completed';
+            showAlertDialog(context2, text, staffDes, stfName, staffAir);
+
+          }else{
+            String text = 'Invalid Qr, Please complete previous step';
+            showAlertDialog(context2, text, staffDes, stfName, staffAir);
+
+          }
+
         } else if (staffDes == "UNLOADING") {
-          db.collection("LUGGAGE").doc(luggageId).set({
-            "UNLOADED_TIMEMILLI": milli,
-            "UNLOADED_TIME": now,
-            "STATUS": 'UNLOADING',
-            "UNLOADING_AIRPORT": staffAir,
-            "UNLOADING_STAFF_NAME": stfName,
-            "LAST_SCANNED_DATE": now,
-            "LAST_SCANNED_DATEMILLI": milli,
-            "LAST_SCANNED_PLACE": staffAir,
-            "UNLOADING_STATUS": "CLEARED",
 
-          }, SetOptions(merge: true));
 
-          await checkMissingLuggageInUnloading(
-              context2, luggageId, staffDes, stfName, staffAir);
+          if(map["LOADING_STATUS"]=="CLEARED"){
+            db.collection("LUGGAGE").doc(luggageId).set({
+              "UNLOADED_TIMEMILLI": milli,
+              "UNLOADED_TIME": now,
+              "STATUS": 'UNLOADING',
+              "UNLOADING_AIRPORT": staffAir,
+              "UNLOADING_STAFF_NAME": stfName,
+              "LAST_SCANNED_DATE": now,
+              "LAST_SCANNED_DATEMILLI": milli,
+              "LAST_SCANNED_PLACE": staffAir,
+              "UNLOADING_STATUS": "CLEARED",
+
+            }, SetOptions(merge: true));
+
+            await checkMissingLuggageInUnloading(context2, luggageId, staffDes, stfName, staffAir);
+
+          }else{
+            String text = 'Invalid Qr, Please complete previous step';
+            showAlertDialog(context2, text, staffDes, stfName, staffAir);
+
+          }
+
+
         } else if (staffDes == "CHECK_OUT") {
-          db.collection("LUGGAGE").doc(luggageId).set({
-            "CHECKOUT_TIMEMILLI": milli,
-            "CHECKOUT_TIME": now,
-            "STATUS": 'CHECK_OUT',
-            "CHECKOUT_AIRPORT": staffAir,
-            "CHECKOUT_STAFF_NAME": stfName,
-            "LAST_SCANNED_DATE": now,
-            "LAST_SCANNED_DATEMILLI": milli,
-            "LAST_SCANNED_PLACE": staffAir,
-            "CHECKOUT_STATUS": "CLEARED",
 
-          }, SetOptions(merge: true));
-          await checkMissingLuggageInCheckout(
-              context2, luggageId, staffDes, stfName, staffAir);
+          if(map["UNLOADING_STATUS"]=="CLEARED") {
+            db.collection("LUGGAGE").doc(luggageId).set({
+              "CHECKOUT_TIMEMILLI": milli,
+              "CHECKOUT_TIME": now,
+              "STATUS": 'CHECK_OUT',
+              "CHECKOUT_AIRPORT": staffAir,
+              "CHECKOUT_STAFF_NAME": stfName,
+              "LAST_SCANNED_DATE": now,
+              "LAST_SCANNED_DATEMILLI": milli,
+              "LAST_SCANNED_PLACE": staffAir,
+              "CHECKOUT_STATUS": "CLEARED",
+
+            }, SetOptions(merge: true));
+            await checkMissingLuggageInCheckout(context2, luggageId, staffDes, stfName, staffAir);
+          }else{
+            String text = 'Invalid Qr, Please complete previous step';
+            showAlertDialog(context2, text, staffDes, stfName, staffAir);
+
+          }
+
+
         }
       }
     });
@@ -517,26 +550,20 @@ class AdminProvider with ChangeNotifier {
       width: 90,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: text != "Airport miss matched" ? Textclr : txtred,
+        color: text =="Airport miss matched"|| text == "Invalid Qr, Please complete previous step" ? txtred:Textclr,
       ),
       child: TextButton(
         child: Text(
           "OK",
           style: TextStyle(
               color:
-                  text != "Airport miss matched" ? Colors.black : Colors.white,
+              text == "Airport miss matched"|| text== "Invalid Qr, Please complete previous step" ? Colors.white:Colors.black ,
               fontWeight: FontWeight.w600),
         ),
         onPressed: () {
           finish(context);
-          callNextReplacement(
-              StaffHomeScreen(
-                designation: staffDes,
-                stfAirport: stsAirport,
-                addedBy: '',
-                stfName: staffName, staffId: '', phone: '',
-              ),
-              context);
+          callNextReplacement(StaffHomeScreen(designation: staffDes, stfAirport: stsAirport, addedBy: '', stfName: staffName, staffId: '', phone: ''), context);
+
         },
       ),
     );
@@ -650,10 +677,7 @@ class AdminProvider with ChangeNotifier {
               firstDate = _dateRangePickerController.selectedRange!.startDate!;
               secondDate = _dateRangePickerController.selectedRange!.startDate!;
               endDate2 = secondDate.add(const Duration(hours: 24));
-              DateTime firstDate2 = firstDate.subtract(Duration(
-                  hours: firstDate.hour,
-                  minutes: firstDate.minute,
-                  seconds: firstDate.second));
+              DateTime firstDate2 = firstDate.subtract(Duration(hours: firstDate.hour, minutes: firstDate.minute, seconds: firstDate.second));
               sortMissingLuggageByDateWise(firstDate2, endDate2);
               notifyListeners();
             } else {
@@ -962,6 +986,7 @@ class AdminProvider with ChangeNotifier {
       String stfName) async {
     String arrivalPlace = '';
     String flightName = '';
+    String arrivalTimeMilli = '';
 
     db
         .collection("TICKETS")
@@ -972,10 +997,10 @@ class AdminProvider with ChangeNotifier {
         Map<dynamic, dynamic> map = value.docs.first.data();
         arrivalPlace = map["TO"].toString();
         flightName = map["FLIGHT_NAME"].toString();
+        arrivalTimeMilli = map["ARRIVAL_DATE_MILLI"].toString();
         notifyListeners();
         generateQrCode(
-            context, staffAirport, stfName, arrivalPlace, flightName);
-        clearQrControllers();
+            context, staffAirport, stfName, arrivalPlace, flightName,arrivalTimeMilli);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("Sorry, No PNR ID found..."),
@@ -986,7 +1011,7 @@ class AdminProvider with ChangeNotifier {
   }
 
   void generateQrCode(BuildContext context, String staffAirport, String stfName,
-      String arrivalPlace, String flightName) {
+      String arrivalPlace, String flightName, String arrivalTime) {
     HashMap<String, Object> qrMap = HashMap();
     qrDataList.clear();
     int luggageCount = int.parse(qrLuggageCountCT.text);
@@ -995,10 +1020,10 @@ class AdminProvider with ChangeNotifier {
       qrData =
           DateTime.now().millisecondsSinceEpoch.toString() + getRandomString(4);
       DateTime now = DateTime.now();
-      qrMap['NAME'] = qrUserNameCT.text;
       qrMap['PNR_ID'] = qrPnrCT.text;
       qrMap['QR_ID'] = qrID;
       qrMap['ARRIVAL_PLACE'] = arrivalPlace;
+      qrMap['ARRIVAL_TIME_MILLI'] = arrivalTime;
       qrMap['FLIGHT_NAME'] = flightName;
       qrMap['LUGGAGE_ID'] = qrData;
       qrMap['DATE'] = qrID;
@@ -1012,13 +1037,15 @@ class AdminProvider with ChangeNotifier {
       db.collection("LUGGAGE").doc(qrData).set(qrMap);
       notifyListeners();
     }
+
     callNext(
         GenerateQrScreen(
           qrDatasList: qrDataList,
           qrId: qrData,
-          name: qrUserNameCT.text,
         ),
         context);
+    clearQrControllers();
+
   }
 
   void fetchCustomers() {
@@ -1389,7 +1416,11 @@ class AdminProvider with ChangeNotifier {
       }
       ticketMap["ADDED_TIME"] = DateTime.now();
       ticketMap["ARRIVAL"] = arrivalTime.text;
+      ticketMap["ARRIVAL_DATE"] = arrivalDate;
+      ticketMap["ARRIVAL_DATE_MILLI"] = arrivalDateMilli;
       ticketMap["DEPARTURE"] = departureTime.text;
+      ticketMap["DEPARTURE_DATE"] = departureDate;
+      ticketMap["DEPARTURE_DATE_MILLI"] = departureDateMilli;
       ticketMap["PASSENGERS"] = ticketNameList;
       if (from != 'edit') {
         db.collection("TICKETS").doc(ticketId).set(ticketMap);
@@ -1501,7 +1532,8 @@ class AdminProvider with ChangeNotifier {
                       FirebaseAuth auth = FirebaseAuth.instance;
                       auth.signOut();
                       finish(context);
-                      callNextReplacement(const SplashScreen(), context);
+                      CountryCode("Oman", "OM", "+968");
+                      callNextReplacement(const LoginScreen(), context);
                     },
                     child: Container(
                       alignment: Alignment.center,
@@ -1534,6 +1566,10 @@ class AdminProvider with ChangeNotifier {
   }
 
   String selectedDateTime = "";
+  DateTime arrivalDate = DateTime.now();
+  String arrivalDateMilli = '';
+  DateTime departureDate = DateTime.now();
+  String departureDateMilli = '';
 
   datePicker(context, String ticketTime) {
     DatePicker.showDateTimePicker(context,
@@ -1542,8 +1578,13 @@ class AdminProvider with ChangeNotifier {
         maxTime: DateTime(3000, 12, 31), onConfirm: (dateTime) {
       selectedDateTime = DateFormat("dd/MM/yyyy  HH:mm").format(dateTime);
       if (ticketTime == "Arrival") {
+        arrivalDate=dateTime;
+        arrivalDateMilli=dateTime.millisecondsSinceEpoch.toString();
         arrivalTime.text = selectedDateTime;
       } else {
+         departureDate =dateTime;
+         departureDateMilli=dateTime.millisecondsSinceEpoch.toString();
+
         departureTime.text = selectedDateTime;
       }
       notifyListeners();

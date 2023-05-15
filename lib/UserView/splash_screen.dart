@@ -36,11 +36,13 @@ class _SplashScreenState extends State<SplashScreen> {
       var user = auth.currentUser;
 
       if (user == null) {
+        // adminProvider.fetchCountryJson();
+
         CountryCode("Oman", "OM", "+968");
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const LoginScreen()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
       } else {
         LoginProvider loginProvider = LoginProvider();
+
         loginProvider.userAuthorized(user.phoneNumber, context);
       }
     });
