@@ -28,8 +28,8 @@ class AddStaff extends StatelessWidget {
     'Khasab Airport'
   ];
 
-  List<String> Designation = [
-    'Select Designation',
+  List<String> departmentList = [
+    'Select Department',
     "CHECK_IN",
     "LOADING",
     "UNLOADING",
@@ -202,7 +202,6 @@ class AddStaff extends StatelessWidget {
                           maxLengthEnforcement: MaxLengthEnforcement.enforced,
                           textAlign: TextAlign.center,
                           keyboardType: TextInputType.phone,
-
                           textInputAction: TextInputAction.next,
                           decoration: InputDecoration(
                             prefixIcon: SizedBox(
@@ -234,7 +233,7 @@ class AddStaff extends StatelessWidget {
                                     value1.selectedValue =
                                         e?.dialCde.toString();
                                     value1.code = e!.code.toString();
-                                    value.country = e!.country.toString();
+                                    value.country = e.country.toString();
                                     value1.countrySlct = true;
                                   },
                                   items: value.countryCodeList,
@@ -303,13 +302,7 @@ class AddStaff extends StatelessWidget {
                           style: const TextStyle(
                             fontFamily: 'BarlowCondensed',
                           ),
-                          validator: (value) {
-                            if (value!.trim().isEmpty) {
-                              return "Please Enter The Mobile Number";
-                            } else {
-                              return null;
-                            }
-                          },
+
                         ),
                       );
                     }),
@@ -386,7 +379,7 @@ class AddStaff extends StatelessWidget {
                                   color: Colors.grey,
                                   fontWeight: FontWeight.bold),
                             ),
-                            value: value.designation,
+                            value: value.staffDepartment,
                             iconSize: 30,
                             isExpanded: true,
                             decoration: InputDecoration(
@@ -416,9 +409,9 @@ class AddStaff extends StatelessWidget {
                               contentPadding: const EdgeInsets.all(11),
                             ),
                             onChanged: (newValue) {
-                              value1.designation = newValue.toString();
+                              value1.staffDepartment = newValue.toString();
                             },
-                            items: Designation.map((item1) {
+                            items: departmentList.map((item1) {
                               return DropdownMenuItem(
                                   value: item1,
                                   child: Padding(
@@ -427,8 +420,8 @@ class AddStaff extends StatelessWidget {
                                   ));
                             }).toList(),
                             validator: (dropValue) {
-                              if (dropValue == "Select Designation") {
-                                return "Select Designation";
+                              if (dropValue == "Select Department") {
+                                return "Select Department";
                               }
                               return null;
                             },

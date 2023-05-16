@@ -883,7 +883,7 @@ class AdminProvider with ChangeNotifier {
   List<AddStaffModel> filtersStaffList = [];
 
   String staffAirportName = 'Select Airport';
-  String designation = 'Select Designation';
+  String staffDepartment = 'Select Department';
   String flightName = 'Select Flight Name';
   String staffDesignation = 'CHECK_IN';
   String ticketFlightName = 'Select Flight Name';
@@ -1161,8 +1161,8 @@ class AdminProvider with ChangeNotifier {
         dataMap["COUNTRY_CODE"] = selectedValue.toString();
         userMap["MOBILE_NUMBER"] = selectedValue! + PhoneNumberController.text;
         dataMap["AIRPORT"] = staffAirportName.toString();
-        dataMap["DESIGNATION"] = designation.toString();
-        userMap["DESIGNATION"] = designation.toString();
+        dataMap["DESIGNATION"] = staffDepartment.toString();
+        userMap["DESIGNATION"] = staffDepartment.toString();
         userMap["TYPE"] = "STAFF";
         if (from == '') {
           dataMap["ID"] = id.toString();
@@ -1237,7 +1237,7 @@ class AdminProvider with ChangeNotifier {
     NameController.clear();
     StaffidController.clear();
     PhoneNumberController.clear();
-    designation = 'Select Designation';
+    staffDepartment = 'Select Department';
     staffAirportName = 'Select Airport';
     fileImage = null;
     staffImage = "";
@@ -1276,7 +1276,7 @@ class AdminProvider with ChangeNotifier {
         NameController.text = map['NAME'].toString();
         staffOldId = StaffidController.text = map['STAFF_ID'].toString();
         staffAirportName = map['AIRPORT'].toString();
-        designation = map["DESIGNATION"].toString();
+        staffDepartment = map["DESIGNATION"].toString();
         selectedValue = map["COUNTRY_CODE"].toString();
         staffOldPhone = PhoneNumberController.text =
             map["MOBILE_NUMBER"].toString().replaceAll("+91", '');
