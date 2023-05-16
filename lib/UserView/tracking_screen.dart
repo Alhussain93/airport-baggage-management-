@@ -365,7 +365,7 @@ class TrackingScreen extends StatelessWidget {
                                     //const Spacer(),
                                      Expanded(
                                        child: Padding(
-                                        padding: const EdgeInsets.only(right: 8.0),
+                                        padding: const EdgeInsets.only(right: 8.0,left: 8),
                                         child: Align(
                                           alignment: Alignment.center,
                                           child: Text(
@@ -622,16 +622,16 @@ class TrackingScreen extends StatelessWidget {
                                           ):const SizedBox(),
 
 
-                                          item.unloadingStatus=="CLEARED"? Text("Expect Time:",style: TextStyle(fontSize: 9),):SizedBox(),
-                                          item.unloadingStatus=="CLEARED"?
-                            Text(
-                            uploadDatee(
-                            item.arrivalTimeMilli)  ,
-                            style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w500,
-                            color: cl252525),
-                            ):const SizedBox(),
+                                          item.unloadingStatus==""?Text("Expected Time :",style: TextStyle(fontSize: 10),):SizedBox(),
+                                          item.unloadingStatus==""?
+                                          Text(
+                                            uploadDatee( item.arrivalTimeMilli,),
+                                            style: TextStyle(
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.w500,
+                                                color: cl252525),
+                                          ):const SizedBox(),
+
                                           Text(
                                               item.unloadingTime != ""
                                                   ? uploadDatee(
@@ -654,7 +654,7 @@ class TrackingScreen extends StatelessWidget {
                                     Expanded(
                                       child: Padding(
                                         padding:
-                                            const EdgeInsets.only(right: 8.0),
+                                            const EdgeInsets.only(right: 8.0,left: 8),
                                         child: Align(
                                           alignment: Alignment.center,
                                           child: Text(
@@ -719,6 +719,7 @@ class TrackingScreen extends StatelessWidget {
                                                 fontWeight: FontWeight.w500,
                                                 color: cl252525),
                                           ):const SizedBox(),
+
                                           Text(
                             item.checkOutStatus=="CLEARED"?
                                                    uploadDatee(
@@ -729,16 +730,15 @@ class TrackingScreen extends StatelessWidget {
                                                   fontWeight: FontWeight.w400,
                                                   color: cl252525)),
 
-                                          Text("Expect Time"),
-
-                                          // item.checkOutStatus=="CLEARED"?
-                                          // Text(
-                                          //  item.arrivalTime.add,
-                                          //   style: TextStyle(
-                                          //       fontSize: 10,
-                                          //       fontWeight: FontWeight.w500,
-                                          //       color: cl252525),
-                                          // ):const SizedBox(),
+                                          item.checkOutStatus==""?Text("Expected Time :",style: TextStyle(fontSize: 10),):SizedBox(),
+                                          item.checkOutStatus==""?
+                                          Text(
+                                            addDate( item.arrivalTimeMilli,),
+                                            style: TextStyle(
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.w500,
+                                                color: cl252525),
+                                          ):const SizedBox(),
 
                                         ],
                                       ),
@@ -771,8 +771,9 @@ class TrackingScreen extends StatelessWidget {
     return datee;
   }
 
-  String addArrivalDate(String date) {
-    var result = DateTime.now().add(Duration(minutes: 30));
-    return datee;
+  String addDate(String date){
+    var startdate = DateTime.fromMillisecondsSinceEpoch(int.parse(date)).add(Duration( minutes: 30));
+    datee = DateFormat("dd-MM-yy hh:mm a").format(startdate);
+    return datee ;
   }
 }

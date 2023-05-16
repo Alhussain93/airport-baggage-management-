@@ -224,6 +224,7 @@ class AdminProvider with ChangeNotifier {
   luggageTracking(String lid,) {
     luggageList.clear();
     db.collection("LUGGAGE").doc(lid).snapshots().listen((event) {
+
       Map<dynamic, dynamic> map = event.data() as Map;
 
       luggageList.add(LuggageModel(
@@ -249,6 +250,7 @@ class AdminProvider with ChangeNotifier {
           map["MISSING_PLACE"] ?? "",
           map["ARRIVAL_TIME_MILLI"] ?? "",
           map["ARRIVAL_TIME"] ?? "",
+
 
       ));
       notifyListeners();
