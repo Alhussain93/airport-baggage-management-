@@ -90,7 +90,7 @@ String staffAirport='';
     var user = auth.currentUser;
     LoginProvider loginProvider = LoginProvider();
 if(type=="ADMIN"||designation=="PASSENGER"){
-
+print("hdnuchudnchund"+user!.phoneNumber.toString());
   loginProvider.userAuthorized(user!.phoneNumber, context);
 
 }else if(type=="STAFF"){

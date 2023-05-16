@@ -64,6 +64,7 @@ class LoginProvider extends ChangeNotifier {
 
             userPreference.setString("TYPE",loginUsertype);
             userPreference.setString("DESIGNATION",designation);
+            userPreference.setString("MOBILE_NUMBER",loginUserPhone);
 
           }
           if (designation == "PASSENGER") {
@@ -91,35 +92,7 @@ class LoginProvider extends ChangeNotifier {
                           addedBy: loginUsername,
                         )));
           }
-          // else if (loginUsertype == "STAFF") {
-          //   if (userStatus == "ACTIVE") {
-          //     db.collection('STAFF').doc(loginUserid).get().then((value) {
-          //       if (value.exists) {
-          //         staffAirport = value.get('AIRPORT');
-          //         adminProvider.fetchMissingLuggage();
-          //
-          //         Navigator.pushReplacement(
-          //             context,
-          //             MaterialPageRoute(
-          //                 builder: (context) => StaffHomeScreen(
-          //                       designation: designation,
-          //                       stfAirport: staffAirport,
-          //                       addedBy: loginUsername,
-          //                       stfName: loginUsername, staffId: loginUserid, phone:phone,
-          //                     )));
-          //       }
-          //     });
-          //   } else {
-          //     ScaffoldMessenger.of(context).showSnackBar(snackBar2);
-          //
-          //     CountryCode("Oman", "OM", "+968");
-          //
-          //     Navigator.pushReplacement(context,
-          //         MaterialPageRoute(builder: (context) => const LoginScreen()));
-          //     FirebaseAuth auth = FirebaseAuth.instance;
-          //     auth.signOut();
-          //   }
-          // }
+
         } else {
           ScaffoldMessenger.of(context).showSnackBar(snackBar2);
         }
