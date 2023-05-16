@@ -7,9 +7,16 @@ import '../Providers/admin_provider.dart';
 import '../Providers/loginProvider.dart';
 import '../constant/my_functions.dart';
 
-class StaffLogin extends StatelessWidget {
+class StaffLogin extends StatefulWidget {
 
-  const StaffLogin({Key? key}) : super(key: key);
+   StaffLogin({Key? key}) : super(key: key);
+
+  @override
+  State<StaffLogin> createState() => _StaffLoginState();
+}
+
+class _StaffLoginState extends State<StaffLogin> {
+  bool _isHidden = true;
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +110,7 @@ class StaffLogin extends StatelessWidget {
                                 borderRadius:
                                 const BorderRadius.all(Radius.circular(11))),
                             child: TextFormField(
-                              obscureText: true,
+                              obscureText: _isHidden,
                               enableSuggestions: false,
                               autocorrect: false,
                               controller: value1.staffLoginPasswordController,
@@ -134,6 +141,9 @@ class StaffLogin extends StatelessWidget {
                                     borderSide: const BorderSide(
                                       color: Colors.grey,
                                     )),
+                                suffixIcon:  InkWell(
+                                    onTap: _togglePasswordView,
+                                    child: Icon(_isHidden ? Icons.visibility_off : Icons.visibility,))
                               ),
                             ),
                           );
@@ -162,8 +172,7 @@ class StaffLogin extends StatelessWidget {
                                 const Color(0xff432244))),
                         onPressed: () async {
 
-                          value33.staffAuthorized(value33.staffLoginIdController.text,
-                              value33.staffLoginPasswordController.text, context);
+                          value33.staffAuthorized(value33.staffLoginIdController.text, value33.staffLoginPasswordController.text, context);
 
                         },
                         child: const Text(
@@ -188,4 +197,10 @@ class StaffLogin extends StatelessWidget {
       ),
     );
   }
+
+  void _togglePasswordView() {
+     setState(() {
+       _isHidden = !_isHidden;
+     });
+   }
 }

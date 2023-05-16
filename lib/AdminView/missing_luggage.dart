@@ -141,7 +141,7 @@ class MissingLuggage extends StatelessWidget {
                                   padding: const EdgeInsets.only(
                                       left: 8, right: 8, bottom: 7),
                                   child: Container(
-                                      height: height / 5,
+                                      height: height / 5.4,
                                       decoration: BoxDecoration(
                                         color: Colors.white,
                                         boxShadow: [
@@ -163,21 +163,12 @@ class MissingLuggage extends StatelessWidget {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              item.name,
-                                              style: const TextStyle(
-                                                  fontFamily:
-                                                      "Poppins-SemiBold",
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.w500),
-                                            ),
-                                            Text(
                                               item.pnrId,
-                                              style: TextStyle(
-                                                  fontFamily:
-                                                      "Poppins-SemiBold",
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: txtgry),
+                                                style: const TextStyle(
+                                                    fontFamily:
+                                                    "Poppins-SemiBold",
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.w500),
                                             ),
                                             const SizedBox(
                                               height: 3,

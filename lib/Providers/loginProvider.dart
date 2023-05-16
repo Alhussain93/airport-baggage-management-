@@ -4,6 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:luggage_tracking_app/Providers/admin_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../AdminView/home_screen.dart';
 import '../StaffView/staff_home_screen.dart';
 import '../UserView/contryCodeModel.dart';
@@ -41,6 +42,7 @@ class LoginProvider extends ChangeNotifier {
     String userStatus = '';
     String staffAirport = '';
     String countryCode = '';
+    String loginUserPhone = '';
     try {
       var phone = phoneNumber!;
 
@@ -48,7 +50,7 @@ class LoginProvider extends ChangeNotifier {
           .collection("USERS")
           .where("MOBILE_NUMBER", isEqualTo: phone)
           .get()
-          .then((value) {
+          .then((value) async {
         if (value.docs.isNotEmpty) {
           for (var element in value.docs) {
             Map<dynamic, dynamic> map = element.data();
@@ -56,7 +58,12 @@ class LoginProvider extends ChangeNotifier {
             designation = map['DESIGNATION'].toString();
             loginUsertype = map['TYPE'].toString();
             userStatus = map['STATUS'].toString();
+            loginUserPhone = map['MOBILE_NUMBER'].toString();
             loginUserid = element.id;
+            SharedPreferences userPreference = await SharedPreferences.getInstance();
+
+            userPreference.setString("TYPE",loginUsertype);
+
           }
           if (designation == "PASSENGER") {
             if (userStatus == "ACTIVE") {
@@ -82,35 +89,36 @@ class LoginProvider extends ChangeNotifier {
                     builder: (context) => HomeScreen(
                           addedBy: loginUsername,
                         )));
-          } else if (loginUsertype == "STAFF") {
-            if (userStatus == "ACTIVE") {
-              db.collection('STAFF').doc(loginUserid).get().then((value) {
-                if (value.exists) {
-                  staffAirport = value.get('AIRPORT');
-                  adminProvider.fetchMissingLuggage();
-
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => StaffHomeScreen(
-                                designation: designation,
-                                stfAirport: staffAirport,
-                                addedBy: loginUsername,
-                                stfName: loginUsername, staffId: loginUserid, phone:phone,
-                              )));
-                }
-              });
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(snackBar2);
-
-              CountryCode("Oman", "OM", "+968");
-
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => const LoginScreen()));
-              FirebaseAuth auth = FirebaseAuth.instance;
-              auth.signOut();
-            }
           }
+          // else if (loginUsertype == "STAFF") {
+          //   if (userStatus == "ACTIVE") {
+          //     db.collection('STAFF').doc(loginUserid).get().then((value) {
+          //       if (value.exists) {
+          //         staffAirport = value.get('AIRPORT');
+          //         adminProvider.fetchMissingLuggage();
+          //
+          //         Navigator.pushReplacement(
+          //             context,
+          //             MaterialPageRoute(
+          //                 builder: (context) => StaffHomeScreen(
+          //                       designation: designation,
+          //                       stfAirport: staffAirport,
+          //                       addedBy: loginUsername,
+          //                       stfName: loginUsername, staffId: loginUserid, phone:phone,
+          //                     )));
+          //       }
+          //     });
+          //   } else {
+          //     ScaffoldMessenger.of(context).showSnackBar(snackBar2);
+          //
+          //     CountryCode("Oman", "OM", "+968");
+          //
+          //     Navigator.pushReplacement(context,
+          //         MaterialPageRoute(builder: (context) => const LoginScreen()));
+          //     FirebaseAuth auth = FirebaseAuth.instance;
+          //     auth.signOut();
+          //   }
+          // }
         } else {
           ScaffoldMessenger.of(context).showSnackBar(snackBar2);
         }
@@ -130,6 +138,8 @@ class LoginProvider extends ChangeNotifier {
 
 
   Future<void> staffAuthorized(String? userId, String? userPassword, BuildContext context) async {
+    print("fjfjjjjjjj"+userId.toString());
+    print("RRRRRRRRRRRR"+userPassword.toString());
     const snackBar1 = SnackBar(
         backgroundColor: Colors.white,
         duration: Duration(milliseconds: 2000),
@@ -159,14 +169,15 @@ class LoginProvider extends ChangeNotifier {
     String designation = '';
     String loginUserPhone = '';
     String loginUserid = '';
+    String loginStaffId = '';
     String userStatus = '';
     String staffAirport = '';
     try {
       db
           .collection("USERS")
-          .where("USER_ID", isEqualTo: userId)
+          .where("STAFF_ID", isEqualTo: userId)
           .get()
-          .then((value22) {
+          .then((value22) async {
         if (value22.docs.isNotEmpty) {
           Map<dynamic, dynamic> staffMap = value22.docs.first.data();
 
@@ -175,10 +186,18 @@ class LoginProvider extends ChangeNotifier {
           loginUserPassword = staffMap['PASSWORD'].toString();
           loginUserPhone = staffMap['MOBILE_NUMBER'].toString();
             userStatus = staffMap['STATUS'].toString();
+          loginStaffId = staffMap['STAFF_ID'].toString();
             loginUserid = value22.docs.first.id;
-
+          SharedPreferences userPreference = await SharedPreferences.getInstance();
+          userPreference.setString("DESIGNATION",designation);
+           userPreference.setString("STAFF_ID",loginStaffId);
+          userPreference.setString("PASSWORD",loginUserPassword);
+         userPreference.setString("TYPE","STAFF");
             if (userStatus == "ACTIVE") {
+              print("eeeeeeeeee");
               if(loginUserPassword==userPassword) {
+                print("eeeeeeeeee11");
+
                 db.collection('STAFF').doc(loginUserid).get().then((value) {
                 if (value.exists) {
                   staffAirport = value.get('AIRPORT');

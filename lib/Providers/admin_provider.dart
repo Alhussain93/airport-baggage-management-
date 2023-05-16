@@ -249,7 +249,6 @@ class AdminProvider with ChangeNotifier {
           map["CHECKOUT_STATUS"] ?? "",
           map["MISSING_PLACE"] ?? "",
           map["ARRIVAL_TIME_MILLI"] ?? "",
-          map["ARRIVAL_TIME"] ?? "",
 
 
       ));
@@ -327,7 +326,7 @@ class AdminProvider with ChangeNotifier {
   }
 
   statusUpdateQrData(String luggageId, String staffDes, String staffAir,
-      String stfName, BuildContext context2) {
+      String stfName,String stfId,String phone, BuildContext context2) {
     DateTime now = DateTime.now();
     String milli = now.millisecondsSinceEpoch.toString();
 
@@ -349,11 +348,11 @@ class AdminProvider with ChangeNotifier {
             }, SetOptions(merge: true));
 
             String text = 'Loading completed';
-            showAlertDialog(context2, text, staffDes, stfName, staffAir);
+            showAlertDialog(context2, text, staffDes, stfName, staffAir,stfId,phone);
 
           }else{
             String text = 'Invalid Qr, Please complete previous step';
-            showAlertDialog(context2, text, staffDes, stfName, staffAir);
+            showAlertDialog(context2, text, staffDes, stfName, staffAir,stfId,phone);
 
           }
 
@@ -374,11 +373,11 @@ class AdminProvider with ChangeNotifier {
 
             }, SetOptions(merge: true));
 
-            await checkMissingLuggageInUnloading(context2, luggageId, staffDes, stfName, staffAir);
+            await checkMissingLuggageInUnloading(context2, luggageId, staffDes, stfName, staffAir,stfId,phone);
 
           }else{
             String text = 'Invalid Qr, Please complete previous step';
-            showAlertDialog(context2, text, staffDes, stfName, staffAir);
+            showAlertDialog(context2, text, staffDes, stfName, staffAir,stfId,phone);
 
           }
 
@@ -398,10 +397,10 @@ class AdminProvider with ChangeNotifier {
               "CHECKOUT_STATUS": "CLEARED",
 
             }, SetOptions(merge: true));
-            await checkMissingLuggageInCheckout(context2, luggageId, staffDes, stfName, staffAir);
+            await checkMissingLuggageInCheckout(context2, luggageId, staffDes, stfName, staffAir,stfId,phone);
           }else{
             String text = 'Invalid Qr, Please complete previous step';
-            showAlertDialog(context2, text, staffDes, stfName, staffAir);
+            showAlertDialog(context2, text, staffDes, stfName, staffAir,stfId,phone);
 
           }
 
@@ -501,13 +500,13 @@ class AdminProvider with ChangeNotifier {
   }
 
   checkMissingLuggageInUnloading(BuildContext context1, String luggageId,
-      String staffDes, String staffName, String staffAirport) async {
+      String staffDes, String staffName, String staffAirport,String stfId,String phone ) async {
     await db.collection("LUGGAGE").doc(luggageId).get().then((value) {
       if (value.exists) {
         Map<dynamic, dynamic> map = value.data() as Map;
         if (map["ARRIVAL_PLACE"] == map["UNLOADING_AIRPORT"]) {
           String text = 'Unloading completed';
-          showAlertDialog(context1, text, staffDes, staffName, staffAirport);
+          showAlertDialog(context1, text, staffDes, staffName, staffAirport,stfId,phone);
           notifyListeners();
         } else {
           db.collection("LUGGAGE").doc(luggageId).set({
@@ -517,7 +516,7 @@ class AdminProvider with ChangeNotifier {
 
           }, SetOptions(merge: true));
           String text = 'Airport miss matched';
-          showAlertDialog(context1, text, staffDes, staffName, staffAirport);
+          showAlertDialog(context1, text, staffDes, staffName, staffAirport,stfId,phone);
           notifyListeners();
         }
       }
@@ -525,13 +524,13 @@ class AdminProvider with ChangeNotifier {
   }
 
   checkMissingLuggageInCheckout(BuildContext context, String luggageId,
-      String staffDes, String staffName, String staffAirport) async {
+      String staffDes, String staffName, String staffAirport,String stfId,String phone) async {
     await db.collection("LUGGAGE").doc(luggageId).get().then((value) {
       if (value.exists) {
         Map<dynamic, dynamic> map = value.data() as Map;
         if (map["ARRIVAL_PLACE"] == map["CHECKOUT_AIRPORT"]) {
           String text = 'Checkout completed';
-          showAlertDialog(context, text, staffDes, staffName, staffAirport);
+          showAlertDialog(context, text, staffDes, staffName, staffAirport,stfId,phone);
           notifyListeners();
         } else {
           db.collection("LUGGAGE").doc(luggageId).set({
@@ -541,7 +540,7 @@ class AdminProvider with ChangeNotifier {
 
           }, SetOptions(merge: true));
           String text = 'Airport miss matched';
-          showAlertDialog(context, text, staffDes, staffName, staffAirport);
+          showAlertDialog(context, text, staffDes, staffName, staffAirport,stfId,phone);
           notifyListeners();
         }
       }
@@ -549,7 +548,7 @@ class AdminProvider with ChangeNotifier {
   }
 
   showAlertDialog(BuildContext context, String text, String staffDes,
-      String staffName, String stsAirport) {
+      String staffName, String stsAirport,String stfId,String phone) {
     // set up the button
     Widget okButton = Container(
       height: 38,
@@ -568,7 +567,7 @@ class AdminProvider with ChangeNotifier {
         ),
         onPressed: () {
           finish(context);
-          callNextReplacement(StaffHomeScreen(designation: staffDes, stfAirport: stsAirport, addedBy: '', stfName: staffName, staffId: '', phone: ''), context);
+          callNextReplacement(StaffHomeScreen(designation: staffDes, stfAirport: stsAirport, addedBy: '', stfName: staffName, staffId: stfId, phone: phone), context);
 
         },
       ),
@@ -877,6 +876,7 @@ class AdminProvider with ChangeNotifier {
 
   TextEditingController NameController = TextEditingController();
   TextEditingController StaffidController = TextEditingController();
+  TextEditingController StaffpasswordController = TextEditingController();
   TextEditingController EmailController = TextEditingController();
   TextEditingController PhoneNumberController = TextEditingController();
   List<AddStaffModel> modellist = [];
@@ -993,7 +993,6 @@ class AdminProvider with ChangeNotifier {
     String arrivalPlace = '';
     String flightName = '';
     String arrivalTimeMilli = '';
-    String arrivalTime = '';
 
     db
         .collection("TICKETS")
@@ -1005,10 +1004,9 @@ class AdminProvider with ChangeNotifier {
         arrivalPlace = map["TO"].toString();
         flightName = map["FLIGHT_NAME"].toString();
         arrivalTimeMilli = map["ARRIVAL_DATE_MILLI"].toString();
-        arrivalTime=map["ARRIVAL_DATE"].toString();
         notifyListeners();
         generateQrCode(
-            context, staffAirport, stfName, arrivalPlace, flightName,arrivalTimeMilli,arrivalTime);
+            context, staffAirport, stfName, arrivalPlace, flightName,arrivalTimeMilli);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("Sorry, No PNR ID found..."),
@@ -1019,7 +1017,7 @@ class AdminProvider with ChangeNotifier {
   }
 
   void generateQrCode(BuildContext context, String staffAirport, String stfName,
-      String arrivalPlace, String flightName,String arrivalTimeMilli, String arrivalTime,) {
+      String arrivalPlace, String flightName,String arrivalTimeMilli,) {
     HashMap<String, Object> qrMap = HashMap();
     qrDataList.clear();
     int luggageCount = int.parse(qrLuggageCountCT.text);
@@ -1032,7 +1030,6 @@ class AdminProvider with ChangeNotifier {
       qrMap['QR_ID'] = qrID;
       qrMap['ARRIVAL_PLACE'] = arrivalPlace;
       qrMap['ARRIVAL_TIME_MILLI'] = arrivalTimeMilli;
-      qrMap['ARRIVAL_TIME'] = arrivalTime;
       qrMap['FLIGHT_NAME'] = flightName;
       qrMap['LUGGAGE_ID'] = qrData;
       qrMap['DATE'] = qrID;
@@ -1154,8 +1151,10 @@ class AdminProvider with ChangeNotifier {
         dataMap["NAME"] = NameController.text;
         userMap["NAME"] = NameController.text;
         dataMap["STAFF_ID"] = StaffidController.text;
+        dataMap["PASSWORD"] = StaffpasswordController.text;
         dataMap["TIME"] = DateTime.now();
         userMap["STAFF_ID"] = StaffidController.text;
+        userMap["PASSWORD"] = StaffpasswordController.text;
         // dataMap["EMAIL"] = EmailController.text;
         dataMap["MOBILE_NUMBER"] = PhoneNumberController.text;
         dataMap["COUNTRY_CODE"] = selectedValue.toString();
@@ -1234,6 +1233,7 @@ class AdminProvider with ChangeNotifier {
   }
 
   void clearStaff() {
+    StaffpasswordController.clear();
     NameController.clear();
     StaffidController.clear();
     PhoneNumberController.clear();
@@ -1275,6 +1275,7 @@ class AdminProvider with ChangeNotifier {
         staffEditId = map['ID'].toString();
         NameController.text = map['NAME'].toString();
         staffOldId = StaffidController.text = map['STAFF_ID'].toString();
+        StaffpasswordController.text = map['PASSWORD'].toString();
         staffAirportName = map['AIRPORT'].toString();
         staffDepartment = map["DESIGNATION"].toString();
         selectedValue = map["COUNTRY_CODE"].toString();

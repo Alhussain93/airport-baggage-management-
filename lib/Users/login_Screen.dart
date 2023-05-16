@@ -116,7 +116,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     padding: const EdgeInsets.only(right: 8.0),
                     child: InkWell(
                       onTap: () {
-                        callNext(const StaffLogin(), context);
+                        LoginProvider loginProvider =
+                        Provider.of<LoginProvider>(context, listen: false);
+                        loginProvider. staffLoginPasswordController.clear();
+                        callNext( StaffLogin(), context);
                       },
                       child: Container(
                         alignment: Alignment.center,

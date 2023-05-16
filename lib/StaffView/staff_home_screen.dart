@@ -35,7 +35,7 @@ class StaffHomeScreen extends StatelessWidget {
       QrScanner(
         designation: designation,
         stfAirport: stfAirport,
-        stfName: stfName,
+        stfName: stfName, stfId: staffId, phone: phone,
       ),
       MakeQrScreen(
         stfAirport: stfAirport,
