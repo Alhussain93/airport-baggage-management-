@@ -93,14 +93,18 @@ if(type=="ADMIN"||designation=="PASSENGER"){
 
   loginProvider.userAuthorized(user!.phoneNumber, context);
 
+}else if(type=="STAFF"){
+
+if(userPreference.getString("STAFF_ID")!=null){
+  String? StaffId= userPreference.getString("STAFF_ID");
+  String? password= userPreference.getString("PASSWORD");
+  loginProvider.staffAuthorized(StaffId,password, context);
+
 }
 
-  else if(userPreference.getString("STAFF_ID")!=null){
-      String? StaffId= userPreference.getString("STAFF_ID");
-      String? password= userPreference.getString("PASSWORD");
-      loginProvider.staffAuthorized(StaffId,password, context);
+}
 
-  }else{
+else{
       callNextReplacement(LoginScreen(), context);
     }
 

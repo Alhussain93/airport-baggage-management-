@@ -63,6 +63,7 @@ class LoginProvider extends ChangeNotifier {
             SharedPreferences userPreference = await SharedPreferences.getInstance();
 
             userPreference.setString("TYPE",loginUsertype);
+            userPreference.setString("DESIGNATION",designation);
 
           }
           if (designation == "PASSENGER") {

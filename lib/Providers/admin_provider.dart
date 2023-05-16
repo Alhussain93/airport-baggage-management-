@@ -203,6 +203,7 @@ class AdminProvider with ChangeNotifier {
         if (checkList.length!=0) {
           luggageTracking(checkList[0].id);
           callNext(TrackingScreen(pnrid: pnrControllerText, username: username,), context);
+          pnrController.clear();
         }
       } else {
         final snackBar = SnackBar(

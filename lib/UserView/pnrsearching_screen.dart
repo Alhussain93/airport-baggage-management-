@@ -110,8 +110,7 @@ class PnrSearching extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 37),
                     child: InkWell(
                       onTap: () {
-                        adminProvider.checkingPnr(
-                            adminProvider.pnrController.text, context, username);
+                        adminProvider.checkingPnr(adminProvider.pnrController.text, context, username);
                       },
                       child: Container(
                           height: 40,
