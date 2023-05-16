@@ -248,6 +248,7 @@ class AdminProvider with ChangeNotifier {
           map["CHECKOUT_STATUS"] ?? "",
           map["MISSING_PLACE"] ?? "",
           map["ARRIVAL_TIME_MILLI"] ?? "",
+          map["ARRIVAL_TIME"] ?? "",
 
       ));
       notifyListeners();
@@ -990,6 +991,7 @@ class AdminProvider with ChangeNotifier {
     String arrivalPlace = '';
     String flightName = '';
     String arrivalTimeMilli = '';
+    String arrivalTime = '';
 
     db
         .collection("TICKETS")
@@ -1001,9 +1003,10 @@ class AdminProvider with ChangeNotifier {
         arrivalPlace = map["TO"].toString();
         flightName = map["FLIGHT_NAME"].toString();
         arrivalTimeMilli = map["ARRIVAL_DATE_MILLI"].toString();
+        arrivalTime=map["ARRIVAL_DATE"].toString();
         notifyListeners();
         generateQrCode(
-            context, staffAirport, stfName, arrivalPlace, flightName,arrivalTimeMilli);
+            context, staffAirport, stfName, arrivalPlace, flightName,arrivalTimeMilli,arrivalTime);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("Sorry, No PNR ID found..."),
@@ -1014,7 +1017,7 @@ class AdminProvider with ChangeNotifier {
   }
 
   void generateQrCode(BuildContext context, String staffAirport, String stfName,
-      String arrivalPlace, String flightName, String arrivalTime) {
+      String arrivalPlace, String flightName,String arrivalTimeMilli, String arrivalTime,) {
     HashMap<String, Object> qrMap = HashMap();
     qrDataList.clear();
     int luggageCount = int.parse(qrLuggageCountCT.text);
@@ -1026,7 +1029,8 @@ class AdminProvider with ChangeNotifier {
       qrMap['PNR_ID'] = qrPnrCT.text;
       qrMap['QR_ID'] = qrID;
       qrMap['ARRIVAL_PLACE'] = arrivalPlace;
-      qrMap['ARRIVAL_TIME_MILLI'] = arrivalTime;
+      qrMap['ARRIVAL_TIME_MILLI'] = arrivalTimeMilli;
+      qrMap['ARRIVAL_TIME'] = arrivalTime;
       qrMap['FLIGHT_NAME'] = flightName;
       qrMap['LUGGAGE_ID'] = qrData;
       qrMap['DATE'] = qrID;

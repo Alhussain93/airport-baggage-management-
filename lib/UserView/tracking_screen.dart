@@ -626,7 +626,7 @@ class TrackingScreen extends StatelessWidget {
                                           item.unloadingStatus=="CLEARED"?
                             Text(
                             uploadDatee(
-                            item.arrivalTime)  ,
+                            item.arrivalTimeMilli)  ,
                             style: TextStyle(
                             fontSize: 10,
                             fontWeight: FontWeight.w500,
@@ -731,15 +731,14 @@ class TrackingScreen extends StatelessWidget {
 
                                           Text("Expect Time"),
 
-                                          item.checkOutStatus=="CLEARED"?
-                                          Text(
-                                            uploadDatee(
-                                                item.arrivalTime) ,
-                                            style: TextStyle(
-                                                fontSize: 10,
-                                                fontWeight: FontWeight.w500,
-                                                color: cl252525),
-                                          ):const SizedBox(),
+                                          // item.checkOutStatus=="CLEARED"?
+                                          // Text(
+                                          //  item.arrivalTime.add,
+                                          //   style: TextStyle(
+                                          //       fontSize: 10,
+                                          //       fontWeight: FontWeight.w500,
+                                          //       color: cl252525),
+                                          // ):const SizedBox(),
 
                                         ],
                                       ),
@@ -769,6 +768,11 @@ class TrackingScreen extends StatelessWidget {
   String uploadDatee(String date) {
     var startdate = DateTime.fromMillisecondsSinceEpoch(int.parse(date));
     datee = DateFormat("dd-MM-yy hh:mm a").format(startdate);
+    return datee;
+  }
+
+  String addArrivalDate(String date) {
+    var result = DateTime.now().add(Duration(minutes: 30));
     return datee;
   }
 }
