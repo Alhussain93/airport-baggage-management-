@@ -216,7 +216,7 @@ class TrackingScreen extends StatelessWidget {
                         child: ListView.builder(
                           physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
-                          itemCount: 1,
+                          itemCount: value.luggageList.length,
                           itemBuilder: (BuildContext context, int index) {
                             var item = value.luggageList[index];
                             return Column(
@@ -622,7 +622,7 @@ class TrackingScreen extends StatelessWidget {
                                           ):const SizedBox(),
 
 
-                                          item.unloadingStatus=="CLEARED"? Text("Expected Time:",style: TextStyle(fontSize: 9),):SizedBox(),
+                                          item.unloadingStatus=="CLEARED"? Text("Expect Time:",style: TextStyle(fontSize: 9),):SizedBox(),
                                           item.unloadingStatus=="CLEARED"?
                             Text(
                             uploadDatee(
@@ -713,21 +713,34 @@ class TrackingScreen extends StatelessWidget {
                                           //       color: cl252525),
                                           // ),
                                           item.checkOutStatus=="CLEARED"?  Text(
-                                            "Checked OUT",
+                                            "Checked out",
                                             style: TextStyle(
                                                 fontSize: 11,
                                                 fontWeight: FontWeight.w500,
                                                 color: cl252525),
                                           ):const SizedBox(),
                                           Text(
-                                              item.checkoutTime != ""
-                                                  ? uploadDatee(
+                            item.checkOutStatus=="CLEARED"?
+                                                   uploadDatee(
                                                       item.checkoutTime)
                                                   : "",
                                               style: TextStyle(
                                                   fontSize: 13,
                                                   fontWeight: FontWeight.w400,
                                                   color: cl252525)),
+
+                                          Text("Expect Time"),
+
+                                          item.checkOutStatus=="CLEARED"?
+                                          Text(
+                                            uploadDatee(
+                                                item.arrivalTime) ,
+                                            style: TextStyle(
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.w500,
+                                                color: cl252525),
+                                          ):const SizedBox(),
+
                                         ],
                                       ),
                                     ),
