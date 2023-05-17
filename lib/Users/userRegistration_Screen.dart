@@ -13,8 +13,7 @@ import '../UserView/contryCodeModel.dart';
 import '../constant/colors.dart';
 
 enum MobileVarificationState {
-  SHOW_MOBILE_FORM_STATE2,
-  SHOW_OTP_FORM_STATE2,
+  SHOW_MOBILE_FORM_STATE2, SHOW_OTP_FORM_STATE2,
   SHOW_MOBILE_FORM_VERIFIED2,
 }
 
@@ -74,8 +73,7 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
               newLoginProvider.userAuthorized(loginUser.phoneNumber!, context);
             } else {
               setState(() {
-                currentSate =
-                    MobileVarificationState.SHOW_MOBILE_FORM_VERIFIED2;
+                currentSate = MobileVarificationState.SHOW_MOBILE_FORM_VERIFIED2;
               });
             }
           });
@@ -102,7 +100,9 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
       ));
     }
   }
-
+  Future<void> listenOtp() async {
+    SmsAutoFill().listenForCode;
+  }
   @override
   Widget build(BuildContext context) {
     AdminProvider adminProvider =
@@ -232,9 +232,7 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                                   decoration: BoxDecoration(
                                     color: values.showTick == false
                                         ? const Color(0xff838282)
-                                        : currentSate !=
-                                                MobileVarificationState
-                                                    .SHOW_MOBILE_FORM_VERIFIED2
+                                        : currentSate != MobileVarificationState.SHOW_MOBILE_FORM_VERIFIED2
                                             ? grapeColor
                                             : cl00cf18,
                                     borderRadius: const BorderRadius.all(
@@ -244,8 +242,10 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                                       ? InkWell(
                                           onTap: () async {
                                             setState(() {
-                                                showLoading = true;
 
+    if (values.userPhoneCT.text.length != 3) {
+      showLoading = true;
+    }
                                             });
 
                                             await auth.verifyPhoneNumber(
@@ -290,14 +290,11 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                                                 },
                                                 codeSent: (verificationId,
                                                     resendingToken) async {
-                                                  setState(() async {
+                                                  setState(()  {
                                                     showLoading = false;
-                                                    currentSate =
-                                                        MobileVarificationState
-                                                            .SHOW_OTP_FORM_STATE2;
-                                                    this.verificationId =
-                                                        verificationId;
-
+                                                    currentSate = MobileVarificationState.SHOW_OTP_FORM_STATE2;
+                                                    this.verificationId = verificationId;
+                                                    listenOtp();
                                                     ScaffoldMessenger.of(
                                                             context)
                                                         .showSnackBar(
@@ -382,8 +379,7 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                         ),
                       );
                     }),
-                    if (currentSate ==
-                        MobileVarificationState.SHOW_OTP_FORM_STATE2)
+                    if (currentSate == MobileVarificationState.SHOW_OTP_FORM_STATE2)
                       Padding(
                         padding: const EdgeInsets.only(
                             left: 25, right: 25, bottom: 25),
@@ -393,7 +389,7 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                           keyboardType: TextInputType.number,
                           autoFocus: true,
                           controller: otpController,
-                          currentCode: code,
+                          currentCode: "",
                           decoration: BoxLooseDecoration(
                             strokeWidth: 3,
                             textStyle: const TextStyle(color: Colors.black),
@@ -401,29 +397,24 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                             strokeColorBuilder:
                                 FixedColorBuilder(Colors.grey.shade300),
                           ),
-                          onCodeChanged: (pin) {
-                            if (pin!.length == 6) {
-                              FocusScope.of(context).requestFocus(FocusNode());
-
-                              PhoneAuthCredential phoneAuthCredential =
-                                  PhoneAuthProvider.credential(
-                                      verificationId: verificationId,
-                                      smsCode: pin);
-                              signInWithPhoneAuthCredential(
-                                  context, phoneAuthCredential);
-                              otpController.text = pin;
-                              setState(() {
-                                code = pin;
-                              });
-                            }
-
-                          },
+                            onCodeChanged: (pin) {
+                              if (pin!.length == 6) {
+                                PhoneAuthCredential phoneAuthCredential =
+                                PhoneAuthProvider.credential(
+                                    verificationId: verificationId, smsCode: pin);
+                                signInWithPhoneAuthCredential(
+                                    context, phoneAuthCredential);
+                                otpController.text = pin;
+                                setState(() {
+                                  code = pin;
+                                });
+                              }
+                            },
                         ),
                       )
                     else
                       const SizedBox(),
-                    currentSate ==
-                            MobileVarificationState.SHOW_MOBILE_FORM_VERIFIED2
+                    currentSate == MobileVarificationState.SHOW_MOBILE_FORM_VERIFIED2
                         ? Consumer<AdminProvider>(
                             builder: (context, values, child) {
                             return Column(

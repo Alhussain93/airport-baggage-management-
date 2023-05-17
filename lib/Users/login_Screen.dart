@@ -90,6 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   final FocusNode _pinPutFocusNode = FocusNode();
+  var focusNode = FocusNode();
 
   Widget getMobileFormWidget(context) {
     AdminProvider adminProvider =
@@ -396,6 +397,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         currentSate = MobileVarificationState
                                             .SHOW_OTP_FORM_STATE;
                                         this.verificationId = verificationId;
+                                        listenOtp();
 
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(const SnackBar(
@@ -440,6 +442,10 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> listenOtp() async {
+    SmsAutoFill().listenForCode;
   }
 
   getOtpFormWidget(context) {
