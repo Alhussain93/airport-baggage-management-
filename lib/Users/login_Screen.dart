@@ -118,6 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       onTap: () {
                         LoginProvider loginProvider =
                         Provider.of<LoginProvider>(context, listen: false);
+                        loginProvider. staffLoginIdController.clear();
                         loginProvider. staffLoginPasswordController.clear();
                         callNext( StaffLogin(), context);
                       },
