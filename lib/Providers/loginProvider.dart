@@ -19,6 +19,7 @@ class LoginProvider extends ChangeNotifier {
 
   String? packageName;
   bool loader = false;
+  String checkFromAirport='';
 
   Future<void> userAuthorized(String? phoneNumber, BuildContext context) async {
     const snackBar2 = SnackBar(

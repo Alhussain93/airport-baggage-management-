@@ -87,9 +87,7 @@ class _QrScannerState extends State<QrScanner> {
       String luggageId = scanData.code.toString();
 
       if (luggageId.length == 17) {
-        adminProvider.statusUpdateQrData(luggageId, widget.designation,
-            widget.stfAirport, widget.stfName,widget.stfId,widget.phone, context);
-        controller.pauseCamera();
+        adminProvider.statusUpdateQrData(luggageId, widget.designation, widget.stfAirport, widget.stfName,widget.stfId,widget.phone, context);controller.pauseCamera();
       } else {
         const snackBar = SnackBar(
             backgroundColor: Colors.red,

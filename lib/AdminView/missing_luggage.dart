@@ -31,10 +31,10 @@ class MissingLuggage extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 20),
+              padding: const EdgeInsets.only(left: 10,right: 10),
               child: SizedBox(
                 height: 40,
-                width: width / 1.2,
+                width: width / 1,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -119,7 +119,27 @@ class MissingLuggage extends StatelessWidget {
                           ],
                         ),
                       ),
+                    ),
+                    InkWell(
+                      onTap: (){
+
+                        adminProvider.fetchMissingLuggage();
+                      },
+                      child: Container(
+
+                        height: 35,
+                        width: width / 7,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+
+                            border: Border.all(
+                                width: 1, color: Colors.grey.shade500),
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.white),
+                        child: Icon(Icons.refresh),
+                      ),
                     )
+
                   ],
                 ),
               ),

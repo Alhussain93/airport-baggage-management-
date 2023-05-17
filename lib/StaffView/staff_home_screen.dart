@@ -165,6 +165,8 @@ class StaffHomeScreen extends StatelessWidget {
                         child: InkWell(
                           onTap: () {
                             isSelected.value = 3;
+
+
                             finish(context);
                           },
                           child: Container(

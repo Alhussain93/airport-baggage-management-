@@ -371,6 +371,9 @@ class AdminProvider with ChangeNotifier {
               "LAST_SCANNED_DATEMILLI": milli,
               "LAST_SCANNED_PLACE": staffAir,
               "UNLOADING_STATUS": "CLEARED",
+              "MISSING": "NO",
+              "MISSING_PLACE": "NOT_MISSING",
+
 
             }, SetOptions(merge: true));
 
@@ -396,6 +399,8 @@ class AdminProvider with ChangeNotifier {
               "LAST_SCANNED_DATEMILLI": milli,
               "LAST_SCANNED_PLACE": staffAir,
               "CHECKOUT_STATUS": "CLEARED",
+              "MISSING": "NO",
+              "MISSING_PLACE": "NOT_MISSING",
 
             }, SetOptions(merge: true));
             await checkMissingLuggageInCheckout(context2, luggageId, staffDes, stfName, staffAir,stfId,phone);
@@ -416,7 +421,7 @@ class AdminProvider with ChangeNotifier {
 
     db
         .collection("LUGGAGE")
-        .where("MISSING", isNotEqualTo: "")
+        .where("MISSING", isNotEqualTo: "NO")
         .get()
         .then((value) {
       if (value.docs.isNotEmpty) {
@@ -444,7 +449,7 @@ class AdminProvider with ChangeNotifier {
     missingLuggageList.clear();
     db
         .collection("LUGGAGE")
-        .where("MISSING", isNotEqualTo: "")
+        .where("MISSING", isNotEqualTo: "NO")
         .where("FLIGHT_NAME", isEqualTo: flightName)
         .get()
         .then((value) {
@@ -864,6 +869,8 @@ class AdminProvider with ChangeNotifier {
 
   void clearTicketControllers() {
     previousPnrId = '';
+    toTicket='Select Airport';
+    fromTicket='Select Airport';
     ticketFromController.clear();
     ticketToController.clear();
     passengerCountController.clear();
