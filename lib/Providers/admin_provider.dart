@@ -418,7 +418,6 @@ class AdminProvider with ChangeNotifier {
 
   void fetchMissingLuggage() {
     missingLuggageList.clear();
-
     db
         .collection("LUGGAGE")
         .where("MISSING", isNotEqualTo: "NO")

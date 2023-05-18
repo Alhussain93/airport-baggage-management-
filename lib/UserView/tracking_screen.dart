@@ -68,18 +68,40 @@ class TrackingScreen extends StatelessWidget {
                         const SizedBox(
                           height: 5,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 20),
-                          child: Text(
-                            username,
-                            style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 22,
-                                color: basewhite),
-                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 20),
+                              child: SizedBox(
+                                width: width*.75,
+                                child: Text(
+                                  username,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 21,
+                                      color: basewhite),
+                                ),
+                              ),
+                            ),
+                            
+                            Padding(
+                              padding: const EdgeInsets.only(right: 20),
+                              child: InkWell(
+                                onTap: (){
+
+                                  adminProvider.fetchMissingLuggage();
+                                },
+                                child: CircleAvatar(
+                                    radius: 20,
+                                    backgroundColor: Colors.white,
+                                    child: Icon(Icons.refresh_outlined,color: Colors.black,)),
+                              ),
+                            )
+                          ],
                         ),
                         const SizedBox(
-                          height: 20,
+                          height: 13,
                         ),
                         Center(
                           child: Consumer<AdminProvider>(
@@ -457,11 +479,7 @@ class TrackingScreen extends StatelessWidget {
                                                   "UNLOADING"
                                               ? BoxDecoration(
                                                   borderRadius:
-                                                      const BorderRadius
-                                                              .vertical(
-                                                          bottom:
-                                                              Radius.circular(
-                                                                  20)),
+                                                      const BorderRadius.vertical(bottom: Radius.circular(20)),
                                                   color:
                                                       item.status == 'CHECK_OUT'
                                                           ? cl00962A
