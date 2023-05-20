@@ -255,9 +255,6 @@ class AddStaff extends StatelessWidget {
                                   value.code = e.code.toString();
                                   value.country = e.country.toString();
                                   value.countrySlct = false;
-                                  print("qqqqqqqqqqq"+value.selectedValue.toString());
-                                  print("wwwwwwwwwwww"+value.code);
-                                  print("reeeeeeeeeeee"+value.country);
 
                                 },
                                 items: value.countryCodeList,

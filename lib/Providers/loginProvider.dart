@@ -113,8 +113,6 @@ class LoginProvider extends ChangeNotifier {
 
 
   Future<void> staffAuthorized(String? userId, String? userPassword, BuildContext context) async {
-    print("fjfjjjjjjj"+userId.toString());
-    print("RRRRRRRRRRRR"+userPassword.toString());
     const snackBar1 = SnackBar(
         backgroundColor: Colors.white,
         duration: Duration(milliseconds: 2000),
@@ -169,10 +167,7 @@ class LoginProvider extends ChangeNotifier {
           userPreference.setString("PASSWORD",loginUserPassword);
          userPreference.setString("TYPE","STAFF");
             if (userStatus == "ACTIVE") {
-              print("eeeeeeeeee");
               if(loginUserPassword==userPassword) {
-                print("eeeeeeeeee11");
-
                 db.collection('STAFF').doc(loginUserid).get().then((value) {
                 if (value.exists) {
                   staffAirport = value.get('AIRPORT');

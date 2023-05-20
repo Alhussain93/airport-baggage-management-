@@ -47,7 +47,6 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> signInWithPhoneAuthCredential(
       BuildContext context, PhoneAuthCredential phoneAuthCredential) async {
     if (kDebugMode) {
-      print('done 1  $phoneAuthCredential');
     }
     setState(() {
       showLoading = true;
@@ -56,7 +55,6 @@ class _LoginScreenState extends State<LoginScreen> {
       final authCredential =
           await auth.signInWithCredential(phoneAuthCredential);
       if (kDebugMode) {
-        print(' 1  $phoneAuthCredential');
       }
       setState(() {
         showLoading = false;
@@ -386,8 +384,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         duration: Duration(milliseconds: 3000),
                                       ));
                                       if (kDebugMode) {
-                                        print(verificationFailed.message
-                                            .toString());
+
                                       }
                                     },
                                     codeSent:
@@ -408,7 +405,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                         ));
 
                                         if (kDebugMode) {
-                                          print("");
                                         }
                                       });
                                     },

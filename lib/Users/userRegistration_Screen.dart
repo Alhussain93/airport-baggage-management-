@@ -42,7 +42,6 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
   Future<void> signInWithPhoneAuthCredential(
       BuildContext context, PhoneAuthCredential phoneAuthCredential) async {
     if (kDebugMode) {
-      print('done 1  $phoneAuthCredential');
     }
     setState(() {
       showLoading = true;
@@ -283,10 +282,7 @@ class _UserRegistrationScreen extends State<UserRegistrationScreen> {
                                                         milliseconds: 3000),
                                                   ));
                                                   if (kDebugMode) {
-                                                    print(verificationFailed
-                                                        .message
-                                                        .toString());
-                                                  }
+                                                                                                      }
                                                 },
                                                 codeSent: (verificationId,
                                                     resendingToken) async {
