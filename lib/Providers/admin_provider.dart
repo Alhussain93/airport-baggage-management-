@@ -744,7 +744,7 @@ class AdminProvider with ChangeNotifier {
 
   Future<void> userRegistration(BuildContext context1, String addedBy,
       String userId, String from, String passengerStatus) async {
-    bool numberStatus = await checkNumberExist(userPhoneCT.text);
+    bool numberStatus = await checkNumberExist(selectedValue! + userPhoneCT.text);
     if (!numberStatus || userPhoneCT.text == passengerOldPhone) {
       showDialog(
           context: context1,
@@ -1140,7 +1140,7 @@ class AdminProvider with ChangeNotifier {
   Future<void> addStaff(BuildContext context, String from, String userId,
       String status, String addedBy) async {
     bool idStatus = await checkStaffIdExist(StaffidController.text);
-    bool numberStatus = await checkNumberExist(PhoneNumberController.text);
+    bool numberStatus = await checkNumberExist(selectedValue! + PhoneNumberController.text);
     if (!idStatus || StaffidController.text == staffOldId){
       if (!numberStatus || PhoneNumberController.text == staffOldPhone) {
         showDialog(
@@ -1286,8 +1286,7 @@ class AdminProvider with ChangeNotifier {
         staffAirportName = map['AIRPORT'].toString();
         staffDepartment = map["DESIGNATION"].toString();
         selectedValue = map["COUNTRY_CODE"].toString();
-        staffOldPhone = PhoneNumberController.text =
-            map["MOBILE_NUMBER"].toString().replaceAll("+91", '');
+        staffOldPhone = PhoneNumberController.text = map["MOBILE_NUMBER"].toString();
         status = map['STATUS'].toString();
         staffImage = map["PROFILE_IMAGE"] ?? "";
       }

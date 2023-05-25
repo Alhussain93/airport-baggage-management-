@@ -200,7 +200,7 @@ class StaffHomeScreen extends StatelessWidget {
                         padding: const EdgeInsets.only(top: 10,bottom: 8,left: 25),
                         child: Align(
                             alignment: Alignment.centerLeft,
-                            child: Text("Select designation",style: TextStyle(color: Colors.white,fontWeight: FontWeight.w500,fontSize: 11),)),
+                            child: Text("Select Department",style: TextStyle(color: Colors.white,fontWeight: FontWeight.w500,fontSize: 11),)),
                       ),
 
                       Consumer<AdminProvider>(builder: (context, value1, child) {
@@ -220,7 +220,7 @@ class StaffHomeScreen extends StatelessWidget {
                                   fontSize: 10, color: Colors.black),
 
                               hint: const Text(
-                                "Designation",
+                                "Department",
                                 style: TextStyle(
                                     fontSize: 10,
                                     color: Colors.black,
@@ -449,7 +449,7 @@ class StaffHomeScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                Text("Designation :",style: TextStyle(fontSize: 12,color: Colors.white),),
+                                Text("Department :",style: TextStyle(fontSize: 12,color: Colors.white),),
                                 Text(designation,style: TextStyle(fontSize: 13,color: Colors.white),),
                               ],
                             ),
