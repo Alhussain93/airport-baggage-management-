@@ -278,19 +278,18 @@ class AdminProvider with ChangeNotifier {
 if(luggageStatus){
   db.collection("LUGGAGE").doc(luggageId).set({"MISSING_ISSUE_REPORT":"YES","MOBILE_NUMBER":phone,"USER_NAME":userName} ,SetOptions(merge: true));
   notifyListeners();
-  missingReportAlert(context);
+  String text= "Missing luggage issue reported";
+  missingReportAlert(context,text);
 }else{
 
-  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-    backgroundColor: Colors.red,
-    content: Text("Missing issue already reported ..."),
-    duration: Duration(milliseconds: 3000),
-  ));
+  String text= "Missing issue already reported ";
+  missingReportAlert(context,text);
+
 }
 
 
   }
-missingReportAlert(BuildContext context){
+missingReportAlert(BuildContext context,String text){
 
   Widget okButton = Container(
     height: 38,
@@ -318,7 +317,8 @@ missingReportAlert(BuildContext context){
   AlertDialog alert = AlertDialog(
     // title: Text("My title"),
     content: Text(
-      "Missing luggage issue reported",
+      text,
+
       style:
       const TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
     ),
