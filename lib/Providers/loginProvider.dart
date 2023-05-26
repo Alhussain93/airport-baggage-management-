@@ -71,8 +71,7 @@ class LoginProvider extends ChangeNotifier {
           if (designation == "PASSENGER") {
             if (userStatus == "ACTIVE") {
               adminProvider.pnrController.clear();
-              callNextReplacement(
-                  PnrSearching(username: loginUsername), context);
+              callNextReplacement(PnrSearching(username: loginUsername, userPhone: loginUserPhone,), context);
             } else {
               ScaffoldMessenger.of(context).showSnackBar(snackBar2);
 

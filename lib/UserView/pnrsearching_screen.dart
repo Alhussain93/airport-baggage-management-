@@ -5,9 +5,9 @@ import 'package:provider/provider.dart';
 import '../Providers/admin_provider.dart';
 
 class PnrSearching extends StatelessWidget {
-  final String username;
+   String username,userPhone;
 
-  const PnrSearching({Key? key, required this.username}) : super(key: key);
+   PnrSearching({Key? key, required this.username,required this.userPhone,}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +110,7 @@ class PnrSearching extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 37),
                     child: InkWell(
                       onTap: () {
-                        adminProvider.checkingPnr(adminProvider.pnrController.text, context, username);
+                        adminProvider.checkingPnr(adminProvider.pnrController.text, context, username,userPhone);
                       },
                       child: Container(
                           height: 40,

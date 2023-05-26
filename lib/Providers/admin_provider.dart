@@ -19,6 +19,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:intl/intl.dart';
 import 'package:encrypt/encrypt.dart' as enc;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../AdminView/add_staff.dart';
 import '../AdminView/generateQr_Screen.dart';
@@ -184,7 +185,7 @@ class AdminProvider with ChangeNotifier {
   }
 
 
-  checkingPnr(String pnrControllerText, BuildContext context, String username) {
+  checkingPnr(String pnrControllerText, BuildContext context, String username,String phone) {
     db.collection("LUGGAGE").where("PNR_ID", isEqualTo: pnrControllerText).get().then((value) {
       checkList.clear();
       if (value.docs.isNotEmpty) {
@@ -202,7 +203,7 @@ class AdminProvider with ChangeNotifier {
         // );
         if (checkList.length!=0) {
           luggageTracking(checkList[0].id);
-          callNext(TrackingScreen(pnrid: pnrControllerText, username: username,), context);
+          callNext(TrackingScreen(pnrid: pnrControllerText, username: username, userPhone: phone,), context);
           pnrController.clear();
         }
       } else {
@@ -258,6 +259,84 @@ class AdminProvider with ChangeNotifier {
     notifyListeners();
 
   }
+
+  Future<bool> checkMissingReportExist() async {
+    var value = await db
+        .collection("LUGGAGE")
+        .where("MISSING_ISSUE_REPORT", isEqualTo: "")
+        .get();
+
+    if (value.docs.isNotEmpty) {
+      return true;
+    } else {
+
+      return false;
+    }
+  }
+  Future<void> addMissingLuggageReport(String luggageId,String phone,String userName,BuildContext context) async {
+    bool luggageStatus = await checkMissingReportExist();
+if(luggageStatus){
+  db.collection("LUGGAGE").doc(luggageId).set({"MISSING_ISSUE_REPORT":"YES","MOBILE_NUMBER":phone,"USER_NAME":userName} ,SetOptions(merge: true));
+  notifyListeners();
+  missingReportAlert(context);
+}else{
+
+  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+    backgroundColor: Colors.red,
+    content: Text("Missing issue already reported ..."),
+    duration: Duration(milliseconds: 3000),
+  ));
+}
+
+
+  }
+missingReportAlert(BuildContext context){
+
+  Widget okButton = Container(
+    height: 38,
+    width: 90,
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(10),
+      color: Textclr,
+    ),
+    child: TextButton(
+      child: Text(
+        "OK",
+        style: TextStyle(
+            color: Colors.black ,
+            fontWeight: FontWeight.w600),
+      ),
+      onPressed: () {
+        finish(context);
+        // callNextReplacement(StaffHomeScreen(designation: staffDes, stfAirport: stsAirport, addedBy: '', stfName: staffName, staffId: stfId, phone: phone), context);
+
+      },
+    ),
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    // title: Text("My title"),
+    content: Text(
+      "Missing luggage issue reported",
+      style:
+      const TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
+    ),
+    actions: [
+      okButton,
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+
+}
+
 
   String getRandomString(int length) {
     const _chars =
@@ -432,12 +511,15 @@ class AdminProvider with ChangeNotifier {
               element.id,
               map["PNR_ID"].toString(),
               map["STATUS"].toString(),
-              map["NAME"].toString(),
+              map["USER_NAME"]??"",
               map["MISSING"].toString(),
               map["ARRIVAL_PLACE"].toString(),
               map["FLIGHT_NAME"].toString(),
               map["LAST_SCANNED_DATEMILLI"].toString(),
-              map["LAST_SCANNED_PLACE"].toString()));
+              map["LAST_SCANNED_PLACE"].toString(),
+              map["MISSING_ISSUE_REPORT"]??"",
+              map["MOBILE_NUMBER"]??"",
+          ));
         }
         notifyListeners();
       }
@@ -461,12 +543,16 @@ class AdminProvider with ChangeNotifier {
               element.id,
               map["PNR_ID"].toString(),
               map["STATUS"].toString(),
-              map["NAME"].toString(),
+              map["USER_NAME"]??"",
               map["MISSING"].toString(),
               map["ARRIVAL_PLACE"].toString(),
               map["FLIGHT_NAME"].toString(),
               map["LAST_SCANNED_DATEMILLI"].toString(),
-              map["LAST_SCANNED_PLACE"].toString()));
+              map["LAST_SCANNED_PLACE"].toString(),
+            map["MISSING_ISSUE_REPORT"]??"",
+            map["MOBILE_NUMBER"]??"",
+
+          ));
         }
         notifyListeners();
       }
@@ -491,12 +577,16 @@ class AdminProvider with ChangeNotifier {
               element.id,
               map["PNR_ID"].toString(),
               map["STATUS"].toString(),
-              map["NAME"].toString(),
+              map["USER_NAME"]??"",
               map["MISSING"].toString(),
               map["ARRIVAL_PLACE"].toString(),
               map["FLIGHT_NAME"].toString(),
               map["LAST_SCANNED_DATEMILLI"].toString(),
-              map["LAST_SCANNED_PLACE"].toString()));
+              map["LAST_SCANNED_PLACE"].toString(),
+            map["MISSING_ISSUE_REPORT"]??"",
+            map["MOBILE_NUMBER"]??"",
+
+          ));
         }
         notifyListeners();
       }
@@ -1000,6 +1090,8 @@ class AdminProvider with ChangeNotifier {
     String arrivalPlace = '';
     String flightName = '';
     String arrivalTimeMilli = '';
+    String fromPlace = '';
+    String toPlace = '';
 
     db
         .collection("TICKETS")
@@ -1011,9 +1103,10 @@ class AdminProvider with ChangeNotifier {
         arrivalPlace = map["TO"].toString();
         flightName = map["FLIGHT_NAME"].toString();
         arrivalTimeMilli = map["ARRIVAL_DATE_MILLI"].toString();
+        fromPlace = map["FROM"].toString();
+        toPlace = map["TO"].toString();
         notifyListeners();
-        generateQrCode(
-            context, staffAirport, stfName, arrivalPlace, flightName,arrivalTimeMilli);
+        generateQrCode(context, staffAirport, stfName, arrivalPlace, flightName,arrivalTimeMilli,fromPlace,toPlace);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("Sorry, No PNR ID found..."),
@@ -1024,7 +1117,7 @@ class AdminProvider with ChangeNotifier {
   }
 
   void generateQrCode(BuildContext context, String staffAirport, String stfName,
-      String arrivalPlace, String flightName,String arrivalTimeMilli,) {
+      String arrivalPlace, String flightName,String arrivalTimeMilli,String fromPlace,String toPlace) {
     HashMap<String, Object> qrMap = HashMap();
     qrDataList.clear();
     int luggageCount = int.parse(qrLuggageCountCT.text);
@@ -1046,6 +1139,8 @@ class AdminProvider with ChangeNotifier {
       qrMap['CHECK_IN_TIME'] = now;
       qrMap['CHECK_IN_STAFF_NAME'] = stfName;
       qrMap['CHECK_IN_AIRPORT'] = staffAirport;
+      qrMap['FROM'] = fromPlace;
+      qrMap['TO'] = toPlace;
       qrDataList.add(qrData);
       db.collection("LUGGAGE").doc(qrData).set(qrMap);
       notifyListeners();
@@ -1054,7 +1149,7 @@ class AdminProvider with ChangeNotifier {
     callNext(
         GenerateQrScreen(
           qrDatasList: qrDataList,
-          qrId: qrData,
+          qrId: qrData, fromPlace: fromPlace, toPlace: toPlace,
         ),
         context);
     clearQrControllers();
@@ -1545,8 +1640,11 @@ class AdminProvider with ChangeNotifier {
                   ),
                   InkWell(
                     onTap: () async {
+                      SharedPreferences userPreference = await SharedPreferences.getInstance();
+
                       FirebaseAuth auth = FirebaseAuth.instance;
                       auth.signOut();
+                      userPreference.clear();
                       finish(context);
                       CountryCode("Oman", "OM", "+968");
                       callNextReplacement(const LoginScreen(), context);

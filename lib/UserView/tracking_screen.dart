@@ -9,8 +9,9 @@ import '../constant/colors.dart';
 class TrackingScreen extends StatelessWidget {
   final String pnrid;
   final String username;
+  final String userPhone;
 
-  TrackingScreen({Key? key, required this.pnrid, required this.username})
+  TrackingScreen({Key? key, required this.pnrid, required this.username, required this.userPhone})
       : super(key: key);
   int i = 0;
   String datee = '';
@@ -630,6 +631,26 @@ class TrackingScreen extends StatelessWidget {
                                                           FontWeight.bold),
                                                 )
                                               : const SizedBox(),
+                                          item.missingPlace == "UNLOADING"
+                                              ? InkWell(
+                                            onTap: (){
+                                              adminProvider.addMissingLuggageReport(item.id,userPhone,username,context);
+
+
+                                            },
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(top: 6),
+                                              child: const Text(
+                                                "Report a issue",
+                                                style: TextStyle(
+                                                    decoration: TextDecoration.underline,
+                                                    color: Colors.blue,
+                                                    fontWeight:
+                                                    FontWeight.w500),
+                                              ),
+                                            ),
+                                          )
+                                              : const SizedBox(),
 
                                           item.unloadingStatus=="CLEARED"?   Text(
                                             "Unloaded",
@@ -640,8 +661,8 @@ class TrackingScreen extends StatelessWidget {
                                           ):const SizedBox(),
 
 
-                                          item.unloadingStatus==""?Text("Expected Time :",style: TextStyle(fontSize: 10),):SizedBox(),
-                                          item.unloadingStatus==""?
+                                          item.unloadingStatus==""&&item.missingPlace != "UNLOADING"?Text("Expected Time :",style: TextStyle(fontSize: 10),):SizedBox(),
+                                          item.unloadingStatus==""&&item.missingPlace != "UNLOADING"?
                                           Text(
                                             uploadDatee( item.arrivalTimeMilli,),
                                             style: TextStyle(
@@ -651,7 +672,7 @@ class TrackingScreen extends StatelessWidget {
                                           ):const SizedBox(),
 
                                           Text(
-                                              item.unloadingTime != ""
+                                              item.unloadingStatus =="CLEARED"
                                                   ? uploadDatee(
                                                       item.unloadingTime)
                                                   : "",
@@ -723,6 +744,28 @@ class TrackingScreen extends StatelessWidget {
                                                           FontWeight.bold),
                                                 )
                                               : const SizedBox(),
+
+                                          item.missingPlace == "CHECK_OUT"
+                                              ? InkWell(
+                                            onTap: (){
+                                              adminProvider.addMissingLuggageReport(item.id,userPhone,username,context);
+
+
+                                            },
+                                                child: Padding(
+                                                  padding: const EdgeInsets.only(top: 6),
+                                                  child: const Text(
+                                            "Report a issue",
+                                            style: TextStyle(
+                                                    decoration: TextDecoration.underline,
+                                                    color: Colors.blue,
+                                                    fontWeight:
+                                                    FontWeight.w500),
+                                          ),
+                                                ),
+                                              )
+                                              : const SizedBox(),
+
                                           // Text(
                                           //   item.checkoutPlace,
                                           //   style: TextStyle(
@@ -748,8 +791,8 @@ class TrackingScreen extends StatelessWidget {
                                                   fontWeight: FontWeight.w400,
                                                   color: cl252525)),
 
-                                          item.checkOutStatus==""?Text("Expected Time :",style: TextStyle(fontSize: 10),):SizedBox(),
-                                          item.checkOutStatus==""?
+                                          item.checkOutStatus==""&&item.missingPlace != "UNLOADING"?Text("Expected Time :",style: TextStyle(fontSize: 10),):SizedBox(),
+                                          item.checkOutStatus==""&&item.missingPlace != "UNLOADING"?
                                           Text(
                                             addDate( item.arrivalTimeMilli,),
                                             style: TextStyle(
