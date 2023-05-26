@@ -83,7 +83,7 @@ class LoginProvider extends ChangeNotifier {
               FirebaseAuth auth = FirebaseAuth.instance;
               auth.signOut();
             }
-          } else if (loginUsertype == "ADMIN") {
+          } else if (loginUsertype =="ADMIN") {
             adminProvider.fetchMissingLuggage();
 
             Navigator.pushReplacement(
@@ -95,7 +95,8 @@ class LoginProvider extends ChangeNotifier {
           }
 
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(snackBar2);
+          // ScaffoldMessenger.of(context).showSnackBar(snackBar2);
+          callNextReplacement(LoginScreen(), context);
         }
       });
     } catch (e) {
@@ -193,7 +194,9 @@ class LoginProvider extends ChangeNotifier {
             }
 
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(snackBar2);
+          callNextReplacement(LoginScreen(), context);
+
+          // ScaffoldMessenger.of(context).showSnackBar(snackBar2);
         }
       });
     } catch (e) {
