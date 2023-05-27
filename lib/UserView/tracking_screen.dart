@@ -223,7 +223,7 @@ class TrackingScreen extends StatelessWidget {
                           shrinkWrap: true,
                           itemCount: 1,
                           itemBuilder: (BuildContext context, int index) {
-                            var item = value.luggageList.[index];
+                            var item = value.luggageList[index];
                             return Column(
                               children: [
                                 Text(
