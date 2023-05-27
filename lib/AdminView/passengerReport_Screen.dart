@@ -96,7 +96,7 @@ class PassengerReportScreen extends StatelessWidget {
                     }),
                     InkWell(
                       onTap: () {
-                        adminProvider.showCalendarDialog(context);
+                        adminProvider.showCalendarDialog(context,"REPORT");
                       },
                       child: Container(
                         height: 35,

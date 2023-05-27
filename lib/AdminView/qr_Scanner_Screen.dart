@@ -5,7 +5,7 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 import '../Providers/admin_provider.dart';
 
 class QrScanner extends StatefulWidget {
-  String designation, stfAirport, stfName,stfId,phone;
+  String designation, stfAirport, stfName,stfId,phone,stfBelt;
 
   QrScanner(
       {Key? key,
@@ -14,6 +14,7 @@ class QrScanner extends StatefulWidget {
       required this.stfName,
       required this.stfId,
       required this.phone,
+      required this.stfBelt,
 
       })
       : super(key: key);
@@ -87,7 +88,7 @@ class _QrScannerState extends State<QrScanner> {
       String luggageId = scanData.code.toString();
 
       if (luggageId.length == 17) {
-        adminProvider.statusUpdateQrData(luggageId, widget.designation, widget.stfAirport, widget.stfName,widget.stfId,widget.phone, context);controller.pauseCamera();
+        adminProvider.statusUpdateQrData(luggageId, widget.designation, widget.stfAirport, widget.stfName,widget.stfId,widget.phone,widget.stfBelt, context);controller.pauseCamera();
       } else {
         const snackBar = SnackBar(
             backgroundColor: Colors.red,

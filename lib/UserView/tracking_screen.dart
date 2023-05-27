@@ -441,13 +441,6 @@ class TrackingScreen extends StatelessWidget {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
-                                          // Text(
-                                          //   item.loadingPlace,
-                                          //   style: TextStyle(
-                                          //       fontSize: 11,
-                                          //       fontWeight: FontWeight.w500,
-                                          //       color: cl252525),
-                                          // ),
                                           item.loadingStatus=="CLEARED"?Text(
                                             "Loaded",
                                             style: TextStyle(
@@ -743,15 +736,11 @@ class TrackingScreen extends StatelessWidget {
                                                 color: cl252525),
                                           ):const SizedBox(),
 
-                                          Text(
-                            item.checkOutStatus=="CLEARED"?
-                                                   uploadDatee(
-                                                      item.checkoutTime)
-                                                  : "",
-                                              style: TextStyle(
-                                                  fontSize: 13,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: cl252525)),
+                                          Text(item.checkOutStatus=="CLEARED"? uploadDatee( item.checkoutTime) : "", style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: cl252525)),
+
+
+                                          Text(item.checkOutStatus=="CLEARED"&&item.stfConveyorBelt!=''? item.stfConveyorBelt: "", style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: cl252525)),
+
 
                                           item.checkOutStatus==""&&item.missingPlace != "UNLOADING"?Text("Expected Time :",style: TextStyle(fontSize: 10),):SizedBox(),
                                           item.checkOutStatus==""&&item.missingPlace != "UNLOADING"?
