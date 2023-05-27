@@ -84,6 +84,8 @@ class LoginProvider extends ChangeNotifier {
             }
           } else if (loginUsertype =="ADMIN") {
             adminProvider.fetchMissingLuggage();
+            adminProvider.fetchMissingReported();
+
 
             Navigator.pushReplacement(
                 context,
@@ -172,6 +174,7 @@ class LoginProvider extends ChangeNotifier {
                 if (value.exists) {
                   staffAirport = value.get('AIRPORT');
                   adminProvider.fetchMissingLuggage();
+                  adminProvider.fetchMissingReported();
 
                   Navigator.pushReplacement(
                       context,

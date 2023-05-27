@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../Providers/admin_provider.dart';
 import '../constant/colors.dart';
 import '../constant/my_functions.dart';
+import 'missingLuggage_HomeScreen.dart';
 import 'passengersList_Screen.dart';
 import 'missing_luggage.dart';
 
@@ -25,7 +26,7 @@ class HomeScreen extends StatelessWidget {
         addedby: addedBy,
       ),
       StaffScreen(addedBy: addedBy),
-      MissingLuggage(),
+      MissingHomeScreen(),
       TicketList(
         addedBy: addedBy,
       ),
@@ -219,7 +220,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 appBar: PreferredSize(
-                  preferredSize: Size.fromHeight(height * .28),
+                  preferredSize: Size.fromHeight(height * .25),
                   child: AppBar(
                     elevation: 0,
                     backgroundColor: themecolor,
@@ -235,7 +236,7 @@ class HomeScreen extends StatelessWidget {
                       child: Column(
                         children: [
                           const SizedBox(
-                            height: 50,
+                            height: 40,
                           ),
                           isSelected.value == 2
                               ? const Padding(padding: EdgeInsets.only(top: 52))

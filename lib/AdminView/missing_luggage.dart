@@ -6,8 +6,8 @@ import 'package:intl/intl.dart';
 
 import '../constant/my_functions.dart';
 
-class MissingLuggage extends StatelessWidget {
-  MissingLuggage({Key? key}) : super(key: key);
+class MissingLuggageScreen extends StatelessWidget {
+  MissingLuggageScreen({Key? key}) : super(key: key);
   String datee = '';
 
   @override
@@ -248,11 +248,7 @@ class MissingLuggage extends StatelessWidget {
                                                           FontWeight.w400,
                                                       color: Colors.black),
                                                 ),
-                                                item.issueReported=="YES"? InkWell(
-                                                    onTap: (){
-                                                      _showMyDialog(context,item.name,item.phone,item.missingPlace,item.status,);
-                                                    },
-                                                    child: Text("Reported",style: TextStyle(color:Colors.blue,fontSize: 18,fontWeight: FontWeight.w600,decoration: TextDecoration.underline),)):SizedBox()
+
                                               ],
                                             )
                                           ],

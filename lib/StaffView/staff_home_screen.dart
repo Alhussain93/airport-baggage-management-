@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luggage_tracking_app/AdminView/missingLuggage_HomeScreen.dart';
 import 'package:luggage_tracking_app/AdminView/qr_Scanner_Screen.dart';
 import 'package:provider/provider.dart';
 import '../AdminView/passengersList_Screen.dart';
@@ -41,7 +42,7 @@ class StaffHomeScreen extends StatelessWidget {
         stfAirport: stfAirport,
         stfName: stfName,
       ),
-      MissingLuggage(),
+      MissingHomeScreen(),
     ];
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;

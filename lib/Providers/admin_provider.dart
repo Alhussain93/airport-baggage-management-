@@ -86,6 +86,7 @@ class AdminProvider with ChangeNotifier {
   List<PnrModel> checkList = [];
   List<LuggageModel> luggageList = [];
   List<MissingLuggage> missingLuggageList = [];
+  List<MissingLuggage> missingReportedList = [];
   List<String> airportNameList = [
     'Select Airport',
     "Salalah International Airport",
@@ -117,7 +118,7 @@ class AdminProvider with ChangeNotifier {
             if (value.exists) {
               staffAirport = value.get('AIRPORT');
              fetchMissingLuggage();
-
+              fetchMissingReported();
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
@@ -260,36 +261,132 @@ class AdminProvider with ChangeNotifier {
 
   }
 
-  Future<bool> checkMissingReportExist() async {
-    var value = await db
-        .collection("LUGGAGE")
-        .where("MISSING_ISSUE_REPORT", isEqualTo: "")
-        .get();
+   checkMissingReportExist(String luggageId) async {
+print("dddddddddddddddd"+luggageId);
+     db.collection("LUGGAGE").doc(luggageId).get().then((value) {
+       if (value.get("MISSING_ISSUE_REPORT").isempty) {
+         return true;
+       }
+       else {
+         return false;
+       }
 
-    if (value.docs.isNotEmpty) {
-      return true;
-    } else {
+     });
 
-      return false;
-    }
   }
   Future<void> addMissingLuggageReport(String luggageId,String phone,String userName,BuildContext context) async {
-    bool luggageStatus = await checkMissingReportExist();
-if(luggageStatus){
-  db.collection("LUGGAGE").doc(luggageId).set({"MISSING_ISSUE_REPORT":"YES","MOBILE_NUMBER":phone,"USER_NAME":userName} ,SetOptions(merge: true));
-  notifyListeners();
-  String text= "Missing luggage issue reported";
-  missingReportAlert(context,text);
-}else{
-
+     db.collection("LUGGAGE").doc(luggageId).get().then((value) {
+       if(value.exists){
+         Map<dynamic, dynamic> map = value.data() as Map;
+if(map["MISSING_ISSUE_REPORT"]=="YES"){
   String text= "Missing issue already reported ";
   missingReportAlert(context,text);
+  notifyListeners();
+
+}else{
+
+  reportIssueAlert(userName,phone,luggageId,context);
 
 }
 
+       }
+
+     });
 
   }
-missingReportAlert(BuildContext context,String text){
+
+
+
+  reportIssueAlert(String userName,String phone,String luggageId,BuildContext context1) {
+
+    AlertDialog alert = AlertDialog(
+      backgroundColor: Colors.white,
+      scrollable: true,
+      title: const Text(
+        "Do you want to report this Luggage?",
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+      ),
+      content: SizedBox(
+        height: 50,
+        child: SingleChildScrollView(
+          child: Column(
+
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+
+                  Container(
+                    height: 35,
+                    width: 100,
+                    decoration: BoxDecoration( borderRadius: BorderRadius.all(Radius.circular(10)),
+                      color: cLightGrey,
+
+                    ),
+                    child: TextButton(
+                        child: const Text('NO',style: TextStyle(color: Colors.black87),),
+                        onPressed: () {
+                          finish(context1);
+                        }
+                    ),
+                  ),
+
+                  Container(
+                    height: 35,
+                    width: 100,
+                    decoration: BoxDecoration( borderRadius: BorderRadius.all(Radius.circular(10)),
+                      color: clc00a618,
+
+                    ),
+                    child: TextButton(
+                        child: const Text('YES',style: TextStyle(color: Colors.black),),
+                        onPressed: ()  {
+                          missingIssueReportFun(luggageId,userName,phone,context1);
+                        }
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    showDialog(
+      context: context1,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  missingIssueReportFun(String luggageId,String userName,String phone,BuildContext context2){
+    print("dkckdckdcmkdcmdkcmd");
+    db.collection("LUGGAGE").doc(luggageId).set({"MISSING_ISSUE_REPORT":"YES","MOBILE_NUMBER":phone,"USER_NAME":userName} ,SetOptions(merge: true));
+    const snackBar = const SnackBar(
+        elevation: 6.0,
+        backgroundColor: Colors.white,
+        behavior: SnackBarBehavior.floating,
+        shape:  RoundedRectangleBorder(
+            borderRadius:
+            BorderRadius.all(Radius.circular(20))),        duration: Duration(milliseconds: 2000),
+        content: Text(
+          "Luggage missing issue reported",
+
+          style:  TextStyle(color:Colors.red ),
+
+        ));
+    ScaffoldMessenger.of(context2).showSnackBar(snackBar);
+
+    notifyListeners();
+
+    finish(context2);
+notifyListeners();
+  }
+
+  missingReportAlert(BuildContext context,String text){
 
   Widget okButton = Container(
     height: 38,
@@ -526,6 +623,37 @@ missingReportAlert(BuildContext context,String text){
     });
   }
 
+  void fetchMissingReported(){
+    db
+        .collection("LUGGAGE")
+        .where("MISSING_ISSUE_REPORT", isEqualTo: "YES")
+        .get()
+        .then((value) {
+      if (value.docs.isNotEmpty) {
+        missingReportedList.clear();
+        for (var element in value.docs) {
+          Map<dynamic, dynamic> map = element.data();
+
+          missingReportedList.add(MissingLuggage(
+            element.id,
+            map["PNR_ID"].toString(),
+            map["STATUS"].toString(),
+            map["USER_NAME"]??"",
+            map["MISSING"].toString(),
+            map["ARRIVAL_PLACE"].toString(),
+            map["FLIGHT_NAME"].toString(),
+            map["LAST_SCANNED_DATEMILLI"].toString(),
+            map["LAST_SCANNED_PLACE"].toString(),
+            map["MISSING_ISSUE_REPORT"]??"",
+            map["MOBILE_NUMBER"]??"",
+          ));
+        }
+        notifyListeners();
+      }
+    });
+
+  }
+
   void sortMissingLuggageFlightBase(String flightName) {
     missingLuggageList.clear();
     db
@@ -559,6 +687,39 @@ missingReportAlert(BuildContext context,String text){
       notifyListeners();
     });
   }
+  void filterMissingReportedFlightBase(String flightName) {
+    missingReportedList.clear();
+    db
+        .collection("LUGGAGE")
+        .where("MISSING_ISSUE_REPORT", isEqualTo: "YES")
+        .where("FLIGHT_NAME", isEqualTo: flightName)
+        .get()
+        .then((value) {
+      if (value.docs.isNotEmpty) {
+        missingReportedList.clear();
+        for (var element in value.docs) {
+          Map<dynamic, dynamic> map = element.data();
+
+          missingReportedList.add(MissingLuggage(
+              element.id,
+              map["PNR_ID"].toString(),
+              map["STATUS"].toString(),
+              map["USER_NAME"]??"",
+              map["MISSING"].toString(),
+              map["ARRIVAL_PLACE"].toString(),
+              map["FLIGHT_NAME"].toString(),
+              map["LAST_SCANNED_DATEMILLI"].toString(),
+              map["LAST_SCANNED_PLACE"].toString(),
+            map["MISSING_ISSUE_REPORT"]??"",
+            map["MOBILE_NUMBER"]??"",
+
+          ));
+        }
+        notifyListeners();
+      }
+      notifyListeners();
+    });
+  }
 
   void sortMissingLuggageByDateWise(var firstDate, var lastDate) {
     missingLuggageList.clear();
@@ -571,6 +732,39 @@ missingReportAlert(BuildContext context,String text){
         .then((value) {
       if (value.docs.isNotEmpty) {
         missingLuggageList.clear();
+        for (var element in value.docs) {
+          Map<dynamic, dynamic> map = element.data();
+          missingLuggageList.add(MissingLuggage(
+              element.id,
+              map["PNR_ID"].toString(),
+              map["STATUS"].toString(),
+              map["USER_NAME"]??"",
+              map["MISSING"].toString(),
+              map["ARRIVAL_PLACE"].toString(),
+              map["FLIGHT_NAME"].toString(),
+              map["LAST_SCANNED_DATEMILLI"].toString(),
+              map["LAST_SCANNED_PLACE"].toString(),
+            map["MISSING_ISSUE_REPORT"]??"",
+            map["MOBILE_NUMBER"]??"",
+
+          ));
+        }
+        notifyListeners();
+      }
+      notifyListeners();
+    });
+  }
+  void filterMissingReportedByDateWise(var firstDate, var lastDate) {
+    missingReportedList.clear();
+    db
+        .collection("LUGGAGE")
+        .where("MISSING_ISSUE_REPORT", isEqualTo: "YES")
+        .where("LAST_SCANNED_DATE", isGreaterThanOrEqualTo: firstDate)
+        .where("LAST_SCANNED_DATE", isLessThanOrEqualTo: lastDate)
+        .get()
+        .then((value) {
+      if (value.docs.isNotEmpty) {
+        missingReportedList.clear();
         for (var element in value.docs) {
           Map<dynamic, dynamic> map = element.data();
           missingLuggageList.add(MissingLuggage(
