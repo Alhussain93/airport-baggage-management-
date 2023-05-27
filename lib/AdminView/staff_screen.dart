@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:luggage_tracking_app/constant/my_functions.dart';
 import 'package:provider/provider.dart';
 import '../Providers/admin_provider.dart';
+import '../UserView/contryCodeModel.dart';
 import '../constant/colors.dart';
 import 'add_staff.dart';
 
@@ -57,6 +58,7 @@ class StaffScreen extends StatelessWidget {
                             return InkWell(
                               onTap: () {
                                 value.clearStaff();
+
                                 callNext(
                                     AddStaff(
                                       from: '',
@@ -65,6 +67,7 @@ class StaffScreen extends StatelessWidget {
                                       addedBy: addedBy,
                                     ),
                                     context);
+
                               },
                               child: Row(
                                 mainAxisAlignment:

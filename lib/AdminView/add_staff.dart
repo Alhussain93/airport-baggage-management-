@@ -28,15 +28,15 @@ class AddStaff extends StatelessWidget {
     'Khasab Airport'
   ];
 
-  List<String> Designation = [
-    'Select Designation',
+  List<String> departmentList = [
+    'Select Department',
     "CHECK_IN",
     "LOADING",
     "UNLOADING",
     'CHECK_OUT'
   ];
+  final userEditTextController = TextEditingController();
 
-  final _userEditTextController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -152,7 +152,7 @@ class AddStaff extends StatelessWidget {
                         : const SizedBox(),
                     Padding(
                       padding:
-                          const EdgeInsets.only(top: 30, left: 20, right: 20),
+                          const EdgeInsets.only(top: 30, left: 25, right: 25),
                       child: TextFormField(
                         autofocus: false,
                         keyboardType: TextInputType.text,
@@ -174,7 +174,7 @@ class AddStaff extends StatelessWidget {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(right: 20, left: 20),
+                      padding: const EdgeInsets.only(right: 25, left: 25),
                       child: TextFormField(
                           autofocus: false,
                           keyboardType: TextInputType.text,
@@ -195,127 +195,138 @@ class AddStaff extends StatelessWidget {
                             }
                           }),
                     ),
-                    Consumer<AdminProvider>(builder: (context, value1, child) {
-                      return Padding(
-                        padding: const EdgeInsets.only(left: 25, right: 25),
-                        child: TextFormField(
-                          maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                          textAlign: TextAlign.center,
-                          keyboardType: TextInputType.phone,
-
-                          textInputAction: TextInputAction.next,
+                    Padding(
+                      padding: const EdgeInsets.only(right: 25, left: 25),
+                      child: TextFormField(
+                          autofocus: false,
+                          keyboardType: TextInputType.text,
+                          controller: value.StaffpasswordController,
                           decoration: InputDecoration(
-                            prefixIcon: SizedBox(
-                              width: 120,
-                              child: Consumer<AdminProvider>(
-                                  builder: (context, value, child) {
-                                return DropdownSearch<CountryCode>(
-                                  dropdownDecoratorProps:
-                                      const DropDownDecoratorProps(
-                                          dropdownSearchDecoration:
-                                              InputDecoration(
-                                                  filled: true,
-                                                  fillColor: Colors.transparent,
-                                                  border: OutlineInputBorder(
-                                                      borderSide:
-                                                          BorderSide.none),
-                                                  enabledBorder:
-                                                      InputBorder.none,
-                                                  disabledBorder:
-                                                      InputBorder.none,
-                                                  focusedBorder:
-                                                      InputBorder.none,
-                                                  errorBorder: InputBorder.none,
-                                                  focusedErrorBorder:
-                                                      InputBorder.none)),
-                                  selectedItem: from !="EDIT"
-                                    ? CountryCode("Oman", "OM", "+968"):CountryCode(value.country, value.code, value.selectedValue!),
-                                  onChanged: (e) {
-                                    value1.selectedValue =
-                                        e?.dialCde.toString();
-                                    value1.code = e!.code.toString();
-                                    value.country = e!.country.toString();
-                                    value1.countrySlct = true;
-                                  },
-                                  items: value.countryCodeList,
-                                  filterFn: (item, filter) {
-                                    return item.country.contains(filter) || item.country.toLowerCase().contains(filter) || item.country.toUpperCase().contains(filter)||item.dialCde.toUpperCase().contains(filter)||item.code.toUpperCase().contains(filter);
-                                  },
-                                  itemAsString: (CountryCode u) {
-                                    return u.dialCde;
-                                  },
-                                  popupProps: PopupProps.menu(
-                                      searchFieldProps: TextFieldProps(
-                                        controller: _userEditTextController,
-                                        decoration: const InputDecoration(
-                                            label: Text(
-                                          'Search Country',
-                                          style: TextStyle(fontSize: 12),
-                                        )),
-                                      ),
-                                      showSearchBox: true,
-                                      // showSelectedItems: true,
-                                      fit: FlexFit.tight,
-                                      itemBuilder: (ctx, item, isSelected) {
-                                        return ListTile(
-                                          selected: isSelected,
-                                          title: Text(
-                                            item.country,
-                                            style:
-                                                const TextStyle(fontSize: 15),
-                                          ),
-                                          subtitle: Text(
-                                            item.dialCde,
-                                            style:
-                                                const TextStyle(fontSize: 13),
-                                          ),
-                                        );
-                                      }),
-                                );
-                              }),
-                            ),
-                            contentPadding: const EdgeInsets.only(right: 80),
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15),
-                                borderSide: const BorderSide(
-                                  color: Colors.black38,
-                                )),
-                            enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15),
-                                borderSide: const BorderSide(
-                                  color: Colors.black38,
-                                )),
-                            errorBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15),
-                                borderSide: const BorderSide(
-                                  color: Colors.red,
-                                )),
-                            disabledBorder: InputBorder.none,
-                            hintText: "Phone Number",
+                            helperText: "",
+                            fillColor: Colors.white,
+                            contentPadding: const EdgeInsets.all(11),
+                            hintText: 'Password',
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15),
-                                borderSide: const BorderSide(
-                                  color: Colors.grey,
-                                )),
-                          ),
-                          cursorColor: Colors.black,
-                          controller: value1.PhoneNumberController,
-                          style: const TextStyle(
-                            fontFamily: 'BarlowCondensed',
+                                borderRadius: BorderRadius.circular(15.0)),
                           ),
                           validator: (value) {
                             if (value!.trim().isEmpty) {
-                              return "Please Enter The Mobile Number";
+                              return "Enter Password";
                             } else {
                               return null;
                             }
-                          },
-                        ),
-                      );
-                    }),
-                    const SizedBox(
-                      height: 10,
+                          }),
                     ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 25, right: 25,bottom: 20),
+                      child: TextFormField(
+                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                        textAlign: TextAlign.center,
+                        keyboardType: TextInputType.phone,
+                        textInputAction: TextInputAction.next,
+                        decoration: InputDecoration(
+                          prefixIcon: SizedBox(
+                            width: 120,
+                            child: Consumer<AdminProvider>(
+                                builder: (context, value, child) {
+                              return DropdownSearch<CountryCode>(
+                                dropdownDecoratorProps:
+                                    const DropDownDecoratorProps(
+                                        dropdownSearchDecoration:
+                                            InputDecoration(
+                                                filled: true,
+                                                fillColor: Colors.transparent,
+                                                border: OutlineInputBorder(
+                                                    borderSide:
+                                                        BorderSide.none),
+                                                enabledBorder:
+                                                    InputBorder.none,
+                                                disabledBorder:
+                                                    InputBorder.none,
+                                                focusedBorder:
+                                                    InputBorder.none,
+                                                errorBorder: InputBorder.none,
+                                                focusedErrorBorder:
+                                                    InputBorder.none)),
+                                selectedItem: CountryCode(value.country, value.code, value.selectedValue.toString()),
+                                onChanged: (e) {
+
+                                  value.selectedValue = e!.dialCde.toString();
+                                  value.code = e.code.toString();
+                                  value.country = e.country.toString();
+                                  value.countrySlct = false;
+
+                                },
+                                items: value.countryCodeList,
+                                filterFn: (item, filter) {
+                                  return item.country.contains(filter) || item.country.toLowerCase().contains(filter) || item.country.toUpperCase().contains(filter)||item.dialCde.toUpperCase().contains(filter)||item.code.toUpperCase().contains(filter);
+                                },
+                                itemAsString: (CountryCode u) {
+                                  return u.dialCde;
+                                },
+                                popupProps: PopupProps.menu(
+                                    searchFieldProps: TextFieldProps(
+                                      controller: userEditTextController,
+                                      decoration: const InputDecoration(
+                                          label: Text(
+                                        'Search Country',
+                                        style: TextStyle(fontSize: 12),
+                                      )),
+                                    ),
+                                    showSearchBox: true,
+                                    // showSelectedItems: true,
+                                    fit: FlexFit.tight,
+                                    itemBuilder: (ctx, item, isSelected) {
+                                      return ListTile(
+                                        selected: isSelected,
+                                        title: Text(
+                                          item.country,
+                                          style:
+                                              const TextStyle(fontSize: 15),
+                                        ),
+                                        subtitle: Text(
+                                          item.dialCde,
+                                          style:
+                                              const TextStyle(fontSize: 13),
+                                        ),
+                                      );
+                                    }),
+                              );
+                            }),
+                          ),
+                          contentPadding: const EdgeInsets.all(11),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: const BorderSide(
+                                color: Colors.black38,
+                              )),
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: const BorderSide(
+                                color: Colors.black38,
+                              )),
+                          errorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: const BorderSide(
+                                color: Colors.red,
+                              )),
+                          disabledBorder: InputBorder.none,
+                          hintText: "Phone Number",
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: const BorderSide(
+                                color: Colors.grey,
+                              )),
+                        ),
+                        cursorColor: Colors.black,
+                        controller: value.PhoneNumberController,
+                        style: const TextStyle(
+                          fontFamily: 'BarlowCondensed',
+                        ),
+
+                      ),
+                    ),
+
                     Consumer<AdminProvider>(builder: (context, value1, child) {
                       return Padding(
                         padding: const EdgeInsets.only(left: 25, right: 25),
@@ -386,7 +397,7 @@ class AddStaff extends StatelessWidget {
                                   color: Colors.grey,
                                   fontWeight: FontWeight.bold),
                             ),
-                            value: value.designation,
+                            value: value.staffDepartment,
                             iconSize: 30,
                             isExpanded: true,
                             decoration: InputDecoration(
@@ -416,9 +427,9 @@ class AddStaff extends StatelessWidget {
                               contentPadding: const EdgeInsets.all(11),
                             ),
                             onChanged: (newValue) {
-                              value1.designation = newValue.toString();
+                              value1.staffDepartment = newValue.toString();
                             },
-                            items: Designation.map((item1) {
+                            items: departmentList.map((item1) {
                               return DropdownMenuItem(
                                   value: item1,
                                   child: Padding(
@@ -427,8 +438,8 @@ class AddStaff extends StatelessWidget {
                                   ));
                             }).toList(),
                             validator: (dropValue) {
-                              if (dropValue == "Select Designation") {
-                                return "Select Designation";
+                              if (dropValue == "Select Department") {
+                                return "Select Department";
                               }
                               return null;
                             },

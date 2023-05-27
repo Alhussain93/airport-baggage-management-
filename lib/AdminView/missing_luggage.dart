@@ -4,8 +4,10 @@ import '../Providers/admin_provider.dart';
 import '../constant/colors.dart';
 import 'package:intl/intl.dart';
 
-class MissingLuggage extends StatelessWidget {
-  MissingLuggage({Key? key}) : super(key: key);
+import '../constant/my_functions.dart';
+
+class MissingLuggageScreen extends StatelessWidget {
+  MissingLuggageScreen({Key? key}) : super(key: key);
   String datee = '';
 
   @override
@@ -31,10 +33,10 @@ class MissingLuggage extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 20),
+              padding: const EdgeInsets.only(left: 10,right: 10),
               child: SizedBox(
                 height: 40,
-                width: width / 1.2,
+                width: width / 1,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -119,7 +121,27 @@ class MissingLuggage extends StatelessWidget {
                           ],
                         ),
                       ),
+                    ),
+                    InkWell(
+                      onTap: (){
+
+                        adminProvider.fetchMissingLuggage();
+                      },
+                      child: Container(
+
+                        height: 35,
+                        width: width / 7,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+
+                            border: Border.all(
+                                width: 1, color: Colors.grey.shade500),
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.white),
+                        child: Icon(Icons.refresh),
+                      ),
                     )
+
                   ],
                 ),
               ),
@@ -141,7 +163,7 @@ class MissingLuggage extends StatelessWidget {
                                   padding: const EdgeInsets.only(
                                       left: 8, right: 8, bottom: 7),
                                   child: Container(
-                                      height: height / 5,
+                                      height: height / 5.4,
                                       decoration: BoxDecoration(
                                         color: Colors.white,
                                         boxShadow: [
@@ -163,21 +185,12 @@ class MissingLuggage extends StatelessWidget {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              item.name,
-                                              style: const TextStyle(
-                                                  fontFamily:
-                                                      "Poppins-SemiBold",
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.w500),
-                                            ),
-                                            Text(
-                                              item.pnrId,
-                                              style: TextStyle(
-                                                  fontFamily:
-                                                      "Poppins-SemiBold",
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: txtgry),
+                                              item.id,
+                                                style: const TextStyle(
+                                                    fontFamily:
+                                                    "Poppins-SemiBold",
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w500),
                                             ),
                                             const SizedBox(
                                               height: 3,
@@ -235,6 +248,7 @@ class MissingLuggage extends StatelessWidget {
                                                           FontWeight.w400,
                                                       color: Colors.black),
                                                 ),
+
                                               ],
                                             )
                                           ],
@@ -257,6 +271,72 @@ class MissingLuggage extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Future<void> _showMyDialog(BuildContext context,String name,String phone,String missingPlace,String status) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Reported passenger ",),
+          content: Container(
+            height: 90,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                RichText(text: TextSpan(text:"Name :  ",  style: TextStyle(fontWeight: FontWeight.bold,color:Colors.black),
+                    children:[TextSpan( text: name, style: DefaultTextStyle.of(context).style,
+                    )]
+
+                ),),
+                RichText(text: TextSpan(text:"Mobile number :  ",  style: TextStyle(fontWeight: FontWeight.bold,color:Colors.black),
+                  children:[TextSpan( text: phone, style: DefaultTextStyle.of(context).style,
+                  )]
+
+                ),),
+
+                RichText(text: TextSpan(text:"Missing Airport :  ",  style: TextStyle(fontWeight: FontWeight.bold,color:Colors.black),
+                  children:[TextSpan( text: missingPlace, style: DefaultTextStyle.of(context).style,
+                  )]
+
+                ),),
+                RichText(text: TextSpan(text:"Department :  ",  style: TextStyle(fontWeight: FontWeight.bold,color:Colors.black),
+                  children:[TextSpan( text: status, style: DefaultTextStyle.of(context).style,
+                  )]
+
+                ),),
+
+
+              ],
+            ),
+          ),
+          actions: [
+            Container(
+              height: 38,
+              width: 90,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Textclr,
+              ),
+              child: TextButton(
+                child: Text(
+                  "OK",
+                  style: TextStyle(
+                      color: Colors.black ,
+                      fontWeight: FontWeight.w600),
+                ),
+                onPressed: () {
+                  finish(context);
+                  // callNextReplacement(StaffHomeScreen(designation: staffDes, stfAirport: stsAirport, addedBy: '', stfName: staffName, staffId: stfId, phone: phone), context);
+
+                },
+              ),
+            )
+                    ],
+        );
+      },
     );
   }
 

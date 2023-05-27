@@ -26,33 +26,12 @@ class MakeQrScreen extends StatelessWidget {
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(left: 25, right: 25, top: 25),
-                  child: TextFormField(
-                    keyboardType: TextInputType.text,
-                    controller: values.qrUserNameCT,
-                    decoration: InputDecoration(
-                      hintText: 'Name',
-                      helperText: '',
-                      contentPadding: const EdgeInsets.all(11),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0)),
-                    ),
-                    validator: (value) {
-                      if (value!.trim().isEmpty) {
-                        return "Enter Name";
-                      } else {
-                        return null;
-                      }
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 25, right: 25),
+                  padding: const EdgeInsets.only(left: 25, right: 25,top: 25),
                   child: TextFormField(
                     keyboardType: TextInputType.text,
                     controller: values.qrPnrCT,
                     decoration: InputDecoration(
-                      hintText: 'PNR ID',
+                      hintText: 'PNR Number',
                       helperText: '',
                       contentPadding: const EdgeInsets.all(11),
                       border: OutlineInputBorder(
@@ -60,7 +39,7 @@ class MakeQrScreen extends StatelessWidget {
                     ),
                     validator: (value) {
                       if (value!.trim().isEmpty) {
-                        return "Enter PNR ID";
+                        return "Enter PNR Number";
                       } else {
                         return null;
                       }

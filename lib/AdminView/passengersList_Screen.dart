@@ -169,6 +169,7 @@ class CustomersListScreen extends StatelessWidget {
                   backgroundColor: themecolor,
                   onPressed: () {
                     value3.clearUserControllers();
+
                     callNext(
                         AddCustomerScreen(
                           userId: '',

@@ -19,6 +19,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:intl/intl.dart';
 import 'package:encrypt/encrypt.dart' as enc;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../AdminView/add_staff.dart';
 import '../AdminView/generateQr_Screen.dart';
@@ -27,6 +28,7 @@ import '../StaffView/staff_home_screen.dart';
 import '../UserView/contryCodeModel.dart';
 import '../UserView/splash_screen.dart';
 import '../UserView/tracking_screen.dart';
+import '../Users/login_Screen.dart';
 import '../admin_model/add_staff_model.dart';
 import '../constant/colors.dart';
 import '../model/missing_Lagguage_Model.dart';
@@ -68,6 +70,9 @@ class AdminProvider with ChangeNotifier {
   TextEditingController userEmailCT = TextEditingController();
   TextEditingController userDobCT = TextEditingController();
 
+
+
+
   List<CountryCode> countryCodeList = [];
 
   bool carouselCheck = false;
@@ -81,6 +86,7 @@ class AdminProvider with ChangeNotifier {
   List<PnrModel> checkList = [];
   List<LuggageModel> luggageList = [];
   List<MissingLuggage> missingLuggageList = [];
+  List<MissingLuggage> missingReportedList = [];
   List<String> airportNameList = [
     'Select Airport',
     "Salalah International Airport",
@@ -89,6 +95,50 @@ class AdminProvider with ChangeNotifier {
     'Khasab Airport'
   ];
 
+  void changeStaffStatus(String staffId,String designation,String phone,BuildContext context){
+    String loginUsername = '';
+    String stfDesignation = '';
+    String userStatus = '';
+    String staffAirport = '';
+    db.collection("USERS").doc(staffId).set({"DESIGNATION": designation,}, SetOptions(merge: true));
+    db.collection("STAFF").doc(staffId).set({"DESIGNATION": designation,}, SetOptions(merge: true));
+    notifyListeners();
+    db.collection("USERS")
+        .where("MOBILE_NUMBER", isEqualTo: phone)
+        .get()
+        .then((value) {
+      if (value.docs.isNotEmpty) {
+        Map<dynamic, dynamic> map = value.docs.first.data();
+        loginUsername = map['NAME'].toString();
+        userStatus = map['STATUS'].toString();
+        stfDesignation = map['DESIGNATION'].toString();
+
+        if (userStatus == "ACTIVE") {
+          db.collection('STAFF').doc(staffId).get().then((value) {
+            if (value.exists) {
+              staffAirport = value.get('AIRPORT');
+             fetchMissingLuggage();
+              fetchMissingReported();
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => StaffHomeScreen(
+                        designation: stfDesignation,
+                        stfAirport: staffAirport,
+                        addedBy: loginUsername,
+                        stfName: loginUsername, staffId: staffId, phone:phone,
+                      )));
+            }
+          });
+        }
+
+
+      }
+        });
+    
+    
+  }
+  
 
   Future<bool> showExitPopup(context) async {
     return await showDialog(
@@ -136,12 +186,8 @@ class AdminProvider with ChangeNotifier {
   }
 
 
-  checkingPnr(String pnrControllerText, BuildContext context, String username) {
-    db
-        .collection("LUGGAGE")
-        .where("PNR_ID", isEqualTo: pnrControllerText)
-        .get()
-        .then((value) {
+  checkingPnr(String pnrControllerText, BuildContext context, String username,String phone) {
+    db.collection("LUGGAGE").where("PNR_ID", isEqualTo: pnrControllerText).get().then((value) {
       checkList.clear();
       if (value.docs.isNotEmpty) {
         for (var element in value.docs) {
@@ -153,17 +199,13 @@ class AdminProvider with ChangeNotifier {
               map["PNR_ID"].toString(),
               map["STATUS"].toString()));
         }
-        checkList.sort(
-          (b, a) => b.lagagenumber.compareTo(a.lagagenumber),
-        );
-        if (checkList.isNotEmpty) {
+        // checkList.sort(
+        //   (b, a) => b.lagagenumber.compareTo(a.lagagenumber),
+        // );
+        if (checkList.length!=0) {
           luggageTracking(checkList[0].id);
-          callNext(
-              TrackingScreen(
-                pnrid: pnrControllerText,
-                username: username,
-              ),
-              context);
+          callNext(TrackingScreen(pnrid: pnrControllerText, username: username, userPhone: phone,), context);
+          pnrController.clear();
         }
       } else {
         final snackBar = SnackBar(
@@ -182,11 +224,10 @@ class AdminProvider with ChangeNotifier {
     });
   }
 
-  luggageTracking(
-    String lid,
-  ) {
+  luggageTracking(String lid,) {
     luggageList.clear();
     db.collection("LUGGAGE").doc(lid).snapshots().listen((event) {
+
       Map<dynamic, dynamic> map = event.data() as Map;
 
       luggageList.add(LuggageModel(
@@ -209,12 +250,190 @@ class AdminProvider with ChangeNotifier {
           map["LOADING_STATUS"] ?? "",
           map["UNLOADING_STATUS"] ?? "",
           map["CHECKOUT_STATUS"] ?? "",
-          map["MISSING_PLACE"] ?? ""));
+          map["MISSING_PLACE"] ?? "",
+          map["ARRIVAL_TIME_MILLI"] ?? "",
+
+
+      ));
       notifyListeners();
     });
     notifyListeners();
 
   }
+
+   checkMissingReportExist(String luggageId) async {
+print("dddddddddddddddd"+luggageId);
+     db.collection("LUGGAGE").doc(luggageId).get().then((value) {
+       if (value.get("MISSING_ISSUE_REPORT").isempty) {
+         return true;
+       }
+       else {
+         return false;
+       }
+
+     });
+
+  }
+  Future<void> addMissingLuggageReport(String luggageId,String phone,String userName,BuildContext context) async {
+     db.collection("LUGGAGE").doc(luggageId).get().then((value) {
+       if(value.exists){
+         Map<dynamic, dynamic> map = value.data() as Map;
+if(map["MISSING_ISSUE_REPORT"]=="YES"){
+  String text= "Missing issue already reported ";
+  missingReportAlert(context,text);
+  notifyListeners();
+
+}else{
+
+  reportIssueAlert(userName,phone,luggageId,context);
+
+}
+
+       }
+
+     });
+
+  }
+
+
+
+  reportIssueAlert(String userName,String phone,String luggageId,BuildContext context1) {
+
+    AlertDialog alert = AlertDialog(
+      backgroundColor: Colors.white,
+      scrollable: true,
+      title: const Text(
+        "Do you want to report this Luggage?",
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+      ),
+      content: SizedBox(
+        height: 50,
+        child: SingleChildScrollView(
+          child: Column(
+
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+
+                  Container(
+                    height: 35,
+                    width: 100,
+                    decoration: BoxDecoration( borderRadius: BorderRadius.all(Radius.circular(10)),
+                      color: cLightGrey,
+
+                    ),
+                    child: TextButton(
+                        child: const Text('NO',style: TextStyle(color: Colors.black87),),
+                        onPressed: () {
+                          finish(context1);
+                        }
+                    ),
+                  ),
+
+                  Container(
+                    height: 35,
+                    width: 100,
+                    decoration: BoxDecoration( borderRadius: BorderRadius.all(Radius.circular(10)),
+                      color: clc00a618,
+
+                    ),
+                    child: TextButton(
+                        child: const Text('YES',style: TextStyle(color: Colors.black),),
+                        onPressed: ()  {
+                          missingIssueReportFun(luggageId,userName,phone,context1);
+                        }
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    showDialog(
+      context: context1,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  missingIssueReportFun(String luggageId,String userName,String phone,BuildContext context2){
+    print("dkckdckdcmkdcmdkcmd");
+    db.collection("LUGGAGE").doc(luggageId).set({"MISSING_ISSUE_REPORT":"YES","MOBILE_NUMBER":phone,"USER_NAME":userName} ,SetOptions(merge: true));
+    const snackBar = const SnackBar(
+        elevation: 6.0,
+        backgroundColor: Colors.white,
+        behavior: SnackBarBehavior.floating,
+        shape:  RoundedRectangleBorder(
+            borderRadius:
+            BorderRadius.all(Radius.circular(20))),        duration: Duration(milliseconds: 2000),
+        content: Text(
+          "Luggage missing issue reported",
+
+          style:  TextStyle(color:Colors.red ),
+
+        ));
+    ScaffoldMessenger.of(context2).showSnackBar(snackBar);
+
+    notifyListeners();
+
+    finish(context2);
+notifyListeners();
+  }
+
+  missingReportAlert(BuildContext context,String text){
+
+  Widget okButton = Container(
+    height: 38,
+    width: 90,
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(10),
+      color: Textclr,
+    ),
+    child: TextButton(
+      child: Text(
+        "OK",
+        style: TextStyle(
+            color: Colors.black ,
+            fontWeight: FontWeight.w600),
+      ),
+      onPressed: () {
+        finish(context);
+        // callNextReplacement(StaffHomeScreen(designation: staffDes, stfAirport: stsAirport, addedBy: '', stfName: staffName, staffId: stfId, phone: phone), context);
+
+      },
+    ),
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    // title: Text("My title"),
+    content: Text(
+      text,
+
+      style:
+      const TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
+    ),
+    actions: [
+      okButton,
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+
+}
+
 
   String getRandomString(int length) {
     const _chars =
@@ -284,52 +503,90 @@ class AdminProvider with ChangeNotifier {
   }
 
   statusUpdateQrData(String luggageId, String staffDes, String staffAir,
-      String stfName, BuildContext context) {
+      String stfName,String stfId,String phone, BuildContext context2) {
     DateTime now = DateTime.now();
     String milli = now.millisecondsSinceEpoch.toString();
 
     db.collection("LUGGAGE").doc(luggageId).get().then((value) async {
       if (value.exists) {
-        if (staffDes == "LOADING") {
-          db.collection("LUGGAGE").doc(luggageId).set({
-            "LOADED_TIMEMILLI": milli,
-            "LOADED_TIME": now,
-            "STATUS": 'LOADING',
-            "LOADING_AIRPORT": staffAir,
-            "LOADING_STAFF_NAME": stfName,
-            "LOADING_STATUS": "CLEARED",
-            "LAST_SCANNED_DATEMILLI": milli,
-            "LAST_SCANNED_DATE": now,
-          }, SetOptions(merge: true));
-          String text = 'Loading completed';
-          showAlertDialog(context, text, staffDes, stfName, staffAir);
-        } else if (staffDes == "UNLOADING") {
-          db.collection("LUGGAGE").doc(luggageId).set({
-            "UNLOADED_TIMEMILLI": milli,
-            "UNLOADED_TIME": now,
-            "STATUS": 'UNLOADING',
-            "UNLOADING_AIRPORT": staffAir,
-            "UNLOADING_STAFF_NAME": stfName,
-            "LAST_SCANNED_DATE": now,
-            "LAST_SCANNED_DATEMILLI": milli,
-            "LAST_SCANNED_PLACE": staffAir
-          }, SetOptions(merge: true));
+        Map<dynamic, dynamic> map = value.data() as Map;
 
-          await checkMissingLuggageInUnloading(
-              context, luggageId, staffDes, stfName, staffAir);
+        if (staffDes == "LOADING") {
+          if(map["CHECK_IN_STATUS"]=="CLEARED"){
+            db.collection("LUGGAGE").doc(luggageId).set({
+              "LOADED_TIMEMILLI": milli,
+              "LOADED_TIME": now,
+              "STATUS": 'LOADING',
+              "LOADING_AIRPORT": staffAir,
+              "LOADING_STAFF_NAME": stfName,
+              "LOADING_STATUS": "CLEARED",
+              "LAST_SCANNED_DATEMILLI": milli,
+              "LAST_SCANNED_DATE": now,
+            }, SetOptions(merge: true));
+
+            String text = 'Loading completed';
+            showAlertDialog(context2, text, staffDes, stfName, staffAir,stfId,phone);
+
+          }else{
+            String text = 'Invalid Qr, Please complete previous step';
+            showAlertDialog(context2, text, staffDes, stfName, staffAir,stfId,phone);
+
+          }
+
+        } else if (staffDes == "UNLOADING") {
+
+
+          if(map["LOADING_STATUS"]=="CLEARED"){
+            db.collection("LUGGAGE").doc(luggageId).set({
+              "UNLOADED_TIMEMILLI": milli,
+              "UNLOADED_TIME": now,
+              "STATUS": 'UNLOADING',
+              "UNLOADING_AIRPORT": staffAir,
+              "UNLOADING_STAFF_NAME": stfName,
+              "LAST_SCANNED_DATE": now,
+              "LAST_SCANNED_DATEMILLI": milli,
+              "LAST_SCANNED_PLACE": staffAir,
+              "UNLOADING_STATUS": "CLEARED",
+              "MISSING": "NO",
+              "MISSING_PLACE": "NOT_MISSING",
+
+
+            }, SetOptions(merge: true));
+
+            await checkMissingLuggageInUnloading(context2, luggageId, staffDes, stfName, staffAir,stfId,phone);
+
+          }else{
+            String text = 'Invalid Qr, Please complete previous step';
+            showAlertDialog(context2, text, staffDes, stfName, staffAir,stfId,phone);
+
+          }
+
+
         } else if (staffDes == "CHECK_OUT") {
-          db.collection("LUGGAGE").doc(luggageId).set({
-            "CHECKOUT_TIMEMILLI": milli,
-            "CHECKOUT_TIME": now,
-            "STATUS": 'CHECK_OUT',
-            "CHECKOUT_AIRPORT": staffAir,
-            "CHECKOUT_STAFF_NAME": stfName,
-            "LAST_SCANNED_DATE": now,
-            "LAST_SCANNED_DATEMILLI": milli,
-            "LAST_SCANNED_PLACE": staffAir
-          }, SetOptions(merge: true));
-          await checkMissingLuggageInCheckout(
-              context, luggageId, staffDes, stfName, staffAir);
+
+          if(map["UNLOADING_STATUS"]=="CLEARED") {
+            db.collection("LUGGAGE").doc(luggageId).set({
+              "CHECKOUT_TIMEMILLI": milli,
+              "CHECKOUT_TIME": now,
+              "STATUS": 'CHECK_OUT',
+              "CHECKOUT_AIRPORT": staffAir,
+              "CHECKOUT_STAFF_NAME": stfName,
+              "LAST_SCANNED_DATE": now,
+              "LAST_SCANNED_DATEMILLI": milli,
+              "LAST_SCANNED_PLACE": staffAir,
+              "CHECKOUT_STATUS": "CLEARED",
+              "MISSING": "NO",
+              "MISSING_PLACE": "NOT_MISSING",
+
+            }, SetOptions(merge: true));
+            await checkMissingLuggageInCheckout(context2, luggageId, staffDes, stfName, staffAir,stfId,phone);
+          }else{
+            String text = 'Invalid Qr, Please complete previous step';
+            showAlertDialog(context2, text, staffDes, stfName, staffAir,stfId,phone);
+
+          }
+
+
         }
       }
     });
@@ -337,10 +594,9 @@ class AdminProvider with ChangeNotifier {
 
   void fetchMissingLuggage() {
     missingLuggageList.clear();
-
     db
         .collection("LUGGAGE")
-        .where("MISSING", isNotEqualTo: "")
+        .where("MISSING", isNotEqualTo: "NO")
         .get()
         .then((value) {
       if (value.docs.isNotEmpty) {
@@ -352,23 +608,57 @@ class AdminProvider with ChangeNotifier {
               element.id,
               map["PNR_ID"].toString(),
               map["STATUS"].toString(),
-              map["NAME"].toString(),
+              map["USER_NAME"]??"",
               map["MISSING"].toString(),
               map["ARRIVAL_PLACE"].toString(),
               map["FLIGHT_NAME"].toString(),
               map["LAST_SCANNED_DATEMILLI"].toString(),
-              map["LAST_SCANNED_PLACE"].toString()));
+              map["LAST_SCANNED_PLACE"].toString(),
+              map["MISSING_ISSUE_REPORT"]??"",
+              map["MOBILE_NUMBER"]??"",
+          ));
         }
         notifyListeners();
       }
     });
   }
 
+  void fetchMissingReported(){
+    db
+        .collection("LUGGAGE")
+        .where("MISSING_ISSUE_REPORT", isEqualTo: "YES")
+        .get()
+        .then((value) {
+      if (value.docs.isNotEmpty) {
+        missingReportedList.clear();
+        for (var element in value.docs) {
+          Map<dynamic, dynamic> map = element.data();
+
+          missingReportedList.add(MissingLuggage(
+            element.id,
+            map["PNR_ID"].toString(),
+            map["STATUS"].toString(),
+            map["USER_NAME"]??"",
+            map["MISSING"].toString(),
+            map["ARRIVAL_PLACE"].toString(),
+            map["FLIGHT_NAME"].toString(),
+            map["LAST_SCANNED_DATEMILLI"].toString(),
+            map["LAST_SCANNED_PLACE"].toString(),
+            map["MISSING_ISSUE_REPORT"]??"",
+            map["MOBILE_NUMBER"]??"",
+          ));
+        }
+        notifyListeners();
+      }
+    });
+
+  }
+
   void sortMissingLuggageFlightBase(String flightName) {
     missingLuggageList.clear();
     db
         .collection("LUGGAGE")
-        .where("MISSING", isNotEqualTo: "")
+        .where("MISSING", isNotEqualTo: "NO")
         .where("FLIGHT_NAME", isEqualTo: flightName)
         .get()
         .then((value) {
@@ -381,12 +671,49 @@ class AdminProvider with ChangeNotifier {
               element.id,
               map["PNR_ID"].toString(),
               map["STATUS"].toString(),
-              map["NAME"].toString(),
+              map["USER_NAME"]??"",
               map["MISSING"].toString(),
               map["ARRIVAL_PLACE"].toString(),
               map["FLIGHT_NAME"].toString(),
               map["LAST_SCANNED_DATEMILLI"].toString(),
-              map["LAST_SCANNED_PLACE"].toString()));
+              map["LAST_SCANNED_PLACE"].toString(),
+            map["MISSING_ISSUE_REPORT"]??"",
+            map["MOBILE_NUMBER"]??"",
+
+          ));
+        }
+        notifyListeners();
+      }
+      notifyListeners();
+    });
+  }
+  void filterMissingReportedFlightBase(String flightName) {
+    missingReportedList.clear();
+    db
+        .collection("LUGGAGE")
+        .where("MISSING_ISSUE_REPORT", isEqualTo: "YES")
+        .where("FLIGHT_NAME", isEqualTo: flightName)
+        .get()
+        .then((value) {
+      if (value.docs.isNotEmpty) {
+        missingReportedList.clear();
+        for (var element in value.docs) {
+          Map<dynamic, dynamic> map = element.data();
+
+          missingReportedList.add(MissingLuggage(
+              element.id,
+              map["PNR_ID"].toString(),
+              map["STATUS"].toString(),
+              map["USER_NAME"]??"",
+              map["MISSING"].toString(),
+              map["ARRIVAL_PLACE"].toString(),
+              map["FLIGHT_NAME"].toString(),
+              map["LAST_SCANNED_DATEMILLI"].toString(),
+              map["LAST_SCANNED_PLACE"].toString(),
+            map["MISSING_ISSUE_REPORT"]??"",
+            map["MOBILE_NUMBER"]??"",
+
+          ));
         }
         notifyListeners();
       }
@@ -411,12 +738,49 @@ class AdminProvider with ChangeNotifier {
               element.id,
               map["PNR_ID"].toString(),
               map["STATUS"].toString(),
-              map["NAME"].toString(),
+              map["USER_NAME"]??"",
               map["MISSING"].toString(),
               map["ARRIVAL_PLACE"].toString(),
               map["FLIGHT_NAME"].toString(),
               map["LAST_SCANNED_DATEMILLI"].toString(),
-              map["LAST_SCANNED_PLACE"].toString()));
+              map["LAST_SCANNED_PLACE"].toString(),
+            map["MISSING_ISSUE_REPORT"]??"",
+            map["MOBILE_NUMBER"]??"",
+
+          ));
+        }
+        notifyListeners();
+      }
+      notifyListeners();
+    });
+  }
+  void filterMissingReportedByDateWise(var firstDate, var lastDate) {
+    missingReportedList.clear();
+    db
+        .collection("LUGGAGE")
+        .where("MISSING_ISSUE_REPORT", isEqualTo: "YES")
+        .where("LAST_SCANNED_DATE", isGreaterThanOrEqualTo: firstDate)
+        .where("LAST_SCANNED_DATE", isLessThanOrEqualTo: lastDate)
+        .get()
+        .then((value) {
+      if (value.docs.isNotEmpty) {
+        missingReportedList.clear();
+        for (var element in value.docs) {
+          Map<dynamic, dynamic> map = element.data();
+          missingLuggageList.add(MissingLuggage(
+              element.id,
+              map["PNR_ID"].toString(),
+              map["STATUS"].toString(),
+              map["USER_NAME"]??"",
+              map["MISSING"].toString(),
+              map["ARRIVAL_PLACE"].toString(),
+              map["FLIGHT_NAME"].toString(),
+              map["LAST_SCANNED_DATEMILLI"].toString(),
+              map["LAST_SCANNED_PLACE"].toString(),
+            map["MISSING_ISSUE_REPORT"]??"",
+            map["MOBILE_NUMBER"]??"",
+
+          ));
         }
         notifyListeners();
       }
@@ -424,22 +788,24 @@ class AdminProvider with ChangeNotifier {
     });
   }
 
-  checkMissingLuggageInUnloading(BuildContext context, String luggageId,
-      String staffDes, String staffName, String staffAirport) async {
+  checkMissingLuggageInUnloading(BuildContext context1, String luggageId,
+      String staffDes, String staffName, String staffAirport,String stfId,String phone ) async {
     await db.collection("LUGGAGE").doc(luggageId).get().then((value) {
       if (value.exists) {
         Map<dynamic, dynamic> map = value.data() as Map;
         if (map["ARRIVAL_PLACE"] == map["UNLOADING_AIRPORT"]) {
           String text = 'Unloading completed';
-          showAlertDialog(context, text, staffDes, staffName, staffAirport);
+          showAlertDialog(context1, text, staffDes, staffName, staffAirport,stfId,phone);
           notifyListeners();
         } else {
           db.collection("LUGGAGE").doc(luggageId).set({
             "MISSING": "YES",
             "MISSING_PLACE": "UNLOADING",
+            "UNLOADING_STATUS": "NOT",
+
           }, SetOptions(merge: true));
           String text = 'Airport miss matched';
-          showAlertDialog(context, text, staffDes, staffName, staffAirport);
+          showAlertDialog(context1, text, staffDes, staffName, staffAirport,stfId,phone);
           notifyListeners();
         }
       }
@@ -447,21 +813,23 @@ class AdminProvider with ChangeNotifier {
   }
 
   checkMissingLuggageInCheckout(BuildContext context, String luggageId,
-      String staffDes, String staffName, String staffAirport) async {
+      String staffDes, String staffName, String staffAirport,String stfId,String phone) async {
     await db.collection("LUGGAGE").doc(luggageId).get().then((value) {
       if (value.exists) {
         Map<dynamic, dynamic> map = value.data() as Map;
         if (map["ARRIVAL_PLACE"] == map["CHECKOUT_AIRPORT"]) {
           String text = 'Checkout completed';
-          showAlertDialog(context, text, staffDes, staffName, staffAirport);
+          showAlertDialog(context, text, staffDes, staffName, staffAirport,stfId,phone);
           notifyListeners();
         } else {
           db.collection("LUGGAGE").doc(luggageId).set({
             "MISSING": "YES",
             "MISSING_PLACE": "CHECK_OUT",
+            "CHECKOUT_STATUS": "NOT",
+
           }, SetOptions(merge: true));
           String text = 'Airport miss matched';
-          showAlertDialog(context, text, staffDes, staffName, staffAirport);
+          showAlertDialog(context, text, staffDes, staffName, staffAirport,stfId,phone);
           notifyListeners();
         }
       }
@@ -469,33 +837,27 @@ class AdminProvider with ChangeNotifier {
   }
 
   showAlertDialog(BuildContext context, String text, String staffDes,
-      String staffName, String stsAirport) {
+      String staffName, String stsAirport,String stfId,String phone) {
     // set up the button
     Widget okButton = Container(
       height: 38,
       width: 90,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: text != "Airport miss matched" ? Textclr : txtred,
+        color: text =="Airport miss matched"|| text == "Invalid Qr, Please complete previous step" ? txtred:Textclr,
       ),
       child: TextButton(
         child: Text(
           "OK",
           style: TextStyle(
               color:
-                  text != "Airport miss matched" ? Colors.black : Colors.white,
+              text == "Airport miss matched"|| text== "Invalid Qr, Please complete previous step" ? Colors.white:Colors.black ,
               fontWeight: FontWeight.w600),
         ),
         onPressed: () {
           finish(context);
-          callNextReplacement(
-              StaffHomeScreen(
-                designation: staffDes,
-                stfAirport: stsAirport,
-                addedBy: '',
-                stfName: staffName,
-              ),
-              context);
+          callNextReplacement(StaffHomeScreen(designation: staffDes, stfAirport: stsAirport, addedBy: '', stfName: staffName, staffId: stfId, phone: phone), context);
+
         },
       ),
     );
@@ -609,10 +971,7 @@ class AdminProvider with ChangeNotifier {
               firstDate = _dateRangePickerController.selectedRange!.startDate!;
               secondDate = _dateRangePickerController.selectedRange!.startDate!;
               endDate2 = secondDate.add(const Duration(hours: 24));
-              DateTime firstDate2 = firstDate.subtract(Duration(
-                  hours: firstDate.hour,
-                  minutes: firstDate.minute,
-                  seconds: firstDate.second));
+              DateTime firstDate2 = firstDate.subtract(Duration(hours: firstDate.hour, minutes: firstDate.minute, seconds: firstDate.second));
               sortMissingLuggageByDateWise(firstDate2, endDate2);
               notifyListeners();
             } else {
@@ -669,7 +1028,7 @@ class AdminProvider with ChangeNotifier {
 
   Future<void> userRegistration(BuildContext context1, String addedBy,
       String userId, String from, String passengerStatus) async {
-    bool numberStatus = await checkNumberExist(userPhoneCT.text);
+    bool numberStatus = await checkNumberExist(selectedValue! + userPhoneCT.text);
     if (!numberStatus || userPhoneCT.text == passengerOldPhone) {
       showDialog(
           context: context1,
@@ -712,10 +1071,10 @@ class AdminProvider with ChangeNotifier {
 
             notifyListeners();
           });
-          notifyListeners();
         });
         notifyListeners();
       } else {
+        passengerMap['PASSENGER_IMAGE'] = "";
         passengerEditMap['PASSENGER_IMAGE'] = editImage;
       }
       passengerEditMap["DOB STRING"] = userDobCT.text;
@@ -793,6 +1152,8 @@ class AdminProvider with ChangeNotifier {
 
   void clearTicketControllers() {
     previousPnrId = '';
+    toTicket='Select Airport';
+    fromTicket='Select Airport';
     ticketFromController.clear();
     ticketToController.clear();
     passengerCountController.clear();
@@ -806,14 +1167,16 @@ class AdminProvider with ChangeNotifier {
 
   TextEditingController NameController = TextEditingController();
   TextEditingController StaffidController = TextEditingController();
+  TextEditingController StaffpasswordController = TextEditingController();
   TextEditingController EmailController = TextEditingController();
   TextEditingController PhoneNumberController = TextEditingController();
   List<AddStaffModel> modellist = [];
   List<AddStaffModel> filtersStaffList = [];
 
   String staffAirportName = 'Select Airport';
-  String designation = 'Select Designation';
+  String staffDepartment = 'Select Department';
   String flightName = 'Select Flight Name';
+  String staffDesignation = 'CHECK_IN';
   String ticketFlightName = 'Select Flight Name';
   String airportName = '';
   String fromTicket = 'Select Airport';
@@ -825,6 +1188,12 @@ class AdminProvider with ChangeNotifier {
     "Air india Express",
     'Srilankan Airlines',
     'Etihad Airways'
+  ];
+  List<String> staffDesignationList = [
+    "CHECK_IN",
+    "LOADING",
+    "UNLOADING",
+    "CHECK_OUT",
   ];
 
   List<String> fromList = [
@@ -914,6 +1283,9 @@ class AdminProvider with ChangeNotifier {
       String stfName) async {
     String arrivalPlace = '';
     String flightName = '';
+    String arrivalTimeMilli = '';
+    String fromPlace = '';
+    String toPlace = '';
 
     db
         .collection("TICKETS")
@@ -924,10 +1296,11 @@ class AdminProvider with ChangeNotifier {
         Map<dynamic, dynamic> map = value.docs.first.data();
         arrivalPlace = map["TO"].toString();
         flightName = map["FLIGHT_NAME"].toString();
+        arrivalTimeMilli = map["ARRIVAL_DATE_MILLI"].toString();
+        fromPlace = map["FROM"].toString();
+        toPlace = map["TO"].toString();
         notifyListeners();
-        generateQrCode(
-            context, staffAirport, stfName, arrivalPlace, flightName);
-        clearQrControllers();
+        generateQrCode(context, staffAirport, stfName, arrivalPlace, flightName,arrivalTimeMilli,fromPlace,toPlace);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("Sorry, No PNR ID found..."),
@@ -938,7 +1311,7 @@ class AdminProvider with ChangeNotifier {
   }
 
   void generateQrCode(BuildContext context, String staffAirport, String stfName,
-      String arrivalPlace, String flightName) {
+      String arrivalPlace, String flightName,String arrivalTimeMilli,String fromPlace,String toPlace) {
     HashMap<String, Object> qrMap = HashMap();
     qrDataList.clear();
     int luggageCount = int.parse(qrLuggageCountCT.text);
@@ -947,10 +1320,10 @@ class AdminProvider with ChangeNotifier {
       qrData =
           DateTime.now().millisecondsSinceEpoch.toString() + getRandomString(4);
       DateTime now = DateTime.now();
-      qrMap['NAME'] = qrUserNameCT.text;
       qrMap['PNR_ID'] = qrPnrCT.text;
       qrMap['QR_ID'] = qrID;
       qrMap['ARRIVAL_PLACE'] = arrivalPlace;
+      qrMap['ARRIVAL_TIME_MILLI'] = arrivalTimeMilli;
       qrMap['FLIGHT_NAME'] = flightName;
       qrMap['LUGGAGE_ID'] = qrData;
       qrMap['DATE'] = qrID;
@@ -960,17 +1333,21 @@ class AdminProvider with ChangeNotifier {
       qrMap['CHECK_IN_TIME'] = now;
       qrMap['CHECK_IN_STAFF_NAME'] = stfName;
       qrMap['CHECK_IN_AIRPORT'] = staffAirport;
+      qrMap['FROM'] = fromPlace;
+      qrMap['TO'] = toPlace;
       qrDataList.add(qrData);
       db.collection("LUGGAGE").doc(qrData).set(qrMap);
       notifyListeners();
     }
+
     callNext(
         GenerateQrScreen(
           qrDatasList: qrDataList,
-          qrId: qrData,
-          name: qrUserNameCT.text,
+          qrId: qrData, fromPlace: fromPlace, toPlace: toPlace,
         ),
         context);
+    clearQrControllers();
+
   }
 
   void fetchCustomers() {
@@ -991,7 +1368,7 @@ class AdminProvider with ChangeNotifier {
             map["MOBILE_NUMBER"].toString(),
             map["COUNTRY_CODE"].toString(),
             map["DOB STRING"].toString(),
-            map["PASSENGER_IMAGE"].toString(),
+            map["PASSENGER_IMAGE"]??"",
             map["STATUS"].toString(),
           ));
         }
@@ -1035,7 +1412,7 @@ class AdminProvider with ChangeNotifier {
               element.id.toString(),
               map["NAME"].toString(),
               map["STAFF_ID"].toString(),
-              map["PROFILE_IMAGE"].toString(),
+              map["PROFILE_IMAGE"]??"",
               map["MOBILE_NUMBER"].toString(),
               map["STATUS"].toString()),
         );
@@ -1052,7 +1429,7 @@ class AdminProvider with ChangeNotifier {
   Future<void> addStaff(BuildContext context, String from, String userId,
       String status, String addedBy) async {
     bool idStatus = await checkStaffIdExist(StaffidController.text);
-    bool numberStatus = await checkNumberExist(PhoneNumberController.text);
+    bool numberStatus = await checkNumberExist(selectedValue! + PhoneNumberController.text);
     if (!idStatus || StaffidController.text == staffOldId){
       if (!numberStatus || PhoneNumberController.text == staffOldPhone) {
         showDialog(
@@ -1070,15 +1447,17 @@ class AdminProvider with ChangeNotifier {
         dataMap["NAME"] = NameController.text;
         userMap["NAME"] = NameController.text;
         dataMap["STAFF_ID"] = StaffidController.text;
+        dataMap["PASSWORD"] = StaffpasswordController.text;
         dataMap["TIME"] = DateTime.now();
         userMap["STAFF_ID"] = StaffidController.text;
+        userMap["PASSWORD"] = StaffpasswordController.text;
         // dataMap["EMAIL"] = EmailController.text;
         dataMap["MOBILE_NUMBER"] = PhoneNumberController.text;
         dataMap["COUNTRY_CODE"] = selectedValue.toString();
         userMap["MOBILE_NUMBER"] = selectedValue! + PhoneNumberController.text;
         dataMap["AIRPORT"] = staffAirportName.toString();
-        dataMap["DESIGNATION"] = designation.toString();
-        userMap["DESIGNATION"] = designation.toString();
+        dataMap["DESIGNATION"] = staffDepartment.toString();
+        userMap["DESIGNATION"] = staffDepartment.toString();
         userMap["TYPE"] = "STAFF";
         if (from == '') {
           dataMap["ID"] = id.toString();
@@ -1150,10 +1529,11 @@ class AdminProvider with ChangeNotifier {
   }
 
   void clearStaff() {
+    StaffpasswordController.clear();
     NameController.clear();
     StaffidController.clear();
     PhoneNumberController.clear();
-    designation = 'Select Designation';
+    staffDepartment = 'Select Department';
     staffAirportName = 'Select Airport';
     fileImage = null;
     staffImage = "";
@@ -1191,11 +1571,11 @@ class AdminProvider with ChangeNotifier {
         staffEditId = map['ID'].toString();
         NameController.text = map['NAME'].toString();
         staffOldId = StaffidController.text = map['STAFF_ID'].toString();
+        StaffpasswordController.text = map['PASSWORD'].toString();
         staffAirportName = map['AIRPORT'].toString();
-        designation = map["DESIGNATION"].toString();
+        staffDepartment = map["DESIGNATION"].toString();
         selectedValue = map["COUNTRY_CODE"].toString();
-        staffOldPhone = PhoneNumberController.text =
-            map["MOBILE_NUMBER"].toString().replaceAll("+91", '');
+        staffOldPhone = PhoneNumberController.text = map["MOBILE_NUMBER"].toString();
         status = map['STATUS'].toString();
         staffImage = map["PROFILE_IMAGE"] ?? "";
       }
@@ -1341,7 +1721,11 @@ class AdminProvider with ChangeNotifier {
       }
       ticketMap["ADDED_TIME"] = DateTime.now();
       ticketMap["ARRIVAL"] = arrivalTime.text;
+      ticketMap["ARRIVAL_DATE"] = arrivalDate;
+      ticketMap["ARRIVAL_DATE_MILLI"] = arrivalDateMilli;
       ticketMap["DEPARTURE"] = departureTime.text;
+      ticketMap["DEPARTURE_DATE"] = departureDate;
+      ticketMap["DEPARTURE_DATE_MILLI"] = departureDateMilli;
       ticketMap["PASSENGERS"] = ticketNameList;
       if (from != 'edit') {
         db.collection("TICKETS").doc(ticketId).set(ticketMap);
@@ -1450,10 +1834,14 @@ class AdminProvider with ChangeNotifier {
                   ),
                   InkWell(
                     onTap: () async {
+                      SharedPreferences userPreference = await SharedPreferences.getInstance();
+
                       FirebaseAuth auth = FirebaseAuth.instance;
                       auth.signOut();
+                      userPreference.clear();
                       finish(context);
-                      callNextReplacement(const SplashScreen(), context);
+                      CountryCode("Oman", "OM", "+968");
+                      callNextReplacement(const LoginScreen(), context);
                     },
                     child: Container(
                       alignment: Alignment.center,
@@ -1486,6 +1874,10 @@ class AdminProvider with ChangeNotifier {
   }
 
   String selectedDateTime = "";
+  DateTime arrivalDate = DateTime.now();
+  String arrivalDateMilli = '';
+  DateTime departureDate = DateTime.now();
+  String departureDateMilli = '';
 
   datePicker(context, String ticketTime) {
     DatePicker.showDateTimePicker(context,
@@ -1494,8 +1886,13 @@ class AdminProvider with ChangeNotifier {
         maxTime: DateTime(3000, 12, 31), onConfirm: (dateTime) {
       selectedDateTime = DateFormat("dd/MM/yyyy  HH:mm").format(dateTime);
       if (ticketTime == "Arrival") {
+        arrivalDate=dateTime;
+        arrivalDateMilli=dateTime.millisecondsSinceEpoch.toString();
         arrivalTime.text = selectedDateTime;
       } else {
+         departureDate =dateTime;
+         departureDateMilli=dateTime.millisecondsSinceEpoch.toString();
+
         departureTime.text = selectedDateTime;
       }
       notifyListeners();

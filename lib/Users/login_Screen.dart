@@ -10,6 +10,7 @@ import 'package:sms_autofill/sms_autofill.dart';
 
 import '../Providers/admin_provider.dart';
 import '../Providers/loginProvider.dart';
+import '../StaffView/staff_login_page.dart';
 import '../UserView/contryCodeModel.dart';
 import '../constant/colors.dart';
 import '../constant/my_functions.dart';
@@ -46,7 +47,6 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> signInWithPhoneAuthCredential(
       BuildContext context, PhoneAuthCredential phoneAuthCredential) async {
     if (kDebugMode) {
-      print('done 1  $phoneAuthCredential');
     }
     setState(() {
       showLoading = true;
@@ -55,7 +55,6 @@ class _LoginScreenState extends State<LoginScreen> {
       final authCredential =
           await auth.signInWithCredential(phoneAuthCredential);
       if (kDebugMode) {
-        print(' 1  $phoneAuthCredential');
       }
       setState(() {
         showLoading = false;
@@ -89,11 +88,13 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   final FocusNode _pinPutFocusNode = FocusNode();
+  var focusNode = FocusNode();
 
   Widget getMobileFormWidget(context) {
     AdminProvider adminProvider =
         Provider.of<AdminProvider>(context, listen: false);
     adminProvider.fetchCountryJson();
+
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -105,8 +106,40 @@ class _LoginScreenState extends State<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Image(
-                  image: AssetImage("assets/topLayer.png"), height: 150),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Image(
+                      image: AssetImage("assets/topLayer.png"), height: 150),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: InkWell(
+                      onTap: () {
+                        LoginProvider loginProvider =
+                        Provider.of<LoginProvider>(context, listen: false);
+                        loginProvider. staffLoginIdController.clear();
+                        loginProvider. staffLoginPasswordController.clear();
+                        callNext( StaffLogin(), context);
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        height: 43,
+                        width: width/3,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: darkThemeColor ),
+                            borderRadius:
+                            const BorderRadius.all(Radius.circular(10))),
+                        child:  Text(
+                          "STAFF LOGIN",
+                          style:
+                          TextStyle(color: darkThemeColor, fontSize: 15),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -254,6 +287,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   InkWell(
                     onTap: () {
                       adminProvider.clearUserControllers();
+
                       CountryCode("Oman", "OM", "+968");
 
                       callNext(UserRegistrationScreen(), context);
@@ -350,8 +384,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         duration: Duration(milliseconds: 3000),
                                       ));
                                       if (kDebugMode) {
-                                        print(verificationFailed.message
-                                            .toString());
+
                                       }
                                     },
                                     codeSent:
@@ -361,6 +394,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         currentSate = MobileVarificationState
                                             .SHOW_OTP_FORM_STATE;
                                         this.verificationId = verificationId;
+                                        listenOtp();
 
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(const SnackBar(
@@ -371,7 +405,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                         ));
 
                                         if (kDebugMode) {
-                                          print("");
                                         }
                                       });
                                     },
@@ -405,6 +438,10 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> listenOtp() async {
+    SmsAutoFill().listenForCode;
   }
 
   getOtpFormWidget(context) {

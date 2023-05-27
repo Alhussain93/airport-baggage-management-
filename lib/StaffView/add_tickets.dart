@@ -227,6 +227,8 @@ class AddTickets extends StatelessWidget {
                     validator: (value) {
                       if (value == 'Select Airport') {
                         return 'Select Airport';
+                      }else if( values.fromTicket==value){
+                        return 'Select Airports are same';
                       }
                       return null;
                     },
