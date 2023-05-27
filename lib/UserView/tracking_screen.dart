@@ -236,7 +236,7 @@ class TrackingScreen extends StatelessWidget {
 
                                       },
                                       child: Container(height: 35,
-                                        width: 100,
+                                        width: 110,
 
                                         alignment: Alignment.center,
                                         decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -250,7 +250,7 @@ class TrackingScreen extends StatelessWidget {
                                             ],
                                             border: Border.all(color: clc00a618)),
 
-                                        child: Text('Report a Issue',style: TextStyle(color: Colors.black,fontSize: 12,fontWeight: FontWeight.w600),),
+                                        child: Text('Report Missing\n     Luggage',style: TextStyle(color: Colors.black,fontSize: 11,fontWeight: FontWeight.w600),),
                                       ),
                                     ),
                                   ),
@@ -643,7 +643,13 @@ class TrackingScreen extends StatelessWidget {
                                                 fontWeight: FontWeight.w500,
                                                 color: cl252525),
                                           ):const SizedBox(),
-
+                                          item.unloadingStatus==""&&item.missingPlace != "UNLOADING"?Text(
+                                            "Unloading",
+                                            style: TextStyle(
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.w500,
+                                                color: cl252525),
+                                          ):const SizedBox(),
 
                                           item.unloadingStatus==""&&item.missingPlace != "UNLOADING"?Text("Expected Time :",style: TextStyle(fontSize: 10),):SizedBox(),
                                           item.unloadingStatus==""&&item.missingPlace != "UNLOADING"?
@@ -741,7 +747,13 @@ class TrackingScreen extends StatelessWidget {
 
                                           Text(item.checkOutStatus=="CLEARED"&&item.stfConveyorBelt!=''? item.stfConveyorBelt: "", style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: cl252525)),
 
-
+                                          item.checkOutStatus==""&&item.missingPlace != "UNLOADING"?Text(
+                                            "Check Out",
+                                            style: TextStyle(
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.w500,
+                                                color: cl252525),
+                                          ):const SizedBox(),
                                           item.checkOutStatus==""&&item.missingPlace != "UNLOADING"?Text("Expected Time :",style: TextStyle(fontSize: 10),):SizedBox(),
                                           item.checkOutStatus==""&&item.missingPlace != "UNLOADING"?
                                           Text(
