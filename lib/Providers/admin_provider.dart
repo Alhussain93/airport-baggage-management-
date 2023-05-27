@@ -304,7 +304,7 @@ if(map["MISSING_ISSUE_REPORT"]=="YES"){
       backgroundColor: Colors.white,
       scrollable: true,
       title: const Text(
-        "Do you want to report this Luggage?",
+        "Do you want to report ?",
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
       ),
       content: SizedBox(
