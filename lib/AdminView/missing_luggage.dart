@@ -95,7 +95,7 @@ class MissingLuggageScreen extends StatelessWidget {
                     }),
                     InkWell(
                       onTap: () {
-                        adminProvider.showCalendarDialog(context);
+                        adminProvider.showCalendarDialog(context,"LUGGAGE");
                       },
                       child: Container(
                         height: 35,

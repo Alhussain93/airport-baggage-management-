@@ -20,6 +20,7 @@ class LuggageModel {
   String checkOutStatus;
   String missingPlace;
   String arrivalTimeMilli;
+  String stfConveyorBelt;
 
   LuggageModel(
     this.id,
@@ -43,5 +44,6 @@ class LuggageModel {
     this.checkOutStatus,
     this.missingPlace,
     this.arrivalTimeMilli,
+    this.stfConveyorBelt,
   );
 }

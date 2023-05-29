@@ -252,6 +252,7 @@ class AdminProvider with ChangeNotifier {
           map["CHECKOUT_STATUS"] ?? "",
           map["MISSING_PLACE"] ?? "",
           map["ARRIVAL_TIME_MILLI"] ?? "",
+          map["CONVEYOR_BELT"] ?? "",
 
 
       ));
@@ -303,7 +304,7 @@ if(map["MISSING_ISSUE_REPORT"]=="YES"){
       backgroundColor: Colors.white,
       scrollable: true,
       title: const Text(
-        "Do you want to report this Luggage?",
+        "Are you sure to report ?",
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
       ),
       content: SizedBox(
@@ -503,7 +504,7 @@ notifyListeners();
   }
 
   statusUpdateQrData(String luggageId, String staffDes, String staffAir,
-      String stfName,String stfId,String phone, BuildContext context2) {
+      String stfName,String stfId,String phone,String stfBelt, BuildContext context2) {
     DateTime now = DateTime.now();
     String milli = now.millisecondsSinceEpoch.toString();
 
@@ -577,6 +578,7 @@ notifyListeners();
               "CHECKOUT_STATUS": "CLEARED",
               "MISSING": "NO",
               "MISSING_PLACE": "NOT_MISSING",
+              "CONVEYOR_BELT": stfBelt,
 
             }, SetOptions(merge: true));
             await checkMissingLuggageInCheckout(context2, luggageId, staffDes, stfName, staffAir,stfId,phone);
@@ -945,7 +947,10 @@ notifyListeners();
   String startdateformat = '';
   String enddateformat = '';
 
-  void showCalendarDialog(BuildContext context) {
+
+
+
+  void showCalendarDialog(BuildContext context,String from) {
     Widget calendarWidget() {
       return SizedBox(
         width: 300,
@@ -972,8 +977,14 @@ notifyListeners();
               secondDate = _dateRangePickerController.selectedRange!.startDate!;
               endDate2 = secondDate.add(const Duration(hours: 24));
               DateTime firstDate2 = firstDate.subtract(Duration(hours: firstDate.hour, minutes: firstDate.minute, seconds: firstDate.second));
-              sortMissingLuggageByDateWise(firstDate2, endDate2);
-              notifyListeners();
+              if(from=="LUGGAGE"){
+                sortMissingLuggageByDateWise(firstDate2, endDate2);
+                notifyListeners();
+              }else{
+                filterMissingReportedByDateWise(firstDate2, endDate2);
+                notifyListeners();
+              }
+
             } else {
               firstDate = _dateRangePickerController.selectedRange!.startDate!;
               secondDate = _dateRangePickerController.selectedRange!.endDate!;
@@ -982,8 +993,14 @@ notifyListeners();
                   hours: firstDate.hour,
                   minutes: firstDate.minute,
                   seconds: firstDate.second));
+              if(from=="LUGGAGE"){
+                sortMissingLuggageByDateWise(firstDate2, endDate2);
+                notifyListeners();
+              }else{
+                filterMissingReportedByDateWise(firstDate2, endDate2);
+                notifyListeners();
+              }
 
-              sortMissingLuggageByDateWise(firstDate2, endDate2);
 
               final formatter = DateFormat('dd/MM/yyyy');
               startdateformat = formatter.format(firstDate);
@@ -1178,6 +1195,7 @@ notifyListeners();
   String flightName = 'Select Flight Name';
   String staffDesignation = 'CHECK_IN';
   String ticketFlightName = 'Select Flight Name';
+  String conveyorBeltNo = 'Select Belt No';
   String airportName = '';
   String fromTicket = 'Select Airport';
   String toTicket = 'Select Airport';
@@ -1188,6 +1206,14 @@ notifyListeners();
     "Air india Express",
     'Srilankan Airlines',
     'Etihad Airways'
+  ];
+  List<String> conveyorBeltList = [
+    "Select Belt No",
+    "Belt No: 1",
+    "Belt No: 2",
+    "Belt No: 3",
+    'Belt No: 4',
+    'Belt No: 5'
   ];
   List<String> staffDesignationList = [
     "CHECK_IN",
