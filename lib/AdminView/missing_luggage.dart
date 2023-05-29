@@ -78,7 +78,7 @@ class MissingLuggageScreen extends StatelessWidget {
                               value1.sortMissingLuggageFlightBase(
                                   newValue.toString());
                             },
-                            items: value1.flightNameList.map((item1) {
+                            items: value1.flightNames.map((item1) {
                               return DropdownMenuItem(
                                   value: item1,
                                   child: Padding(

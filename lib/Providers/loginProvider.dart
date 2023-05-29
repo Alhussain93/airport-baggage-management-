@@ -85,6 +85,8 @@ class LoginProvider extends ChangeNotifier {
           } else if (loginUsertype =="ADMIN") {
             adminProvider.fetchMissingLuggage();
             adminProvider.fetchMissingReported();
+            adminProvider.fetchFlightName();
+            adminProvider.fetchAireportName();
 
 
             Navigator.pushReplacement(

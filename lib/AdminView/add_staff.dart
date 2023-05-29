@@ -369,7 +369,7 @@ class AddStaff extends StatelessWidget {
                           onChanged: (newValue) {
                             value1.staffAirportName = newValue.toString();
                           },
-                          items: airportNameList.map((item1) {
+                          items:value1.airportNamesList.map((item1) {
                             return DropdownMenuItem(
                                 value: item1,
                                 child: Padding(

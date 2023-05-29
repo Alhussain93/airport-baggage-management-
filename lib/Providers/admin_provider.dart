@@ -87,13 +87,13 @@ class AdminProvider with ChangeNotifier {
   List<LuggageModel> luggageList = [];
   List<MissingLuggage> missingLuggageList = [];
   List<MissingLuggage> missingReportedList = [];
-  List<String> airportNameList = [
-    'Select Airport',
-    "Salalah International Airport",
-    "Duqm International Airport",
-    "Sohar International Airport",
-    'Khasab Airport'
-  ];
+  // List<String> airportNameList = [
+  //   'Select Airport',
+  //   "Salalah International Airport",
+  //   "Duqm International Airport",
+  //   "Sohar International Airport",
+  //   'Khasab Airport'
+  // ];
 
   void changeStaffStatus(String staffId,String designation,String phone,BuildContext context){
     String loginUsername = '';
@@ -135,10 +135,10 @@ class AdminProvider with ChangeNotifier {
 
       }
         });
-    
-    
+
+
   }
-  
+
 
   Future<bool> showExitPopup(context) async {
     return await showDialog(
@@ -2024,6 +2024,33 @@ notifyListeners();
             value['code'].toString(), value['dial_code'].toString()));
         notifyListeners();
       }
+    });
+  }
+  List<dynamic>flightNames=[];
+  List<dynamic>airportNamesList=[];
+
+  void fetchFlightName(){
+
+    db.collection("AIRPORTS").doc("FLIGHT").get().then((value) {
+      if (value.exists) {
+        Map<dynamic, dynamic> map = value.data() as Map;
+        flightNames = map["NAME"];
+
+         notifyListeners();
+      }
+      print(flightNames.toString()+"haiba");
+    });
+  }
+  void fetchAireportName(){
+
+    db.collection("AIRPORTS").doc("AIRPORTS").get().then((value) {
+      if (value.exists) {
+        Map<dynamic, dynamic> map = value.data() as Map;
+        airportNamesList = map["NAME"];
+
+         notifyListeners();
+      }
+      print(airportNamesList.toString()+"haiba");
     });
   }
 
