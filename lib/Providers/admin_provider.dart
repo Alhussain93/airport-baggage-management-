@@ -1199,14 +1199,14 @@ notifyListeners();
   String airportName = '';
   String fromTicket = 'Select Airport';
   String toTicket = 'Select Airport';
-  List<String> flightNameList = [
-    "Select Flight Name",
-    "Air Arabia Abu dhabi",
-    "Vistara",
-    "Air india Express",
-    'Srilankan Airlines',
-    'Etihad Airways'
-  ];
+  // List<String> flightNameList = [
+  //   "Select Flight Name",
+  //   "Air Arabia Abu dhabi",
+  //   "Vistara",
+  //   "Air india Express",
+  //   'Srilankan Airlines',
+  //   'Etihad Airways'
+  // ];
   List<String> conveyorBeltList = [
     "Select Belt No",
     "Belt No: 1",
@@ -1222,24 +1222,8 @@ notifyListeners();
     "CHECK_OUT",
   ];
 
-  List<String> fromList = [
-    "From",
-    "Select Flight Name",
-    "Air Arabia Abu dhabi",
-    "Vistara",
-    "Air india Express",
-    'Srilankan Airlines',
-    'Etihad Airways'
-  ];
-  List<String> toList = [
-    "To",
-    "Select Flight Name",
-    "Air Arabia Abu dhabi",
-    "Vistara",
-    "Air india Express",
-    'Srilankan Airlines',
-    'Etihad Airways'
-  ];
+
+
 
   Future<void> lockAdminApp() async {
     mRootReference.child("0").onValue.listen((event) {
@@ -2038,7 +2022,6 @@ notifyListeners();
 
          notifyListeners();
       }
-      print(flightNames.toString()+"haiba");
     });
   }
   void fetchAireportName(){
@@ -2050,7 +2033,6 @@ notifyListeners();
 
          notifyListeners();
       }
-      print(airportNamesList.toString()+"haiba");
     });
   }
 
