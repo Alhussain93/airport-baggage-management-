@@ -104,6 +104,7 @@ if(userPreference.getString("STAFF_ID")!=null){
 }
 
 else{
+  userPreference.clear();
       callNextReplacement(LoginScreen(), context);
     }
 

@@ -71,8 +71,7 @@ class LoginProvider extends ChangeNotifier {
           if (designation == "PASSENGER") {
             if (userStatus == "ACTIVE") {
               adminProvider.pnrController.clear();
-              callNextReplacement(
-                  PnrSearching(username: loginUsername), context);
+              callNextReplacement(PnrSearching(username: loginUsername, userPhone: loginUserPhone,), context);
             } else {
               ScaffoldMessenger.of(context).showSnackBar(snackBar2);
 
@@ -83,8 +82,12 @@ class LoginProvider extends ChangeNotifier {
               FirebaseAuth auth = FirebaseAuth.instance;
               auth.signOut();
             }
-          } else if (loginUsertype == "ADMIN") {
+          } else if (loginUsertype =="ADMIN") {
             adminProvider.fetchMissingLuggage();
+            adminProvider.fetchMissingReported();
+            adminProvider.fetchFlightName();
+            adminProvider.fetchAireportName();
+
 
             Navigator.pushReplacement(
                 context,
@@ -95,7 +98,8 @@ class LoginProvider extends ChangeNotifier {
           }
 
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(snackBar2);
+          // ScaffoldMessenger.of(context).showSnackBar(snackBar2);
+          callNextReplacement(LoginScreen(), context);
         }
       });
     } catch (e) {
@@ -172,6 +176,7 @@ class LoginProvider extends ChangeNotifier {
                 if (value.exists) {
                   staffAirport = value.get('AIRPORT');
                   adminProvider.fetchMissingLuggage();
+                  adminProvider.fetchMissingReported();
 
                   Navigator.pushReplacement(
                       context,
@@ -193,7 +198,9 @@ class LoginProvider extends ChangeNotifier {
             }
 
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(snackBar2);
+          callNextReplacement(LoginScreen(), context);
+
+          // ScaffoldMessenger.of(context).showSnackBar(snackBar2);
         }
       });
     } catch (e) {

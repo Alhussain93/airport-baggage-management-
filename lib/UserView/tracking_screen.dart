@@ -9,8 +9,9 @@ import '../constant/colors.dart';
 class TrackingScreen extends StatelessWidget {
   final String pnrid;
   final String username;
+  final String userPhone;
 
-  TrackingScreen({Key? key, required this.pnrid, required this.username})
+  TrackingScreen({Key? key, required this.pnrid, required this.username, required this.userPhone})
       : super(key: key);
   int i = 0;
   String datee = '';
@@ -66,43 +67,22 @@ class TrackingScreen extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(
-                          height: 5,
+                          height: 10,
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 20),
-                              child: SizedBox(
-                                width: width*.75,
-                                child: Text(
-                                  username,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 21,
-                                      color: basewhite),
-                                ),
-                              ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: SizedBox(
+                            width: width*.75,
+                            child: Text(
+                              username,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 21,
+                                  color: basewhite),
                             ),
-                            
-                            Padding(
-                              padding: const EdgeInsets.only(right: 20),
-                              child: InkWell(
-                                onTap: (){
+                          ),
+                        ),
 
-                                  adminProvider.fetchMissingLuggage();
-                                },
-                                child: CircleAvatar(
-                                    radius: 20,
-                                    backgroundColor: Colors.white,
-                                    child: Icon(Icons.refresh_outlined,color: Colors.black,)),
-                              ),
-                            )
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 13,
-                        ),
                         Center(
                           child: Consumer<AdminProvider>(
                               builder: (context, val, child) {
@@ -232,6 +212,8 @@ class TrackingScreen extends StatelessWidget {
                       ],
                     ),
                   ),
+
+
                   Consumer<AdminProvider>(
                     builder: (context, value, child) {
                       return SizedBox(
@@ -243,6 +225,37 @@ class TrackingScreen extends StatelessWidget {
                             var item = value.luggageList[index];
                             return Column(
                               children: [
+                                item.missingPlace == "UNLOADING"|| item.missingPlace == "CHECK_OUT"||item.status ==
+                                    'CHECK_OUT'?   Padding(
+                                  padding: const EdgeInsets.only(right: 14,bottom: 10),
+                                  child: Align(
+                                    alignment: Alignment.topRight,
+                                    child: InkWell(
+                                      onTap: (){
+                                        adminProvider.addMissingLuggageReport(item.id,userPhone,username,context);
+
+                                      },
+                                      child: Container(height: 35,
+                                        width: 110,
+
+                                        alignment: Alignment.center,
+                                        decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10)),
+                                            color: clc00a618,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey.shade300,
+                                                blurRadius: 1.0,
+                                                spreadRadius: 1.0,
+                                              )
+                                            ],
+                                            border: Border.all(color: clc00a618)),
+
+                                        child: Text('Report Missing\n     Luggage',style: TextStyle(color: Colors.black,fontSize: 11,fontWeight: FontWeight.w600),),
+                                      ),
+                                    ),
+                                  ),
+                                ):SizedBox(),
+
                                 Text(
                                   item.checkInPlace,
                                   style: const TextStyle(
@@ -428,13 +441,6 @@ class TrackingScreen extends StatelessWidget {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
-                                          // Text(
-                                          //   item.loadingPlace,
-                                          //   style: TextStyle(
-                                          //       fontSize: 11,
-                                          //       fontWeight: FontWeight.w500,
-                                          //       color: cl252525),
-                                          // ),
                                           item.loadingStatus=="CLEARED"?Text(
                                             "Loaded",
                                             style: TextStyle(
@@ -630,7 +636,6 @@ class TrackingScreen extends StatelessWidget {
                                                           FontWeight.bold),
                                                 )
                                               : const SizedBox(),
-
                                           item.unloadingStatus=="CLEARED"?   Text(
                                             "Unloaded",
                                             style: TextStyle(
@@ -638,10 +643,16 @@ class TrackingScreen extends StatelessWidget {
                                                 fontWeight: FontWeight.w500,
                                                 color: cl252525),
                                           ):const SizedBox(),
+                                          item.unloadingStatus==""&&item.missingPlace != "UNLOADING"?Text(
+                                            "Unloading",
+                                            style: TextStyle(
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.w500,
+                                                color: cl252525),
+                                          ):const SizedBox(),
 
-
-                                          item.unloadingStatus==""?Text("Expected Time :",style: TextStyle(fontSize: 10),):SizedBox(),
-                                          item.unloadingStatus==""?
+                                          item.unloadingStatus==""&&item.missingPlace != "UNLOADING"?Text("Expected Time :",style: TextStyle(fontSize: 10),):SizedBox(),
+                                          item.unloadingStatus==""&&item.missingPlace != "UNLOADING"?
                                           Text(
                                             uploadDatee( item.arrivalTimeMilli,),
                                             style: TextStyle(
@@ -651,7 +662,7 @@ class TrackingScreen extends StatelessWidget {
                                           ):const SizedBox(),
 
                                           Text(
-                                              item.unloadingTime != ""
+                                              item.unloadingStatus =="CLEARED"
                                                   ? uploadDatee(
                                                       item.unloadingTime)
                                                   : "",
@@ -723,13 +734,6 @@ class TrackingScreen extends StatelessWidget {
                                                           FontWeight.bold),
                                                 )
                                               : const SizedBox(),
-                                          // Text(
-                                          //   item.checkoutPlace,
-                                          //   style: TextStyle(
-                                          //       fontSize: 11,
-                                          //       fontWeight: FontWeight.w500,
-                                          //       color: cl252525),
-                                          // ),
                                           item.checkOutStatus=="CLEARED"?  Text(
                                             "Checked out",
                                             style: TextStyle(
@@ -738,18 +742,20 @@ class TrackingScreen extends StatelessWidget {
                                                 color: cl252525),
                                           ):const SizedBox(),
 
-                                          Text(
-                            item.checkOutStatus=="CLEARED"?
-                                                   uploadDatee(
-                                                      item.checkoutTime)
-                                                  : "",
-                                              style: TextStyle(
-                                                  fontSize: 13,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: cl252525)),
+                                          Text(item.checkOutStatus=="CLEARED"? uploadDatee( item.checkoutTime) : "", style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: cl252525)),
 
-                                          item.checkOutStatus==""?Text("Expected Time :",style: TextStyle(fontSize: 10),):SizedBox(),
-                                          item.checkOutStatus==""?
+
+                                          Text(item.checkOutStatus=="CLEARED"&&item.stfConveyorBelt!=''? item.stfConveyorBelt: "", style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: cl252525)),
+
+                                          item.checkOutStatus==""&&item.missingPlace != "UNLOADING"?Text(
+                                            "Check Out",
+                                            style: TextStyle(
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.w500,
+                                                color: cl252525),
+                                          ):const SizedBox(),
+                                          item.checkOutStatus==""&&item.missingPlace != "UNLOADING"?Text("Expected Time :",style: TextStyle(fontSize: 10),):SizedBox(),
+                                          item.checkOutStatus==""&&item.missingPlace != "UNLOADING"?
                                           Text(
                                             addDate( item.arrivalTimeMilli,),
                                             style: TextStyle(

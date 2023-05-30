@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luggage_tracking_app/AdminView/missingLuggage_HomeScreen.dart';
 import 'package:luggage_tracking_app/AdminView/qr_Scanner_Screen.dart';
 import 'package:provider/provider.dart';
 import '../AdminView/passengersList_Screen.dart';
@@ -20,6 +21,7 @@ class StaffHomeScreen extends StatelessWidget {
     required this.staffId,
     required this.phone,
   });
+  static final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   ValueNotifier<int> isSelected = ValueNotifier(0);
 
@@ -35,13 +37,13 @@ class StaffHomeScreen extends StatelessWidget {
       QrScanner(
         designation: designation,
         stfAirport: stfAirport,
-        stfName: stfName, stfId: staffId, phone: phone,
+        stfName: stfName, stfId: staffId, phone: phone, stfBelt: '',
       ),
       MakeQrScreen(
         stfAirport: stfAirport,
         stfName: stfName,
       ),
-      MissingLuggage(),
+      MissingHomeScreen(),
     ];
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
@@ -93,8 +95,15 @@ class StaffHomeScreen extends StatelessWidget {
                       designation != "CHECK_IN"
                           ? InkWell(
                               onTap: () {
-                                isSelected.value = 1;
-                                finish(context);
+                                if(designation =="CHECK_OUT"){
+                                  adminProvider.conveyorBeltNo = 'Select Belt No';
+                                  selectBeltAlert(context);
+
+                                }else{
+                                  isSelected.value = 1;
+                                  finish(context);
+                                }
+
                               },
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 10),
@@ -384,7 +393,16 @@ class StaffHomeScreen extends StatelessWidget {
                                 InkWell(
                                   onTap: () {
                                     if (designation != "CHECK_IN") {
-                                      isSelected.value = 1;
+
+                                      if(designation =="CHECK_OUT"){
+                                        adminProvider.conveyorBeltNo = 'Select Belt No';
+
+                                        selectBeltAlert(context);
+
+                                      }else{
+                                        isSelected.value = 1;
+                                        // finish(context);
+                                      }
                                     } else {
                                       adminProvider.clearQrControllers();
                                       isSelected.value = 2;
@@ -469,4 +487,138 @@ class StaffHomeScreen extends StatelessWidget {
           );
         });
   }
+  Future<void> selectBeltAlert(BuildContext context) async {
+
+    AlertDialog alert = AlertDialog(
+      backgroundColor: Colors.white,
+      scrollable: true,
+      title: const Text(
+        "Select conveyor belt",
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+      ),
+      content: SingleChildScrollView(
+        child: Column(
+
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Form(
+              key: _formKey,
+              child: Consumer<AdminProvider>(builder: (context, value1, child) {
+                return DropdownButtonFormField(
+                  hint: const Text(
+                    "Belt No",
+                    style: TextStyle(
+                        color: Colors.grey, fontWeight: FontWeight.bold),
+                  ),
+                  value: value1.conveyorBeltNo,
+                  iconSize: 30,
+                  isExpanded: true,
+                  decoration: InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: const BorderSide(color: Colors.grey),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: const BorderSide(
+                        color: Colors.grey,
+                      ),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: const BorderSide(color: Colors.red)),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: const BorderSide(
+                        color: Colors.grey,
+                      ),
+                    ),
+                    isCollapsed: true,
+                    helperText: '',
+                    contentPadding: const EdgeInsets.all(11),
+                  ),
+                  onChanged: (newValue) {
+                    value1.conveyorBeltNo = newValue.toString();
+                  },
+                  validator: (value) {
+                    if (value == 'Select Belt No') {
+                      return 'Belt No is required';
+                    }
+                    return null;
+                  },
+                  items: value1.conveyorBeltList.map((item1) {
+                    return DropdownMenuItem(
+                        value: item1,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: Text(
+                            item1,
+                            style: item1 != "Select Belt No"
+                                ? const TextStyle(color: Colors.black)
+                                : TextStyle(color: fontColor),
+                          ),
+                        ));
+                  }).toList(),
+                );
+              }),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+
+                Container(
+                  height: 35,
+                  width: 100,
+                  decoration: BoxDecoration( borderRadius: BorderRadius.all(Radius.circular(10)),
+                    color: cLightGrey,
+                  ),
+                  child: TextButton(
+                      child: const Text('NO',style: TextStyle(color: Colors.black)),
+                      onPressed: () {
+                        finish(context);
+                      }
+                  ),
+                ),
+
+                Container(
+                  height: 35,
+                  width: 100,
+                  decoration: BoxDecoration( borderRadius: BorderRadius.all(Radius.circular(10)),
+                    color: clc00a618,),
+
+                  child: Consumer<AdminProvider>(
+                    builder: (context,value2,child) {
+                      return TextButton(
+                          child:  Text('Scan',style: TextStyle(color: Colors.black)),
+                          onPressed: ()  {
+    final FormState? form = _formKey.currentState;
+    if (form!.validate()) {
+callNextReplacement(QrScanner(
+    designation: designation,
+    stfAirport: stfAirport,
+    stfName: stfName, stfId: staffId, phone: phone, stfBelt:  value2.conveyorBeltNo, ),context);
+
+    }
+
+
+                          }
+                      );
+                    }
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+
 }

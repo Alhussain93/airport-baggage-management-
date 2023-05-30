@@ -12,11 +12,16 @@ import '../constant/colors.dart';
 class GenerateQrScreen extends StatelessWidget {
   List qrDatasList;
   String qrId;
+  String fromPlace;
+  String toPlace;
 
   GenerateQrScreen(
       {Key? key,
       required this.qrDatasList,
-      required this.qrId,})
+      required this.qrId,
+      required this.fromPlace,
+      required this.toPlace,
+      })
       : super(key: key);
 
   @override
@@ -36,7 +41,7 @@ class GenerateQrScreen extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: InkWell(
               onTap: () {
-                generatePDF(qrDatasList);
+                generatePDF(qrDatasList, fromPlace, toPlace);
               },
               child: Container(
                 alignment: Alignment.center,
@@ -73,16 +78,18 @@ class GenerateQrScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
-                height: height * .05,
+                height: height * .04,
               ),
               GridView.builder(
                   scrollDirection: Axis.vertical,
+                  padding: EdgeInsets.only(left: 10,right: 10,),
+
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   itemCount: qrDatasList.length,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      childAspectRatio: 0.75,
-                      crossAxisSpacing: 2,
+                      childAspectRatio: 0.7,
+                      crossAxisSpacing: 10,
                       crossAxisCount: 2),
                   itemBuilder: (context, index) {
                     final qrCodeValue = qrDatasList[index];
@@ -92,17 +99,35 @@ class GenerateQrScreen extends StatelessWidget {
                           (index + 1).toString(),
                           style: const TextStyle(fontSize: 12),
                         ),
-                        SizedBox(
+                        SizedBox(height: 8,) ,
+                        Container(
+                          alignment: Alignment.center,
+                          padding: EdgeInsetsDirectional.all(5),
+                          decoration: BoxDecoration(
+                              color: Colors.white60,
+                            borderRadius: BorderRadius.all(Radius.circular(8))
+                          ),
                           height: 180,
+
                           child: QrImageView(
                             data: value.encrypt(qrCodeValue),
                             version: QrVersions.auto,
                           ),
                         ),
+                        SizedBox(height: 5,) ,
+
                         Text(
                           qrId,
                           style: const TextStyle(fontSize: 13),
                         ),
+                        // RichText(text: TextSpan(text:toPlace,  style: DefaultTextStyle.of(context).style,
+                        //     children:[
+                        //       TextSpan( text: "  to  ", style: DefaultTextStyle.of(context).style,
+                        //     ), TextSpan( text: fromPlace, style: DefaultTextStyle.of(context).style,
+                        //     )
+                        //     ]
+                        //
+                        // ),),
                       ],
                     );
                   }),
@@ -113,7 +138,7 @@ class GenerateQrScreen extends StatelessWidget {
     );
   }
 
-  Future generatePDF(List qrDataLists) async {
+  Future generatePDF(List qrDataLists,String fromPlace,String toPlace) async {
     final pdf = pw.Document();
     pdf.addPage(
       pw.MultiPage(
@@ -129,24 +154,48 @@ class GenerateQrScreen extends StatelessWidget {
                     mainAxisAlignment: pw.MainAxisAlignment.center,
                     crossAxisAlignment: pw.CrossAxisAlignment.center,
                     children: [
-                      // pw.SizedBox(height: 20),
-                      // pw.Text(name,
-                      //     style: pw.TextStyle(
-                      //         fontSize: 25, fontWeight: pw.FontWeight.bold)),
-                      pw.SizedBox(height: 20),
-                      pw.Text('QR code for $qrCodeValue'),
-                      pw.SizedBox(height: 20),
-                      pw.Center(
-                        child: pw.Container(
-                          width: 250,
-                          height: 250,
-                          child: pw.BarcodeWidget(
-                              data: qrCodeValue,
-                              barcode: pw.Barcode.qrCode(),
-                              width: 200,
-                              height: 200),
+                      pw.Container(
+
+                        decoration: pw.BoxDecoration(
+                          border: pw.Border.all(color: PdfColors.black),
+                          borderRadius: pw.BorderRadius.all(pw.Radius.circular(12,),
+                          ),
+
                         ),
+                        child: pw.Column(
+                          children: [
+                            pw.SizedBox(height: 25),
+                            pw.Text('QR code for $qrCodeValue'),
+                            pw.SizedBox(height: 20),
+                            pw.Center(
+                              child: pw.Container(
+                                width: 250,
+                                height: 250,
+                                child: pw.BarcodeWidget(
+                                    data: qrCodeValue,
+                                    barcode: pw.Barcode.qrCode(),
+                                    width: 200,
+                                    height: 200),
+                              ),
+                            ),
+
+                            pw.SizedBox(height: 15),
+                            pw.RichText(text: pw.TextSpan(text:toPlace,
+                                children:[
+                                  pw.TextSpan( text: "  to  ",
+                                  ), pw.TextSpan( text: fromPlace,
+                                  )
+                                ]
+
+                            ),),
+
+                            pw.SizedBox(height: 30),
+                          ]
+
+                        )
+
                       ),
+
                     ],
                   );
                 },
