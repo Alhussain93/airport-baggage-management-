@@ -1098,7 +1098,7 @@ notifyListeners();
       passengerEditMap["DOB"] = birthDate;
       passengerEditMap['EMAIL'] = userEmailCT.text;
       passengerEditMap['COUNTRY_CODE'] = selectedValue.toString();
-      editMap['MOBILE_NUMBER'] = userPhoneCT.text;
+      editMap['MOBILE_NUMBER'] = selectedValue.toString()+userPhoneCT.text;
       passengerEditMap['MOBILE_NUMBER'] = userPhoneCT.text;
       passengerEditMap['COUNTRY_CODE'] = selectedValue.toString();
       editMap['COUNTRY_CODE'] = selectedValue.toString();
