@@ -47,9 +47,9 @@ class StaffHomeScreen extends StatelessWidget {
     ];
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-    return ValueListenableBuilder(
+      return ValueListenableBuilder(
         valueListenable: isSelected,
-        builder: (context, int dIsSelected, child) {
+          builder: (context, int dIsSelected, child) {
           return WillPopScope(
             onWillPop: () =>adminProvider.showExitPopup(context) ,
             child: SafeArea(
