@@ -5,9 +5,9 @@ import 'package:provider/provider.dart';
 import '../Providers/admin_provider.dart';
 
 class PnrSearching extends StatelessWidget {
-   String username,userPhone;
+   String username,userPhone,userImage,emailId,passengerId,mobile;
 
-   PnrSearching({Key? key, required this.username,required this.userPhone,}) : super(key: key);
+   PnrSearching({Key? key, required this.username,required this.userPhone,required this.userImage,required this.emailId,required this.passengerId,required this.mobile,}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,12 +19,105 @@ class PnrSearching extends StatelessWidget {
       onWillPop: () =>adminProvider.showExitPopup(context) ,
       child: Scaffold(
         backgroundColor: themecolor,
+        endDrawer:Container(
+          width: 220,
+          child: Drawer(
+
+            backgroundColor: themecolor,
+            child: Column(
+              children: [
+                Container(
+                  width: width,
+                  height: height*.3,color: darkThemeColor,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 45,left: 20),
+                        child: userImage != ""
+                            ? CircleAvatar(
+                            backgroundColor: cWhite,
+                            radius: 30,
+                            backgroundImage:
+                            NetworkImage(userImage))
+                            : CircleAvatar(
+                          backgroundColor: cWhite,
+                          radius: 30,
+                          backgroundImage:
+                          const AssetImage("assets/user.png"),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 17,top: 10),
+                        child: Text(username,style: TextStyle(color: Colors.white,fontSize: 18,fontWeight: FontWeight.bold),),
+                      ),Padding(
+                        padding: const EdgeInsets.only(left: 17,top:2),
+                        child: Text(mobile,style: TextStyle(color: Colors.white,fontSize: 15,fontWeight: FontWeight.w500),),
+                      ),Padding(
+                        padding: const EdgeInsets.only(left: 17,top:2),
+                        child: Text(emailId,style: TextStyle(color: Colors.white,fontSize: 14,fontWeight: FontWeight.w500),),
+                      ),Padding(
+                        padding: const EdgeInsets.only(left: 17,top:2),
+                        child: Text(passengerId,style: TextStyle(color: Colors.white,fontSize: 14,fontWeight: FontWeight.w500),),
+                      ),
+
+
+
+
+                    ],
+                  ),
+                ),
+
+                const Spacer(),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: InkWell(
+                    onTap: () {
+                      adminProvider.logOutAlert(context);
+                    },
+                    child: Container(
+                      height: 40,
+                      width: width * .77,
+                      color: darkThemeColor,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: const [
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Icon(
+                            Icons.logout,
+                            color: Colors.white,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            "Log Out",
+                            style: TextStyle(
+                                color: Colors.white, fontSize: 15),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+
+              ],
+            ),
+          ),
+        ) ,
+        appBar: AppBar(
+          iconTheme: IconThemeData(color: Colors.black),
+          backgroundColor:basewhite,
+          elevation: 0,
+        ),
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                height: height / 2.6,
+                height: height / 3.3,
                 width: width,
                 decoration: BoxDecoration(
                     color: themecolor,
@@ -34,37 +127,21 @@ class PnrSearching extends StatelessWidget {
                       ),
                       fit: BoxFit.fill,
                     )),
-                child: Stack(
-                  alignment: Alignment.topRight,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 40, right: 20),
-                      child: InkWell(
-                          onTap: () {
-                            adminProvider.logOutAlert(context);
-                          },
-                          child: const Icon(
-                            Icons.logout,
-                            size: 30,
-                          )),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Center(
-                          child: Image.asset(
-                            "assets/Frame49.png",
-                            scale: 2,
-                          ),
-                        ),
-                      ],
+                    Center(
+                      child: Image.asset(
+                        "assets/Frame49.png",
+                        scale: 2,
+                      ),
                     ),
                   ],
                 ),
               ),
               const Padding(
-                padding: EdgeInsets.only(left: 20, top: 80),
+                padding: EdgeInsets.only(left: 28, top: 80),
                 child: Text(
                   "Enter Your PNR",
                   style: TextStyle(
