@@ -21,7 +21,7 @@ class PnrSearching extends StatelessWidget {
       child: Scaffold(
         backgroundColor: themecolor,
         endDrawer:SizedBox(
-          width: 220,
+          width: 280,
           child: Drawer(
 
             backgroundColor: themecolor,
@@ -49,56 +49,53 @@ class PnrSearching extends StatelessWidget {
                           const AssetImage("assets/user.png"),
                         ),
                       ),
+                       Padding(
+                        padding: EdgeInsets.only(left: 17,top: 10),
+                        child: SizedBox(
+                          width: 255,
+                          child: Row(
+                            children: [
+                              Text("Name :",style: TextStyle(color: Colors.white,fontSize: 18,),),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Container(
+                        alignment: Alignment.centerRight,
+                          width: 215,
+                          child: Text(username,style: const TextStyle(color: Colors.white,fontSize: 18,fontWeight: FontWeight.bold),)),
                       const Padding(
                         padding: EdgeInsets.only(left: 17,top: 10),
-                        child: Text("Name",style: TextStyle(color: Colors.white,fontSize: 18,),),
+                        child: Text("Phone :",style: TextStyle(color: Colors.white,fontSize: 18,),),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 25,top: 2),
-                        child: SizedBox(
-                            width: 190,
-                            child: Text(username,style: const TextStyle(color: Colors.white,fontSize: 18,fontWeight: FontWeight.bold),)),
-                      ),
+                      Container(
+                          alignment: Alignment.centerRight,
+                          width: 215,
+                          child: Text(mobile,style: const TextStyle(color: Colors.white,fontSize: 15,fontWeight: FontWeight.w500),)),
                       const Padding(
                         padding: EdgeInsets.only(left: 17,top: 10),
-                        child: Text("Phone",style: TextStyle(color: Colors.white,fontSize: 18,),),
+                        child: Text("E-Mail :",style: TextStyle(color: Colors.white,fontSize: 18,),),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 25,top:2),
-                        child: SizedBox(
-                            width: 190,
-                            child: Text(mobile,style: const TextStyle(color: Colors.white,fontSize: 15,fontWeight: FontWeight.w500),)),
-                      ),
+                      Container(
+                          alignment: Alignment.centerRight,
+                          width: 215,
+                          child: Text(emailId,style: const TextStyle(color: Colors.white,fontSize: 15,fontWeight: FontWeight.w500),)),
                       const Padding(
                         padding: EdgeInsets.only(left: 17,top: 10),
-                        child: Text("E-Mail",style: TextStyle(color: Colors.white,fontSize: 18,),),
+                        child: Text("DOB :",style: TextStyle(color: Colors.white,fontSize: 18,),),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 25,top:2),
-                        child: SizedBox(
-                            width: 190,
-                            child: Text(emailId,style: const TextStyle(color: Colors.white,fontSize: 15,fontWeight: FontWeight.w500),)),
-                      ),
+                      Container(
+                          alignment: Alignment.centerRight,
+                          width: 215,
+                          child: Text(dob,style: const TextStyle(color: Colors.white,fontSize: 15,fontWeight: FontWeight.w500),)),
                       const Padding(
                         padding: EdgeInsets.only(left: 17,top: 10),
-                        child: Text("DOB",style: TextStyle(color: Colors.white,fontSize: 18,),),
+                        child: Text("Passenger Id :",style: TextStyle(color: Colors.white,fontSize: 18,),),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 25,top:2),
-                        child: SizedBox(
-                            width: 190,
-                            child: Text(dob,style: const TextStyle(color: Colors.white,fontSize: 15,fontWeight: FontWeight.w500),)),
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.only(left: 17,top: 10),
-                        child: Text("Passenger Id",style: TextStyle(color: Colors.white,fontSize: 18,),),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 25,top:2),
-                        child: SizedBox(
-                            width: 190,
-                            child: Text(passengerId,style: const TextStyle(color: Colors.white,fontSize: 15,fontWeight: FontWeight.w500),)),
-                      ),
+                      Container(
+                          alignment: Alignment.centerRight,
+                          width: 215,
+                          child: Text(passengerId,style: const TextStyle(color: Colors.white,fontSize: 15,fontWeight: FontWeight.w500),)),
 
 
 
