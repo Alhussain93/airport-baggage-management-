@@ -71,7 +71,15 @@ class LoginProvider extends ChangeNotifier {
           if (designation == "PASSENGER") {
             if (userStatus == "ACTIVE") {
               adminProvider.pnrController.clear();
-              callNextReplacement(PnrSearching(username: loginUsername, userPhone: loginUserPhone,), context);
+              print("kamkzmakzmak"+loginUserid);
+              db.collection("PASSENGERS").doc(loginUserid).get().then((value) {
+                if(value.exists){
+                  Map<dynamic, dynamic> map = value.data() as Map;
+
+                  callNextReplacement(PnrSearching(username: loginUsername, userPhone: loginUserPhone, userImage: map["PASSENGER_IMAGE"].toString(), emailId:map["EMAIL"].toString(), passengerId:map["PASSENGER_ID"].toString(), mobile: map["MOBILE_NUMBER"].toString(),), context);
+
+                }
+              });
             } else {
               ScaffoldMessenger.of(context).showSnackBar(snackBar2);
 
