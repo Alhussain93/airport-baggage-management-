@@ -76,7 +76,10 @@ class LoginProvider extends ChangeNotifier {
                 if(value.exists){
                   Map<dynamic, dynamic> map = value.data() as Map;
 
-                  callNextReplacement(PnrSearching(username: loginUsername, userPhone: loginUserPhone, userImage: map["PASSENGER_IMAGE"].toString(), emailId:map["EMAIL"].toString(), passengerId:map["PASSENGER_ID"].toString(), mobile: map["MOBILE_NUMBER"].toString(),), context);
+                  callNextReplacement(PnrSearching(username: loginUsername, userPhone: loginUserPhone,
+                    userImage: map["PASSENGER_IMAGE"].toString(), emailId:map["EMAIL"].toString(),
+                    passengerId:map["PASSENGER_ID"].toString(), mobile: phoneNumber,
+                    dob: map['DOB STRING'].toString(),), context);
 
                 }
               });

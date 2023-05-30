@@ -5,9 +5,10 @@ import 'package:provider/provider.dart';
 import '../Providers/admin_provider.dart';
 
 class PnrSearching extends StatelessWidget {
-   String username,userPhone,userImage,emailId,passengerId,mobile;
+   String username,userPhone,userImage,emailId,passengerId,mobile,dob;
 
-   PnrSearching({Key? key, required this.username,required this.userPhone,required this.userImage,required this.emailId,required this.passengerId,required this.mobile,}) : super(key: key);
+   PnrSearching({Key? key, required this.username,required this.userPhone,required this.userImage,
+     required this.emailId,required this.passengerId,required this.mobile,required this.dob}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,16 +20,17 @@ class PnrSearching extends StatelessWidget {
       onWillPop: () =>adminProvider.showExitPopup(context) ,
       child: Scaffold(
         backgroundColor: themecolor,
-        endDrawer:Container(
+        endDrawer:SizedBox(
           width: 220,
           child: Drawer(
 
             backgroundColor: themecolor,
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
                   width: width,
-                  height: height*.3,color: darkThemeColor,
+                  color: darkThemeColor,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -47,18 +49,55 @@ class PnrSearching extends StatelessWidget {
                           const AssetImage("assets/user.png"),
                         ),
                       ),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 17,top: 10),
+                        child: Text("Name",style: TextStyle(color: Colors.white,fontSize: 18,),),
+                      ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 17,top: 10),
-                        child: Text(username,style: TextStyle(color: Colors.white,fontSize: 18,fontWeight: FontWeight.bold),),
-                      ),Padding(
-                        padding: const EdgeInsets.only(left: 17,top:2),
-                        child: Text(mobile,style: TextStyle(color: Colors.white,fontSize: 15,fontWeight: FontWeight.w500),),
-                      ),Padding(
-                        padding: const EdgeInsets.only(left: 17,top:2),
-                        child: Text(emailId,style: TextStyle(color: Colors.white,fontSize: 14,fontWeight: FontWeight.w500),),
-                      ),Padding(
-                        padding: const EdgeInsets.only(left: 17,top:2),
-                        child: Text(passengerId,style: TextStyle(color: Colors.white,fontSize: 14,fontWeight: FontWeight.w500),),
+                        padding: const EdgeInsets.only(left: 25,top: 2),
+                        child: SizedBox(
+                            width: 190,
+                            child: Text(username,style: const TextStyle(color: Colors.white,fontSize: 18,fontWeight: FontWeight.bold),)),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 17,top: 10),
+                        child: Text("Phone",style: TextStyle(color: Colors.white,fontSize: 18,),),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 25,top:2),
+                        child: SizedBox(
+                            width: 190,
+                            child: Text(mobile,style: const TextStyle(color: Colors.white,fontSize: 15,fontWeight: FontWeight.w500),)),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 17,top: 10),
+                        child: Text("E-Mail",style: TextStyle(color: Colors.white,fontSize: 18,),),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 25,top:2),
+                        child: SizedBox(
+                            width: 190,
+                            child: Text(emailId,style: const TextStyle(color: Colors.white,fontSize: 15,fontWeight: FontWeight.w500),)),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 17,top: 10),
+                        child: Text("DOB",style: TextStyle(color: Colors.white,fontSize: 18,),),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 25,top:2),
+                        child: SizedBox(
+                            width: 190,
+                            child: Text(dob,style: const TextStyle(color: Colors.white,fontSize: 15,fontWeight: FontWeight.w500),)),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 17,top: 10),
+                        child: Text("Passenger Id",style: TextStyle(color: Colors.white,fontSize: 18,),),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 25,top:2),
+                        child: SizedBox(
+                            width: 190,
+                            child: Text(passengerId,style: const TextStyle(color: Colors.white,fontSize: 15,fontWeight: FontWeight.w500),)),
                       ),
 
 
@@ -68,7 +107,7 @@ class PnrSearching extends StatelessWidget {
                   ),
                 ),
 
-                const Spacer(),
+
                 Padding(
                   padding: const EdgeInsets.only(bottom: 20),
                   child: InkWell(
@@ -108,7 +147,7 @@ class PnrSearching extends StatelessWidget {
           ),
         ) ,
         appBar: AppBar(
-          iconTheme: IconThemeData(color: Colors.black),
+          iconTheme: const IconThemeData(color: Colors.black),
           backgroundColor:basewhite,
           elevation: 0,
         ),
