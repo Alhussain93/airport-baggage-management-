@@ -85,7 +85,7 @@ class AddTickets extends StatelessWidget {
                         }
                         return null;
                       },
-                      items: value1.flightNameList.map((item1) {
+                      items: value1.flightNames.map((item1) {
                         return DropdownMenuItem(
                             value: item1,
                             child: Padding(
@@ -169,7 +169,7 @@ class AddTickets extends StatelessWidget {
                       }
                       return null;
                     },
-                    items: values.airportNameList.map((item3) {
+                    items: values.airportNamesList.map((item3) {
                       return DropdownMenuItem(
                           value: item3,
                           child: Padding(
@@ -227,12 +227,12 @@ class AddTickets extends StatelessWidget {
                     validator: (value) {
                       if (value == 'Select Airport') {
                         return 'Select Airport';
-                      }else if( values.fromTicket==value){
+                      } else if (values.fromTicket == value) {
                         return 'Select Airports are same';
                       }
                       return null;
                     },
-                    items: values.airportNameList.map((item4) {
+                    items: values.airportNamesList.map((item4) {
                       return DropdownMenuItem(
                           value: item4,
                           child: Padding(
