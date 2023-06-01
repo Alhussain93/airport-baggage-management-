@@ -5,9 +5,18 @@ import 'package:provider/provider.dart';
 import '../Providers/admin_provider.dart';
 
 class PnrSearching extends StatelessWidget {
-  final String username;
+  String username, userPhone, userImage, emailId, passengerId, mobile, dob;
 
-  const PnrSearching({Key? key, required this.username}) : super(key: key);
+  PnrSearching(
+      {Key? key,
+      required this.username,
+      required this.userPhone,
+      required this.userImage,
+      required this.emailId,
+      required this.passengerId,
+      required this.mobile,
+      required this.dob})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,15 +25,199 @@ class PnrSearching extends StatelessWidget {
     AdminProvider adminProvider =
         Provider.of<AdminProvider>(context, listen: false);
     return WillPopScope(
-      onWillPop: () =>adminProvider.showExitPopup(context) ,
+      onWillPop: () => adminProvider.showExitPopup(context),
       child: Scaffold(
         backgroundColor: themecolor,
+        // endDrawer: SizedBox(
+        //   width: 280,
+        //   child: Drawer(
+        //     backgroundColor: themecolor,
+        //     child: Column(
+        //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //       children: [
+        //         Container(
+        //           width: width,
+        //           color: darkThemeColor,
+        //           child: Column(
+        //             crossAxisAlignment: CrossAxisAlignment.start,
+        //             children: [
+        //               Padding(
+        //                 padding: const EdgeInsets.only(top: 45, left: 20),
+        //                 child: userImage != ""
+        //                     ? CircleAvatar(
+        //                         backgroundColor: cWhite,
+        //                         radius: 30,
+        //                         backgroundImage: NetworkImage(userImage))
+        //                     : CircleAvatar(
+        //                         backgroundColor: cWhite,
+        //                         radius: 30,
+        //                         backgroundImage:
+        //                             const AssetImage("assets/user.png"),
+        //                       ),
+        //               ),
+        //               const SizedBox(
+        //                 height: 15,
+        //               ),
+        //
+        //               Container(
+        //                   alignment: Alignment.centerLeft,
+        //                   width: 215,
+        //                   child: Text(
+        //                     username,
+        //                     style: const TextStyle(
+        //                         color: Colors.white,
+        //                         fontSize: 18,
+        //                         fontWeight: FontWeight.bold),
+        //                   )),
+        //               const SizedBox(
+        //                 height: 8,
+        //               ),
+        //               Container(
+        //                   alignment: Alignment.centerLeft,
+        //                   width: 215,
+        //                   child: Text(
+        //                     mobile,
+        //                     style: const TextStyle(
+        //                         color: Colors.white,
+        //                         fontSize: 15,
+        //                         fontWeight: FontWeight.w500),
+        //                   )),
+        //               const SizedBox(
+        //                 height: 8,
+        //               ),
+        //
+        //               Container(
+        //                   alignment: Alignment.centerLeft,
+        //                   width: 215,
+        //                   child: Text(
+        //                     emailId,
+        //                     style: const TextStyle(
+        //                         color: Colors.white,
+        //                         fontSize: 15,
+        //                         fontWeight: FontWeight.w500),
+        //                   )),
+        //               const SizedBox(
+        //                 height: 8,
+        //               ),
+        //
+        //               Row(
+        //                 children: [
+        //                   const Text(
+        //                     "DOB :",
+        //                     style: TextStyle(
+        //                       color: Colors.white,
+        //                       fontSize: 15,
+        //                     ),
+        //                   ),
+        //                   const SizedBox(
+        //                     width: 8,
+        //                   ),
+        //                   Text(
+        //                     dob,
+        //                     style: const TextStyle(
+        //                         color: Colors.white,
+        //                         fontSize: 15,
+        //                         fontWeight: FontWeight.w500),
+        //                   )
+        //                 ],
+        //               ),
+        //               const SizedBox(
+        //                 height: 8,
+        //               ),
+        //
+        //               // Container(
+        //               //     alignment: Alignment.centerRight,
+        //               //     width: 215,
+        //               //     child: Text(dob,style: const TextStyle(color: Colors.white,fontSize: 15,fontWeight: FontWeight.w500),)),
+        //               Row(
+        //                 children: [
+        //                   const Text(
+        //                     "Passenger Id :",
+        //                     style: TextStyle(
+        //                       color: Colors.white,
+        //                       fontSize: 18,
+        //                     ),
+        //                   ),
+        //                   const SizedBox(
+        //                     width: 8,
+        //                   ),
+        //                   Text(
+        //                     passengerId,
+        //                     style: const TextStyle(
+        //                         color: Colors.white,
+        //                         fontSize: 15,
+        //                         fontWeight: FontWeight.w500),
+        //                   )
+        //                 ],
+        //               ),
+        //               // Container(
+        //               //     alignment: Alignment.centerRight,
+        //               //     width: 215,
+        //               //     child: Text(passengerId,style: const TextStyle(color: Colors.white,fontSize: 15,fontWeight: FontWeight.w500),)),
+        //             ],
+        //           ),
+        //         ),
+        //         Padding(
+        //           padding: const EdgeInsets.only(bottom: 20),
+        //           child: InkWell(
+        //             onTap: () {
+        //               adminProvider.logOutAlert(context);
+        //             },
+        //             child: Container(
+        //               height: 40,
+        //               width: width * .77,
+        //               color: darkThemeColor,
+        //               child: Row(
+        //                 mainAxisAlignment: MainAxisAlignment.start,
+        //                 children: const [
+        //                   SizedBox(
+        //                     width: 10,
+        //                   ),
+        //                   Icon(
+        //                     Icons.logout,
+        //                     color: Colors.white,
+        //                   ),
+        //                   SizedBox(
+        //                     width: 10,
+        //                   ),
+        //                   Text(
+        //                     "Log Out",
+        //                     style: TextStyle(color: Colors.white, fontSize: 15),
+        //                   )
+        //                 ],
+        //               ),
+        //             ),
+        //           ),
+        //         ),
+        //       ],
+        //     ),
+        //   ),
+        // ),
+        appBar: AppBar(
+          iconTheme: const IconThemeData(color: Colors.black),
+          backgroundColor: basewhite,
+          elevation: 0,
+          actions: [
+            InkWell(
+              onTap: () {
+                adminProvider.logOutAlert(context);
+              },
+              child: const Icon(
+                Icons.logout,
+                color: Colors.black,
+              ),
+            ),
+            const SizedBox(
+              width: 20,
+            )
+          ],
+        ),
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                height: height / 2.6,
+                height: height / 2.2,
                 width: width,
                 decoration: BoxDecoration(
                     color: themecolor,
@@ -34,37 +227,143 @@ class PnrSearching extends StatelessWidget {
                       ),
                       fit: BoxFit.fill,
                     )),
-                child: Stack(
-                  alignment: Alignment.topRight,
+                child: Column(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 40, right: 20),
-                      child: InkWell(
-                          onTap: () {
-                            adminProvider.logOutAlert(context);
-                          },
-                          child: const Icon(
-                            Icons.logout,
-                            size: 30,
-                          )),
+                    Center(
+                      child: Image.asset(
+                        "assets/Frame49.png",
+                        scale: 2,
+                      ),
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Center(
-                          child: Image.asset(
-                            "assets/Frame49.png",
-                            scale: 2,
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      width: width,
+                      color: Colors.transparent,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          userImage != ""
+                              ? CircleAvatar(
+                                  backgroundColor: cWhite,
+                                  radius: 30,
+                                  backgroundImage: NetworkImage(userImage))
+                              : CircleAvatar(
+                                  backgroundColor: cWhite,
+                                  radius: 30,
+                                  backgroundImage:
+                                      const AssetImage("assets/user.png"),
+                                ),
+                          const SizedBox(
+                            height: 15,
                           ),
-                        ),
-                      ],
+
+                          Container(
+                              alignment: Alignment.center,
+                              width: 215,
+                              child: Text(
+                                username,
+                                style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold),
+                              )),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Container(
+                              alignment: Alignment.center,
+                              width: 215,
+                              child: Text(
+                                mobile,
+                                style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500),
+                              )),
+                          const SizedBox(
+                            height: 8,
+                          ),
+
+                          Container(
+                              alignment: Alignment.center,
+                              width: 215,
+                              child: Text(
+                                emailId,
+                                style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500),
+                              )),
+                          const SizedBox(
+                            height: 8,
+                          ),
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                "DOB :",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 15,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              Text(
+                                dob,
+                                style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500),
+                              )
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+
+                          // Container(
+                          //     alignment: Alignment.centerRight,
+                          //     width: 215,
+                          //     child: Text(dob,style: const TextStyle(color: Colors.white,fontSize: 15,fontWeight: FontWeight.w500),)),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                "Passenger Id :",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              Text(
+                                passengerId,
+                                style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500),
+                              )
+                            ],
+                          ),
+                          // Container(
+                          //     alignment: Alignment.centerRight,
+                          //     width: 215,
+                          //     child: Text(passengerId,style: const TextStyle(color: Colors.white,fontSize: 15,fontWeight: FontWeight.w500),)),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
               const Padding(
-                padding: EdgeInsets.only(left: 20, top: 80),
+                padding: EdgeInsets.only(left: 28, top: 80),
                 child: Text(
                   "Enter Your PNR",
                   style: TextStyle(
@@ -110,7 +409,11 @@ class PnrSearching extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 37),
                     child: InkWell(
                       onTap: () {
-                        adminProvider.checkingPnr(adminProvider.pnrController.text, context, username);
+                        adminProvider.checkingPnr(
+                            adminProvider.pnrController.text,
+                            context,
+                            username,
+                            userPhone);
                       },
                       child: Container(
                           height: 40,

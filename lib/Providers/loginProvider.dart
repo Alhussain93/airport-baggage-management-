@@ -71,8 +71,18 @@ class LoginProvider extends ChangeNotifier {
           if (designation == "PASSENGER") {
             if (userStatus == "ACTIVE") {
               adminProvider.pnrController.clear();
-              callNextReplacement(
-                  PnrSearching(username: loginUsername), context);
+              print("kamkzmakzmak"+loginUserid);
+              db.collection("PASSENGERS").doc(loginUserid).get().then((value) {
+                if(value.exists){
+                  Map<dynamic, dynamic> map = value.data() as Map;
+
+                  callNextReplacement(PnrSearching(username: loginUsername, userPhone: loginUserPhone,
+                    userImage: map["PASSENGER_IMAGE"].toString(), emailId:map["EMAIL"].toString(),
+                    passengerId:map["PASSENGER_ID"].toString(), mobile: phoneNumber,
+                    dob: map['DOB STRING'].toString(),), context);
+
+                }
+              });
             } else {
               ScaffoldMessenger.of(context).showSnackBar(snackBar2);
 
@@ -83,8 +93,12 @@ class LoginProvider extends ChangeNotifier {
               FirebaseAuth auth = FirebaseAuth.instance;
               auth.signOut();
             }
-          } else if (loginUsertype == "ADMIN") {
+          } else if (loginUsertype =="ADMIN") {
             adminProvider.fetchMissingLuggage();
+            adminProvider.fetchMissingReported();
+            adminProvider.fetchFlightName();
+            adminProvider.fetchAireportName();
+
 
             Navigator.pushReplacement(
                 context,
@@ -95,7 +109,8 @@ class LoginProvider extends ChangeNotifier {
           }
 
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(snackBar2);
+          // ScaffoldMessenger.of(context).showSnackBar(snackBar2);
+          callNextReplacement(LoginScreen(), context);
         }
       });
     } catch (e) {
@@ -172,6 +187,7 @@ class LoginProvider extends ChangeNotifier {
                 if (value.exists) {
                   staffAirport = value.get('AIRPORT');
                   adminProvider.fetchMissingLuggage();
+                  adminProvider.fetchMissingReported();
 
                   Navigator.pushReplacement(
                       context,
@@ -193,7 +209,9 @@ class LoginProvider extends ChangeNotifier {
             }
 
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(snackBar2);
+          callNextReplacement(LoginScreen(), context);
+
+          // ScaffoldMessenger.of(context).showSnackBar(snackBar2);
         }
       });
     } catch (e) {

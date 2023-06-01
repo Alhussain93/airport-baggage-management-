@@ -127,13 +127,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         width: width/3,
                         decoration: BoxDecoration(
                             color: Colors.white,
-                            border: Border.all(color: Colors.grey.shade200),
+                            border: Border.all(color: darkThemeColor ),
                             borderRadius:
                             const BorderRadius.all(Radius.circular(10))),
-                        child: const Text(
+                        child:  Text(
                           "STAFF LOGIN",
                           style:
-                          TextStyle(color: Colors.blue, fontSize: 15),
+                          TextStyle(color: darkThemeColor, fontSize: 15),
                         ),
                       ),
                     ),

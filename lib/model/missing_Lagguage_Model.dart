@@ -8,6 +8,8 @@ class MissingLuggage {
   String flightName;
   String scannedDate;
   String missingPlace;
+  String issueReported;
+  String phone;
 
   MissingLuggage(
     this.id,
@@ -19,5 +21,7 @@ class MissingLuggage {
     this.flightName,
     this.scannedDate,
     this.missingPlace,
+    this.issueReported,
+    this.phone,
   );
 }
